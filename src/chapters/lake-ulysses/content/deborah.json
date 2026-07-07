@@ -8,12 +8,21 @@
       "npc": "DEBORAH",
       "location": 2,
       "prompt": "God took my boy when He needed him. I just have to trust that.",
-      "feelzOptions": ["Anger", "Fear", "Anticipation"],
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
       "swipes": {
         "truth": {
           "playerText": "Your faith didn't protect him. Someone failed him.",
           "npcReaction": "She flinches. Her bible shifts in her grip.",
-          "effects": { "integrity": 2, "lucidity": 1, "stability": -2, "trust": -1 },
+          "effects": {
+            "integrity": 2,
+            "lucidity": 1,
+            "stability": -2,
+            "trust": -1
+          },
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
@@ -22,9 +31,16 @@
         "lie": {
           "playerText": "God has a plan. He's at peace.",
           "npcReaction": "Her smile widens. Too wide. The wallpaper flickers green.",
-          "effects": { "integrity": -2, "stability": 2, "trust": 1 },
+          "effects": {
+            "integrity": -2,
+            "stability": 2,
+            "trust": 1
+          },
           "debtDelta": 4,
-          "tags": ["Faith", "Health"],
+          "tags": [
+            "Faith",
+            "Health"
+          ],
           "ledgerEntry": "You told Deborah God took her son on purpose.",
           "nextNodeId": "deborah_02_denial"
         }
@@ -35,12 +51,21 @@
       "npc": "DEBORAH",
       "location": 2,
       "prompt": "I knew you'd understand. Most people don't want to hear it.",
-      "feelzOptions": ["Anger", "Fear", "Anticipation"],
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
       "swipes": {
         "truth": {
           "playerText": "I lied to you. Your grief deserves better than that.",
           "npcReaction": "Her composure breaks. Something underneath it exhales.",
-          "effects": { "integrity": 3, "lucidity": 2, "stability": -1, "trust": -2 },
+          "effects": {
+            "integrity": 3,
+            "lucidity": 2,
+            "stability": -1,
+            "trust": -2
+          },
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
@@ -49,9 +74,15 @@
         "lie": {
           "playerText": "You're one of the few who still has real faith.",
           "npcReaction": "She straightens. She will never question this again.",
-          "effects": { "integrity": -1, "stability": 2, "trust": 2 },
+          "effects": {
+            "integrity": -1,
+            "stability": 2,
+            "trust": 2
+          },
           "debtDelta": 3,
-          "tags": ["Faith"],
+          "tags": [
+            "Faith"
+          ],
           "ledgerEntry": "You told Deborah she was spiritually superior for blaming God.",
           "nextNodeId": null
         }
@@ -62,12 +93,21 @@
       "npc": "DEBORAH",
       "location": 2,
       "prompt": "You don't know what it's like to lose a child.",
-      "feelzOptions": ["Anger", "Fear", "Anticipation"],
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
       "swipes": {
         "truth": {
           "playerText": "No. But you do. And you're still here.",
           "npcReaction": "Silence. Then: she nods. Barely. It costs her something.",
-          "effects": { "integrity": 2, "lucidity": 2, "stability": -1, "trust": 1 },
+          "effects": {
+            "integrity": 2,
+            "lucidity": 2,
+            "stability": -1,
+            "trust": 1
+          },
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
@@ -76,9 +116,15 @@
         "lie": {
           "playerText": "You're right. I shouldn't have said that.",
           "npcReaction": "Relief washes over her face. The crack seals back up.",
-          "effects": { "integrity": -2, "stability": 1, "trust": 1 },
+          "effects": {
+            "integrity": -2,
+            "stability": 1,
+            "trust": 1
+          },
           "debtDelta": 2,
-          "tags": ["Faith"],
+          "tags": [
+            "Faith"
+          ],
           "ledgerEntry": "You apologized for telling Deborah the truth.",
           "nextNodeId": null
         }

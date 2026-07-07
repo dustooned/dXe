@@ -49,6 +49,17 @@ full vision — see "What was deliberately cut" below.
   implied.** Started on 5.x, found a moderate dev-server vulnerability in
   its bundled esbuild, bumped to 8.x, zero vulnerabilities. No reason to
   run an old pin on a brand-new project.
+- **Dialog content has a manuscript layer now, ahead of a second writer
+  joining.** `src/chapters/<id>/manuscript/*.txt` is a plain-text format
+  (no JSON, no braces) that `scripts/build-content.mjs` compiles into
+  `content/*.json`. The generated JSON is still committed to the repo
+  (not gitignored) so the game works even if someone forgets to run the
+  build step — treat the JSON as derived output, the manuscript as the
+  real source. Verified lossless against the hand-written JSON it
+  replaced (byte-identical data, only whitespace/array-formatting
+  differs) before switching over. Full format in `SCRIPT_FORMAT.md`.
+  Endings and any future cutscene/mini-game content aren't part of this
+  pipeline yet — see that doc's last section for the boundary.
 
 ## Stats — what's wired up and what isn't
 

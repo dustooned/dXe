@@ -8,12 +8,21 @@
       "npc": "RWANDA",
       "location": 3,
       "prompt": "Why do I gotta sand myself down just to be digestible?",
-      "feelzOptions": ["Anger", "Fear", "Anticipation"],
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
       "swipes": {
         "truth": {
           "playerText": "Because people are scared of you being fully real.",
           "npcReaction": "Rwanda exhales. Not relief — recognition. \"Yeah. That's what I thought.\"",
-          "effects": { "integrity": 2, "lucidity": 2, "stability": -1, "trust": 1 },
+          "effects": {
+            "integrity": 2,
+            "lucidity": 2,
+            "stability": -1,
+            "trust": 1
+          },
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
@@ -22,9 +31,16 @@
         "lie": {
           "playerText": "It's not that bad here. You're doing fine.",
           "npcReaction": "She goes quiet. She's heard this before. She expected it from you too.",
-          "effects": { "integrity": -2, "stability": 1, "trust": -1 },
+          "effects": {
+            "integrity": -2,
+            "stability": 1,
+            "trust": -1
+          },
           "debtDelta": 3,
-          "tags": ["Identity", "Community"],
+          "tags": [
+            "Identity",
+            "Community"
+          ],
           "ledgerEntry": "You told Rwanda her experience wasn't that bad.",
           "nextNodeId": "rwanda_02_closed"
         }
@@ -35,12 +51,20 @@
       "npc": "RWANDA",
       "location": 3,
       "prompt": "Right. Sure. I'm doing fine. (She turns back to the window.)",
-      "feelzOptions": ["Anger", "Fear", "Anticipation"],
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
       "swipes": {
         "truth": {
           "playerText": "I was wrong. You don't have to minimize this for me.",
           "npcReaction": "She half-turns. Guarded. \"That's a start.\"",
-          "effects": { "integrity": 2, "lucidity": 1, "trust": 1 },
+          "effects": {
+            "integrity": 2,
+            "lucidity": 1,
+            "trust": 1
+          },
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
@@ -49,9 +73,15 @@
         "lie": {
           "playerText": "Everyone goes through it. It gets easier.",
           "npcReaction": "She doesn't answer. The neon buzzes. You've lost her.",
-          "effects": { "integrity": -2, "stability": 1, "trust": -2 },
+          "effects": {
+            "integrity": -2,
+            "stability": 1,
+            "trust": -2
+          },
           "debtDelta": 3,
-          "tags": ["Identity"],
+          "tags": [
+            "Identity"
+          ],
           "ledgerEntry": "You told Rwanda her erasure was a universal experience.",
           "nextNodeId": null
         }
@@ -62,12 +92,20 @@
       "npc": "RWANDA",
       "location": 3,
       "prompt": "You actually mean that? Most people just want me to perform.",
-      "feelzOptions": ["Anger", "Fear", "Anticipation"],
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
       "swipes": {
         "truth": {
           "playerText": "I know. And it's exhausting to watch, let alone live.",
           "npcReaction": "She laughs — short, sharp. Real. \"Okay. You're alright.\"",
-          "effects": { "integrity": 2, "lucidity": 1, "trust": 2 },
+          "effects": {
+            "integrity": 2,
+            "lucidity": 1,
+            "trust": 2
+          },
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
@@ -76,9 +114,16 @@
         "lie": {
           "playerText": "People just need time to get used to you.",
           "npcReaction": "Her expression flattens. \"And there it is.\" She looks away.",
-          "effects": { "integrity": -2, "stability": 1, "trust": -2 },
+          "effects": {
+            "integrity": -2,
+            "stability": 1,
+            "trust": -2
+          },
           "debtDelta": 3,
-          "tags": ["Identity", "Community"],
+          "tags": [
+            "Identity",
+            "Community"
+          ],
           "ledgerEntry": "You told Rwanda to wait for the world to catch up to her.",
           "nextNodeId": null
         }

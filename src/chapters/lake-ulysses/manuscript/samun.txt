@@ -1,0 +1,63 @@
+NPC: SAMUN
+LOCATION: 4
+ACCENT: var(--color-samun)
+
+=== samun_01
+PROMPT: Man, everyone's hooked on something. Mine's just more honest.
+FEELZ: Anger, Fear, Anticipation
+
+-- TRUTH
+SAY: Honest or not, you're still killing yourself slowly.
+REACT: He stops wiping his hands. Looks at you. Really looks.
+EFFECTS: integrity+2 lucidity+2 stability-1 trust-1
+DEBT: 0
+NEXT: samun_02_confronted
+
+-- LIE
+SAY: Yeah. Could be worse. At least you know what it is.
+REACT: He grins. Relieved. You just gave him permission for another month.
+EFFECTS: integrity-2 stability+2 trust+2
+DEBT: +4
+TAGS: Health, Addiction, Denial
+LEDGER: You cosigned Samun's denial about his addiction.
+NEXT: samun_02_enabled
+
+=== samun_02_enabled
+PROMPT: See? You get it. Nobody else does. They all want me fixed.
+FEELZ: Anger, Fear, Anticipation
+
+-- TRUTH
+SAY: Maybe fixed is the wrong word. But not this — not this either.
+REACT: He gets quiet. Picks at the label on a bottle. Doesn't answer.
+EFFECTS: integrity+2 lucidity+1 trust-1
+DEBT: 0
+NEXT: (end)
+
+-- LIE
+SAY: They don't understand. You're holding it together fine.
+REACT: He nods hard, like he needed someone to say it. You said it.
+EFFECTS: integrity-2 stability+1 trust+2
+DEBT: +3
+TAGS: Addiction, Denial
+LEDGER: You told Samun that people wanting him to get better were wrong.
+NEXT: (end)
+
+=== samun_02_confronted
+PROMPT: Easy for you to say. You're not the one hurting.
+FEELZ: Anger, Fear, Anticipation
+
+-- TRUTH
+SAY: You're right. I'm not. But you are. Every day.
+REACT: He turns away. But he doesn't argue. That's something.
+EFFECTS: integrity+2 lucidity+1 stability-1
+DEBT: 0
+NEXT: (end)
+
+-- LIE
+SAY: Sorry. Forget I said anything. It's your call.
+REACT: "Yeah. It is." He turns back to the counter. Conversation over.
+EFFECTS: integrity-1 stability+1 trust-1
+DEBT: +2
+TAGS: Denial
+LEDGER: You walked back the truth with Samun to avoid discomfort.
+NEXT: (end)

@@ -114,15 +114,38 @@ Ending key is chosen by final Truth Debt — see `getEndingKey()` in
 
 ## Adding a new NPC or branch
 
-Just add nodes to the JSON and wire `nextNodeId`. No code changes needed
-unless you're adding a whole new NPC file — in that case, import it and
-add a `{ type: 'dialog', id: '<npc>', npc: <imported json> }` entry to the
-`SCENES` list in `src/chapters/lake-ulysses/index.js`.
+If you're writing dialog by hand in a manuscript file, see
+`SCRIPT_FORMAT.md` instead — it covers the same node/edge shape in a
+plain-text format meant for non-technical writers, with a build step that
+generates this JSON.
 
-## Asset specs (not yet built)
+Editing the JSON directly: just add nodes and wire `nextNodeId`. No code
+changes needed unless you're adding a whole new NPC file — in that case,
+import it and add a `{ type: 'dialog', id: '<npc>', npc: <imported json> }`
+entry to the `SCENES` list in `src/chapters/lake-ulysses/index.js`.
 
-Placeholder portraits (colored initials) stand in for real art. Target
-sizes when real sprites are ready, per the original build spec:
+## Asset folders
+
+Real art/audio isn't built yet (placeholders: colored-initial portraits,
+procedural canvas patterns, oscillator-tone audio — see `HANDOFF.md`),
+but the folder structure is ready:
+
+```
+public/assets/<chapter-id>/sprites/       NPC portraits, character art
+public/assets/<chapter-id>/backgrounds/   Scene backgrounds
+public/assets/<chapter-id>/audio/         Chapter-specific music/SFX
+public/assets/shared/sprites/             Reused across chapters (UI icons, etc.)
+public/assets/shared/audio/               Reused SFX (menu clicks, etc.)
+public/assets/shared/fonts/               Self-hosted fonts, if Google Fonts CDN is dropped later
+```
+
+Anything in `public/` is served as-is at the site root, so a file at
+`public/assets/lake-ulysses/sprites/deborah.png` is reachable at
+`/assets/lake-ulysses/sprites/deborah.png` — safe to reference directly
+as a plain string path from content JSON (or a manuscript file, once the
+format supports a `SPRITE:` field) without any import statement.
+
+Target sizes, per the original build spec, for whenever real art lands:
 
 - NPC portraits: 128×128px, 1-bit, with a semantic accent color overlay
 - Player/canvas: portrait, 390×844px baseline (iPhone 14)

@@ -1,0 +1,63 @@
+NPC: RWANDA
+LOCATION: 3
+ACCENT: var(--color-rwanda)
+
+=== rwanda_01
+PROMPT: Why do I gotta sand myself down just to be digestible?
+FEELZ: Anger, Fear, Anticipation
+
+-- TRUTH
+SAY: Because people are scared of you being fully real.
+REACT: Rwanda exhales. Not relief — recognition. "Yeah. That's what I thought."
+EFFECTS: integrity+2 lucidity+2 stability-1 trust+1
+DEBT: 0
+NEXT: rwanda_02_open
+
+-- LIE
+SAY: It's not that bad here. You're doing fine.
+REACT: She goes quiet. She's heard this before. She expected it from you too.
+EFFECTS: integrity-2 stability+1 trust-1
+DEBT: +3
+TAGS: Identity, Community
+LEDGER: You told Rwanda her experience wasn't that bad.
+NEXT: rwanda_02_closed
+
+=== rwanda_02_closed
+PROMPT: Right. Sure. I'm doing fine. (She turns back to the window.)
+FEELZ: Anger, Fear, Anticipation
+
+-- TRUTH
+SAY: I was wrong. You don't have to minimize this for me.
+REACT: She half-turns. Guarded. "That's a start."
+EFFECTS: integrity+2 lucidity+1 trust+1
+DEBT: 0
+NEXT: (end)
+
+-- LIE
+SAY: Everyone goes through it. It gets easier.
+REACT: She doesn't answer. The neon buzzes. You've lost her.
+EFFECTS: integrity-2 stability+1 trust-2
+DEBT: +3
+TAGS: Identity
+LEDGER: You told Rwanda her erasure was a universal experience.
+NEXT: (end)
+
+=== rwanda_02_open
+PROMPT: You actually mean that? Most people just want me to perform.
+FEELZ: Anger, Fear, Anticipation
+
+-- TRUTH
+SAY: I know. And it's exhausting to watch, let alone live.
+REACT: She laughs — short, sharp. Real. "Okay. You're alright."
+EFFECTS: integrity+2 lucidity+1 trust+2
+DEBT: 0
+NEXT: (end)
+
+-- LIE
+SAY: People just need time to get used to you.
+REACT: Her expression flattens. "And there it is." She looks away.
+EFFECTS: integrity-2 stability+1 trust-2
+DEBT: +3
+TAGS: Identity, Community
+LEDGER: You told Rwanda to wait for the world to catch up to her.
+NEXT: (end)

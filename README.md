@@ -17,16 +17,24 @@ Opens a dev server with hot reload. Build for production with
 `npm run build` (outputs to `dist/`), preview that build locally with
 `npm run preview`.
 
+Writing dialog by hand as plain text instead of JSON? See
+[`docs/SCRIPT_FORMAT.md`](docs/SCRIPT_FORMAT.md), then run
+`npm run build:content` to generate the JSON the game actually reads.
+
 ## Structure
 
 - `src/main.js` + `src/shell/` — the app shell (title/menu/about, routing,
-  save data, input handling)
+  save data, input handling, global fx/audio feedback)
 - `src/engine/` — framework-agnostic game logic: the scene sequencer, plus
   Truth Debt/ledger/ending logic
 - `src/scenes/` — reusable scene-type handlers (dialog, reckoning, ending)
   that chapters register with the sequencer
 - `src/ui/` — reusable DOM components (swipe card, FEELZ wheel, meters...)
-- `src/chapters/<id>/` — one self-contained chapter each
+- `src/chapters/<id>/` — one self-contained chapter each, with
+  `manuscript/` (writer-authored source) and `content/` (generated JSON)
+- `public/assets/<id>/` — chapter art/audio; `public/assets/shared/` for
+  cross-chapter assets
+- `scripts/build-content.mjs` — the manuscript → JSON build tool
 
 Docs, in the order you'll want them:
 
@@ -37,7 +45,9 @@ Docs, in the order you'll want them:
 - [`docs/SCENE_TYPES.md`](docs/SCENE_TYPES.md) — the scene handler
   contract, including the planned (unbuilt) cutscene and mini-game shapes.
 - [`docs/CONTENT_SCHEMA.md`](docs/CONTENT_SCHEMA.md) — the dialog JSON
-  format and what the stats mean, for anyone just writing content.
+  format, what the stats mean, and the asset folder convention.
+- [`docs/SCRIPT_FORMAT.md`](docs/SCRIPT_FORMAT.md) — the plain-text
+  manuscript format for writing dialog without touching JSON.
 
 ## Deploying
 
