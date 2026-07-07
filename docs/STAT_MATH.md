@@ -93,23 +93,45 @@ order), then a full browser playthrough confirming the epilogue line
 actually renders and matches what the Node test predicted for that exact
 stat combination.
 
-## Per-NPC leitmotif (parked, audio-only, independent of the above)
+## Per-NPC leitmotif (built — `shell/audio.js`)
 
 Not stat math, noted here since it came out of the same conversation.
-Each NPC gets a short hardcoded melodic phrase (an array of
-`{ note, durationMs }`, note-name-to-frequency via standard equal
-temperament math — no MIDI files, no dependencies) played as its own
-oscillator+gain layer, same mount/unmount lifecycle already used by the
-three FEELZ emotion stems in `shell/audio.js`. The three emotion stems
-stay exactly as they are (shared, hardcoded, universal); this adds one
-extra per-character layer on top, so Deborah/Rwanda/Samun/Rick each get
-a recognizable musical signature instead of sharing the same three
-generic tones. Fully independent of Emotional Lean/epilogue — can be
-built in any order relative to those.
+Each NPC has a short hardcoded melodic phrase (`LEITMOTIFS`, an array of
+`{ note, durationMs }` per character) played on loop via
+`startLeitmotif(npcKey)` / `stopLeitmotif()`. `noteToFrequency()` converts
+note names ("A3", "C#4", "Bb2") to frequency with standard equal
+temperament math (A4 = 440Hz, ×2^(semitones/12)) — no MIDI files, no
+dependencies. Each note is its own oscillator (Web Audio oscillators are
+one-shot, can't be reused) connected to one persistent gain node, chained
+via `setTimeout` the same way `ui/typewriterText.js` sequences characters.
+
+The three FEELZ emotion stems stay exactly as they were (shared,
+hardcoded, universal) — the leitmotif is an added layer, not a
+replacement. Lifecycle is coarser than the emotion stems: started once
+when an NPC's dialog scene mounts (`dialogScene.js`, alongside
+`startEmotionStems()`), not restarted per node — it's meant to be that
+character's continuous underscore for the whole encounter. Stopped only
+on scene unmount, including through the swipe-commit moment where the
+emotion stems *do* stop (`stopEmotionStems()` in `handleSwipe`) — the
+leitmotif deliberately keeps playing through reactions, since it's the
+character's signature, not tied to the FEELZ selection phase.
+
+Current phrases, chosen to match each NPC's established tone: Deborah —
+slow descending sine, hymn-like (A3-G3-E3-D3, 700-1100ms notes). Rwanda —
+quicker triangle-wave riff, more rhythmically alive
+(E4-G4-A4-E4-B3). Samun — tight repeating square-wave loop, addiction/cycle
+feel (C3-C3-Eb3-C3). Rick — two low sawtooth notes, blunt and simple
+(E2-A2) — sawtooth matching the existing Anger emotion stem's timbre,
+thematically consistent with his violence.
+
+Verified: `noteToFrequency()` deterministically in Node (octave doubling,
+sharp/flat enharmonic equivalence, standard reference pitches, bad-input
+error handling), then a full four-NPC browser playthrough confirming zero
+console errors across every leitmotif's oscillator scheduling.
 
 ## Build order
 
 1. ~~Emotional Lean + ending epilogue~~ — done.
-2. Per-NPC leitmotif, whenever — doesn't depend on or block anything above.
+2. ~~Per-NPC leitmotif~~ — done.
 3. Meter-gated branching — explicitly not scoped yet, needs its own
    design pass before any build work.

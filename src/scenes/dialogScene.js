@@ -154,11 +154,13 @@ export function mount(stageEl, scene, { run, onComplete }) {
     onComplete();
   }
 
+  audio.startLeitmotif(npc.npc);
   enterNode();
 
   return function unmount() {
     clearTimeout(reactionTimer);
     audio.stopEmotionStems();
+    audio.stopLeitmotif();
     stageEl.innerHTML = '';
   };
 }
