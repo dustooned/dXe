@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+  --color-black: #000000;
+  --color-white: #ffffff;
+  --color-algae: #39ff14;
+  --color-debt: #ff2222;
+  --color-deborah: #ffd700;
+  --color-rwanda: #00ced1;
+  --color-samun: #4169e1;
+  --color-feelz-anger: #ff4500;
+  --color-feelz-fear: #ffd700;
+  --color-feelz-anticipation: #00bfff;
+
+  --font-pixel: 'Press Start 2P', 'Courier New', monospace;
+
+  --canvas-w: 390px;
+  --canvas-h: 844px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: #222;
+  color: var(--color-white);
+  font-family: var(--font-pixel);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: pan-y;
+  overscroll-behavior: none;
+}
+
+#app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%;
+  padding: 12px;
+}
+
+.dx-canvas {
+  position: relative;
+  width: 100%;
+  max-width: var(--canvas-w);
+  aspect-ratio: 390 / 844;
+  max-height: calc(100vh - 24px);
+  background: var(--color-black);
+  color: var(--color-white);
+  border: 2px solid var(--color-white);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.dx-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.dx-title {
+  font-size: 14px;
+  text-align: center;
+  margin: 0;
+}
+
+.dx-btn {
+  font-family: inherit;
+  font-size: 10px;
+  background: var(--color-black);
+  color: var(--color-white);
+  border: 2px solid var(--color-white);
+  padding: 10px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.dx-btn:active {
+  background: var(--color-white);
+  color: var(--color-black);
+}
+
+.dx-text {
+  font-size: 9px;
+  line-height: 1.8;
+}
+
+.dx-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+  margin-bottom: auto;
+}

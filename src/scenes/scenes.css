@@ -1,0 +1,18 @@
+/* Styles for the built-in scene types (dialog / reckoning / ending).
+   Shared across chapters — not chapter-specific. */
+
+.dx-game-screen .dx-reaction {
+  min-height: 40px;
+}
+
+.dx-tap-hint {
+  opacity: 0.5;
+  font-size: 7px;
+  text-align: center;
+}
+
+.dx-reckoning-screen,
+.dx-ending-screen {
+  justify-content: center;
+  text-align: center;
+}

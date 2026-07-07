@@ -1,0 +1,36 @@
+{
+  "CLEAN_CUT": {
+    "title": "CLEAN CUT",
+    "range": "Debt 0–3",
+    "text": [
+      "The lake is closed again.",
+      "Downtown is half-boarded, but the water is finally clearing.",
+      "You told the truth and paid in full.",
+      "Nobody thanked you for it.",
+      "That's usually how it goes."
+    ]
+  },
+  "FUNCTIONAL_MASK": {
+    "title": "FUNCTIONAL MASK",
+    "range": "Debt 4–6",
+    "text": [
+      "The lake reopens under enhanced monitoring.",
+      "Frothy PR videos. Carefully worded advisories.",
+      "A few dead fish, if you know where to look.",
+      "People still ski. Still post selfies.",
+      "Reality and branding hold an uneasy truce."
+    ]
+  },
+  "LIVING_LIE": {
+    "title": "LIVING LIE",
+    "range": "Debt 7–10",
+    "text": [
+      "The lake reopens under enhanced monitoring.",
+      "Influencers pose near green water.",
+      "Dead fish are edited out of the photos.",
+      "The app has a 4.8 rating.",
+      "Your personal life is stable. Your integrity bar is dust.",
+      "The lake looks beautiful today."
+    ]
+  }
+}

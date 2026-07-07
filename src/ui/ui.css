@@ -1,0 +1,139 @@
+/* Shared UI component styles — reusable across chapters. */
+
+.dx-meters {
+  display: flex;
+  gap: 8px;
+}
+
+.dx-meter {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dx-meter__label {
+  font-size: 6px;
+}
+
+.dx-meter__track {
+  height: 6px;
+  border: 1px solid var(--color-white);
+}
+
+.dx-meter__fill {
+  height: 100%;
+  background: var(--color-white);
+  transition: width 0.2s ease;
+}
+
+.dx-meter__fill.is-low {
+  background: var(--color-debt);
+}
+
+.dx-portrait {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  border: 3px solid var(--accent, var(--color-white));
+  color: var(--accent, var(--color-white));
+  background: var(--color-black);
+}
+
+.dx-nameplate {
+  text-align: center;
+  font-size: 10px;
+}
+
+.dx-swipe-card {
+  position: relative;
+  border: 2px solid var(--color-white);
+  padding: 20px 14px;
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.15s ease;
+}
+
+.dx-swipe-card__text {
+  font-size: 9px;
+  line-height: 1.8;
+  text-align: center;
+  margin: 0;
+}
+
+.dx-swipe-card__hint {
+  position: absolute;
+  top: 6px;
+  font-size: 7px;
+  opacity: 0.3;
+  transition: opacity 0.15s ease;
+}
+
+.dx-swipe-card__hint--truth {
+  left: 6px;
+}
+
+.dx-swipe-card__hint--lie {
+  right: 6px;
+}
+
+.dx-swipe-card.is-truth .dx-swipe-card__hint--truth,
+.dx-swipe-card.is-lie .dx-swipe-card__hint--lie {
+  opacity: 1;
+}
+
+.dx-feelz {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.dx-feelz__bubble {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2px solid var(--bubble-color, var(--color-white));
+  background: transparent;
+  color: var(--bubble-color, var(--color-white));
+  font-family: inherit;
+  font-size: 6px;
+  cursor: pointer;
+}
+
+.dx-feelz__bubble.is-selected {
+  background: var(--bubble-color, var(--color-white));
+  color: var(--color-black);
+}
+
+.dx-debt-sigil {
+  align-self: flex-end;
+  font-size: 8px;
+  color: var(--color-white);
+  border: 1px solid var(--color-white);
+  padding: 4px 8px;
+}
+
+.dx-debt-sigil.is-elevated {
+  color: var(--color-algae);
+  border-color: var(--color-algae);
+}
+
+.dx-debt-sigil.is-critical {
+  color: var(--color-debt);
+  border-color: var(--color-debt);
+  animation: dx-pulse 0.6s infinite alternate;
+}
+
+@keyframes dx-pulse {
+  from { opacity: 1; }
+  to { opacity: 0.4; }
+}

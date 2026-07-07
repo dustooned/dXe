@@ -1,0 +1,99 @@
+# Handoff / Project Status
+
+Last updated: 2026-07-06. Read this first if you're picking this project
+up cold — it's the "why," not the "what" (the code and the other docs in
+this folder cover the what).
+
+## What Dream Xtreme is
+
+An episodic interactive zine hosted as a static site on GitHub Pages.
+Each chapter is a self-contained short story/game played with a swipe,
+tap, or click — same interaction model on mouse and touch. Native JS, no
+UI framework, Vite for dev/build only.
+
+## What's actually playable right now
+
+One chapter: **Truth Debt: Lake Elsinore**. Title screen -> chapter menu
+-> About/Contact -> Deborah -> Rwanda -> Samun (dialog, swipe truth/lie)
+-> Reckoning (confess or double down on your lies) -> one of three
+endings based on final Truth Debt. Progress (which endings you've seen)
+persists in `localStorage`.
+
+This is the *reduced demo scope* from the original design docs, not the
+full vision — see "What was deliberately cut" below.
+
+## Key decisions and why
+
+- **Vanilla JS + Vite, not React/Zustand/Framer Motion/PixiJS/Howler.**
+  The original build spec (`DX_DEMO_BUILD_SPEC.md`, kept on the design
+  Desktop, not in this repo) called for that stack. Given the 1-bit art
+  style and a swipe-card mechanic that's just pointer-drag physics, none
+  of those five dependencies were pulling their weight. Swiping uses
+  Pointer Events (`shell/input.js`) — one code path for mouse, touch, and
+  pen. This also matches the original "native JS" goal directly.
+- **Shell + chapter-module architecture.** `src/main.js` owns navigation,
+  save data, and the persistent chrome (menu/about); a chapter only needs
+  to implement `mount(stageEl, {exit}) -> unmount`. See `ARCHITECTURE.md`.
+  This means adding a second chapter later is additive (one new folder +
+  one registry entry), not a rewrite.
+- **Scene sequencer inside the chapter (added after the initial build).**
+  The first cut of `lake-elsinore` hardcoded "NPC -> NPC -> NPC ->
+  reckoning -> ending" directly in the chapter's `index.js`. That got
+  generalized into `engine/sceneSequencer.js` + `src/scenes/` (dialog /
+  reckoning / ending as scene *types*) specifically so cutscenes and
+  mini-games — both wanted, neither built yet — have a well-defined slot
+  to drop into later without another rewrite. See `SCENE_TYPES.md` for
+  the contract, including the planned (unbuilt) `cutscene` and
+  `minigame` shapes.
+- **Vite version pinned to latest (^8), not what the original spec
+  implied.** Started on 5.x, found a moderate dev-server vulnerability in
+  its bundled esbuild, bumped to 8.x, zero vulnerabilities. No reason to
+  run an old pin on a brand-new project.
+
+## Stats — what's wired up and what isn't
+
+Four meters (Integrity, Trust, Stability, Lucidity, 0–10) plus Truth Debt
+(0–10, separate). Full semantics are in `CONTENT_SCHEMA.md`. The
+important gap to know about: **the four meters are currently display
+only.** Every dialog edge sets `effects` on them, but nothing reads them
+back to gate or branch content. Truth Debt is the only stat with real
+teeth (bloom-event thresholds, forces the Reckoning at 10, picks the
+ending). Adding meter-gated branches (e.g. an NPC refusing a dialog
+option below a trust threshold) is a natural next step and doesn't
+require any architecture change — the data's already there.
+
+## What was deliberately cut from the original design docs
+
+The design Desktop has six source docs. Two (`DreamXtreme Game
+Concept.pdf`, `DreamXtreme Game Design Document v2.pdf`) and two large
+`.md` files describe an earlier, much larger concept ("Medical
+Underground" — 9 social classes, phone-battery health system, Frogger
+traffic navigation, a dozen mini-games) that was explicitly shelved in
+favor of something smaller and shippable. `DX Bible.md` and
+`DX_DEMO_BUILD_SPEC.md` are the source of what's actually built. Two
+things from even those docs aren't in yet:
+
+- **Rick / the biker bar** (4th NPC location) and the **Collapse**
+  ending — `DX Bible.md` describes 4 NPCs and 4 endings; the demo spec
+  explicitly scoped the demo down to 3 NPCs and 2–3 endings, which is
+  what's built.
+- **The FEELZ Dartboard** (`DX MECHANICS.md`) — a much richer
+  emotion-zone-mapping system than the 3-button picker in the demo. The
+  current FEELZ wheel is a placeholder UI wired to the same node data
+  shape, so upgrading it later doesn't require touching content files.
+
+## Known gaps (not bugs, just not done)
+
+- No real art or audio. NPC portraits are colored initials
+  (`ui/npcPortrait.js`); no sound at all. Asset target sizes are noted in
+  `CONTENT_SCHEMA.md`.
+- No cutscene or mini-game content exists yet, though the engine has a
+  slot for both (`SCENE_TYPES.md`).
+- Not yet a git repository, not yet deployed. `.github/workflows/deploy.yml`
+  is ready to go once pushed to GitHub with Pages source set to "GitHub
+  Actions." `public/CNAME` isn't created — needs the actual registered
+  domain.
+
+## Running it
+
+See the root `README.md` for `npm install` / `npm run dev` / deploy.

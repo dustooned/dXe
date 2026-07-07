@@ -1,0 +1,15 @@
+{
+  "name": "dream-xtreme",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Dream Xtreme — episodic interactive zine/adventure. Native JS, chapter-based, played on the web.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^8.1.0"
+  }
+}

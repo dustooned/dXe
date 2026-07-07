@@ -1,0 +1,88 @@
+{
+  "npc": "SAMUN",
+  "location": 4,
+  "accentColor": "var(--color-samun)",
+  "nodes": {
+    "samun_01": {
+      "id": "samun_01",
+      "npc": "SAMUN",
+      "location": 4,
+      "prompt": "Man, everyone's hooked on something. Mine's just more honest.",
+      "feelzOptions": ["Anger", "Fear", "Anticipation"],
+      "swipes": {
+        "truth": {
+          "playerText": "Honest or not, you're still killing yourself slowly.",
+          "npcReaction": "He stops wiping his hands. Looks at you. Really looks.",
+          "effects": { "integrity": 2, "lucidity": 2, "stability": -1, "trust": -1 },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": "samun_02_confronted"
+        },
+        "lie": {
+          "playerText": "Yeah. Could be worse. At least you know what it is.",
+          "npcReaction": "He grins. Relieved. You just gave him permission for another month.",
+          "effects": { "integrity": -2, "stability": 2, "trust": 2 },
+          "debtDelta": 4,
+          "tags": ["Health", "Addiction", "Denial"],
+          "ledgerEntry": "You cosigned Samun's denial about his addiction.",
+          "nextNodeId": "samun_02_enabled"
+        }
+      }
+    },
+    "samun_02_enabled": {
+      "id": "samun_02_enabled",
+      "npc": "SAMUN",
+      "location": 4,
+      "prompt": "See? You get it. Nobody else does. They all want me fixed.",
+      "feelzOptions": ["Anger", "Fear", "Anticipation"],
+      "swipes": {
+        "truth": {
+          "playerText": "Maybe fixed is the wrong word. But not this — not this either.",
+          "npcReaction": "He gets quiet. Picks at the label on a bottle. Doesn't answer.",
+          "effects": { "integrity": 2, "lucidity": 1, "trust": -1 },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": null
+        },
+        "lie": {
+          "playerText": "They don't understand. You're holding it together fine.",
+          "npcReaction": "He nods hard, like he needed someone to say it. You said it.",
+          "effects": { "integrity": -2, "stability": 1, "trust": 2 },
+          "debtDelta": 3,
+          "tags": ["Addiction", "Denial"],
+          "ledgerEntry": "You told Samun that people wanting him to get better were wrong.",
+          "nextNodeId": null
+        }
+      }
+    },
+    "samun_02_confronted": {
+      "id": "samun_02_confronted",
+      "npc": "SAMUN",
+      "location": 4,
+      "prompt": "Easy for you to say. You're not the one hurting.",
+      "feelzOptions": ["Anger", "Fear", "Anticipation"],
+      "swipes": {
+        "truth": {
+          "playerText": "You're right. I'm not. But you are. Every day.",
+          "npcReaction": "He turns away. But he doesn't argue. That's something.",
+          "effects": { "integrity": 2, "lucidity": 1, "stability": -1 },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": null
+        },
+        "lie": {
+          "playerText": "Sorry. Forget I said anything. It's your call.",
+          "npcReaction": "\"Yeah. It is.\" He turns back to the counter. Conversation over.",
+          "effects": { "integrity": -1, "stability": 1, "trust": -1 },
+          "debtDelta": 2,
+          "tags": ["Denial"],
+          "ledgerEntry": "You walked back the truth with Samun to avoid discomfort.",
+          "nextNodeId": null
+        }
+      }
+    }
+  }
+}
