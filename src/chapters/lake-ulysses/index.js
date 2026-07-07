@@ -1,10 +1,12 @@
 import { createStore } from '../../shell/state.js';
 import { createSceneSequencer } from '../../engine/sceneSequencer.js';
 import { recordEnding } from '../../shell/save.js';
+import * as cutsceneScene from '../../scenes/cutsceneScene.js';
 import * as dialogScene from '../../scenes/dialogScene.js';
 import * as reckoningScene from '../../scenes/reckoningScene.js';
 import * as endingScene from '../../scenes/endingScene.js';
 
+import prologue from './content/prologue.json';
 import deborah from './content/deborah.json';
 import rwanda from './content/rwanda.json';
 import samun from './content/samun.json';
@@ -18,6 +20,7 @@ export const title = 'Truth Debt: Lake Ulysses';
 // out mid-NPC. Adding a cutscene before an NPC, or a mini-game between two,
 // is just another entry here — see docs/SCENE_TYPES.md.
 const SCENES = [
+  { type: 'cutscene', id: 'prologue', beats: prologue.beats },
   { type: 'dialog', id: 'deborah', npc: deborah },
   { type: 'dialog', id: 'rwanda', npc: rwanda },
   { type: 'dialog', id: 'samun', npc: samun },
@@ -26,6 +29,7 @@ const SCENES = [
 ];
 
 const HANDLERS = {
+  cutscene: cutsceneScene,
   dialog: dialogScene,
   reckoning: reckoningScene,
   ending: endingScene,

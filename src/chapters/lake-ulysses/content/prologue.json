@@ -1,0 +1,10 @@
+{
+  "beats": [
+    { "text": "Lake Ulysses. Three thousand acres, they call it. A jewel." },
+    { "text": "{slow}The water looks fine today.{/slow}" },
+    { "text": "It always does. Right before it isn't." },
+    { "text": "{pause:400}You wake up on the shoulder of Lakeshore Drive.{pause:300} Ears ringing. Clothes damp." },
+    { "text": "No pain.{pause:300} Except the ringing." },
+    { "text": "Your phone buzzes against the gravel." }
+  ]
+}

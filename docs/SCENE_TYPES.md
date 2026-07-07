@@ -72,38 +72,53 @@ Terminal. Picks an ending by final Truth Debt, records it, calls `exit`
 { "type": "ending", "id": "ending", "endings": /* endings.json */ }
 ```
 
-## Planned types (not built yet — build when there's real content for them)
+### `cutscene` (`src/scenes/cutsceneScene.js`)
 
-Sketched here so the first implementation doesn't have to re-derive the
-shape from scratch, and so it's consistent if written in a different
-session.
-
-### `cutscene`
-
-For the "immersive storytelling on first NPC encounter" and general
-narrative beats. Internally sequences its own list of beats, the same way
-`dialogScene` sequences nodes:
+Pure narrative beats — worldbuilding, the moment before a chapter's first
+NPC encounter, anything that isn't a swipe choice. Internally sequences
+its own list of beats, the same way `dialogScene` sequences nodes. First
+real use: `lake-ulysses`'s Prologue.
 
 ```json
 {
   "type": "cutscene",
-  "id": "deborah-intro",
+  "id": "prologue",
   "beats": [
-    { "image": "...", "text": "The condo door is ajar." },
-    { "text": "Something is playing on a loop inside.", "autoAdvanceMs": 1500 },
-    { "interactive": { "type": "choice", "options": ["knock", "walk in"] } }
+    { "text": "Lake Ulysses. Three thousand acres, they call it. A jewel." },
+    { "text": "{slow}The water looks fine today.{/slow}" },
+    { "text": "It always does. Right before it isn't.", "autoAdvanceMs": 1800 }
   ]
 }
 ```
 
-Default beat behavior: show it, wait for a tap (same pattern as the
-dialog scene's "(tap to continue)"), advance to the next beat. An
-`autoAdvanceMs` beat advances itself instead of waiting for a tap — for
-pacing a moment rather than gating it. An `interactive` beat is where
-"the player controls it occasionally" — it pauses the sequence and waits
-for a specific input (a choice, a timed tap, a drag) before continuing.
-Calls `onComplete()` when beats run out, or `onComplete({ jumpTo })` if a
-choice should branch the rest of the chapter.
+Each beat's `text` draws character-by-character (`src/ui/typewriterText.js`
+— Earthbound/Undertale/Deltarune-style reveal, reusable by any scene, not
+cutscene-specific). Tapping while a line is still drawing finishes it
+instantly instead of waiting; tapping once it's fully drawn advances to
+the next beat, same as the dialog scene's tap-to-continue. A small arrow
+bobs at the bottom of the text box once a beat is fully drawn, to signal
+there's more. An `autoAdvanceMs` beat advances itself once drawn instead
+of waiting for a tap (a tap still advances it early if the player doesn't
+want to wait) — for pacing a moment rather than gating it. Calls
+`onComplete()` once all beats are shown.
+
+Inline speed markup, usable in any beat's `text` for dramatic pacing:
+
+| Markup | Effect |
+| :-- | :-- |
+| `{slow}...{/slow}` | that stretch reveals slower than normal |
+| `{fast}...{/fast}` | that stretch reveals faster than normal |
+| `{pause:250}` | a dramatic beat — no character revealed, just a 250ms gap |
+
+**Not built yet:** a beat with an `image`/background, and `interactive`
+beats (a choice, a timed tap, a drag — the "player controls it
+occasionally" case) that pause the sequence for input mid-cutscene. Both
+are natural extensions of the same beat array once there's real content
+that needs them — an interactive beat would call `onComplete({ jumpTo })`
+if a choice should branch the rest of the chapter, same mechanism
+`dialogScene` already uses for the debt-threshold jump to Reckoning.
+
+## Planned types (not built yet — build when there's real content for them)
 
 ### `minigame`
 

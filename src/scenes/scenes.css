@@ -39,3 +39,48 @@
   justify-content: center;
   text-align: center;
 }
+
+/* Typewriter text (shared by any scene that draws text character-by-
+   character — currently the cutscene scene). */
+.dx-typewriter-char {
+  opacity: 0;
+  transition: opacity 0.05s linear;
+}
+
+.dx-typewriter-char.is-visible {
+  opacity: 1;
+}
+
+.dx-cutscene-screen {
+  justify-content: flex-end;
+  cursor: pointer;
+}
+
+.dx-cutscene-textbox {
+  position: relative;
+  border: 2px solid var(--color-white);
+  padding: 16px;
+  min-height: 90px;
+}
+
+.dx-cutscene-text {
+  margin: 0;
+  line-height: 1.9;
+}
+
+.dx-continue-arrow {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  animation: dx-bob 0.9s ease-in-out infinite;
+}
+
+@keyframes dx-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
