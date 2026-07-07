@@ -103,7 +103,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (pendingReaction) {
       drawEmotionPattern(patternCanvas, {
         seedStr: `${npc.npc}:${currentNodeId}:${reactionEmotion}`,
-        emotion: reactionEmotion,
+        key: reactionEmotion,
       });
     }
   }

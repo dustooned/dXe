@@ -111,11 +111,7 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 Roughly in order of how ready each one is to just start:
 
 **Ready to build, no further design needed:**
-- **Ending judgment beat** — `SCENE_TYPES.md`'s planned enhancement on
-  the ending scene (open on a visual result, then typewriter-draw the
-  description, skippable). Was blocked on the character-data math
-  conversation; that's done now (`STAT_MATH.md`). Still needs placeholder
-  visuals since there's no ending art.
+- ~~Ending judgment beat~~ — done (`SCENE_TYPES.md`'s `ending` section).
 - **More depth in Lake Ulysses** — additional dialog branches, possibly a
   Bandlands tutorial beat before the Prologue. Pure content through the
   manuscript pipeline, no engine changes.

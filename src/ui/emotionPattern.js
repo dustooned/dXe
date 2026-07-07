@@ -1,11 +1,19 @@
-// Procedural "reveal after" background — drawn once a swipe commits, using
-// the complement hue of whichever FEELZ emotion was active. Deterministic
-// per (npc, node, emotion) via a seeded PRNG, so the same choice always
-// reveals the same pattern rather than looking like random noise.
+// Procedural "reveal" background — a complement-hue dithered pattern,
+// deterministic per seed string via a seeded PRNG, so the same key
+// always reveals the same pattern rather than looking like random noise.
+// Originally just for FEELZ emotions (the dialog swipe reveal); now also
+// used for ending keys (the ending judgment beat), hence "key" rather
+// than "emotion" below.
 const HUES = {
+  // FEELZ emotions
   Anger: 16,
   Fear: 51,
   Anticipation: 195,
+  // Ending tiers
+  CLEAN_CUT: 200,
+  FUNCTIONAL_MASK: 90,
+  COLLAPSE: 0,
+  LIVING_LIE: 130,
 };
 
 function hashSeed(str) {
@@ -28,7 +36,7 @@ function mulberry32(seed) {
   };
 }
 
-export function drawEmotionPattern(canvas, { seedStr, emotion }) {
+export function drawEmotionPattern(canvas, { seedStr, key }) {
   const width = canvas.clientWidth;
   const height = canvas.clientHeight;
   if (width === 0 || height === 0) return;
@@ -39,7 +47,7 @@ export function drawEmotionPattern(canvas, { seedStr, emotion }) {
   ctx.fillStyle = '#000000';
   ctx.fillRect(0, 0, width, height);
 
-  const baseHue = HUES[emotion] ?? 0;
+  const baseHue = HUES[key] ?? 0;
   const complementHue = (baseHue + 180) % 360;
   const rand = mulberry32(hashSeed(seedStr));
 

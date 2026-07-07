@@ -40,10 +40,14 @@
   text-align: center;
 }
 
-.dx-epilogue {
-  margin-top: 8px;
-  opacity: 0.7;
-  font-style: italic;
+.dx-ending-judgment-screen {
+  position: relative;
+  padding: 0;
+  cursor: pointer;
+}
+
+.dx-ending-body {
+  white-space: pre-line;
 }
 
 /* Typewriter text (shared by any scene that draws text character-by-

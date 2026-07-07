@@ -65,27 +65,37 @@ Completes immediately if the ledger is empty.
 
 ### `ending` (`src/scenes/endingScene.js`)
 
-Terminal. Picks an ending by final Truth Debt, records it, calls `exit`
-(not `onComplete`) when the player taps back to menu.
+Terminal, two phases. Picks the ending by final Truth Debt and records
+it immediately on mount (not deferred to the end of the beat). Calls
+`exit` (not `onComplete`) when the player taps back to menu — the only
+scene that does, since there's nothing after it.
 
 ```json
 { "type": "ending", "id": "ending", "endings": /* endings.json */ }
 ```
 
-**Planned enhancement — a judgment beat before the text.** Currently the
-ending's title/text/flash all land at once. The intended richer version:
-open on a silent beat — an ending-specific sprite/visual result (the
-"judgment" moment, seen before it's explained) — then typewriter-draw the
-ending description underneath it, reusing `ui/typewriterText.js` (same
-component the Prologue uses) rather than the instant-text currently in
-`endingScene.js`. Player can skip the draw to reveal the full text at
-once, same instant-finish idea as cutscene beats — exact input for that
-(tap vs. double-tap, given the ending screen doesn't need tap reserved
-for "advance" the way cutscene beats do) is still an open call, not
-decided. Depends on the ending sprite actually existing (no ending art
-yet) and is a good candidate to revisit alongside the character-data/stat
-math conversation, since a stronger judgment visual probably wants to
-reflect final stat values, not just the Truth Debt tier.
+**Phase 1 — judgment beat.** A silent, full-bleed procedural pattern
+(`ui/emotionPattern.js`, the same complement-hue renderer the dialog
+scene's reaction reveal uses — extended to take any `key`, not just a
+FEELZ emotion, so it now also has hue mappings for the four ending keys)
+seeded by the ending key itself, so a given ending always shows the same
+pattern across replays. Auto-advances to phase 2 after ~900ms, or a tap
+anywhere skips ahead immediately. The dramatic flash/shake/sting
+(`ENDING_INTENSITY`) fires at mount, i.e. right as this phase appears.
+
+**Phase 2 — typewriter text.** Title renders instantly (a banner, not
+part of the draw); the ending's body text plus the epilogue line (see
+`STAT_MATH.md`) are joined into one block and typewriter-drawn together
+(`ui/typewriterText.js`). A tap while drawing finishes it instantly. The
+"BACK TO MENU" button only appears once the text is fully drawn — no
+premature exit mid-reveal.
+
+Resolved open questions from the original plan: real ending art still
+doesn't exist, so the judgment beat uses the same procedural placeholder
+pattern as everywhere else rather than blocking on real sprites. The
+skip gesture is single-tap (not double-tap) for consistency with every
+other tap-to-finish interaction in the game (cutscene beats, dialog
+reactions).
 
 ### `cutscene` (`src/scenes/cutsceneScene.js`)
 

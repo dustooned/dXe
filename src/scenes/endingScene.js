@@ -5,6 +5,8 @@
 //
 // scene shape: { type: 'ending', id: string, endings: <endings.json> }
 import { getEndingKey, getEpilogueStat } from '../engine/endingEngine.js';
+import { drawEmotionPattern } from '../ui/emotionPattern.js';
+import { createTypewriter } from '../ui/typewriterText.js';
 import * as fx from '../shell/fx.js';
 import * as audio from '../shell/audio.js';
 
@@ -17,55 +19,97 @@ const ENDING_INTENSITY = {
   LIVING_LIE: 'strong',
 };
 
+const JUDGMENT_BEAT_MS = 900;
+
 export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
   const endingKey = getEndingKey(run.get().truthDebt);
   const ending = scene.endings[endingKey];
   recordEnding?.(chapterId, endingKey);
+
+  const finalDebt = run.get().truthDebt;
+  const epilogueStat = getEpilogueStat(run.get());
+  const epilogueLine = scene.endings.epilogues?.[epilogueStat];
 
   const intensity = ENDING_INTENSITY[endingKey] ?? 'weak';
   fx.flash(intensity);
   fx.shake(intensity);
   audio.playHit(intensity);
 
-  stageEl.innerHTML = '';
-  const screen = document.createElement('div');
-  screen.className = 'dx-screen dx-ending-screen';
+  let typewriter = null;
+  let judgmentTimer = null;
 
-  const title = document.createElement('h2');
-  title.className = 'dx-title';
-  title.textContent = ending.title;
-  screen.appendChild(title);
+  function renderJudgment() {
+    stageEl.innerHTML = '';
+    const screen = document.createElement('div');
+    screen.className = 'dx-screen dx-ending-judgment-screen';
+    screen.addEventListener('click', skipJudgment, { once: true });
 
-  const debtLine = document.createElement('p');
-  debtLine.className = 'dx-text';
-  debtLine.textContent = `Final Truth Debt: ${run.get().truthDebt}`;
-  screen.appendChild(debtLine);
+    const canvas = document.createElement('canvas');
+    canvas.className = 'dx-pattern-bg';
+    screen.appendChild(canvas);
 
-  ending.text.forEach((line) => {
-    const p = document.createElement('p');
-    p.className = 'dx-text';
-    p.textContent = line;
-    screen.appendChild(p);
-  });
+    stageEl.appendChild(screen);
+    drawEmotionPattern(canvas, { seedStr: endingKey, key: endingKey });
 
-  const epilogueStat = getEpilogueStat(run.get());
-  const epilogueLine = scene.endings.epilogues?.[epilogueStat];
-  if (epilogueLine) {
-    const p = document.createElement('p');
-    p.className = 'dx-text dx-epilogue';
-    p.textContent = epilogueLine;
-    screen.appendChild(p);
+    judgmentTimer = setTimeout(showText, JUDGMENT_BEAT_MS);
   }
 
-  const btn = document.createElement('button');
-  btn.className = 'dx-btn';
-  btn.textContent = 'BACK TO MENU';
-  btn.addEventListener('click', () => exit());
-  screen.appendChild(btn);
+  function skipJudgment() {
+    clearTimeout(judgmentTimer);
+    showText();
+  }
 
-  stageEl.appendChild(screen);
+  function showText() {
+    clearTimeout(judgmentTimer);
+    stageEl.innerHTML = '';
+    const screen = document.createElement('div');
+    screen.className = 'dx-screen dx-ending-screen';
+    screen.addEventListener('click', handleTextTap);
+
+    const title = document.createElement('h2');
+    title.className = 'dx-title';
+    title.textContent = ending.title;
+    screen.appendChild(title);
+
+    const debtLine = document.createElement('p');
+    debtLine.className = 'dx-text';
+    debtLine.textContent = `Final Truth Debt: ${finalDebt}`;
+    screen.appendChild(debtLine);
+
+    const textEl = document.createElement('p');
+    textEl.className = 'dx-text dx-ending-body';
+    screen.appendChild(textEl);
+
+    stageEl.appendChild(screen);
+
+    const fullText = [...ending.text, epilogueLine].filter(Boolean).join('\n\n');
+    typewriter = createTypewriter(textEl, fullText, {
+      onDone: () => appendMenuButton(screen),
+    });
+  }
+
+  function handleTextTap() {
+    if (typewriter && !typewriter.isDone()) {
+      typewriter.finish();
+    }
+  }
+
+  function appendMenuButton(screen) {
+    const btn = document.createElement('button');
+    btn.className = 'dx-btn';
+    btn.textContent = 'BACK TO MENU';
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      exit();
+    });
+    screen.appendChild(btn);
+  }
+
+  renderJudgment();
 
   return function unmount() {
+    clearTimeout(judgmentTimer);
+    typewriter?.destroy();
     stageEl.innerHTML = '';
   };
 }
