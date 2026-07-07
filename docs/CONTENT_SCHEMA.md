@@ -103,14 +103,15 @@ them:
 {
   "CLEAN_CUT": {
     "title": "CLEAN CUT",
-    "range": "Debt 0–3",
+    "range": "Debt 0–2",
     "text": ["line one", "line two"]
   }
 }
 ```
 
 Ending key is chosen by final Truth Debt — see `getEndingKey()` in
-`src/engine/endingEngine.js` for the current thresholds (0–3 / 4–6 / 7+).
+`src/engine/endingEngine.js` for the current thresholds (0–2 CLEAN_CUT /
+3–5 FUNCTIONAL_MASK / 6–7 COLLAPSE / 8–10 LIVING_LIE).
 
 ## Adding a new NPC or branch
 

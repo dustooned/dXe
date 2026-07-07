@@ -14,10 +14,11 @@ UI framework, Vite for dev/build only.
 ## What's actually playable right now
 
 One chapter: **Truth Debt: Lake Ulysses**. Title screen -> chapter menu
--> About/Contact -> Deborah -> Rwanda -> Samun (dialog, swipe truth/lie)
--> Reckoning (confess or double down on your lies) -> one of three
-endings based on final Truth Debt. Progress (which endings you've seen)
-persists in `localStorage`.
+-> About/Contact -> Prologue (typewriter-drawn narrative cutscene) ->
+Deborah -> Rwanda -> Samun -> Rick (dialog, swipe truth/lie) -> Reckoning
+(confess or double down on your lies) -> one of four endings (Clean Cut /
+Functional Mask / Collapse / Living Lie) based on final Truth Debt.
+Progress (which endings you've seen) persists in `localStorage`.
 
 This is the *reduced demo scope* from the original design docs, not the
 full vision — see "What was deliberately cut" below.
@@ -81,13 +82,12 @@ Concept.pdf`, `DreamXtreme Game Design Document v2.pdf`) and two large
 Underground" — 9 social classes, phone-battery health system, Frogger
 traffic navigation, a dozen mini-games) that was explicitly shelved in
 favor of something smaller and shippable. `DX Bible.md` and
-`DX_DEMO_BUILD_SPEC.md` are the source of what's actually built. Two
-things from even those docs aren't in yet:
+`DX_DEMO_BUILD_SPEC.md` are the source of what's actually built. The demo
+spec originally scoped the build down to 3 NPCs and 2–3 endings; Rick
+(the biker bar, 4th NPC location) and the **Collapse** ending have since
+been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
+4-ending set. What's still not in:
 
-- **Rick / the biker bar** (4th NPC location) and the **Collapse**
-  ending — `DX Bible.md` describes 4 NPCs and 4 endings; the demo spec
-  explicitly scoped the demo down to 3 NPCs and 2–3 endings, which is
-  what's built.
 - **The FEELZ Dartboard** (`DX MECHANICS.md`) — a much richer
   emotion-zone-mapping system than the 3-button picker in the demo. The
   current FEELZ wheel is a placeholder UI wired to the same node data

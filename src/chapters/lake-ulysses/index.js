@@ -10,6 +10,7 @@ import prologue from './content/prologue.json';
 import deborah from './content/deborah.json';
 import rwanda from './content/rwanda.json';
 import samun from './content/samun.json';
+import rick from './content/rick.json';
 import endings from './content/endings.json';
 
 export const id = 'lake-ulysses';
@@ -24,6 +25,7 @@ const SCENES = [
   { type: 'dialog', id: 'deborah', npc: deborah },
   { type: 'dialog', id: 'rwanda', npc: rwanda },
   { type: 'dialog', id: 'samun', npc: samun },
+  { type: 'dialog', id: 'rick', npc: rick },
   { type: 'reckoning', id: 'reckoning' },
   { type: 'ending', id: 'ending', endings },
 ];

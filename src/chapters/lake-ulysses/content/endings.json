@@ -1,7 +1,7 @@
 {
   "CLEAN_CUT": {
     "title": "CLEAN CUT",
-    "range": "Debt 0–3",
+    "range": "Debt 0–2",
     "text": [
       "The lake is closed again.",
       "Downtown is half-boarded, but the water is finally clearing.",
@@ -12,7 +12,7 @@
   },
   "FUNCTIONAL_MASK": {
     "title": "FUNCTIONAL MASK",
-    "range": "Debt 4–6",
+    "range": "Debt 3–5",
     "text": [
       "The lake reopens under enhanced monitoring.",
       "Frothy PR videos. Carefully worded advisories.",
@@ -21,9 +21,20 @@
       "Reality and branding hold an uneasy truce."
     ]
   },
+  "COLLAPSE": {
+    "title": "COLLAPSE",
+    "range": "Debt 6–7",
+    "text": [
+      "The sirens go off at dusk and don't stop.",
+      "Dead fish wash up faster than anyone can count them.",
+      "Someone's lie meets someone else's lie at the shoreline, and neither one holds.",
+      "Lake Ulysses doesn't reopen. It doesn't stay closed either.",
+      "Nobody's in charge of what happens next."
+    ]
+  },
   "LIVING_LIE": {
     "title": "LIVING LIE",
-    "range": "Debt 7–10",
+    "range": "Debt 8–10",
     "text": [
       "The lake reopens under enhanced monitoring.",
       "Influencers pose near green water.",

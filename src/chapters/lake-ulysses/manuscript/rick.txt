@@ -1,0 +1,63 @@
+NPC: RICK
+LOCATION: 5
+ACCENT: var(--color-rick)
+
+=== rick_01
+PROMPT: Guy looked at me wrong outside. Now he's got a busted jaw and I got my patch back. That's just how it works out here.
+FEELZ: Anger, Fear, Anticipation
+
+-- TRUTH
+SAY: That's not how it works. You just wanted a reason.
+REACT: His jaw tightens. For a second something moves behind his eyes — then it's gone, replaced by a sneer.
+EFFECTS: integrity+2 lucidity+1 stability-2 trust-2
+DEBT: 0
+NEXT: rick_02_confronted
+
+-- LIE
+SAY: You did what you had to. Anybody would've.
+REACT: He nods slow, like you just confirmed something he needed confirmed. "Damn right."
+EFFECTS: integrity-2 stability+3 trust+2
+DEBT: +4
+TAGS: Violence, Masculinity
+LEDGER: You told Rick that beating a man half to death was just how it works.
+NEXT: rick_02_enabled
+
+=== rick_02_enabled
+PROMPT: See, that's why I run with guys like you. Most people get soft, start asking questions.
+FEELZ: Anger, Fear, Anticipation
+
+-- TRUTH
+SAY: Maybe the questions are the only thing keeping you human.
+REACT: He goes still. The bar noise seems to get louder around the silence.
+EFFECTS: integrity+2 lucidity+2 trust-2
+DEBT: 0
+NEXT: (end)
+
+-- LIE
+SAY: Questions are for people who can't back it up. You can.
+REACT: He grins wide, claps you on the shoulder hard enough to bruise. "That's the truth right there."
+EFFECTS: integrity-1 stability+2 trust+2
+DEBT: +3
+TAGS: Masculinity, Loyalty
+LEDGER: You told Rick that violence was proof, not a problem.
+NEXT: (end)
+
+=== rick_02_confronted
+PROMPT: You don't get to judge me. You don't know what it costs to keep this patch.
+FEELZ: Anger, Fear, Anticipation
+
+-- TRUTH
+SAY: What's it cost, Rick? Who's it for? Who are you trying to prove this to?
+REACT: Something cracks in his face — not anger this time. For a second he looks like he might actually answer. Then he doesn't.
+EFFECTS: integrity+3 lucidity+2 stability-1 trust-1
+DEBT: 0
+NEXT: (end)
+
+-- LIE
+SAY: You're right. It's not my place.
+REACT: He exhales, relieved, and the wall goes back up brick by brick. "Damn right it's not."
+EFFECTS: integrity-2 stability+1 trust+1
+DEBT: +2
+TAGS: Masculinity
+LEDGER: You backed off Rick right as he almost let something show.
+NEXT: (end)

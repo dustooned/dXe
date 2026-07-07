@@ -13,6 +13,7 @@ import * as audio from '../shell/audio.js';
 const ENDING_INTENSITY = {
   CLEAN_CUT: 'weak',
   FUNCTIONAL_MASK: 'weak',
+  COLLAPSE: 'strong',
   LIVING_LIE: 'strong',
 };
 

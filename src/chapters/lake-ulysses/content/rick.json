@@ -1,0 +1,134 @@
+{
+  "npc": "RICK",
+  "location": 5,
+  "accentColor": "var(--color-rick)",
+  "nodes": {
+    "rick_01": {
+      "id": "rick_01",
+      "npc": "RICK",
+      "location": 5,
+      "prompt": "Guy looked at me wrong outside. Now he's got a busted jaw and I got my patch back. That's just how it works out here.",
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
+      "swipes": {
+        "truth": {
+          "playerText": "That's not how it works. You just wanted a reason.",
+          "npcReaction": "His jaw tightens. For a second something moves behind his eyes — then it's gone, replaced by a sneer.",
+          "effects": {
+            "integrity": 2,
+            "lucidity": 1,
+            "stability": -2,
+            "trust": -2
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": "rick_02_confronted"
+        },
+        "lie": {
+          "playerText": "You did what you had to. Anybody would've.",
+          "npcReaction": "He nods slow, like you just confirmed something he needed confirmed. \"Damn right.\"",
+          "effects": {
+            "integrity": -2,
+            "stability": 3,
+            "trust": 2
+          },
+          "debtDelta": 4,
+          "tags": [
+            "Violence",
+            "Masculinity"
+          ],
+          "ledgerEntry": "You told Rick that beating a man half to death was just how it works.",
+          "nextNodeId": "rick_02_enabled"
+        }
+      }
+    },
+    "rick_02_enabled": {
+      "id": "rick_02_enabled",
+      "npc": "RICK",
+      "location": 5,
+      "prompt": "See, that's why I run with guys like you. Most people get soft, start asking questions.",
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
+      "swipes": {
+        "truth": {
+          "playerText": "Maybe the questions are the only thing keeping you human.",
+          "npcReaction": "He goes still. The bar noise seems to get louder around the silence.",
+          "effects": {
+            "integrity": 2,
+            "lucidity": 2,
+            "trust": -2
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": null
+        },
+        "lie": {
+          "playerText": "Questions are for people who can't back it up. You can.",
+          "npcReaction": "He grins wide, claps you on the shoulder hard enough to bruise. \"That's the truth right there.\"",
+          "effects": {
+            "integrity": -1,
+            "stability": 2,
+            "trust": 2
+          },
+          "debtDelta": 3,
+          "tags": [
+            "Masculinity",
+            "Loyalty"
+          ],
+          "ledgerEntry": "You told Rick that violence was proof, not a problem.",
+          "nextNodeId": null
+        }
+      }
+    },
+    "rick_02_confronted": {
+      "id": "rick_02_confronted",
+      "npc": "RICK",
+      "location": 5,
+      "prompt": "You don't get to judge me. You don't know what it costs to keep this patch.",
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
+      "swipes": {
+        "truth": {
+          "playerText": "What's it cost, Rick? Who's it for? Who are you trying to prove this to?",
+          "npcReaction": "Something cracks in his face — not anger this time. For a second he looks like he might actually answer. Then he doesn't.",
+          "effects": {
+            "integrity": 3,
+            "lucidity": 2,
+            "stability": -1,
+            "trust": -1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": null
+        },
+        "lie": {
+          "playerText": "You're right. It's not my place.",
+          "npcReaction": "He exhales, relieved, and the wall goes back up brick by brick. \"Damn right it's not.\"",
+          "effects": {
+            "integrity": -2,
+            "stability": 1,
+            "trust": 1
+          },
+          "debtDelta": 2,
+          "tags": [
+            "Masculinity"
+          ],
+          "ledgerEntry": "You backed off Rick right as he almost let something show.",
+          "nextNodeId": null
+        }
+      }
+    }
+  }
+}
