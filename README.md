@@ -48,6 +48,9 @@ Docs, in the order you'll want them:
   format, what the stats mean, and the asset folder convention.
 - [`docs/SCRIPT_FORMAT.md`](docs/SCRIPT_FORMAT.md) — the plain-text
   manuscript format for writing dialog without touching JSON.
+- [`docs/STAT_MATH.md`](docs/STAT_MATH.md) — the math layered on top of
+  the stats (Emotional Lean, the ending epilogue), and why it stays
+  simple on purpose.
 
 ## Deploying
 
