@@ -72,6 +72,21 @@ Terminal. Picks an ending by final Truth Debt, records it, calls `exit`
 { "type": "ending", "id": "ending", "endings": /* endings.json */ }
 ```
 
+**Planned enhancement — a judgment beat before the text.** Currently the
+ending's title/text/flash all land at once. The intended richer version:
+open on a silent beat — an ending-specific sprite/visual result (the
+"judgment" moment, seen before it's explained) — then typewriter-draw the
+ending description underneath it, reusing `ui/typewriterText.js` (same
+component the Prologue uses) rather than the instant-text currently in
+`endingScene.js`. Player can skip the draw to reveal the full text at
+once, same instant-finish idea as cutscene beats — exact input for that
+(tap vs. double-tap, given the ending screen doesn't need tap reserved
+for "advance" the way cutscene beats do) is still an open call, not
+decided. Depends on the ending sprite actually existing (no ending art
+yet) and is a good candidate to revisit alongside the character-data/stat
+math conversation, since a stronger judgment visual probably wants to
+reflect final stat values, not just the Truth Debt tier.
+
 ### `cutscene` (`src/scenes/cutsceneScene.js`)
 
 Pure narrative beats — worldbuilding, the moment before a chapter's first
