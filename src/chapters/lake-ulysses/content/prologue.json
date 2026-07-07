@@ -1,10 +1,23 @@
 {
   "beats": [
-    { "text": "Lake Ulysses. Three thousand acres, they call it. A jewel." },
+    {
+      "text": "Lake Ulysses. Three thousand acres, they call it. A jewel.",
+      "image": "/assets/lake-ulysses/backgrounds/prologue-lake.svg"
+    },
     { "text": "{slow}The water looks fine today.{/slow}" },
     { "text": "It always does. Right before it isn't." },
     { "text": "{pause:400}You wake up on the shoulder of Lakeshore Drive.{pause:300} Ears ringing. Clothes damp." },
     { "text": "No pain.{pause:300} Except the ringing." },
+    {
+      "text": "Your head throbs.",
+      "interactive": {
+        "type": "choice",
+        "options": [
+          { "label": "Get up.", "nextBeat": 6 },
+          { "label": "Stay down a little longer.", "nextBeat": 6 }
+        ]
+      }
+    },
     { "text": "Your phone buzzes against the gravel." }
   ]
 }

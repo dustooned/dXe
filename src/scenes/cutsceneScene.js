@@ -1,15 +1,17 @@
 // Scene type: 'cutscene'. Sequences a list of narrative beats, each drawn
 // with the typewriter effect. Tap while drawing to finish the line
 // instantly; tap again (or wait, for a timed beat) to continue. See
-// docs/SCENE_TYPES.md for the beat shape and speed-markup syntax.
+// docs/SCENE_TYPES.md for the full beat shape, speed-markup syntax, and
+// the interactive-choice contract.
 //
-// scene shape: { type: 'cutscene', id: string, beats: [{ text, autoAdvanceMs? }] }
+// scene shape: { type: 'cutscene', id: string, beats: [{ text?, image?, autoAdvanceMs?, interactive? }] }
 import { createTypewriter } from '../ui/typewriterText.js';
 
 export function mount(stageEl, scene, { onComplete }) {
   let beatIndex = 0;
   let typewriter = null;
   let autoAdvanceTimer = null;
+  let currentTextBox = null;
 
   function currentBeat() {
     return scene.beats[beatIndex];
@@ -18,30 +20,51 @@ export function mount(stageEl, scene, { onComplete }) {
   function render() {
     clearTimeout(autoAdvanceTimer);
     stageEl.innerHTML = '';
+    typewriter = null;
+
+    const beat = currentBeat();
 
     const screen = document.createElement('div');
     screen.className = 'dx-screen dx-cutscene-screen';
     screen.addEventListener('click', handleTap);
 
+    if (beat.image) {
+      const img = document.createElement('img');
+      img.className = 'dx-cutscene-bg';
+      img.src = beat.image;
+      img.alt = '';
+      screen.appendChild(img);
+    }
+
     const textBox = document.createElement('div');
     textBox.className = 'dx-cutscene-textbox';
-
-    const textEl = document.createElement('p');
-    textEl.className = 'dx-text dx-cutscene-text';
-    textBox.appendChild(textEl);
-
+    currentTextBox = textBox;
     screen.appendChild(textBox);
+
     stageEl.appendChild(screen);
 
+    if (beat.text) {
+      const textEl = document.createElement('p');
+      textEl.className = 'dx-text dx-cutscene-text';
+      textBox.appendChild(textEl);
+      typewriter = createTypewriter(textEl, beat.text, { onDone: handleBeatReady });
+    } else {
+      handleBeatReady();
+    }
+  }
+
+  // Called once a beat's text (if any) has fully drawn — or immediately
+  // for a beat with no text at all (a pure image/choice beat).
+  function handleBeatReady() {
     const beat = currentBeat();
-    typewriter = createTypewriter(textEl, beat.text, {
-      onDone: () => {
-        showContinueArrow(textBox);
-        if (beat.autoAdvanceMs != null) {
-          autoAdvanceTimer = setTimeout(advance, beat.autoAdvanceMs);
-        }
-      },
-    });
+    if (beat.interactive) {
+      showChoices(currentTextBox, beat.interactive);
+    } else {
+      showContinueArrow(currentTextBox);
+      if (beat.autoAdvanceMs != null) {
+        autoAdvanceTimer = setTimeout(advance, beat.autoAdvanceMs);
+      }
+    }
   }
 
   function showContinueArrow(textBox) {
@@ -51,12 +74,45 @@ export function mount(stageEl, scene, { onComplete }) {
     textBox.appendChild(arrow);
   }
 
-  function handleTap() {
-    if (!typewriter.isDone()) {
-      typewriter.finish();
+  function showChoices(textBox, interactive) {
+    const choices = document.createElement('div');
+    choices.className = 'dx-cutscene-choices';
+    interactive.options.forEach((option) => {
+      const btn = document.createElement('button');
+      btn.className = 'dx-btn';
+      btn.textContent = option.label;
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        resolveChoice(option);
+      });
+      choices.appendChild(btn);
+    });
+    textBox.appendChild(choices);
+  }
+
+  function resolveChoice(option) {
+    if (option.jumpTo) {
+      onComplete({ jumpTo: option.jumpTo });
+      return;
+    }
+    if (option.nextBeat != null) {
+      beatIndex = option.nextBeat;
+      render();
       return;
     }
     advance();
+  }
+
+  // A tap never resolves a choice — only clicking a specific option does,
+  // so a stray tap can't skip past a deliberate decision.
+  function handleTap() {
+    if (typewriter && !typewriter.isDone()) {
+      typewriter.finish();
+      return;
+    }
+    if (!currentBeat().interactive) {
+      advance();
+    }
   }
 
   function advance() {

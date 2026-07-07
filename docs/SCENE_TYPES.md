@@ -135,13 +135,41 @@ Inline speed markup, usable in any beat's `text` for dramatic pacing:
 | `{fast}...{/fast}` | that stretch reveals faster than normal |
 | `{pause:250}` | a dramatic beat — no character revealed, just a 250ms gap |
 
-**Not built yet:** a beat with an `image`/background, and `interactive`
-beats (a choice, a timed tap, a drag — the "player controls it
-occasionally" case) that pause the sequence for input mid-cutscene. Both
-are natural extensions of the same beat array once there's real content
-that needs them — an interactive beat would call `onComplete({ jumpTo })`
-if a choice should branch the rest of the chapter, same mechanism
-`dialogScene` already uses for the debt-threshold jump to Reckoning.
+**Background beat (`image`).** A beat can carry an `image` (a path
+string, e.g. `/assets/lake-ulysses/backgrounds/prologue-lake.svg`),
+rendered full-bleed behind the text box (`object-fit: cover`). `text` is
+optional when `image` is set — a beat can be a pure visual moment with no
+line at all. First real use: the Prologue's opening beat, currently a
+labeled placeholder SVG (no real art yet — same "reuse a cheap procedural
+or hand-made placeholder rather than block on real assets" pattern used
+everywhere else in the game).
+
+**Interactive beat (`interactive`).** A beat can carry
+`{ interactive: { type: 'choice', options: [...] } }` instead of (or
+alongside) `text` — if `text` is present it draws first, and the choice
+only appears once that's fully drawn; with no `text` the choice shows
+immediately. Each option is `{ label, nextBeat?, jumpTo? }`:
+
+- `nextBeat` — a beat *index* within this same cutscene's `beats` array
+  to jump to (lets a choice branch within one cutscene without needing a
+  full node-graph like dialog nodes have).
+- `jumpTo` — a different *scene* id to leave the cutscene entirely,
+  exactly the same mechanism `dialogScene` uses for the debt-threshold
+  jump to Reckoning (`onComplete({ jumpTo })`).
+- Neither — just advances to the next beat in sequence, same as normal.
+
+A tap never resolves a choice, only clicking a specific option does — a
+stray tap while choice buttons are showing does nothing, so it can't
+accidentally skip a deliberate decision. First real use: a small
+"Get up. / Stay down a little longer." beat near the end of the
+Prologue — both options currently lead to the same next beat (the
+mechanism doesn't need divergent content to prove it resolves correctly;
+narrative branching here is a content decision for later, not a
+technical blocker).
+
+Only `type: 'choice'` exists. A timed-tap or drag interactive type is a
+natural extension of the same `interactive` field (a different `type`
+value) whenever there's real content that needs one.
 
 ## Planned types (not built yet — build when there's real content for them)
 
