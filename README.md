@@ -4,6 +4,8 @@ An episodic interactive zine. Each chapter is a self-contained short
 story played with a swipe, tap, or click — mouse and touch both work the
 same way. Native JS, no UI framework, deployed as a static site.
 
+Live at **[dreamxtre.me](https://dreamxtre.me)**.
+
 ## Quick start
 
 ```bash
@@ -40,9 +42,10 @@ Docs, in the order you'll want them:
 ## Deploying
 
 Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds
-with Vite and publishes `dist/` to GitHub Pages. To use a custom domain,
-add a `public/CNAME` file containing just the domain name — it'll be
-included in the build automatically.
+with Vite and publishes `dist/` to GitHub Pages. The custom domain is set
+via `public/CNAME` (already in the repo), which Vite carries into every
+build automatically.
 
-**GitHub Pages setup (one-time):** in the repo's Settings → Pages, set
-Source to "GitHub Actions".
+Already set up for this repo; see `docs/HANDOFF.md`'s "Deployment"
+section for the full GitHub Pages + GoDaddy DNS configuration if you ever
+need to reproduce or debug it (e.g. on a repo transfer or a new domain).

@@ -89,10 +89,37 @@ things from even those docs aren't in yet:
   `CONTENT_SCHEMA.md`.
 - No cutscene or mini-game content exists yet, though the engine has a
   slot for both (`SCENE_TYPES.md`).
-- Not yet a git repository, not yet deployed. `.github/workflows/deploy.yml`
-  is ready to go once pushed to GitHub with Pages source set to "GitHub
-  Actions." `public/CNAME` isn't created — needs the actual registered
-  domain.
+
+## Deployment
+
+Live at **dreamxtre.me**, hosted on GitHub Pages from
+[github.com/dustooned/dXe](https://github.com/dustooned/dXe), domain
+registered on GoDaddy. This took a real back-and-forth to get right, so
+the working configuration is recorded here rather than left as tribal
+knowledge:
+
+- **Repo settings → Pages → Source** must be **"GitHub Actions"**, not
+  the default "Deploy from a branch." The default mode serves the repo's
+  raw files as-is, which doesn't work here — the source imports JSON
+  directly (`import deborah from './content/deborah.json'`), which only
+  resolves correctly after Vite's build step. `.github/workflows/deploy.yml`
+  runs that build and publishes `dist/` via `actions/deploy-pages`.
+- **Repo settings → Pages → Custom domain** is set to `dreamxtre.me`.
+  This requires an actual successful Actions run to exist *before* the
+  domain check can pass — GitHub's custom-domain verification checks that
+  a live Pages deployment exists to route to, not just that DNS resolves.
+  If DNS is confirmed correct but the settings page still shows
+  `NotServedByPagesError`, check the Actions tab for a green run first.
+- **GoDaddy DNS** for the apex (`@`) is four `A` records pointing at
+  GitHub Pages' IPs (`185.199.108.153`, `.109.153`, `.110.153`,
+  `.111.153`); the `www` CNAME points to `dustooned.github.io.` (not to
+  the apex — GitHub's own recommendation, so `www` redirects cleanly).
+  `public/CNAME` in this repo already contains `dreamxtre.me`, so the
+  Vite build carries it into every deploy automatically.
+- HTTPS enforcement lags behind DNS verification — GitHub only issues the
+  certificate for the custom domain after its DNS check passes, which can
+  take a bit even after DNS has actually propagated. `http://dreamxtre.me`
+  will work before `https://` does.
 
 ## Running it
 
