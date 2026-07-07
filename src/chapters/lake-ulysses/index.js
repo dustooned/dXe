@@ -7,6 +7,7 @@ import * as reckoningScene from '../../scenes/reckoningScene.js';
 import * as endingScene from '../../scenes/endingScene.js';
 
 import prologue from './content/prologue.json';
+import therapist from './content/therapist.json';
 import deborah from './content/deborah.json';
 import rwanda from './content/rwanda.json';
 import samun from './content/samun.json';
@@ -22,6 +23,7 @@ export const title = 'Truth Debt: Lake Ulysses';
 // is just another entry here — see docs/SCENE_TYPES.md.
 const SCENES = [
   { type: 'cutscene', id: 'prologue', beats: prologue.beats },
+  { type: 'dialog', id: 'therapist', npc: therapist },
   { type: 'dialog', id: 'deborah', npc: deborah },
   { type: 'dialog', id: 'rwanda', npc: rwanda },
   { type: 'dialog', id: 'samun', npc: samun },

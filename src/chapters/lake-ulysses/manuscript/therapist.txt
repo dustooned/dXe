@@ -1,0 +1,23 @@
+NPC: THERAPIST
+LOCATION: 1
+ACCENT: var(--color-therapist)
+
+=== therapist_01
+PROMPT: The screen lights up. A voice, tired but warm, cuts through the ringing in your ears. "You're still there? Okay. Good. What happened in the dream?"
+FEELZ: Anger, Fear, Anticipation
+
+-- TRUTH
+SAY: I don't know. Water. Something underneath it. I couldn't breathe.
+REACT: A pause. Then, quieter: "Thank you for telling me that. Most people give me the short version." You hear a chart open somewhere on her end — a soft click, and a sigh she didn't mean to let through.
+EFFECTS: integrity+2 lucidity+2 stability-1 trust+2
+DEBT: 0
+NEXT: (end)
+
+-- LIE
+SAY: Nothing, really. I don't remember.
+REACT: "Mm-hm." A pause just a beat too long. "We can leave it there for today." Faintly, another call is already waiting on her line.
+EFFECTS: integrity-1 stability+1 trust-1
+DEBT: +1
+TAGS: Denial
+LEDGER: You told your therapist you didn't remember the dream.
+NEXT: (end)

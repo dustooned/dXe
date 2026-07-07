@@ -1,0 +1,49 @@
+{
+  "npc": "THERAPIST",
+  "location": 1,
+  "accentColor": "var(--color-therapist)",
+  "nodes": {
+    "therapist_01": {
+      "id": "therapist_01",
+      "npc": "THERAPIST",
+      "location": 1,
+      "prompt": "The screen lights up. A voice, tired but warm, cuts through the ringing in your ears. \"You're still there? Okay. Good. What happened in the dream?\"",
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
+      "swipes": {
+        "truth": {
+          "playerText": "I don't know. Water. Something underneath it. I couldn't breathe.",
+          "npcReaction": "A pause. Then, quieter: \"Thank you for telling me that. Most people give me the short version.\" You hear a chart open somewhere on her end — a soft click, and a sigh she didn't mean to let through.",
+          "effects": {
+            "integrity": 2,
+            "lucidity": 2,
+            "stability": -1,
+            "trust": 2
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": null
+        },
+        "lie": {
+          "playerText": "Nothing, really. I don't remember.",
+          "npcReaction": "\"Mm-hm.\" A pause just a beat too long. \"We can leave it there for today.\" Faintly, another call is already waiting on her line.",
+          "effects": {
+            "integrity": -1,
+            "stability": 1,
+            "trust": -1
+          },
+          "debtDelta": 1,
+          "tags": [
+            "Denial"
+          ],
+          "ledgerEntry": "You told your therapist you didn't remember the dream.",
+          "nextNodeId": null
+        }
+      }
+    }
+  }
+}

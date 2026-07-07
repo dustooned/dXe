@@ -15,10 +15,13 @@ UI framework, Vite for dev/build only.
 
 One chapter: **Truth Debt: Lake Ulysses**. Title screen -> chapter menu
 -> About/Contact -> Prologue (typewriter-drawn narrative cutscene) ->
-Deborah -> Rwanda -> Samun -> Rick (dialog, swipe truth/lie) -> Reckoning
-(confess or double down on your lies) -> one of four endings (Clean Cut /
-Functional Mask / Collapse / Living Lie) based on final Truth Debt.
-Progress (which endings you've seen) persists in `localStorage`.
+Therapist (location 1 — the tutorial NPC, a single swipe exchange, no
+in-fiction explanation of mechanics; teaches truth/lie purely by playing
+it) -> Deborah -> Rwanda -> Samun -> Rick (dialog, swipe truth/lie) ->
+Reckoning (confess or double down on your lies) -> one of four endings
+(Clean Cut / Functional Mask / Collapse / Living Lie) based on final
+Truth Debt. Progress (which endings you've seen) persists in
+`localStorage`.
 
 This is the *reduced demo scope* from the original design docs, not the
 full vision — see "What was deliberately cut" below.
@@ -114,9 +117,13 @@ Roughly in order of how ready each one is to just start:
 - ~~Ending judgment beat~~ — done (`SCENE_TYPES.md`'s `ending` section).
 - ~~Meter-gated branching~~ — done, first use on Rick (`STAT_MATH.md`).
   Extending it to more NPCs/stats is pure content now, same pattern.
-- **More depth in Lake Ulysses** — additional dialog branches, possibly a
-  Bandlands tutorial beat before the Prologue. Pure content through the
-  manuscript pipeline, no engine changes.
+- ~~Bandlands tutorial beat~~ — done: Therapist, location 1, right after
+  the Prologue. A single swipe exchange (the FEELZ-app/dream-recall
+  moment from `DX Bible.md`'s opening sequence), teaching truth/lie
+  purely by playing it — no in-fiction explanation of mechanics, on
+  purpose.
+- **More depth in Lake Ulysses** — additional dialog branches on existing
+  NPCs. Pure content through the manuscript pipeline, no engine changes.
 - **FEELZ Dartboard** (`DX MECHANICS.md`) — the richer emotion-zone
   system, replacing the current 3-button placeholder wheel.
 
@@ -125,6 +132,11 @@ Roughly in order of how ready each one is to just start:
   (proven by how cheaply `cutscene` slotted in); still no concrete
   concept. Best candidate so far: a point-A-to-B explore beat in
   Deborah's condo hallway.
+- **Hint system ("eventually," per the user)** — a callable check-in
+  (plausibly another Therapist call, given the character now exists)
+  that surfaces *one* hint about which way the player's currently
+  leaning — reads current stats/Truth Debt, doesn't state numbers.
+  Explicitly not scoped for now; noted here so it isn't lost.
 
 **Needs something from outside this repo:**
 - Real art/audio assets — folders are ready (`public/assets/`), nothing's
