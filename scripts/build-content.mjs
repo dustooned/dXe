@@ -8,6 +8,16 @@ import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 const STAT_PATTERN = /^(integrity|trust|stability|lucidity)([+-]\d+)$/;
+const GATE_PATTERN = /^(integrity|trust|stability|lucidity)\s*(<=|>=|<|>)\s*(\d+)\s*->\s*(\S+)$/;
+
+function parseGate(line, fileName, lineNumber) {
+  const match = line.trim().match(GATE_PATTERN);
+  if (!match) {
+    throw new Error(`${fileName}:${lineNumber}: bad GATE line "${line}"`);
+  }
+  const [, stat, op, value, elseNodeId] = match;
+  return { stat, op, value: Number(value), elseNodeId };
+}
 
 function parseEffects(line, fileName, lineNumber) {
   const effects = {};
@@ -79,6 +89,8 @@ function parseManuscript(text, fileName) {
         .split(',')
         .map((s) => s.trim())
         .filter(Boolean);
+    } else if (line.startsWith('GATE:')) {
+      currentNode.gate = parseGate(line.slice(5), fileName, lineNumber);
     } else if (line.startsWith('--')) {
       commitEdge();
       const label = line.replace(/^-+/, '').trim().toLowerCase();

@@ -68,3 +68,25 @@ export function resolveCard(state, node, swipeKey, emotion) {
     patch: { ...statPatch, truthDebt, ledger },
   };
 }
+
+const GATE_COMPARATORS = {
+  '<': (a, b) => a < b,
+  '<=': (a, b) => a <= b,
+  '>': (a, b) => a > b,
+  '>=': (a, b) => a >= b,
+};
+
+// Meter-gated branching (docs/STAT_MATH.md): a node can carry an opt-in
+// `gate` — if its condition is met, redirect to `gate.elseNodeId` instead
+// of showing this node. Nodes without a `gate` are returned unchanged, so
+// this is a no-op for all existing content until a node explicitly opts
+// in. Called with the node id you *intended* to show; returns the id you
+// should actually show.
+export function resolveGatedNode(nodeId, npc, state) {
+  const node = npc.nodes[nodeId];
+  const gate = node?.gate;
+  if (!gate) return nodeId;
+  const compare = GATE_COMPARATORS[gate.op];
+  const current = state[gate.stat] ?? 0;
+  return compare(current, gate.value) ? gate.elseNodeId : nodeId;
+}

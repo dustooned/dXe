@@ -81,11 +81,6 @@ italicized aside naming whichever stat moved most.
 Resolved (was open): went with 4 lines regardless of direction (not 8
 split by up/down) — simpler, and revisit only if it feels thin in play.
 
-This is the *only* thing currently reading the four meters back. Meter-
-gated branching (an option only available above/below some threshold) is
-a separate, bigger, not-yet-designed topic — deliberately not folded
-into this pass.
-
 Verified: the amplification math and epilogue tie-breaking
 deterministically in Node (emotion-vs-no-emotion, all three emotions,
 symmetric negative-value rounding, lucidity never amplified, tie-break
@@ -129,9 +124,60 @@ sharp/flat enharmonic equivalence, standard reference pitches, bad-input
 error handling), then a full four-NPC browser playthrough confirming zero
 console errors across every leitmotif's oscillator scheduling.
 
+## Meter-gated branching (built — `cardEngine.js` + `dialogScene.js`)
+
+The second thing reading the four meters back (after the epilogue), and
+the first to actually change *what content shows*, not just what gets
+narrated at the end.
+
+Considered three design axes before building anything: what gets gated
+(whole node vs. one choice vs. reaction flavor vs. effect magnitude),
+where the check happens (node-entry vs. edge-resolution), and who
+decides it (a universal engine rule, like Emotional Lean, vs. per-node
+authored conditions). Went with **authored, opt-in, per-node, checked at
+node-entry** — the opposite axis from Emotional Lean's "universal, no
+authoring" choice, and deliberately so: gating only means something
+attached to a specific narrative moment a writer chose, not a rule
+applied blindly everywhere. Kept as small as Emotional Lean was anyway —
+one optional field, no new node "shape," fully backward compatible.
+
+A node can carry an optional `gate`:
+
+```json
+"gate": { "stat": "trust", "op": "<", "value": 3, "elseNodeId": "rick_shut_down" }
+```
+
+`resolveGatedNode(nodeId, npc, state)` in `cardEngine.js` — pure function,
+same shape as `getEpilogueStat()` — checks whether the node you're about
+to show has a `gate`; if the condition against current `state` is true,
+returns `elseNodeId` instead. Nodes without a `gate` pass through
+unchanged. `dialogScene.js` calls it at both places `currentNodeId` ever
+gets set: the NPC's opening node at mount, and `edge.nextNodeId` in
+`advance()` — so a gate can fire either right as the player meets an NPC
+or partway through their tree.
+
+Authored via a manuscript `GATE:` line (`SCRIPT_FORMAT.md`) — writers
+never touch the JSON `gate` object directly.
+
+**First real use:** Rick's opening node (`rick_01`) is gated on
+`trust < 3`, redirecting to `rick_shut_down` — a short new node where he
+won't engage ("Word gets around. I know what you are.") rather than his
+normal opening. Fits his established characterization (defensive,
+loyalty-obsessed) rather than being an arbitrary demo of the mechanism.
+Both of `rick_shut_down`'s truth/lie branches lead straight to `(end)` —
+kept short on purpose, proving the mechanism fires correctly without
+needing a fully fleshed-out alternate arc.
+
+Verified: `resolveGatedNode()` deterministically in Node (below/at/above
+threshold, missing-stat defaults to 0, ungated nodes always pass through
+unchanged, unknown node ids don't throw), then two full browser
+playthroughs with hand-computed stat paths — one driving trust down to 1
+before Rick (confirmed `rick_shut_down`'s exact prompt rendered), one
+keeping trust at a healthy 7 (confirmed `rick_01`'s normal prompt
+rendered) — both matching the Node predictions exactly.
+
 ## Build order
 
 1. ~~Emotional Lean + ending epilogue~~ — done.
 2. ~~Per-NPC leitmotif~~ — done.
-3. Meter-gated branching — explicitly not scoped yet, needs its own
-   design pass before any build work.
+3. ~~Meter-gated branching~~ — done (first use: Rick + trust).

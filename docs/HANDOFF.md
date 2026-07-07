@@ -66,17 +66,17 @@ full vision — see "What was deliberately cut" below.
 
 Four meters (Integrity, Trust, Stability, Lucidity, 0–10) plus Truth Debt
 (0–10, separate). Full semantics are in `CONTENT_SCHEMA.md`; the math
-layered on top (Emotional Lean, the ending epilogue) is in
-`STAT_MATH.md`. Truth Debt remains the only stat that *branches*
-anything (bloom-event thresholds, forces the Reckoning at 10, picks the
-ending tier) — that's unchanged. The four meters now feed one thing: the
-ending epilogue line, which names whichever meter moved furthest from
-baseline. **They still don't gate or branch any content** — no dialog
-option is unlocked or blocked by a meter value yet. Meter-gated branches
-(e.g. an NPC refusing a dialog option below a trust threshold) remains
-the next real step there, and doesn't require any architecture change —
-the data's already there, it just needs a consumer, same as the epilogue
-was.
+layered on top (Emotional Lean, the ending epilogue, meter-gated
+branching) is in `STAT_MATH.md`. Truth Debt is still the only stat
+driving the big structural stuff (bloom-event thresholds, forces the
+Reckoning at 10, picks the ending tier). The four meters now feed two
+things: the ending epilogue line (names whichever meter moved furthest
+from baseline), and — as of Rick — **actual content gating**: a node can
+carry an opt-in `gate` that redirects to a different node if a stat
+condition is met (`resolveGatedNode()` in `cardEngine.js`, authored via
+a manuscript `GATE:` line). Only Rick uses it so far (gated on trust, at
+his opening node). Extending this to more NPCs/stats is just more
+content authored the same way — no further engine work needed.
 
 ## What was deliberately cut from the original design docs
 
@@ -112,6 +112,8 @@ Roughly in order of how ready each one is to just start:
 
 **Ready to build, no further design needed:**
 - ~~Ending judgment beat~~ — done (`SCENE_TYPES.md`'s `ending` section).
+- ~~Meter-gated branching~~ — done, first use on Rick (`STAT_MATH.md`).
+  Extending it to more NPCs/stats is pure content now, same pattern.
 - **More depth in Lake Ulysses** — additional dialog branches, possibly a
   Bandlands tutorial beat before the Prologue. Pure content through the
   manuscript pipeline, no engine changes.
@@ -119,7 +121,6 @@ Roughly in order of how ready each one is to just start:
   system, replacing the current 3-button placeholder wheel.
 
 **Needs a dedicated design pass first:**
-- **Meter-gated branching** — see "Stats" above.
 - **Mini-game** — the sequencer already supports the type for free
   (proven by how cheaply `cutscene` slotted in); still no concrete
   concept. Best candidate so far: a point-A-to-B explore beat in

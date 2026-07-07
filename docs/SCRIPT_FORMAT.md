@@ -73,6 +73,16 @@ e.g. `deborah_01`, `deborah_02_denial`.
 - `FEELZ:` — which 3 feelings show as picker options for this moment.
   Right now the only three that exist are `Anger`, `Fear`, `Anticipation`
   — list them in whatever order you want them to appear.
+- `GATE:` (optional) — redirects to a *different* node instead of this
+  one, if a stat condition is true. Format:
+  `GATE: <stat> <op> <value> -> <nodeId>`, e.g.
+  `GATE: trust < 3 -> rick_shut_down`. Valid `<op>`: `<`, `<=`, `>`, `>=`.
+  This only matters for the *first* node the player would otherwise see
+  — put it on the node your `NEXT:`/opening points at, not on every node
+  in the tree. Leave it off entirely unless you specifically want this
+  NPC's behavior to depend on how the player's been playing so far — most
+  nodes shouldn't have one. See `STAT_MATH.md` for the design reasoning
+  and the current real example (Rick, gated on trust).
 
 ### A swipe (what happens for Truth vs. Lie)
 

@@ -3,6 +3,7 @@ LOCATION: 5
 ACCENT: var(--color-rick)
 
 === rick_01
+GATE: trust < 3 -> rick_shut_down
 PROMPT: Guy looked at me wrong outside. Now he's got a busted jaw and I got my patch back. That's just how it works out here.
 FEELZ: Anger, Fear, Anticipation
 
@@ -60,4 +61,24 @@ EFFECTS: integrity-2 stability+1 trust+1
 DEBT: +2
 TAGS: Masculinity
 LEDGER: You backed off Rick right as he almost let something show.
+NEXT: (end)
+
+=== rick_shut_down
+PROMPT: [Rick looks you over from the doorway and doesn't step aside.] Word gets around. I know what you are.
+FEELZ: Anger, Fear, Anticipation
+
+-- TRUTH
+SAY: I'm not here to convince you of anything.
+REACT: He doesn't answer. The door doesn't open any further.
+EFFECTS: integrity+1 lucidity+1
+DEBT: 0
+NEXT: (end)
+
+-- LIE
+SAY: I just want to talk, that's all.
+REACT: "Yeah. Everybody does." He shuts the door.
+EFFECTS: stability-1
+DEBT: +1
+TAGS: Masculinity
+LEDGER: You tried to talk your way past Rick after word of your lies had already reached him.
 NEXT: (end)

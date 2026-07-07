@@ -3,7 +3,7 @@
 // sequencer. See docs/SCENE_TYPES.md for the full contract.
 //
 // scene shape: { type: 'dialog', id: string, npc: <NPC content JSON> }
-import { resolveCard } from '../engine/cardEngine.js';
+import { resolveCard, resolveGatedNode } from '../engine/cardEngine.js';
 import { checkBloomTriggers } from '../engine/debtEngine.js';
 import { createMeterGroup } from '../ui/meterBar.js';
 import { createNpcPortrait } from '../ui/npcPortrait.js';
@@ -21,7 +21,7 @@ const STRONG_HIT_THRESHOLD = 8;
 
 export function mount(stageEl, scene, { run, onComplete }) {
   const { npc } = scene;
-  let currentNodeId = Object.keys(npc.nodes)[0];
+  let currentNodeId = resolveGatedNode(Object.keys(npc.nodes)[0], npc, run.get());
   let activeEmotion = null;
   let pendingReaction = null;
   let reactionEmotion = null;
@@ -146,7 +146,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
 
     if (edge.nextNodeId) {
-      currentNodeId = edge.nextNodeId;
+      currentNodeId = resolveGatedNode(edge.nextNodeId, npc, run.get());
       enterNode();
       return;
     }

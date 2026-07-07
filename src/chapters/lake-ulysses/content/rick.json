@@ -44,6 +44,12 @@
           "ledgerEntry": "You told Rick that beating a man half to death was just how it works.",
           "nextNodeId": "rick_02_enabled"
         }
+      },
+      "gate": {
+        "stat": "trust",
+        "op": "<",
+        "value": 3,
+        "elseNodeId": "rick_shut_down"
       }
     },
     "rick_02_enabled": {
@@ -126,6 +132,44 @@
             "Masculinity"
           ],
           "ledgerEntry": "You backed off Rick right as he almost let something show.",
+          "nextNodeId": null
+        }
+      }
+    },
+    "rick_shut_down": {
+      "id": "rick_shut_down",
+      "npc": "RICK",
+      "location": 5,
+      "prompt": "[Rick looks you over from the doorway and doesn't step aside.] Word gets around. I know what you are.",
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
+      "swipes": {
+        "truth": {
+          "playerText": "I'm not here to convince you of anything.",
+          "npcReaction": "He doesn't answer. The door doesn't open any further.",
+          "effects": {
+            "integrity": 1,
+            "lucidity": 1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": null
+        },
+        "lie": {
+          "playerText": "I just want to talk, that's all.",
+          "npcReaction": "\"Yeah. Everybody does.\" He shuts the door.",
+          "effects": {
+            "stability": -1
+          },
+          "debtDelta": 1,
+          "tags": [
+            "Masculinity"
+          ],
+          "ledgerEntry": "You tried to talk your way past Rick after word of your lies had already reached him.",
           "nextNodeId": null
         }
       }

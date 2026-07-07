@@ -31,15 +31,30 @@ One JSON file per NPC, e.g. `content/deborah.json`:
   "swipes": {
     "truth": { ...edge },
     "lie": { ...edge }
+  },
+  "gate": {
+    "stat": "trust",
+    "op": "<",
+    "value": 3,
+    "elseNodeId": "rick_shut_down"
   }
 }
 ```
 
 - `feelzOptions` — which of the 3 demo emotions (Anger / Fear /
-  Anticipation) show as FEELZ picker bubbles for this node. Picking one is
-  currently cosmetic in the demo (it doesn't branch anything) but is
-  wired through so a later pass can make emotion choice matter.
+  Anticipation) show as FEELZ picker bubbles for this node. Picking one
+  amplifies that emotion's paired stat's swing on whatever swipe follows
+  (Emotional Lean — see `STAT_MATH.md`); it doesn't change which node
+  comes next.
 - Swiping left = `truth`, right = `lie`.
+- `gate` (optional) — meter-gated branching. If present, checked whenever
+  the game is about to show *this* node: if `state[stat] <op> value` is
+  true, the game shows `elseNodeId` instead of this node. Opt-in and
+  backward compatible — nodes without a `gate` behave exactly as before
+  this existed. See `STAT_MATH.md` for the design reasoning and
+  `resolveGatedNode()` in `src/engine/cardEngine.js` for the
+  implementation. Author it via the `GATE:` line in a manuscript file
+  (`SCRIPT_FORMAT.md`) rather than hand-editing this JSON.
 
 ## Edge (one side of a swipe)
 
