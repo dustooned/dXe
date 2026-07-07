@@ -1,4 +1,4 @@
-// Tiny hash router. Paths look like #/menu, #/about, #/chapter/lake-elsinore
+// Tiny hash router. Paths look like #/menu, #/about, #/chapter/lake-ulysses
 function parseHash() {
   const hash = location.hash.replace(/^#\/?/, '');
   const [screen, ...rest] = hash.split('/').filter(Boolean);

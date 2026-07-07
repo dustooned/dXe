@@ -134,7 +134,7 @@ inside `sceneSequencer.js` itself, which stays result-shape-agnostic).
 
 1. Write `src/scenes/<type>Scene.js` implementing the contract above.
 2. Register it in the chapter's `HANDLERS` map (see
-   `chapters/lake-elsinore/index.js`).
+   `chapters/lake-ulysses/index.js`).
 3. Add scenes of that type to the chapter's `SCENES` list.
 
 No changes to `sceneSequencer.js` or the shell are ever required to add a

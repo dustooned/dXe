@@ -1,6 +1,6 @@
 # Content Schema
 
-Format for writing a swipe/dialog chapter (e.g. `lake-elsinore`). If you're
+Format for writing a swipe/dialog chapter (e.g. `lake-ulysses`). If you're
 just writing new dialog, you only ever need to touch files in
 `src/chapters/<id>/content/*.json` — no code changes required.
 
@@ -117,7 +117,7 @@ Ending key is chosen by final Truth Debt — see `getEndingKey()` in
 Just add nodes to the JSON and wire `nextNodeId`. No code changes needed
 unless you're adding a whole new NPC file — in that case, import it and
 add a `{ type: 'dialog', id: '<npc>', npc: <imported json> }` entry to the
-`SCENES` list in `src/chapters/lake-elsinore/index.js`.
+`SCENES` list in `src/chapters/lake-ulysses/index.js`.
 
 ## Asset specs (not yet built)
 

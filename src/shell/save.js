@@ -2,7 +2,7 @@ const KEY = 'dreamxtreme:save';
 
 const defaultSave = {
   endingsSeen: [], // e.g. ['CLEAN_CUT', 'LIVING_LIE']
-  chaptersCompleted: [], // e.g. ['lake-elsinore']
+  chaptersCompleted: [], // e.g. ['lake-ulysses']
 };
 
 export function loadSave() {

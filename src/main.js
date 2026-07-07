@@ -6,9 +6,9 @@ import { loadSave } from './shell/save.js';
 
 // Chapter registry — adding a new chapter later is one entry here.
 const CHAPTERS = {
-  'lake-elsinore': {
-    title: 'Truth Debt: Lake Elsinore',
-    load: () => import('./chapters/lake-elsinore/index.js'),
+  'lake-ulysses': {
+    title: 'Truth Debt: Lake Ulysses',
+    load: () => import('./chapters/lake-ulysses/index.js'),
   },
 };
 

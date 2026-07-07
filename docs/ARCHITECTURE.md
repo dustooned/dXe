@@ -74,7 +74,7 @@ and the planned (not yet built) `cutscene` and `minigame` shapes.
 
 A chapter is free to skip the sequencer entirely and manage its own
 `mount`/`unmount` by hand (that's what the very first version of
-`lake-elsinore` did) — the sequencer is a convenience for the common
+`lake-ulysses` did) — the sequencer is a convenience for the common
 "ordered/branching list of scenes" shape, not a requirement of the shell
 contract.
 

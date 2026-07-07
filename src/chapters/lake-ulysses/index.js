@@ -10,8 +10,8 @@ import rwanda from './content/rwanda.json';
 import samun from './content/samun.json';
 import endings from './content/endings.json';
 
-export const id = 'lake-elsinore';
-export const title = 'Truth Debt: Lake Elsinore';
+export const id = 'lake-ulysses';
+export const title = 'Truth Debt: Lake Ulysses';
 
 // The chapter is just this list, in order. `jumpTo` (see sceneSequencer.js)
 // lets a dialog scene skip straight to 'reckoning' when Truth Debt maxes

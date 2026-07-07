@@ -13,7 +13,7 @@ UI framework, Vite for dev/build only.
 
 ## What's actually playable right now
 
-One chapter: **Truth Debt: Lake Elsinore**. Title screen -> chapter menu
+One chapter: **Truth Debt: Lake Ulysses**. Title screen -> chapter menu
 -> About/Contact -> Deborah -> Rwanda -> Samun (dialog, swipe truth/lie)
 -> Reckoning (confess or double down on your lies) -> one of three
 endings based on final Truth Debt. Progress (which endings you've seen)
@@ -37,7 +37,7 @@ full vision — see "What was deliberately cut" below.
   This means adding a second chapter later is additive (one new folder +
   one registry entry), not a rewrite.
 - **Scene sequencer inside the chapter (added after the initial build).**
-  The first cut of `lake-elsinore` hardcoded "NPC -> NPC -> NPC ->
+  The first cut of `lake-ulysses` hardcoded "NPC -> NPC -> NPC ->
   reckoning -> ending" directly in the chapter's `index.js`. That got
   generalized into `engine/sceneSequencer.js` + `src/scenes/` (dialog /
   reckoning / ending as scene *types*) specifically so cutscenes and
