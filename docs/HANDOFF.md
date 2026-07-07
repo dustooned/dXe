@@ -159,7 +159,14 @@ knowledge:
 - HTTPS enforcement lags behind DNS verification — GitHub only issues the
   certificate for the custom domain after its DNS check passes, which can
   take a bit even after DNS has actually propagated. `http://dreamxtre.me`
-  will work before `https://` does.
+  will work before `https://` does. If the Pages settings page shows the
+  DNS check stuck on "in progress" (yellow) even though DNS is
+  independently confirmed correct (e.g. via `nslookup dreamxtre.me
+  8.8.8.8`), the checker itself can just be stale — re-entering and
+  re-saving the custom domain field forces a fresh check rather than
+  waiting on whatever schedule it's stuck on. **Confirmed working
+  end-to-end**: HTTPS is live, `http://` correctly 301-redirects to
+  `https://`.
 
 ## Running it
 
