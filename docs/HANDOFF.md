@@ -99,11 +99,40 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 
 ## Known gaps (not bugs, just not done)
 
-- No real art or audio. NPC portraits are colored initials
-  (`ui/npcPortrait.js`); no sound at all. Asset target sizes are noted in
-  `CONTENT_SCHEMA.md`.
-- No cutscene or mini-game content exists yet, though the engine has a
-  slot for both (`SCENE_TYPES.md`).
+- No real art. NPC portraits are colored initials (`ui/npcPortrait.js`).
+  Audio is placeholder oscillator tones (emotion stems, per-NPC
+  leitmotifs, hit sounds) — no real instrumental loops or SFX. Asset
+  target sizes are noted in `CONTENT_SCHEMA.md`.
+- Cutscene has real content (the Prologue); mini-game has none, and no
+  concrete concept picked yet — see "What's next" below.
+
+## What's next
+
+Roughly in order of how ready each one is to just start:
+
+**Ready to build, no further design needed:**
+- **Ending judgment beat** — `SCENE_TYPES.md`'s planned enhancement on
+  the ending scene (open on a visual result, then typewriter-draw the
+  description, skippable). Was blocked on the character-data math
+  conversation; that's done now (`STAT_MATH.md`). Still needs placeholder
+  visuals since there's no ending art.
+- **More depth in Lake Ulysses** — additional dialog branches, possibly a
+  Bandlands tutorial beat before the Prologue. Pure content through the
+  manuscript pipeline, no engine changes.
+- **FEELZ Dartboard** (`DX MECHANICS.md`) — the richer emotion-zone
+  system, replacing the current 3-button placeholder wheel.
+
+**Needs a dedicated design pass first:**
+- **Meter-gated branching** — see "Stats" above.
+- **Mini-game** — the sequencer already supports the type for free
+  (proven by how cheaply `cutscene` slotted in); still no concrete
+  concept. Best candidate so far: a point-A-to-B explore beat in
+  Deborah's condo hallway.
+
+**Needs something from outside this repo:**
+- Real art/audio assets — folders are ready (`public/assets/`), nothing's
+  in them yet.
+- A second writer actually using the manuscript pipeline.
 
 ## Deployment
 
