@@ -60,7 +60,11 @@
   touch-action: none;
   cursor: grab;
   user-select: none;
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.dx-swipe-card.has-preview {
+  border-color: var(--preview-color);
 }
 
 .dx-swipe-card__text {
@@ -106,12 +110,35 @@
   color: var(--bubble-color, var(--color-white));
   font-family: inherit;
   font-size: 6px;
-  cursor: pointer;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
 }
 
 .dx-feelz__bubble.is-selected {
   background: var(--bubble-color, var(--color-white));
   color: var(--color-black);
+}
+
+.dx-feelz__ghost {
+  position: fixed;
+  z-index: 1000;
+  width: 56px;
+  height: 56px;
+  margin-left: -28px;
+  margin-top: -28px;
+  border-radius: 50%;
+  border: 2px solid var(--bubble-color, var(--color-white));
+  background: var(--color-black);
+  color: var(--bubble-color, var(--color-white));
+  font-family: inherit;
+  font-size: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0.9;
 }
 
 .dx-debt-sigil {

@@ -88,6 +88,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
       const wheel = createFeelzWheel({
         options: currentNode().feelzOptions,
+        dropTarget: card,
         onSelect: (emotion) => {
           activeEmotion = emotion;
           audio.emphasizeEmotion(emotion);

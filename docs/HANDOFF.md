@@ -64,6 +64,18 @@ full vision — see "What was deliberately cut" below.
   differs) before switching over. Full format in `SCRIPT_FORMAT.md`.
   Endings and any future cutscene/mini-game content aren't part of this
   pipeline yet — see that doc's last section for the boundary.
+- **FEELZ bubbles are drag sources now, not just buttons.** A plain tap
+  still selects an emotion instantly (unchanged), but a bubble can also
+  be dragged onto the swipe card — while hovering over it, the card's
+  frame previews that emotion's color live
+  (`swipeCard.js`'s `setPreviewColor`), and dropping there selects it,
+  same as the tap. Both gestures converge on the same `onSelect`, so
+  there's exactly one selection path, not two things to keep in sync.
+  Built entirely on Pointer Events (no native `click` listener anymore),
+  consistent with how the swipe card itself already handles mouse/touch
+  identically — note for future testing: synthetic `.click()` calls no
+  longer trigger selection, a real pointerdown/pointerup sequence is
+  required.
 
 ## Stats — what's wired up and what isn't
 

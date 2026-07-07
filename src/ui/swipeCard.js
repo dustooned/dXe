@@ -26,5 +26,18 @@ export function createSwipeCard({ promptText, onSwipe }) {
     },
   });
 
-  return { el, destroy: detach };
+  // Called from outside (the FEELZ wheel, while an emotion is being
+  // dragged toward this card) to tint the frame as a live drop preview.
+  // Pass a CSS color value to preview it, or null to clear.
+  function setPreviewColor(color) {
+    if (color) {
+      el.style.setProperty('--preview-color', color);
+      el.classList.add('has-preview');
+    } else {
+      el.classList.remove('has-preview');
+      el.style.removeProperty('--preview-color');
+    }
+  }
+
+  return { el, destroy: detach, setPreviewColor };
 }
