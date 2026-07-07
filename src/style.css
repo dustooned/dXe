@@ -99,3 +99,11 @@ body {
   margin-top: auto;
   margin-bottom: auto;
 }
+
+.dx-fx-flash {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  pointer-events: none;
+  z-index: 50;
+}

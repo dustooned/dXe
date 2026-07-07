@@ -5,11 +5,26 @@
 //
 // scene shape: { type: 'ending', id: string, endings: <endings.json> }
 import { getEndingKey } from '../engine/endingEngine.js';
+import * as fx from '../shell/fx.js';
+import * as audio from '../shell/audio.js';
+
+// Intensity reflects how much Truth Debt piled up — the weight of the
+// consequences, not a verdict on the choices that led there.
+const ENDING_INTENSITY = {
+  CLEAN_CUT: 'weak',
+  FUNCTIONAL_MASK: 'weak',
+  LIVING_LIE: 'strong',
+};
 
 export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
   const endingKey = getEndingKey(run.get().truthDebt);
   const ending = scene.endings[endingKey];
   recordEnding?.(chapterId, endingKey);
+
+  const intensity = ENDING_INTENSITY[endingKey] ?? 'weak';
+  fx.flash(intensity);
+  fx.shake(intensity);
+  audio.playHit(intensity);
 
   stageEl.innerHTML = '';
   const screen = document.createElement('div');

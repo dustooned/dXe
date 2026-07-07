@@ -3,6 +3,7 @@ import './ui/ui.css';
 import './scenes/scenes.css';
 import { onRouteChange, navigate } from './shell/router.js';
 import { loadSave } from './shell/save.js';
+import { initFx } from './shell/fx.js';
 
 // Chapter registry — adding a new chapter later is one entry here.
 const CHAPTERS = {
@@ -16,6 +17,7 @@ const app = document.getElementById('app');
 const canvas = document.createElement('div');
 canvas.className = 'dx-canvas';
 app.appendChild(canvas);
+initFx(canvas);
 
 let currentUnmount = null;
 
