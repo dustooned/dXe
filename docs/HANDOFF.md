@@ -65,14 +65,18 @@ full vision — see "What was deliberately cut" below.
 ## Stats — what's wired up and what isn't
 
 Four meters (Integrity, Trust, Stability, Lucidity, 0–10) plus Truth Debt
-(0–10, separate). Full semantics are in `CONTENT_SCHEMA.md`. The
-important gap to know about: **the four meters are currently display
-only.** Every dialog edge sets `effects` on them, but nothing reads them
-back to gate or branch content. Truth Debt is the only stat with real
-teeth (bloom-event thresholds, forces the Reckoning at 10, picks the
-ending). Adding meter-gated branches (e.g. an NPC refusing a dialog
-option below a trust threshold) is a natural next step and doesn't
-require any architecture change — the data's already there.
+(0–10, separate). Full semantics are in `CONTENT_SCHEMA.md`; the math
+layered on top (Emotional Lean, the ending epilogue) is in
+`STAT_MATH.md`. Truth Debt remains the only stat that *branches*
+anything (bloom-event thresholds, forces the Reckoning at 10, picks the
+ending tier) — that's unchanged. The four meters now feed one thing: the
+ending epilogue line, which names whichever meter moved furthest from
+baseline. **They still don't gate or branch any content** — no dialog
+option is unlocked or blocked by a meter value yet. Meter-gated branches
+(e.g. an NPC refusing a dialog option below a trust threshold) remains
+the next real step there, and doesn't require any architecture change —
+the data's already there, it just needs a consumer, same as the epilogue
+was.
 
 ## What was deliberately cut from the original design docs
 

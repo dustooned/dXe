@@ -7,3 +7,23 @@ export function getEndingKey(truthDebt) {
   if (truthDebt <= 7) return 'COLLAPSE';
   return 'LIVING_LIE';
 }
+
+const EPILOGUE_STAT_KEYS = ['integrity', 'trust', 'stability', 'lucidity'];
+const STAT_BASELINE = 5;
+
+// The ending epilogue (docs/STAT_MATH.md): whichever of the four meters
+// ended up furthest from its starting value gets named at the ending.
+// The only thing currently reading the four meters back — everything
+// else about the ending is decided by Truth Debt alone.
+export function getEpilogueStat(state) {
+  let winner = EPILOGUE_STAT_KEYS[0];
+  let winnerDeviation = -1;
+  for (const key of EPILOGUE_STAT_KEYS) {
+    const deviation = Math.abs((state[key] ?? STAT_BASELINE) - STAT_BASELINE);
+    if (deviation > winnerDeviation) {
+      winnerDeviation = deviation;
+      winner = key;
+    }
+  }
+  return winner;
+}

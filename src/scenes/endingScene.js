@@ -4,7 +4,7 @@
 // docs/SCENE_TYPES.md.
 //
 // scene shape: { type: 'ending', id: string, endings: <endings.json> }
-import { getEndingKey } from '../engine/endingEngine.js';
+import { getEndingKey, getEpilogueStat } from '../engine/endingEngine.js';
 import * as fx from '../shell/fx.js';
 import * as audio from '../shell/audio.js';
 
@@ -47,6 +47,15 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
     p.textContent = line;
     screen.appendChild(p);
   });
+
+  const epilogueStat = getEpilogueStat(run.get());
+  const epilogueLine = scene.endings.epilogues?.[epilogueStat];
+  if (epilogueLine) {
+    const p = document.createElement('p');
+    p.className = 'dx-text dx-epilogue';
+    p.textContent = epilogueLine;
+    screen.appendChild(p);
+  }
 
   const btn = document.createElement('button');
   btn.className = 'dx-btn';

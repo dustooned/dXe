@@ -109,7 +109,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
   function handleSwipe(swipeKey) {
-    const { edge, patch } = resolveCard(run.get(), currentNode(), swipeKey);
+    const { edge, patch } = resolveCard(run.get(), currentNode(), swipeKey, activeEmotion);
     run.set(patch);
     pendingReaction = edge;
     reactionEmotion = activeEmotion;

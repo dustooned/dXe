@@ -43,5 +43,11 @@
       "Your personal life is stable. Your integrity bar is dust.",
       "The lake looks beautiful today."
     ]
+  },
+  "epilogues": {
+    "integrity": "Integrity never came back all the way.",
+    "trust": "Trust didn't survive the trip.",
+    "stability": "Nothing about you sat still after that.",
+    "lucidity": "You saw it clearly, the whole time. That's its own kind of debt."
   }
 }

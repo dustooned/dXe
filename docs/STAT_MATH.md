@@ -31,7 +31,7 @@ today). The math below only adds a small, fixed, universally-applied
 layer on top — nothing a writer has to think about, nothing that changes
 per node.
 
-## Emotional Lean (designed, not yet built)
+## Emotional Lean (built — `cardEngine.js`)
 
 Each FEELZ emotion amplifies exactly one specific stat's swing by ×1.5
 (rounded), in whichever direction that swing was already going:
@@ -47,41 +47,51 @@ always moves by exactly how honest the actual choice was, regardless of
 which emotion the player walked in with — a clean, untouched signal in a
 system where everything else gets a thumb on the scale.
 
-Mechanically: `resolveCard()` needs the active emotion threaded in (it's
-already tracked in `dialogScene.js`, just not passed to the engine yet).
-`cardEngine.js` gets a small `EMOTION_AMPLIFIES` lookup and multiplies
-the matching key in `effects` before applying it. Truth Debt is
-untouched — this only ever touches the four display meters.
+Mechanically: `resolveCard(state, node, swipeKey, emotion)` takes the
+active emotion as an optional 4th argument (threaded from
+`dialogScene.js`, which already tracked it locally). `applyEmotionalLean()`
+in `cardEngine.js` multiplies the matching effect key by 1.5 using
+symmetric rounding (round-half-away-from-zero — plain `Math.round` is
+asymmetric around negative `.5` values, which would make negative swings
+amplify weaker than positive ones for no good reason). Omitting the
+emotion argument, or passing one that doesn't touch this edge's effects,
+behaves exactly as before Emotional Lean existed — nothing about old
+callers breaks. Truth Debt is untouched — this only ever touches the
+four display meters, computed from the *original* authored `effects`
+(the returned `edge` is never mutated, so reaction text/UI logic downstream
+sees the writer's numbers, not the amplified ones).
 
-**Important honesty check:** as of writing, nothing reads the four
-meters back (same gap noted in `HANDOFF.md` since the start). So
-Emotional Lean, on its own, changes numbers on a screen nothing else
-looks at. It needs a consumer to actually matter — see below.
-
-## Ending epilogue (designed, not yet built) — the consumer
+## Ending epilogue (built — `endingEngine.js` + `endingScene.js`) — the consumer
 
 The smallest possible way to make the four meters count for something,
 without adding branching or new schema:
 
-At the ending, after Truth Debt has already picked the ending tier
-(Clean Cut / Functional Mask / Collapse / Living Lie — unchanged), look
-at all four meters' final values and find whichever deviated furthest
-from its starting value of 5 (`Math.abs(final - 5)`, largest wins; tie
-order not yet decided, low stakes). Show one derived line alongside the
-existing ending text — a small "epilogue" naming whichever stat took the
-biggest hit or gain, e.g. "Integrity never recovered" for a
-big-negative-integrity run.
+`getEpilogueStat(state)` in `endingEngine.js` runs after Truth Debt has
+already picked the ending tier (Clean Cut / Functional Mask / Collapse /
+Living Lie — unchanged) and finds whichever of the four meters deviated
+furthest from its starting value of 5 (`Math.abs(final - 5)`, largest
+wins; ties go to whichever stat is checked first —
+`integrity > trust > stability > lucidity` — confirmed in practice: an
+all-Anger, all-lie playthrough clamped both integrity and stability to
+their extremes simultaneously, and integrity won the tie as designed).
+`endingScene.js` shows one derived line from `endings.json`'s new
+`"epilogues"` key underneath the existing ending text — a small,
+italicized aside naming whichever stat moved most.
 
-Open question, not yet resolved: whether the epilogue line depends on
-direction (up vs. down) — i.e. 8 possible lines (4 stats × 2 directions)
-vs. a simpler 4 lines regardless of direction. Leaning toward starting
-with 4 (simpler, matches "keep it simple / fast replay") and expanding
-only if it feels thin in practice.
+Resolved (was open): went with 4 lines regardless of direction (not 8
+split by up/down) — simpler, and revisit only if it feels thin in play.
 
-This is the *only* thing currently planned to read the four meters back.
-Meter-gated branching (an option only available above/below some
-threshold) is a separate, bigger, not-yet-designed topic — deliberately
-not folded into this pass.
+This is the *only* thing currently reading the four meters back. Meter-
+gated branching (an option only available above/below some threshold) is
+a separate, bigger, not-yet-designed topic — deliberately not folded
+into this pass.
+
+Verified: the amplification math and epilogue tie-breaking
+deterministically in Node (emotion-vs-no-emotion, all three emotions,
+symmetric negative-value rounding, lucidity never amplified, tie-break
+order), then a full browser playthrough confirming the epilogue line
+actually renders and matches what the Node test predicted for that exact
+stat combination.
 
 ## Per-NPC leitmotif (parked, audio-only, independent of the above)
 
@@ -99,9 +109,7 @@ built in any order relative to those.
 
 ## Build order
 
-1. Emotional Lean + ending epilogue (one unit — the mechanic and the
-   reason it's visible; shipping one without the other leaves either
-   dead code or an unexplained number).
+1. ~~Emotional Lean + ending epilogue~~ — done.
 2. Per-NPC leitmotif, whenever — doesn't depend on or block anything above.
 3. Meter-gated branching — explicitly not scoped yet, needs its own
    design pass before any build work.
