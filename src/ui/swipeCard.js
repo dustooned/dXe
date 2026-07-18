@@ -1,13 +1,18 @@
 import { attachSwipe } from '../shell/input.js';
 
-export function createSwipeCard({ promptText, onSwipe }) {
+export function createSwipeCard({ promptText, onSwipe, hints }) {
+  const leftLabel  = hints?.left  ?? '← TRUTH';
+  const rightLabel = hints?.right ?? 'LIE →';
+
   const el = document.createElement('div');
   el.className = 'dx-swipe-card';
   el.innerHTML = `
-    <span class="dx-swipe-card__hint dx-swipe-card__hint--truth">← TRUTH</span>
+    <span class="dx-swipe-card__hint dx-swipe-card__hint--truth"></span>
     <p class="dx-swipe-card__text"></p>
-    <span class="dx-swipe-card__hint dx-swipe-card__hint--lie">LIE →</span>
+    <span class="dx-swipe-card__hint dx-swipe-card__hint--lie"></span>
   `;
+  el.querySelector('.dx-swipe-card__hint--truth').textContent = leftLabel;
+  el.querySelector('.dx-swipe-card__hint--lie').textContent   = rightLabel;
   el.querySelector('.dx-swipe-card__text').textContent = promptText;
 
   const detach = attachSwipe(el, {

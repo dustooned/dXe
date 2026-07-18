@@ -9,6 +9,11 @@ const HUES = {
   Anger: 16,
   Fear: 51,
   Anticipation: 195,
+  Trust: 145,
+  Disgust: 280,
+  Joy: 55,
+  Sadness: 220,
+  Surprise: 26,
   // Ending tiers
   CLEAN_CUT: 200,
   FUNCTIONAL_MASK: 90,

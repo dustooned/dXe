@@ -69,6 +69,38 @@
   padding: 3px 7px;
 }
 
+.dx-questionnaire-screen {
+  justify-content: center;
+  gap: 20px;
+}
+
+.dx-questionnaire-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.dx-questionnaire-npc {
+  font-size: 8px;
+  opacity: 0.5;
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+.dx-questionnaire-counter {
+  font-size: 7px;
+  opacity: 0.3;
+  margin: 0;
+}
+
+.dx-questionnaire-diagnosis {
+  cursor: pointer;
+}
+
+.dx-questionnaire-diagnosis-text {
+  line-height: 2.2;
+}
+
 .dx-game-screen {
   position: relative;
   padding: 0;
