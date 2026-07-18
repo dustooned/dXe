@@ -21,14 +21,14 @@ function isOverElement(el, x, y) {
   return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
 }
 
-export function createFeelzWheel({ options, dropTarget, onSelect }) {
+export function createFeelzWheel({ options, dropTarget, onSelect, selected }) {
   const el = document.createElement('div');
   el.className = 'dx-feelz';
 
-  function selectBubble(btn, emotion) {
+  function selectBubble(btn, emotion, source) {
     el.querySelectorAll('.dx-feelz__bubble').forEach((b) => b.classList.remove('is-selected'));
     btn.classList.add('is-selected');
-    onSelect?.(emotion);
+    onSelect?.(emotion, source);
   }
 
   options.forEach((emotion) => {
@@ -38,6 +38,8 @@ export function createFeelzWheel({ options, dropTarget, onSelect }) {
     const colorVar = `var(${EMOTION_VAR[emotion] || '--color-white'})`;
     btn.style.setProperty('--bubble-color', colorVar);
     btn.textContent = emotion;
+
+    if (emotion === selected) btn.classList.add('is-selected');
 
     let dragging = false;
     let startX = 0;
@@ -86,8 +88,10 @@ export function createFeelzWheel({ options, dropTarget, onSelect }) {
       }
       dropTarget?.setPreviewColor(null);
 
-      if (droppedOnTarget || releasedOnBubble) {
-        selectBubble(btn, emotion);
+      if (droppedOnTarget) {
+        selectBubble(btn, emotion, 'drag');
+      } else if (releasedOnBubble) {
+        selectBubble(btn, emotion, 'tap');
       }
     }
 

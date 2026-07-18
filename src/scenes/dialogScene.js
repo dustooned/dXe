@@ -29,6 +29,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   const { npc } = scene;
   let currentNodeId = resolveGatedNode(Object.keys(npc.nodes)[0], npc, run.get());
   let activeEmotion = null;
+  let activeEmotionColor = null;
   let pendingReaction = null;
   let reactionEmotion = null;
   let reactionTimer = null;
@@ -39,6 +40,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   function enterNode() {
     activeEmotion = null;
+    activeEmotionColor = null;
     audio.startEmotionStems();
     audio.ambientMix();
     render();
@@ -92,15 +94,17 @@ export function mount(stageEl, scene, { run, onComplete }) {
       });
       content.appendChild(card.el);
 
-      if (activeEmotion) {
-        card.setSelectedColor(FEELZ_COLORS[activeEmotion] ?? null);
+      if (activeEmotionColor) {
+        card.setSelectedColor(activeEmotionColor);
       }
 
       const wheel = createFeelzWheel({
         options: currentNode().feelzOptions,
         dropTarget: card,
-        onSelect: (emotion) => {
+        selected: activeEmotion,
+        onSelect: (emotion, source) => {
           activeEmotion = emotion;
+          activeEmotionColor = source === 'drag' ? (FEELZ_COLORS[emotion] ?? null) : null;
           audio.emphasizeEmotion(emotion);
           render();
         },
