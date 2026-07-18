@@ -4,10 +4,12 @@
 // docs/SCENE_TYPES.md for the full beat shape, speed-markup syntax, and
 // the interactive-choice contract.
 //
-// scene shape: { type: 'cutscene', id: string, beats: [{ text?, image?, autoAdvanceMs?, interactive? }] }
+// scene shape: { type: 'cutscene', id: string, beats: [{ text?, image?, autoAdvanceMs?, interactive?, speaker? }] }
 import { createTypewriter } from '../ui/typewriterText.js';
+import { preloadTypewriterTick, playTypewriterTick } from '../shell/audio.js';
 
 export function mount(stageEl, scene, { onComplete }) {
+  preloadTypewriterTick();
   let beatIndex = 0;
   let typewriter = null;
   let autoAdvanceTimer = null;
@@ -39,6 +41,14 @@ export function mount(stageEl, scene, { onComplete }) {
     const textBox = document.createElement('div');
     textBox.className = 'dx-cutscene-textbox';
     currentTextBox = textBox;
+
+    if (beat.speaker) {
+      const speakerEl = document.createElement('p');
+      speakerEl.className = 'dx-cutscene-speaker';
+      speakerEl.textContent = beat.speaker;
+      textBox.appendChild(speakerEl);
+    }
+
     screen.appendChild(textBox);
 
     stageEl.appendChild(screen);
@@ -47,7 +57,7 @@ export function mount(stageEl, scene, { onComplete }) {
       const textEl = document.createElement('p');
       textEl.className = 'dx-text dx-cutscene-text';
       textBox.appendChild(textEl);
-      typewriter = createTypewriter(textEl, beat.text, { onDone: handleBeatReady });
+      typewriter = createTypewriter(textEl, beat.text, { onDone: handleBeatReady, onChar: playTypewriterTick });
     } else {
       handleBeatReady();
     }

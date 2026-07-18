@@ -42,7 +42,7 @@ export function parseSegments(raw) {
   return segments;
 }
 
-export function createTypewriter(container, text, { onDone } = {}) {
+export function createTypewriter(container, text, { onDone, onChar } = {}) {
   container.innerHTML = '';
   const segments = parseSegments(text);
 
@@ -79,6 +79,7 @@ export function createTypewriter(container, text, { onDone } = {}) {
 
     if (seg.type === 'char') {
       charSpans[charIndex]?.classList.add('is-visible');
+      onChar?.();
       charIndex += 1;
     }
     timer = setTimeout(step, seg.delayMs);

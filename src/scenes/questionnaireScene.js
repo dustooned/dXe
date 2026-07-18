@@ -8,6 +8,9 @@
 import { emotionColor } from '../engine/loadout.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
 import { drawEmotionPattern } from '../ui/emotionPattern.js';
+import { startAmbient, stopAmbient, playTyagl } from '../shell/audio.js';
+
+const THERAPIST_AMBIENT = '/assets/lake-ulysses/audio/heavens_waiting_room.mp3';
 
 // left = truth swipe (drag left), right = lie swipe (drag right).
 // Each answer scores one point toward a class; after 3 questions the
@@ -165,6 +168,7 @@ export function mount(stageEl, _scene, { run, onComplete }) {
     screen.appendChild(content);
     stageEl.appendChild(screen);
 
+    playTyagl();
     requestAnimationFrame(() => {
       drawEmotionPattern(patternCanvas, {
         seedStr: `therapist:assessment:${cls}`,
@@ -175,10 +179,12 @@ export function mount(stageEl, _scene, { run, onComplete }) {
     screen.addEventListener('click', () => onComplete(), { once: true });
   }
 
+  startAmbient(THERAPIST_AMBIENT);
   renderQuestion();
 
   return function unmount() {
     activeCard?.destroy();
+    stopAmbient();
     stageEl.innerHTML = '';
   };
 }

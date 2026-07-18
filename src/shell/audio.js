@@ -1,30 +1,31 @@
-// Global audio: three "emotion stem" drones that crossfade based on what
-// the player is leaning toward, plus one-shot hit sounds. Placeholder
-// oscillator tones stand in for real instrumental loops — swap the
-// oscillator setup for real AudioBuffer loops later; the mix/crossfade
-// API below doesn't need to change.
+// Audio system. Oscillator-based emotion stems and NPC leitmotifs coexist
+// with real audio file playback — both share the same masterGain chain.
+// All public functions that load files are async; callers fire-and-forget
+// (no await needed unless they care about the exact start time).
 let ctx = null;
 let masterGain = null;
 let stems = {};
 let activeLeitmotif = null;
+let ambientSource = null;
+let ambientGain = null;
+
+const audioCache = new Map();
 
 const STEM_CONFIG = {
-  Anger: { type: 'sawtooth', freq: 110 },
-  Fear: { type: 'sine', freq: 220 },
+  Anger:        { type: 'sawtooth', freq: 110 },
+  Fear:         { type: 'sine',     freq: 220 },
   Anticipation: { type: 'triangle', freq: 165 },
 };
 
-const AMBIENT_GAIN = 0.06;
-const EMPHASIS_GAIN = 0.16;
-const LEITMOTIF_GAIN = 0.14;
+const AMBIENT_GAIN    = 0.06;
+const EMPHASIS_GAIN   = 0.16;
+const LEITMOTIF_GAIN  = 0.14;
+const AMBIENT_MUSIC_GAIN = 0.07;
+const TYAGL_GAIN      = 0.45;
+const TYPEWRITER_GAIN = 0.28;
 
-function clamp(v, min, max) {
-  return Math.min(max, Math.max(min, v));
-}
+function clamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
 
-// Note name ("A3", "C#4", "Bb2") -> frequency, standard equal temperament,
-// A4 = 440Hz. No MIDI files, no dependencies — just the math every
-// chiptune toy uses.
 const NOTE_SEMITONES = {
   C: -9, 'C#': -8, Db: -8, D: -7, 'D#': -6, Eb: -6, E: -5, F: -4,
   'F#': -3, Gb: -3, G: -2, 'G#': -1, Ab: -1, A: 0, 'A#': 1, Bb: 1, B: 2,
@@ -38,10 +39,10 @@ export function noteToFrequency(note) {
   return 440 * Math.pow(2, semitoneFromA4 / 12);
 }
 
-// Each NPC's musical signature — a short hardcoded phrase, not a real
-// instrumental loop. Swap for real AudioBuffer loops later; the
-// start/stop API below doesn't need to change.
+// NPC leitmotifs. A `url` entry plays a real audio file on loop; a `notes`
+// entry plays the oscillator phrase on loop (existing behaviour).
 const LEITMOTIFS = {
+  THERAPIST: { url: '/assets/lake-ulysses/audio/heavens_waiting_room.mp3', volume: 0.10 },
   DEBORAH: {
     type: 'sine',
     notes: [
@@ -91,6 +92,73 @@ function ensureContext() {
   return ctx;
 }
 
+async function loadAudio(url) {
+  if (audioCache.has(url)) return audioCache.get(url);
+  const audioCtx = ensureContext();
+  const response = await fetch(url);
+  const arrayBuffer = await response.arrayBuffer();
+  const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+  audioCache.set(url, audioBuffer);
+  return audioBuffer;
+}
+
+// ─── Ambient room music ───────────────────────────────────────────────────────
+// One persistent looping track per scene. Call startAmbient when a scene
+// mounts; stopAmbient when it unmounts. Fire-and-forget (async).
+
+export async function startAmbient(url, volume = AMBIENT_MUSIC_GAIN) {
+  stopAmbient();
+  const audioCtx = ensureContext();
+  const buffer = await loadAudio(url);
+  ambientGain = audioCtx.createGain();
+  ambientGain.gain.value = volume;
+  ambientGain.connect(masterGain);
+  ambientSource = audioCtx.createBufferSource();
+  ambientSource.buffer = buffer;
+  ambientSource.loop = true;
+  ambientSource.connect(ambientGain);
+  ambientSource.start();
+}
+
+export function stopAmbient() {
+  try { ambientSource?.stop(); } catch (_) { /* already stopped */ }
+  ambientSource = null;
+  ambientGain?.disconnect();
+  ambientGain = null;
+}
+
+// ─── One-shot SFX ─────────────────────────────────────────────────────────────
+
+let typewriterBuffer = null;
+
+export async function preloadTypewriterTick() {
+  typewriterBuffer = await loadAudio('/assets/shared/audio/typewriter_tick.wav');
+}
+
+export function playTypewriterTick() {
+  if (!typewriterBuffer || !ctx) return;
+  const source = ctx.createBufferSource();
+  source.buffer = typewriterBuffer;
+  source.playbackRate.value = 0.88 + Math.random() * 0.24;
+  const gain = ctx.createGain();
+  gain.gain.value = TYPEWRITER_GAIN;
+  source.connect(gain).connect(masterGain);
+  source.start();
+}
+
+export async function playTyagl() {
+  const audioCtx = ensureContext();
+  const buffer = await loadAudio('/assets/shared/audio/tyagl.wav');
+  const source = audioCtx.createBufferSource();
+  source.buffer = buffer;
+  const gain = audioCtx.createGain();
+  gain.gain.value = TYAGL_GAIN;
+  source.connect(gain).connect(masterGain);
+  source.start();
+}
+
+// ─── Emotion stems ────────────────────────────────────────────────────────────
+
 export function startEmotionStems() {
   const audioCtx = ensureContext();
   for (const [key, cfg] of Object.entries(STEM_CONFIG)) {
@@ -106,7 +174,6 @@ export function startEmotionStems() {
   }
 }
 
-// mix: { Anger, Fear, Anticipation } each 0-1. Ramps, never hard-cuts.
 export function setEmotionMix(mix) {
   if (!ctx) return;
   const now = ctx.currentTime;
@@ -142,15 +209,35 @@ export function stopEmotionStems() {
   stems = {};
 }
 
-// Plays one NPC's melodic signature on a loop, layered on top of the
-// emotion stems. One per encounter — call once when an NPC's scene
-// mounts, not per dialog node.
-export function startLeitmotif(npcKey) {
+// ─── NPC leitmotifs ───────────────────────────────────────────────────────────
+
+export async function startLeitmotif(npcKey) {
   stopLeitmotif();
   const config = LEITMOTIFS[npcKey];
   if (!config) return;
 
   const audioCtx = ensureContext();
+
+  if (config.url) {
+    const buffer = await loadAudio(config.url);
+    const gain = audioCtx.createGain();
+    gain.gain.value = config.volume ?? LEITMOTIF_GAIN;
+    gain.connect(masterGain);
+    const source = audioCtx.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    source.connect(gain);
+    source.start();
+    activeLeitmotif = {
+      stop() {
+        gain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.08);
+        setTimeout(() => { try { source.stop(); } catch (_) {} gain.disconnect(); }, 400);
+      },
+    };
+    return;
+  }
+
+  // Oscillator phrase loop (existing NPCs)
   const gain = audioCtx.createGain();
   gain.gain.value = LEITMOTIF_GAIN;
   gain.connect(masterGain);
@@ -168,7 +255,6 @@ export function startLeitmotif(npcKey) {
     osc.connect(gain);
     osc.start();
     osc.stop(audioCtx.currentTime + durationMs / 1000);
-
     index = (index + 1) % config.notes.length;
     timer = setTimeout(playNote, durationMs);
   }
@@ -189,6 +275,8 @@ export function stopLeitmotif() {
   activeLeitmotif?.stop();
   activeLeitmotif = null;
 }
+
+// ─── Hit feedback ─────────────────────────────────────────────────────────────
 
 export function playHit(intensity = 'weak') {
   const audioCtx = ensureContext();
