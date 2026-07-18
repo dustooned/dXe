@@ -7,7 +7,8 @@ import { resolveCard, resolveGatedNode } from '../engine/cardEngine.js';
 import { checkBloomTriggers } from '../engine/debtEngine.js';
 import { createMeterGroup } from '../ui/meterBar.js';
 import { createNpcPortrait } from '../ui/npcPortrait.js';
-import { createFeelzWheel } from '../ui/feelzWheel.js';
+import { createFeelzDartboard } from '../ui/feelzDartboard.js';
+import { emotionColor } from '../engine/loadout.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
 import { createDebtSigil } from '../ui/debtSigil.js';
 import { drawEmotionPattern } from '../ui/emotionPattern.js';
@@ -16,11 +17,6 @@ import * as audio from '../shell/audio.js';
 
 const REACTION_DELAY_MS = 2200;
 
-const FEELZ_COLORS = {
-  Anger: 'var(--color-feelz-anger)',
-  Fear: 'var(--color-feelz-fear)',
-  Anticipation: 'var(--color-feelz-anticipation)',
-};
 // Weak vs strong hit feedback is derived from how big a swipe's effects
 // are, not from truth/lie — intensity signals weight, not judgment.
 const STRONG_HIT_THRESHOLD = 8;
@@ -98,18 +94,18 @@ export function mount(stageEl, scene, { run, onComplete }) {
         card.setSelectedColor(activeEmotionColor);
       }
 
-      const wheel = createFeelzWheel({
-        options: currentNode().feelzOptions,
+      const dartboard = createFeelzDartboard({
+        loadout: run.get().loadout,
         dropTarget: card,
         selected: activeEmotion,
         onSelect: (emotion, source) => {
           activeEmotion = emotion;
-          activeEmotionColor = source === 'drag' ? (FEELZ_COLORS[emotion] ?? null) : null;
+          activeEmotionColor = source === 'drag' ? emotionColor(emotion) : null;
           audio.emphasizeEmotion(emotion);
           render();
         },
       });
-      content.appendChild(wheel.el);
+      content.appendChild(dartboard.el);
     }
 
     content.appendChild(createDebtSigil(runState.truthDebt).el);

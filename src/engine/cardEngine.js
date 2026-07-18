@@ -1,16 +1,7 @@
 import { clamp } from './util.js';
+import { emotionAmplifies } from './loadout.js';
 
 const STAT_KEYS = ['integrity', 'stability', 'lucidity', 'trust'];
-
-// Emotional Lean (docs/STAT_MATH.md): picking an emotion before a swipe
-// amplifies that one stat's swing, in whichever direction it was already
-// going. `lucidity` is deliberately never amplified — it stays a pure
-// signal of how honest the choice itself was.
-const EMOTION_AMPLIFIES = {
-  Anger: 'stability',
-  Fear: 'integrity',
-  Anticipation: 'trust',
-};
 const AMPLIFY_MULTIPLIER = 1.5;
 
 // Symmetric rounding (round-half-away-from-zero) so a negative delta
@@ -22,7 +13,7 @@ function amplify(value) {
 }
 
 function applyEmotionalLean(effects, emotion) {
-  const amplifiedKey = EMOTION_AMPLIFIES[emotion];
+  const amplifiedKey = emotionAmplifies(emotion);
   if (!amplifiedKey || effects[amplifiedKey] == null) return effects;
   return { ...effects, [amplifiedKey]: amplify(effects[amplifiedKey]) };
 }

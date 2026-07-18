@@ -7,14 +7,14 @@
 // it stays a pure signal of how honest the actual swipe choice was.
 
 export const EMOTIONS = {
-  Anger:        { color: 'var(--color-feelz-anger)',        amplifies: 'stability' },
-  Fear:         { color: 'var(--color-feelz-fear)',         amplifies: 'integrity' },
-  Anticipation: { color: 'var(--color-feelz-anticipation)', amplifies: 'trust'     },
-  Trust:        { color: 'var(--color-feelz-trust)',        amplifies: 'trust'     },
-  Disgust:      { color: 'var(--color-feelz-disgust)',      amplifies: 'integrity' },
-  Joy:          { color: 'var(--color-feelz-joy)',          amplifies: 'stability' },
-  Sadness:      { color: 'var(--color-feelz-sadness)',      amplifies: 'integrity' },
-  Surprise:     { color: 'var(--color-feelz-surprise)',     amplifies: 'trust'     },
+  Anger:        { symbol: '▲', color: 'var(--color-feelz-anger)',        amplifies: 'stability' },
+  Fear:         { symbol: '◉', color: 'var(--color-feelz-fear)',         amplifies: 'integrity' },
+  Anticipation: { symbol: '▶', color: 'var(--color-feelz-anticipation)', amplifies: 'trust'     },
+  Trust:        { symbol: '◆', color: 'var(--color-feelz-trust)',        amplifies: 'trust'     },
+  Disgust:      { symbol: '✕', color: 'var(--color-feelz-disgust)',      amplifies: 'integrity' },
+  Joy:          { symbol: '★', color: 'var(--color-feelz-joy)',          amplifies: 'stability' },
+  Sadness:      { symbol: '▼', color: 'var(--color-feelz-sadness)',      amplifies: 'integrity' },
+  Surprise:     { symbol: '⊕', color: 'var(--color-feelz-surprise)',     amplifies: 'trust'     },
 };
 
 // The 8 emotions in clockwise dartboard order, matching Plutchik's wheel:
