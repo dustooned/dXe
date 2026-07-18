@@ -63,6 +63,10 @@
   transition: transform 0.15s ease, border-color 0.15s ease;
 }
 
+.dx-swipe-card.has-selected {
+  border-color: var(--selected-color);
+}
+
 .dx-swipe-card.has-preview {
   border-color: var(--preview-color);
 }

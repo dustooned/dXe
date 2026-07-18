@@ -26,9 +26,8 @@ export function createSwipeCard({ promptText, onSwipe }) {
     },
   });
 
-  // Called from outside (the FEELZ wheel, while an emotion is being
-  // dragged toward this card) to tint the frame as a live drop preview.
-  // Pass a CSS color value to preview it, or null to clear.
+  // Live drag-hover tint — shows while a FEELZ bubble is hovering over
+  // this card. Cleared on drag end regardless of outcome.
   function setPreviewColor(color) {
     if (color) {
       el.style.setProperty('--preview-color', color);
@@ -39,5 +38,17 @@ export function createSwipeCard({ promptText, onSwipe }) {
     }
   }
 
-  return { el, destroy: detach, setPreviewColor };
+  // Persistent tint for the currently selected emotion. Independent of
+  // the preview — clearing the preview doesn't clear this.
+  function setSelectedColor(color) {
+    if (color) {
+      el.style.setProperty('--selected-color', color);
+      el.classList.add('has-selected');
+    } else {
+      el.classList.remove('has-selected');
+      el.style.removeProperty('--selected-color');
+    }
+  }
+
+  return { el, destroy: detach, setPreviewColor, setSelectedColor };
 }

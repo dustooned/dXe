@@ -15,6 +15,12 @@ import * as fx from '../shell/fx.js';
 import * as audio from '../shell/audio.js';
 
 const REACTION_DELAY_MS = 2200;
+
+const FEELZ_COLORS = {
+  Anger: 'var(--color-feelz-anger)',
+  Fear: 'var(--color-feelz-fear)',
+  Anticipation: 'var(--color-feelz-anticipation)',
+};
 // Weak vs strong hit feedback is derived from how big a swipe's effects
 // are, not from truth/lie — intensity signals weight, not judgment.
 const STRONG_HIT_THRESHOLD = 8;
@@ -85,6 +91,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
         },
       });
       content.appendChild(card.el);
+
+      if (activeEmotion) {
+        card.setSelectedColor(FEELZ_COLORS[activeEmotion] ?? null);
+      }
 
       const wheel = createFeelzWheel({
         options: currentNode().feelzOptions,
