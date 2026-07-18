@@ -1,6 +1,6 @@
 # Handoff / Project Status
 
-Last updated: 2026-07-06. Read this first if you're picking this project
+Last updated: 2026-07-18. Read this first if you're picking this project
 up cold — it's the "why," not the "what" (the code and the other docs in
 this folder cover the what).
 
@@ -14,13 +14,14 @@ UI framework, Vite for dev/build only.
 ## What's actually playable right now
 
 One chapter: **Truth Debt: Lake Ulysses**. Title screen -> chapter menu
--> About/Contact -> Prologue (typewriter-drawn narrative cutscene) ->
-Therapist (location 1 — the tutorial NPC, a single swipe exchange, no
-in-fiction explanation of mechanics; teaches truth/lie purely by playing
-it) -> Deborah -> Rwanda -> Samun -> Rick (dialog, swipe truth/lie) ->
-Reckoning (confess or double down on your lies) -> one of four endings
-(Clean Cut / Functional Mask / Collapse / Living Lie) based on final
-Truth Debt. Progress (which endings you've seen) persists in
+-> About/Contact -> **Loadout screen** (pick Guns / Bible / Crystals —
+sets your emotion set for the run) -> Prologue (typewriter-drawn narrative
+cutscene) -> Therapist (location 1 — the tutorial NPC, a single swipe
+exchange, no in-fiction explanation of mechanics; teaches truth/lie purely
+by playing it) -> Deborah -> Rwanda -> Samun -> Rick (dialog, swipe
+truth/lie) -> Reckoning (confess or double down on your lies) -> one of
+four endings (Clean Cut / Functional Mask / Collapse / Living Lie) based
+on final Truth Debt. Progress (which endings you've seen) persists in
 `localStorage`.
 
 This is the *reduced demo scope* from the original design docs, not the
@@ -47,8 +48,7 @@ full vision — see "What was deliberately cut" below.
   reckoning / ending as scene *types*) specifically so cutscenes and
   mini-games — both wanted, neither built yet — have a well-defined slot
   to drop into later without another rewrite. See `SCENE_TYPES.md` for
-  the contract, including the planned (unbuilt) `cutscene` and
-  `minigame` shapes.
+  the contract, including the planned (unbuilt) `minigame` shape.
 - **Vite version pinned to latest (^8), not what the original spec
   implied.** Started on 5.x, found a moderate dev-server vulnerability in
   its bundled esbuild, bumped to 8.x, zero vulnerabilities. No reason to
@@ -64,18 +64,29 @@ full vision — see "What was deliberately cut" below.
   differs) before switching over. Full format in `SCRIPT_FORMAT.md`.
   Endings and any future cutscene/mini-game content aren't part of this
   pipeline yet — see that doc's last section for the boundary.
-- **FEELZ bubbles are drag sources now, not just buttons.** A plain tap
-  still selects an emotion instantly (unchanged), but a bubble can also
-  be dragged onto the swipe card — while hovering over it, the card's
-  frame previews that emotion's color live
-  (`swipeCard.js`'s `setPreviewColor`), and dropping there selects it,
-  same as the tap. Both gestures converge on the same `onSelect`, so
-  there's exactly one selection path, not two things to keep in sync.
-  Built entirely on Pointer Events (no native `click` listener anymore),
-  consistent with how the swipe card itself already handles mouse/touch
-  identically — note for future testing: synthetic `.click()` calls no
-  longer trigger selection, a real pointerdown/pointerup sequence is
-  required.
+- **FEELZ is now a dartboard, not 3 buttons.** `ui/feelzDartboard.js` is
+  an 8-segment SVG annulus (Plutchik wheel order, Joy centered at top,
+  clockwise). The player's class loads 3 of the 8 segments — those are
+  colored and interactive; the other 5 are faint outlines, locked for
+  the run. Segment labels are abstract symbols (★ ◉ ▲ etc.), not emotion
+  names. Tap a segment = select (no card color change — keeps drag
+  meaningful). Drag a segment onto the swipe card = select AND colors the
+  card border. Both paths call the same `onSelect(emotion, source)`.
+  The class definition, all 8 emotions, their symbols, colors, and what
+  each amplifies lives in `engine/loadout.js`; `cardEngine.js` reads from
+  there. Note for future testing: synthetic `.click()` calls don't trigger
+  selection — real `pointerdown/pointerup` events are required.
+- **Class loadout system.** Three classes (Guns / Bible / Crystals) each
+  carry 3 emotions from the Plutchik 8. Class is chosen on a pre-prologue
+  screen (`scenes/loadoutScene.js`), stored as `run.loadout`, and
+  determines which segments are active on the dartboard for the entire
+  run. Replay variety: same content, different amplification map.
+  Guns = Anger/Fear/Anticipation (same as the old 3-button default, so
+  the existing authored FEELZ effects and amplifications are unchanged).
+  Bible = Trust/Disgust/Anticipation. Crystals = Joy/Sadness/Surprise.
+  Amplification table (×1.5, lucidity deliberately never amplified):
+  Anger→stability, Fear→integrity, Anticipation→trust, Trust→trust,
+  Disgust→integrity, Joy→stability, Sadness→integrity, Surprise→trust.
 
 ## Stats — what's wired up and what isn't
 
@@ -84,14 +95,20 @@ Four meters (Integrity, Trust, Stability, Lucidity, 0–10) plus Truth Debt
 layered on top (Emotional Lean, the ending epilogue, meter-gated
 branching) is in `STAT_MATH.md`. Truth Debt is still the only stat
 driving the big structural stuff (bloom-event thresholds, forces the
-Reckoning at 10, picks the ending tier). The four meters now feed two
-things: the ending epilogue line (names whichever meter moved furthest
-from baseline), and — as of Rick — **actual content gating**: a node can
-carry an opt-in `gate` that redirects to a different node if a stat
-condition is met (`resolveGatedNode()` in `cardEngine.js`, authored via
-a manuscript `GATE:` line). Only Rick uses it so far (gated on trust, at
-his opening node). Extending this to more NPCs/stats is just more
-content authored the same way — no further engine work needed.
+Reckoning at 10, picks the ending tier). The four meters feed two things:
+the ending epilogue line (names whichever meter moved furthest from
+baseline), and **actual content gating**: a node can carry an opt-in
+`gate` that redirects to a different node if a stat condition is met
+(`resolveGatedNode()` in `cardEngine.js`, authored via a manuscript
+`GATE:` line). Only Rick uses it so far (gated on trust, at his opening
+node). Extending this to more NPCs/stats is just more content authored
+the same way — no further engine work needed.
+
+Emotional Lean now covers all 8 Plutchik emotions (not just the original
+3) — `cardEngine.js` reads the amplification table from `loadout.js`.
+Existing authored content only references Anger/Fear/Anticipation effects,
+so nothing breaks; Bible and Crystals players just get different stats
+amplified.
 
 ## What was deliberately cut from the original design docs
 
@@ -105,12 +122,7 @@ favor of something smaller and shippable. `DX Bible.md` and
 spec originally scoped the build down to 3 NPCs and 2–3 endings; Rick
 (the biker bar, 4th NPC location) and the **Collapse** ending have since
 been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
-4-ending set. What's still not in:
-
-- **The FEELZ Dartboard** (`DX MECHANICS.md`) — a much richer
-  emotion-zone-mapping system than the 3-button picker in the demo. The
-  current FEELZ wheel is a placeholder UI wired to the same node data
-  shape, so upgrading it later doesn't require touching content files.
+4-ending set.
 
 ## Known gaps (not bugs, just not done)
 
@@ -120,6 +132,11 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
   target sizes are noted in `CONTENT_SCHEMA.md`.
 - Cutscene has real content (the Prologue); mini-game has none, and no
   concrete concept picked yet — see "What's next" below.
+- All existing nodes have `feelzOptions: [Anger, Fear, Anticipation]` —
+  the manuscript FEELZ line predates the class system. Bible/Crystals
+  players see their class emotions regardless (dartboard always shows the
+  class's 3 active segments), but future nodes can be authored with
+  class-specific emotion options once the manuscript format is extended.
 
 ## What's next
 
@@ -130,14 +147,14 @@ Roughly in order of how ready each one is to just start:
 - ~~Meter-gated branching~~ — done, first use on Rick (`STAT_MATH.md`).
   Extending it to more NPCs/stats is pure content now, same pattern.
 - ~~Bandlands tutorial beat~~ — done: Therapist, location 1, right after
-  the Prologue. A single swipe exchange (the FEELZ-app/dream-recall
-  moment from `DX Bible.md`'s opening sequence), teaching truth/lie
-  purely by playing it — no in-fiction explanation of mechanics, on
-  purpose.
+  the Prologue.
+- ~~FEELZ Dartboard~~ — done: 8-segment SVG wheel, class loadout system,
+  abstract symbols, drag-to-card interaction. (`engine/loadout.js`,
+  `ui/feelzDartboard.js`, `scenes/loadoutScene.js`.)
 - **More depth in Lake Ulysses** — additional dialog branches on existing
   NPCs. Pure content through the manuscript pipeline, no engine changes.
-- **FEELZ Dartboard** (`DX MECHANICS.md`) — the richer emotion-zone
-  system, replacing the current 3-button placeholder wheel.
+  Obvious targets: a third node on any NPC (all currently cap at 2),
+  or Bible/Crystals-class-aware FEELZ options on existing nodes.
 
 **Needs a dedicated design pass first:**
 - **Mini-game** — the sequencer already supports the type for free
