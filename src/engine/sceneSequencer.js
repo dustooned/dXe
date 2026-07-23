@@ -8,7 +8,7 @@
 //   - onComplete({ jumpTo: 'someId' }) -> jump to the scene with that id
 //     (used for early exits, e.g. Truth Debt maxing out mid-NPC and forcing
 //     the Reckoning regardless of which dialog scene is active)
-export function createSceneSequencer({ scenes, handlers, context }) {
+export function createSceneSequencer({ scenes, handlers, context, transitionFn }) {
   let index = 0;
   let stageEl = null;
   let unmountCurrent = null;
@@ -39,7 +39,14 @@ export function createSceneSequencer({ scenes, handlers, context }) {
     } else {
       index += 1;
     }
-    renderCurrent();
+    if (transitionFn && scenes[index]) {
+      unmountCurrent?.();
+      unmountCurrent = null;
+      stageEl.innerHTML = '';
+      transitionFn(stageEl, renderCurrent);
+    } else {
+      renderCurrent();
+    }
   }
 
   return {

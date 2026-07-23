@@ -1,12 +1,19 @@
 // Scene type: 'cutscene'. Sequences a list of narrative beats, each drawn
 // with the typewriter effect. Tap while drawing to finish the line
-// instantly; tap again (or wait, for a timed beat) to continue. See
-// docs/SCENE_TYPES.md for the full beat shape, speed-markup syntax, and
-// the interactive-choice contract.
+// instantly; tap again (or wait, for a timed beat) to continue.
 //
-// scene shape: { type: 'cutscene', id: string, beats: [{ text?, image?, autoAdvanceMs?, interactive?, speaker? }] }
+// scene shape: {
+//   type: 'cutscene', id, beats, anims?, ambient?
+// }
+// beat shape: {
+//   text?, speaker?, style?,
+//   bgAnim?, spriteAnim?,   ← animated (key into scene.anims)
+//   image?, sprite?,        ← static fallback (direct URL)
+//   autoAdvanceMs?, interactive?
+// }
 import { createTypewriter } from '../ui/typewriterText.js';
 import { preloadTypewriterTick, playTypewriterTick, startAmbient, stopAmbient } from '../shell/audio.js';
+import { createSpriteAnimator } from '../ui/spriteAnimator.js';
 
 export function mount(stageEl, scene, { onComplete }) {
   preloadTypewriterTick();
@@ -15,11 +22,32 @@ export function mount(stageEl, scene, { onComplete }) {
   let autoAdvanceTimer = null;
   let currentTextBox = null;
 
+  // Sprite animators persist frame position across beats for the same anim key
+  // so animated backgrounds don't restart from 0 on every tap.
+  let activeAnimators = [];
+  const animFrames = {};
+
   function currentBeat() {
     return scene.beats[beatIndex];
   }
 
+  function destroyAnimators() {
+    for (const { key, animator } of activeAnimators) {
+      animFrames[key] = animator.currentFrame;
+      animator.destroy();
+    }
+    activeAnimators = [];
+  }
+
+  function attachAnim(el, key) {
+    const cfg = scene.anims?.[key];
+    if (!cfg) return;
+    const animator = createSpriteAnimator(el, cfg, animFrames[key] ?? 0);
+    activeAnimators.push({ key, animator });
+  }
+
   function render() {
+    destroyAnimators();
     clearTimeout(autoAdvanceTimer);
     stageEl.innerHTML = '';
     typewriter = null;
@@ -30,7 +58,14 @@ export function mount(stageEl, scene, { onComplete }) {
     screen.className = `dx-screen dx-cutscene-screen${beat.style ? ` dx-cutscene-screen--${beat.style}` : ''}`;
     screen.addEventListener('click', handleTap);
 
-    if (beat.image) {
+    // Background — animated or static
+    if (beat.bgAnim) {
+      const img = document.createElement('img');
+      img.className = 'dx-cutscene-bg';
+      img.alt = '';
+      screen.appendChild(img);
+      attachAnim(img, beat.bgAnim);
+    } else if (beat.image) {
       const img = document.createElement('img');
       img.className = 'dx-cutscene-bg';
       img.src = beat.image;
@@ -38,7 +73,14 @@ export function mount(stageEl, scene, { onComplete }) {
       screen.appendChild(img);
     }
 
-    if (beat.sprite) {
+    // Character sprite — animated or static
+    if (beat.spriteAnim) {
+      const spr = document.createElement('img');
+      spr.className = 'dx-cutscene-sprite';
+      spr.alt = '';
+      screen.appendChild(spr);
+      attachAnim(spr, beat.spriteAnim);
+    } else if (beat.sprite) {
       const spr = document.createElement('img');
       spr.className = 'dx-cutscene-sprite';
       spr.src = beat.sprite;
@@ -58,7 +100,6 @@ export function mount(stageEl, scene, { onComplete }) {
     }
 
     screen.appendChild(textBox);
-
     stageEl.appendChild(screen);
 
     if (beat.text) {
@@ -71,8 +112,6 @@ export function mount(stageEl, scene, { onComplete }) {
     }
   }
 
-  // Called once a beat's text (if any) has fully drawn — or immediately
-  // for a beat with no text at all (a pure image/choice beat).
   function handleBeatReady() {
     const beat = currentBeat();
     if (beat.interactive) {
@@ -121,8 +160,7 @@ export function mount(stageEl, scene, { onComplete }) {
     advance();
   }
 
-  // A tap never resolves a choice — only clicking a specific option does,
-  // so a stray tap can't skip past a deliberate decision.
+  // A tap never resolves a choice — only clicking a specific option does.
   function handleTap() {
     if (typewriter && !typewriter.isDone()) {
       typewriter.finish();
@@ -147,6 +185,7 @@ export function mount(stageEl, scene, { onComplete }) {
   render();
 
   return function unmount() {
+    destroyAnimators();
     clearTimeout(autoAdvanceTimer);
     typewriter?.destroy();
     if (scene.ambient) stopAmbient();

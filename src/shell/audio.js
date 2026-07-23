@@ -276,6 +276,38 @@ export function stopLeitmotif() {
   activeLeitmotif = null;
 }
 
+// ─── TV static noise burst ────────────────────────────────────────────────────
+// White noise filtered to RF-static frequencies. Safe to call fire-and-forget;
+// the source stops automatically after durationMs.
+
+export function playStaticNoise(durationMs = 480) {
+  const audioCtx = ensureContext();
+  const bufferSize = audioCtx.sampleRate * 2;
+  const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+  const source = audioCtx.createBufferSource();
+  source.buffer = buffer;
+  source.loop = true;
+
+  const hpf = audioCtx.createBiquadFilter();
+  hpf.type = 'highpass';
+  hpf.frequency.value = 1800;
+
+  const gain = audioCtx.createGain();
+  const now = audioCtx.currentTime;
+  const durSec = durationMs / 1000;
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.22, now + 0.02);
+  gain.gain.setValueAtTime(0.22, now + durSec - 0.05);
+  gain.gain.linearRampToValueAtTime(0, now + durSec);
+
+  source.connect(hpf).connect(gain).connect(masterGain);
+  source.start(now);
+  source.stop(now + durSec + 0.1);
+}
+
 // ─── Hit feedback ─────────────────────────────────────────────────────────────
 
 export function playHit(intensity = 'weak') {
