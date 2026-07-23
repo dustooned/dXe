@@ -285,12 +285,14 @@ export function stopLeitmotif() {
 
 export async function startTitleMusic() {
   stopTitleMusic();
-  for (const url of [
+  const audioCtx = ensureContext();
+  const urls = [
     '/assets/shared/audio/title/snd_lake_title.mp3',
     '/assets/shared/audio/title/snd_titlemusic.mp3',
-  ]) {
-    const audioCtx = ensureContext();
-    const buffer = await loadAudio(url);
+  ];
+  // Load both in parallel so they start at the exact same time.
+  const buffers = await Promise.all(urls.map(loadAudio));
+  for (const buffer of buffers) {
     const gain = audioCtx.createGain();
     gain.gain.value = TITLE_MUSIC_GAIN;
     gain.connect(masterGain);
@@ -304,8 +306,9 @@ export async function startTitleMusic() {
 }
 
 export function stopTitleMusic() {
-  for (const { source } of titleSources) {
+  for (const { source, gain } of titleSources) {
     try { source.stop(); } catch (_) {}
+    gain.disconnect();
   }
   titleSources = [];
 }

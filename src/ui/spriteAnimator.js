@@ -7,16 +7,18 @@ const PAD = (n) => String(n).padStart(4, '0');
 
 export function createSpriteAnimator(imgEl, anim, startFrame = 0) {
   let frame = startFrame % anim.frames;
-  let lastTime = 0;
+  let lastTime = null; // null = not yet set; avoids skipping frame 0 on first tick
   const msPerFrame = 1000 / (anim.fps ?? 12);
   let rafId = null;
 
   imgEl.src = `${anim.base}${PAD(frame)}.webp`;
 
   function tick(now) {
-    if (now - lastTime >= msPerFrame) {
-      frame = (frame + 1) % anim.frames;
-      imgEl.src = `${anim.base}${PAD(frame)}.webp`;
+    if (lastTime === null || now - lastTime >= msPerFrame) {
+      if (lastTime !== null) {
+        frame = (frame + 1) % anim.frames;
+        imgEl.src = `${anim.base}${PAD(frame)}.webp`;
+      }
       lastTime = now;
     }
     rafId = requestAnimationFrame(tick);

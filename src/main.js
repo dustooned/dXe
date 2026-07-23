@@ -11,7 +11,7 @@ const CHAPTERS = {
   'lake-ulysses': {
     title: 'Truth Debt: Lake Ulysses',
     load: () => import('./chapters/lake-ulysses/index.js'),
-    firstPlayScene: 'questionnaire', // skip-story jumps here
+    firstPlayScene: 'questionnaire',
   },
 };
 
@@ -30,10 +30,36 @@ function teardown() {
 }
 
 // ─── Title screen ─────────────────────────────────────────────────────────────
+// Two-phase: intro (unlocks audio, starts music) → menu (ENTER / SKIP).
+// Browsers suspend AudioContext until first user gesture, so we need the
+// intro tap to happen before showing the menu buttons.
 
 function renderTitle() {
   teardown();
-  startTitleMusic();
+  renderIntro();
+}
+
+function renderIntro() {
+  const screen = document.createElement('div');
+  screen.className = 'dx-screen dx-intro-screen';
+  screen.innerHTML = `
+    <h1 class="dx-title">DREAM XTREME</h1>
+    <p class="dx-press-start">▶ TAP TO START</p>
+  `;
+
+  function onTap() {
+    screen.removeEventListener('click', onTap);
+    startTitleMusic();
+    renderTitleMenu();
+  }
+  screen.addEventListener('click', onTap);
+  canvas.appendChild(screen);
+
+  currentUnmount = stopTitleMusic;
+}
+
+function renderTitleMenu() {
+  canvas.innerHTML = '';
 
   const save = loadSave();
   const hasPlayed = save.chaptersCompleted.length > 0;
@@ -66,7 +92,6 @@ function renderTitle() {
 }
 
 function showSkipDialog(screen, menu) {
-  // Dim the buttons while dialog is open
   menu.style.opacity = '0.3';
   menu.style.pointerEvents = 'none';
 
@@ -95,12 +120,12 @@ function showSkipDialog(screen, menu) {
   screen.appendChild(dialog);
 }
 
-// Cuts title music, plays snd_start, fades to black over 6100ms, then
-// navigates. Any tap during the fade skips to the chapter immediately.
+// Cuts title music, plays snd_start (6.1s), fades to black over the same
+// duration, then navigates. Any tap skips the wait and goes straight in.
 function beginTransition(destination) {
   stopTitleMusic();
+  const FADE_MS = 6100;
 
-  const FADE_MS = 6100; // matched to snd_start duration
   playStartJingle().then((jingle) => {
     const fade = fadeToBlack(FADE_MS, () => {
       jingle.stop();
@@ -182,7 +207,7 @@ async function renderChapter(chapterId, startAt) {
 // ─── Router ───────────────────────────────────────────────────────────────────
 
 onRouteChange(({ screen, param, startAt }) => {
-  if (screen === 'menu')    renderMenu();
+  if (screen === 'menu')         renderMenu();
   else if (screen === 'about')   renderAbout();
   else if (screen === 'chapter') renderChapter(param, startAt);
   else                           renderTitle();
