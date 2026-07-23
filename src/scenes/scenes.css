@@ -225,7 +225,8 @@
 
 .dx-cutscene-text {
   margin: 0;
-  line-height: 1.9;
+  line-height: 2.2;
+  text-align: center;
 }
 
 .dx-cutscene-choices {

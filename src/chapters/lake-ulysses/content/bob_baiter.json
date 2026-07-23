@@ -2,15 +2,15 @@
   "beats": [
     {
       "speaker": "BOB BAITER",
-      "text": "Ladies and Gentlemen!\nI'm Lake Ulysses councilman Bob Baiter!"
+      "text": "Ladies and Gentlemen!\nI'm Lake Ulysses\ncouncilman Bob Baiter!"
     },
     {
       "speaker": "BOB BAITER",
-      "text": "It's my pleasure to announce after nearly a decade,\nboating and fishing are once again"
+      "text": "It's my pleasure to announce\nafter nearly a decade,"
     },
     {
       "speaker": "BOB BAITER",
-      "text": "permitted throughout our beautiful\nthree thousand acre jewel!"
+      "text": "boating and fishing\nare once again permitted\nthroughout our beautiful\nthree-thousand acre jewel!"
     },
     {
       "speaker": "BOB BAITER",
@@ -18,11 +18,11 @@
     },
     {
       "speaker": "BOB BAITER",
-      "text": "With recent rains and cooler temperatures\nwe are pleased to report that"
+      "text": "With recent rains\nand cooler temperatures\nwe are pleased to report that"
     },
     {
       "speaker": "BOB BAITER",
-      "text": "state regional water boards\nhave deemed Lake Ulysses as {slow}acceptable.{/slow}"
+      "text": "state regional water boards\nhave deemed Lake Ulysses\nas {slow}acceptable.{/slow}"
     },
     {
       "speaker": "BOB BAITER",
@@ -34,11 +34,11 @@
     },
     {
       "speaker": "BOB BAITER",
-      "text": "Families are advised not to\ndrink the water,"
+      "text": "Families are advised\nnot to drink the water,"
     },
     {
       "speaker": "BOB BAITER",
-      "text": "or allow your pets to\nenter the lake."
+      "text": "or allow your pets\nto enter the lake."
     },
     {
       "speaker": "BOB BAITER",
@@ -54,11 +54,11 @@
     },
     {
       "speaker": "BOB BAITER",
-      "text": "{slow}NOW AVAILABLE AT MY SHOP!{/slow}"
+      "text": "{slow}NOW AVAILABLE\nAT MY SHOP!{/slow}"
     },
     {
       "speaker": "BOB BAITER",
-      "text": "From live bait to\nthe latest fishing gear!"
+      "text": "From live bait\nto the latest fishing gear!"
     },
     {
       "speaker": "BOB BAITER",
@@ -70,8 +70,8 @@
     },
     {
       "speaker": "BOB BAITER",
-      "text": "{slow}Welcome back, Lake Ulysses!{/slow}",
-      "autoAdvanceMs": 2000
+      "text": "{slow}Welcome back,\nLake Ulysses!{/slow}",
+      "autoAdvanceMs": 2500
     },
     {
       "speaker": "BOB BAITER",
