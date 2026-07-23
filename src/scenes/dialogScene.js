@@ -15,8 +15,6 @@ import { drawEmotionPattern } from '../ui/emotionPattern.js';
 import * as fx from '../shell/fx.js';
 import * as audio from '../shell/audio.js';
 
-const LAKE_AMBIENT = '/assets/lake-ulysses/audio/lk_01.mp3';
-
 const REACTION_DELAY_MS = 2200;
 
 // Weak vs strong hit feedback is derived from how big a swipe's effects
@@ -167,15 +165,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
     onComplete();
   }
 
-  audio.startAmbient(LAKE_AMBIENT);
-  audio.startLeitmotif(npc.npc);
   enterNode();
 
   return function unmount() {
     clearTimeout(reactionTimer);
     audio.stopEmotionStems();
-    audio.stopLeitmotif();
-    audio.stopAmbient();
     stageEl.innerHTML = '';
   };
 }
