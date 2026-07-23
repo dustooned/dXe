@@ -7,6 +7,10 @@
 // Full text is pre-laid-out as invisible spans up front so line-wrapping
 // never shifts as characters reveal, and "finish instantly" is just
 // making everything visible at once rather than re-rendering anything.
+//
+// Each word's character spans are wrapped in a dx-typewriter-word
+// (display:inline-block) so the browser wraps at word boundaries only,
+// never mid-character between individual char spans.
 const DEFAULT_MS_PER_CHAR = 28;
 const SPEED_MULTIPLIER = { slow: 2.6, fast: 0.35, normal: 1 };
 const TAG_PATTERN = /\{(\/?)(slow|fast)\}|\{pause:(\d+)\}/g;
@@ -50,17 +54,35 @@ export function createTypewriter(container, text, { onDone, onChar } = {}) {
   container.innerHTML = '';
   const segments = parseSegments(text);
 
+  // Group character spans by word so the browser can only break at spaces,
+  // never mid-word between individual character spans.
   const charSpans = [];
+  let wordSpan = null;
+
   for (const seg of segments) {
     if (seg.type === 'br') {
+      wordSpan = null;
       container.appendChild(document.createElement('br'));
       continue;
     }
     if (seg.type !== 'char') continue;
+
+    if (seg.char === ' ') {
+      wordSpan = null;
+      container.appendChild(document.createTextNode(' '));
+      continue;
+    }
+
+    if (!wordSpan) {
+      wordSpan = document.createElement('span');
+      wordSpan.className = 'dx-typewriter-word';
+      container.appendChild(wordSpan);
+    }
+
     const span = document.createElement('span');
     span.className = 'dx-typewriter-char';
-    span.textContent = seg.char === ' ' ? ' ' : seg.char;
-    container.appendChild(span);
+    span.textContent = seg.char;
+    wordSpan.appendChild(span);
     charSpans.push(span);
   }
 

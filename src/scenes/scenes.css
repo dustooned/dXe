@@ -152,6 +152,11 @@
 
 /* Typewriter text (shared by any scene that draws text character-by-
    character — currently the cutscene scene). */
+.dx-typewriter-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
 .dx-typewriter-char {
   opacity: 0;
   transition: opacity 0.05s linear;
