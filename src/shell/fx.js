@@ -24,6 +24,40 @@ export function flash(intensity = 'weak') {
   anim.onfinish = () => overlay.remove();
 }
 
+// Fades the canvas to solid black over durationMs, then calls onComplete.
+// Returns { skip } — call it to snap to black and complete immediately.
+export function fadeToBlack(durationMs, onComplete) {
+  if (!canvasEl) { onComplete?.(); return { skip() {} }; }
+
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:998';
+  canvasEl.appendChild(overlay);
+
+  let done = false;
+  const complete = () => {
+    if (done) return;
+    done = true;
+    onComplete?.();
+  };
+
+  const anim = overlay.animate([{ opacity: 0 }, { opacity: 1 }], {
+    duration: durationMs,
+    fill: 'forwards',
+    easing: 'linear',
+  });
+  const timer = setTimeout(complete, durationMs);
+
+  return {
+    skip() {
+      if (done) return;
+      anim.cancel();
+      overlay.style.opacity = '1';
+      clearTimeout(timer);
+      requestAnimationFrame(complete);
+    },
+  };
+}
+
 export function shake(intensity = 'weak') {
   if (!canvasEl) return;
   const d = SHAKE_DISTANCE_PX[intensity] ?? SHAKE_DISTANCE_PX.weak;

@@ -3,13 +3,15 @@ import './ui/ui.css';
 import './scenes/scenes.css';
 import { onRouteChange, navigate } from './shell/router.js';
 import { loadSave } from './shell/save.js';
-import { initFx } from './shell/fx.js';
+import { initFx, fadeToBlack } from './shell/fx.js';
+import { startTitleMusic, stopTitleMusic, playStartJingle } from './shell/audio.js';
 
 // Chapter registry — adding a new chapter later is one entry here.
 const CHAPTERS = {
   'lake-ulysses': {
     title: 'Truth Debt: Lake Ulysses',
     load: () => import('./chapters/lake-ulysses/index.js'),
+    firstPlayScene: 'questionnaire', // skip-story jumps here
   },
 };
 
@@ -27,26 +29,92 @@ function teardown() {
   canvas.innerHTML = '';
 }
 
+// ─── Title screen ─────────────────────────────────────────────────────────────
+
 function renderTitle() {
   teardown();
+  startTitleMusic();
+
+  const save = loadSave();
+  const hasPlayed = save.chaptersCompleted.length > 0;
+
   const screen = document.createElement('div');
-  screen.className = 'dx-screen';
+  screen.className = 'dx-screen dx-title-screen';
   screen.innerHTML = `
     <h1 class="dx-title">DREAM XTREME</h1>
-    <p class="dx-text" style="text-align:center">Lake Ulysses. The water looks fine.</p>
+    <p class="dx-text dx-title-sub">Lake Ulysses. The water looks fine.</p>
   `;
 
   const menu = document.createElement('div');
   menu.className = 'dx-menu';
-  const startBtn = document.createElement('button');
-  startBtn.className = 'dx-btn';
-  startBtn.textContent = 'ENTER';
-  startBtn.addEventListener('click', () => navigate('menu'));
-  menu.appendChild(startBtn);
 
+  const enterBtn = document.createElement('button');
+  enterBtn.className = 'dx-btn';
+  enterBtn.textContent = 'ENTER';
+  enterBtn.addEventListener('click', () => {
+    if (hasPlayed) {
+      showSkipDialog(screen, menu);
+    } else {
+      beginTransition('chapter/lake-ulysses');
+    }
+  });
+  menu.appendChild(enterBtn);
   screen.appendChild(menu);
   canvas.appendChild(screen);
+
+  currentUnmount = stopTitleMusic;
 }
+
+function showSkipDialog(screen, menu) {
+  // Dim the buttons while dialog is open
+  menu.style.opacity = '0.3';
+  menu.style.pointerEvents = 'none';
+
+  const dialog = document.createElement('div');
+  dialog.className = 'dx-skip-dialog';
+  dialog.innerHTML = `<p class="dx-text">You've been here before.<br>Skip the story?</p>`;
+
+  const btnRow = document.createElement('div');
+  btnRow.className = 'dx-menu';
+  btnRow.style.flexDirection = 'row';
+  btnRow.style.gap = '12px';
+
+  const yesBtn = document.createElement('button');
+  yesBtn.className = 'dx-btn';
+  yesBtn.textContent = 'SKIP';
+  yesBtn.addEventListener('click', () => beginTransition('chapter/lake-ulysses/questionnaire'));
+
+  const noBtn = document.createElement('button');
+  noBtn.className = 'dx-btn';
+  noBtn.textContent = 'REPLAY';
+  noBtn.addEventListener('click', () => beginTransition('chapter/lake-ulysses'));
+
+  btnRow.appendChild(yesBtn);
+  btnRow.appendChild(noBtn);
+  dialog.appendChild(btnRow);
+  screen.appendChild(dialog);
+}
+
+// Cuts title music, plays snd_start, fades to black over 6100ms, then
+// navigates. Any tap during the fade skips to the chapter immediately.
+function beginTransition(destination) {
+  stopTitleMusic();
+
+  const FADE_MS = 6100; // matched to snd_start duration
+  playStartJingle().then((jingle) => {
+    const fade = fadeToBlack(FADE_MS, () => {
+      jingle.stop();
+      navigate(destination);
+    });
+
+    canvas.addEventListener('click', () => {
+      jingle.stop();
+      fade.skip();
+    }, { once: true });
+  });
+}
+
+// ─── Chapter select ───────────────────────────────────────────────────────────
 
 function renderMenu() {
   teardown();
@@ -77,6 +145,8 @@ function renderMenu() {
   canvas.appendChild(screen);
 }
 
+// ─── About ────────────────────────────────────────────────────────────────────
+
 function renderAbout() {
   teardown();
   const screen = document.createElement('div');
@@ -96,20 +166,24 @@ function renderAbout() {
   canvas.appendChild(screen);
 }
 
-async function renderChapter(chapterId) {
+// ─── Chapter ──────────────────────────────────────────────────────────────────
+
+async function renderChapter(chapterId, startAt) {
   teardown();
   const chapter = CHAPTERS[chapterId];
-  if (!chapter) {
-    navigate('menu');
-    return;
-  }
+  if (!chapter) { navigate('menu'); return; }
   const mod = await chapter.load();
-  currentUnmount = mod.mount(canvas, { exit: () => navigate('menu') });
+  currentUnmount = mod.mount(canvas, {
+    exit: () => navigate('menu'),
+    startSceneId: startAt || null,
+  });
 }
 
-onRouteChange(({ screen, param }) => {
-  if (screen === 'menu') renderMenu();
-  else if (screen === 'about') renderAbout();
-  else if (screen === 'chapter') renderChapter(param);
-  else renderTitle();
+// ─── Router ───────────────────────────────────────────────────────────────────
+
+onRouteChange(({ screen, param, startAt }) => {
+  if (screen === 'menu')    renderMenu();
+  else if (screen === 'about')   renderAbout();
+  else if (screen === 'chapter') renderChapter(param, startAt);
+  else                           renderTitle();
 });

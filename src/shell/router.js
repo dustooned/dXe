@@ -1,8 +1,8 @@
 // Tiny hash router. Paths look like #/menu, #/about, #/chapter/lake-ulysses
 function parseHash() {
   const hash = location.hash.replace(/^#\/?/, '');
-  const [screen, ...rest] = hash.split('/').filter(Boolean);
-  return { screen: screen || 'title', param: rest.join('/') || null };
+  const [screen, param, startAt] = hash.split('/').filter(Boolean);
+  return { screen: screen || 'title', param: param || null, startAt: startAt || null };
 }
 
 export function navigate(path) {

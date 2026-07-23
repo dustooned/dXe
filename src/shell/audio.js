@@ -8,6 +8,7 @@ let stems = {};
 let activeLeitmotif = null;
 let ambientSource = null;
 let ambientGain = null;
+let titleSources = [];
 
 const audioCache = new Map();
 
@@ -17,12 +18,14 @@ const STEM_CONFIG = {
   Anticipation: { type: 'triangle', freq: 165 },
 };
 
-const AMBIENT_GAIN    = 0.06;
-const EMPHASIS_GAIN   = 0.16;
-const LEITMOTIF_GAIN  = 0.14;
+const AMBIENT_GAIN       = 0.06;
+const EMPHASIS_GAIN      = 0.16;
+const LEITMOTIF_GAIN     = 0.14;
 const AMBIENT_MUSIC_GAIN = 0.07;
-const TYAGL_GAIN      = 0.45;
-const TYPEWRITER_GAIN = 0.28;
+const TYAGL_GAIN         = 0.45;
+const TYPEWRITER_GAIN    = 0.28;
+const TITLE_MUSIC_GAIN   = 0.13;
+const START_JINGLE_GAIN  = 0.75;
 
 function clamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
 
@@ -274,6 +277,55 @@ export async function startLeitmotif(npcKey) {
 export function stopLeitmotif() {
   activeLeitmotif?.stop();
   activeLeitmotif = null;
+}
+
+// ─── Title screen music ───────────────────────────────────────────────────────
+// Two simultaneous looping layers: snd_lake_title (pad) + snd_titlemusic
+// (theme). Both start together and stop together when play begins.
+
+export async function startTitleMusic() {
+  stopTitleMusic();
+  for (const url of [
+    '/assets/shared/audio/title/snd_lake_title.mp3',
+    '/assets/shared/audio/title/snd_titlemusic.mp3',
+  ]) {
+    const audioCtx = ensureContext();
+    const buffer = await loadAudio(url);
+    const gain = audioCtx.createGain();
+    gain.gain.value = TITLE_MUSIC_GAIN;
+    gain.connect(masterGain);
+    const source = audioCtx.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    source.connect(gain);
+    source.start();
+    titleSources.push({ source, gain });
+  }
+}
+
+export function stopTitleMusic() {
+  for (const { source } of titleSources) {
+    try { source.stop(); } catch (_) {}
+  }
+  titleSources = [];
+}
+
+// Plays snd_start once (the dramatic "game begin" jingle).
+// Returns { stop, duration } — stop() cuts it early on skip.
+export async function playStartJingle() {
+  const audioCtx = ensureContext();
+  const buffer = await loadAudio('/assets/shared/audio/title/snd_start.mp3');
+  const gain = audioCtx.createGain();
+  gain.gain.value = START_JINGLE_GAIN;
+  gain.connect(masterGain);
+  const source = audioCtx.createBufferSource();
+  source.buffer = buffer;
+  source.connect(gain);
+  source.start();
+  return {
+    stop() { try { source.stop(); } catch (_) {} },
+    duration: buffer.duration,
+  };
 }
 
 // ─── TV static noise burst ────────────────────────────────────────────────────

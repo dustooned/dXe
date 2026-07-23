@@ -60,13 +60,14 @@ const initialRunState = {
   loadout: 'Guns',
 };
 
-export function mount(stageEl, { exit }) {
+export function mount(stageEl, { exit, startSceneId }) {
   const run = createStore(initialRunState);
   const sequencer = createSceneSequencer({
     scenes: SCENES,
     handlers: HANDLERS,
     context: { run, exit, recordEnding, chapterId: id },
     transitionFn: playStaticTransition,
+    startSceneId,
   });
 
   sequencer.mount(stageEl);
