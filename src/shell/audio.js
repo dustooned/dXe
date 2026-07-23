@@ -132,7 +132,7 @@ export function stopAmbient() {
 let typewriterBuffer = null;
 
 export async function preloadTypewriterTick() {
-  typewriterBuffer = await loadAudio('/assets/shared/audio/typewriter_tick.wav');
+  typewriterBuffer = await loadAudio('/assets/shared/audio/typewriter_tick.mp3');
 }
 
 export function playTypewriterTick() {
@@ -148,7 +148,7 @@ export function playTypewriterTick() {
 
 export async function playTyagl() {
   const audioCtx = ensureContext();
-  const buffer = await loadAudio('/assets/shared/audio/tyagl.wav');
+  const buffer = await loadAudio('/assets/shared/audio/tyagl.mp3');
   const source = audioCtx.createBufferSource();
   source.buffer = buffer;
   const gain = audioCtx.createGain();
