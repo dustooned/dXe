@@ -1,16 +1,20 @@
 {
   "beats": [
     {
+      "style": "narration",
       "text": "I think that there's probably a revelatory experience awaiting everyone\nthat has to do with finding out {slow}who and what you really are.{/slow}"
     },
     {
+      "style": "narration",
       "text": "I think that when that occurs, if it occurs, you reach Nirvana-Heaven\nand the degree to which you don't reach that place of realization...{pause:500}\n{slow}...you are in eternal hell.{/slow}"
     },
     {
+      "style": "narration",
       "text": "James Toback, Oscar Nominated Screenwriter.",
       "autoAdvanceMs": 2200
     },
     {
+      "style": "narration",
       "text": "{slow}Alleged Predator.{/slow}",
       "autoAdvanceMs": 3500
     }

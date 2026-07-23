@@ -27,7 +27,7 @@ export function mount(stageEl, scene, { onComplete }) {
     const beat = currentBeat();
 
     const screen = document.createElement('div');
-    screen.className = 'dx-screen dx-cutscene-screen';
+    screen.className = `dx-screen dx-cutscene-screen${beat.style ? ` dx-cutscene-screen--${beat.style}` : ''}`;
     screen.addEventListener('click', handleTap);
 
     if (beat.image) {

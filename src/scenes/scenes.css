@@ -168,6 +168,26 @@
   padding: 0;
 }
 
+.dx-cutscene-screen--narration {
+  justify-content: center;
+  align-items: center;
+}
+
+.dx-cutscene-screen--narration .dx-cutscene-textbox {
+  border: none;
+  background: transparent;
+  text-align: center;
+  margin: 32px;
+  min-height: 0;
+}
+
+.dx-cutscene-screen--narration .dx-continue-arrow {
+  position: static;
+  display: block;
+  margin-top: 20px;
+  animation: dx-bob 0.9s ease-in-out infinite;
+}
+
 .dx-cutscene-bg {
   position: absolute;
   inset: 0;
