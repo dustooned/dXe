@@ -2,79 +2,117 @@
   "beats": [
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0000.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0000.webp",
       "text": "Ladies and Gentlemen!\nI'm Lake Ulysses\ncouncilman Bob Baiter!"
     },
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0002.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0001.webp",
       "text": "It's my pleasure to announce\nafter nearly a decade,"
     },
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0004.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0002.webp",
       "text": "boating and fishing\nare once again permitted\nthroughout our beautiful\nthree-thousand acre jewel!"
     },
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0006.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0003.webp",
       "text": "City council has been carefully\nmonitoring toxicity levels."
     },
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0008.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0004.webp",
       "text": "With recent rains\nand cooler temperatures\nwe are pleased to report that"
     },
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0010.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0005.webp",
       "text": "state regional water boards\nhave deemed Lake Ulysses\nas {slow}acceptable.{/slow}"
     },
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0012.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0006.webp",
       "text": "You know what that means!\nYour family and friends are"
     },
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0014.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0007.webp",
       "text": "legally allowed to return\nto our blue pride and joy!"
     },
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0016.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0008.webp",
       "text": "Families are advised\nnot to drink the water,"
     },
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0018.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0009.webp",
       "text": "or allow your pets\nto enter the lake."
     },
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0020.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0000.webp",
       "text": "Pregnant women are cautioned\nto keep their skin covered\nat all times."
     },
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0022.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0001.webp",
       "text": "And {slow}most importantly{/slow} —"
     },
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0024.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0002.webp",
       "text": "give your catch of the day\na good scrubbin' with\nsome fresh bottled water!"
     },
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0026.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0003.webp",
       "text": "{slow}NOW AVAILABLE\nAT MY SHOP!{/slow}"
     },
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0028.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0004.webp",
       "text": "From live bait\nto the latest fishing gear!"
     },
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0030.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0005.webp",
       "text": "We've got you covered!"
     },
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0032.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0006.webp",
       "text": "Whether you're local\nor just passin' by —"
     },
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0034.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0007.webp",
       "text": "{slow}Welcome back,\nLake Ulysses!{/slow}",
       "autoAdvanceMs": 2500
     },
     {
       "speaker": "BOB BAITER",
+      "image": "/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0036.webp",
+      "sprite": "/assets/lake-ulysses/sprites/spr_bb/spr_bb_0008.webp",
       "text": "Now let's go enjoy\nour watery playground!"
     }
   ]

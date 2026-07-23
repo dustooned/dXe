@@ -2,19 +2,23 @@
   "beats": [
     {
       "style": "narration",
+      "image": "/assets/lake-ulysses/sprites/spr_QuoteBG/spr_QuoteBG_0000.webp",
       "text": "I think that there's probably\na revelatory experience\nawaiting everyone\nthat has to do with finding out\n{slow}who and what you really are.{/slow}"
     },
     {
       "style": "narration",
+      "image": "/assets/lake-ulysses/sprites/spr_QuoteBG/spr_QuoteBG_0001.webp",
       "text": "I think that when that occurs,\nif it occurs,\nyou reach Nirvana-Heaven\nand the degree to which\nyou don't reach that place\nof realization...{pause:500}\n{slow}...you are in eternal hell.{/slow}"
     },
     {
       "style": "narration",
+      "image": "/assets/lake-ulysses/sprites/spr_QuoteBG/spr_QuoteBG_0002.webp",
       "text": "James Toback,\nOscar Nominated Screenwriter.",
       "autoAdvanceMs": 2800
     },
     {
       "style": "narration",
+      "image": "/assets/lake-ulysses/sprites/spr_QuoteBG/spr_QuoteBG_0003.webp",
       "text": "{slow}Alleged Predator.{/slow}",
       "autoAdvanceMs": 3500
     }

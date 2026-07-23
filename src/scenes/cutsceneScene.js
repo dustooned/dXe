@@ -6,7 +6,7 @@
 //
 // scene shape: { type: 'cutscene', id: string, beats: [{ text?, image?, autoAdvanceMs?, interactive?, speaker? }] }
 import { createTypewriter } from '../ui/typewriterText.js';
-import { preloadTypewriterTick, playTypewriterTick } from '../shell/audio.js';
+import { preloadTypewriterTick, playTypewriterTick, startAmbient, stopAmbient } from '../shell/audio.js';
 
 export function mount(stageEl, scene, { onComplete }) {
   preloadTypewriterTick();
@@ -36,6 +36,14 @@ export function mount(stageEl, scene, { onComplete }) {
       img.src = beat.image;
       img.alt = '';
       screen.appendChild(img);
+    }
+
+    if (beat.sprite) {
+      const spr = document.createElement('img');
+      spr.className = 'dx-cutscene-sprite';
+      spr.src = beat.sprite;
+      spr.alt = '';
+      screen.appendChild(spr);
     }
 
     const textBox = document.createElement('div');
@@ -135,11 +143,13 @@ export function mount(stageEl, scene, { onComplete }) {
     render();
   }
 
+  if (scene.ambient) startAmbient(scene.ambient);
   render();
 
   return function unmount() {
     clearTimeout(autoAdvanceTimer);
     typewriter?.destroy();
+    if (scene.ambient) stopAmbient();
     stageEl.innerHTML = '';
   };
 }

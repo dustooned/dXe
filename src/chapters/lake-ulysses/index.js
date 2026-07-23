@@ -26,7 +26,7 @@ export const title = 'Truth Debt: Lake Ulysses';
 // is just another entry here — see docs/SCENE_TYPES.md.
 const SCENES = [
   { type: 'cutscene', id: 'opening-quote', beats: openingQuote.beats },
-  { type: 'cutscene', id: 'bob-baiter', beats: bobBaiter.beats },
+  { type: 'cutscene', id: 'bob-baiter', beats: bobBaiter.beats, ambient: '/assets/lake-ulysses/audio/lk_01.mp3' },
   { type: 'questionnaire', id: 'questionnaire' },
   { type: 'cutscene', id: 'prologue', beats: prologue.beats },
   { type: 'dialog', id: 'therapist', npc: therapist },

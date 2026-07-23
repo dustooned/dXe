@@ -203,9 +203,20 @@
   object-fit: cover;
 }
 
+.dx-cutscene-sprite {
+  position: absolute;
+  z-index: 1;
+  bottom: 130px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 600px;
+  width: auto;
+  pointer-events: none;
+}
+
 .dx-cutscene-textbox {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   border: 2px solid var(--color-white);
   background: var(--color-black);
   padding: 16px;
