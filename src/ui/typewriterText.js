@@ -20,7 +20,11 @@ export function parseSegments(raw) {
   function pushChars(text) {
     const speed = speedStack[speedStack.length - 1];
     for (const char of text) {
-      segments.push({ type: 'char', char, delayMs: DEFAULT_MS_PER_CHAR * SPEED_MULTIPLIER[speed] });
+      if (char === '\n') {
+        segments.push({ type: 'br' });
+      } else {
+        segments.push({ type: 'char', char, delayMs: DEFAULT_MS_PER_CHAR * SPEED_MULTIPLIER[speed] });
+      }
     }
   }
 
@@ -48,6 +52,10 @@ export function createTypewriter(container, text, { onDone, onChar } = {}) {
 
   const charSpans = [];
   for (const seg of segments) {
+    if (seg.type === 'br') {
+      container.appendChild(document.createElement('br'));
+      continue;
+    }
     if (seg.type !== 'char') continue;
     const span = document.createElement('span');
     span.className = 'dx-typewriter-char';
