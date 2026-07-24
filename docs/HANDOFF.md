@@ -1,6 +1,6 @@
 # Handoff / Project Status
 
-Last updated: 2026-07-18. Read this first if you're picking this project
+Last updated: 2026-07-23. Read this first if you're picking this project
 up cold — it's the "why," not the "what" (the code and the other docs in
 this folder cover the what).
 
@@ -124,12 +124,33 @@ spec originally scoped the build down to 3 NPCs and 2–3 endings; Rick
 been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 4-ending set.
 
+## Asset inventory
+
+**Sprites** (all in `public/assets/lake-ulysses/sprites/`):
+- `spr_lake_bg_001/` — 46-frame animated lake background, 390×844px WebP, ~5MB total. Used in `bob_baiter` scene.
+- `spr_bb/` — 10-frame bob_baiter character sprite. Used in `bob_baiter` scene.
+- `spr_QuoteBG/` — 5-frame quote-screen background. Used in `opening_quote` scene.
+
+**Shared sprites** (`public/assets/shared/sprites/`):
+- `spr_inkflo_logo.webm` / `.mp4` — inkflo Graphics logo animation, white-on-black, 256KB / 192KB. Played by the preloader screen.
+
+**Audio** (`public/assets/lake-ulysses/audio/`):
+- `lk_01.mp3` — lake ambient loop. Used in `bob_baiter` scene.
+- `heavens_waiting_room.mp3` — Therapist leitmotif/ambient. Used in questionnaire scene.
+- `ann_01.mp3` — **sourced, not yet wired**. Destination scene TBD.
+
+**Shared audio** (`public/assets/shared/audio/`):
+- `snd_inkflo_logo.mp3` (160KB) — logo sting, plays during preloader.
+- `tyagl.mp3`, `typewriter_tick.mp3` — SFX.
+- `title/snd_lake_title.mp3`, `snd_titlemusic.mp3`, `snd_start.mp3` — title screen music + jingle.
+
+**NPC portraits** are still colored initials (`ui/npcPortrait.js`) — no character art yet for dialog scenes.
+
 ## Known gaps (not bugs, just not done)
 
-- No real art. NPC portraits are colored initials (`ui/npcPortrait.js`).
-  Audio is placeholder oscillator tones (emotion stems, per-NPC
-  leitmotifs, hit sounds) — no real instrumental loops or SFX. Asset
-  target sizes are noted in `CONTENT_SCHEMA.md`.
+- NPC portrait art — dialog scenes use colored-initial placeholders.
+- Placeholder audio — emotion stems and hit sounds are oscillator tones in `shell/audio.js`; no real instrumental stems yet.
+- `ann_01.mp3` is in the repo but not wired to any scene.
 - Cutscene has real content (the Prologue); mini-game has none, and no
   concrete concept picked yet — see "What's next" below.
 - All existing nodes have `feelzOptions: [Anger, Fear, Anticipation]` —
