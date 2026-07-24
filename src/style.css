@@ -107,6 +107,25 @@ body {
   margin-bottom: auto;
 }
 
+/* ── Preloader ─────────────────────────────────────────── */
+.dx-preloader-screen {
+  justify-content: center;
+  align-items: center;
+  background: var(--color-black);
+  padding: 0;
+  transition: opacity 0.6s ease;
+}
+
+.dx-preloader-screen.dx-preloader-out {
+  opacity: 0;
+}
+
+.dx-preloader-video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 .dx-fx-flash {
   position: absolute;
   inset: 0;

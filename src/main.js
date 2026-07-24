@@ -34,9 +34,94 @@ function teardown() {
 // Browsers suspend AudioContext until first user gesture, so we need the
 // intro tap to happen before showing the menu buttons.
 
+// ─── Preloader ────────────────────────────────────────────────────────────────
+// Shows inkflo Graphics logo video while heavy assets are prefetched.
+// Advances to renderIntro() once both the video has ended AND assets are ready.
+// Once loading is done a tap/click also skips.
+
+const PRELOAD_ASSETS = [
+  '/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0000.webp',
+  '/assets/lake-ulysses/sprites/spr_bb/spr_bb_0000.webp',
+  '/assets/lake-ulysses/audio/lk_01.mp3',
+  '/assets/shared/audio/title/snd_lake_title.mp3',
+  '/assets/shared/audio/title/snd_titlemusic.mp3',
+];
+
+function prefetchAssets() {
+  return Promise.all(
+    PRELOAD_ASSETS.map(src =>
+      fetch(src, { priority: 'low' }).catch(() => null)
+    )
+  );
+}
+
+function renderPreloader() {
+  teardown();
+
+  const screen = document.createElement('div');
+  screen.className = 'dx-screen dx-preloader-screen';
+
+  const vid = document.createElement('video');
+  vid.className = 'dx-preloader-video';
+  vid.muted = true;
+  vid.playsInline = true;
+  vid.autoplay = true;
+
+  const webm = document.createElement('source');
+  webm.src = '/assets/shared/sprites/spr_inkflo_logo.webm';
+  webm.type = 'video/webm';
+  const mp4 = document.createElement('source');
+  mp4.src = '/assets/shared/sprites/spr_inkflo_logo.mp4';
+  mp4.type = 'video/mp4';
+  vid.appendChild(webm);
+  vid.appendChild(mp4);
+
+  // Logo sting — plain <audio> so it can attempt autoplay before AudioContext unlock.
+  // Silently fails on strict mobile browsers; that's acceptable.
+  const aud = new Audio('/assets/shared/audio/snd_inkflo_logo.mp3');
+  aud.play().catch(() => {});
+
+  screen.appendChild(vid);
+  canvas.appendChild(screen);
+
+  let assetsReady = false;
+  let videoEnded = false;
+  let advanced = false;
+
+  function maybeAdvance() {
+    if (advanced) return;
+    if (!assetsReady || !videoEnded) return;
+    advanced = true;
+    screen.classList.add('dx-preloader-out');
+    // transitionend may not fire if the tab is not compositing — fall back after 700ms
+    const fallback = setTimeout(() => { teardown(); renderIntro(); }, 700);
+    screen.addEventListener('transitionend', () => {
+      clearTimeout(fallback);
+      teardown();
+      renderIntro();
+    }, { once: true });
+  }
+
+  prefetchAssets().then(() => {
+    assetsReady = true;
+    maybeAdvance();
+  });
+
+  vid.addEventListener('ended', () => {
+    videoEnded = true;
+    // Allow tap-to-skip once video is done
+    screen.addEventListener('click', () => {
+      if (assetsReady) maybeAdvance();
+    }, { once: true });
+    maybeAdvance();
+  });
+
+  currentUnmount = () => {};
+}
+
 function renderTitle() {
   teardown();
-  renderIntro();
+  renderPreloader();
 }
 
 function renderIntro() {

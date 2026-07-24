@@ -168,8 +168,15 @@ Roughly in order of how ready each one is to just start:
   Explicitly not scoped for now; noted here so it isn't lost.
 
 **Needs something from outside this repo:**
-- Real art/audio assets — folders are ready (`public/assets/`), nothing's
-  in them yet.
+- ~~inkflo Graphics preloader~~ — done. Logo animation (`spr_inkflo_logo.webm/.mp4`,
+  white-on-black, 224–240KB) plays before tap-to-start while heavy chapter assets
+  prefetch in the background. Logo sting (`snd_inkflo_logo.mp3`, 160KB) plays via
+  plain `<audio>` autoplay alongside the video. Implemented in `src/main.js`
+  `renderPreloader()`. Assets in `public/assets/shared/sprites/` and
+  `public/assets/shared/audio/`.
+- More real art/audio assets — sprite and audio folders populated for Lake Ulysses
+  (`spr_lake_bg_001`, `spr_bb`, `spr_QuoteBG`, `lk_01.mp3`, `heavens_waiting_room.mp3`);
+  `ann_01.mp3` is sourced but destination scene TBD.
 - A second writer actually using the manuscript pipeline.
 
 ## Deployment
