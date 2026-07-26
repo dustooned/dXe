@@ -4,6 +4,12 @@ Last updated: 2026-07-25. Read this first if you're picking this project
 up cold — it's the "why," not the "what" (the code and the other docs in
 this folder cover the what).
 
+Other docs, roughly in reading order: `ARCHITECTURE.md` (shell/chapter
+split, boot sequence), `SCENE_TYPES.md` (how to add a scene),
+`ASSET_GUIDELINES.md` (preparing art and audio), `SCRIPT_FORMAT.md` +
+`CONTENT_SCHEMA.md` (writing dialog), `STAT_MATH.md` (the numbers),
+`ATTIC.md` (removed code, kept for reference).
+
 ## What Dream Xtreme is
 
 An episodic interactive zine hosted as a static site on GitHub Pages.
@@ -191,16 +197,11 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 
 - NPC portrait art — dialog scenes use colored-initial placeholders.
 - Placeholder audio — emotion stems and hit sounds are oscillator tones in `shell/audio.js`; no real instrumental stems yet.
-- Three pieces of dead weight, all safe to delete, left only because
-  nothing forced the decision:
-  - `public/assets/lake-ulysses/audio/ann_01.mp3` — duplicate of
-    `lk_01.mp3`, 1.2MB shipped for nothing.
-  - `src/scenes/loadoutScene.js` — the explicit class-pick screen the
-    questionnaire replaced. Nothing imports it.
-  - `firstPlayScene: 'questionnaire'` in the `CHAPTERS` registry
-    (`src/main.js`) — declared but never read by anything. The equivalent
-    behaviour lives in `showSkipDialog()` instead, which hardcodes the
-    same scene id.
+- `public/assets/lake-ulysses/audio/ann_01.mp3` — byte-identical duplicate
+  of `lk_01.mp3`, 1.2MB shipped for nothing. Kept deliberately for now.
+- `loadoutScene.js` and the unread `firstPlayScene` registry field were
+  removed from the build; both are preserved verbatim in `ATTIC.md` with
+  restore instructions.
 - Cutscenes have real content (opening quote, Bob Baiter, Prologue);
   mini-game has none, and no concrete concept picked yet — see "What's
   next" below.

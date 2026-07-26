@@ -11,7 +11,6 @@ const CHAPTERS = {
   'lake-ulysses': {
     title: 'Truth Debt: Lake Ulysses',
     load: () => import('./chapters/lake-ulysses/index.js'),
-    firstPlayScene: 'questionnaire',
   },
 };
 
