@@ -35,6 +35,28 @@ Writing dialog by hand as plain text instead of JSON? See
 - `public/assets/<id>/` — chapter art/audio; `public/assets/shared/` for
   cross-chapter assets
 - `scripts/build-content.mjs` — the manuscript → JSON build tool
+- `scripts/build-manual.mjs` — the docs → browsable HTML manual build tool
+
+### Reading the docs as a manual
+
+All of the below is also built into a single browsable page — grouped
+sidebar, per-document contents, and search across everything:
+
+```bash
+npm run manual
+```
+
+That regenerates it and opens it in your browser. It's a self-contained
+HTML file, so it works straight off disk with no server. `npm run dev` and
+`npm run build` also regenerate it, so it's never stale — while the dev
+server is up it's at
+[localhost:5173/manual/index.html](http://localhost:5173/manual/index.html),
+and it deploys to [dreamxtre.me/manual/](https://dreamxtre.me/manual/).
+
+The markdown files stay the single source of truth; the manual is
+generated output and is gitignored. Grouping and titles live in
+`scripts/build-manual.mjs` — a new doc gets picked up automatically, and
+lands under "Unsorted" until you file it there.
 
 Docs, in the order you'll want them:
 
@@ -43,7 +65,9 @@ Docs, in the order you'll want them:
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — how the shell, chapters,
   and scene sequencer fit together.
 - [`docs/SCENE_TYPES.md`](docs/SCENE_TYPES.md) — the scene handler
-  contract, including the planned (unbuilt) cutscene and mini-game shapes.
+  contract for every scene type, plus the one still unbuilt (mini-game).
+- [`docs/ASSET_GUIDELINES.md`](docs/ASSET_GUIDELINES.md) — preparing art
+  and audio: formats, naming, size budgets, and the encode gotchas.
 - [`docs/CONTENT_SCHEMA.md`](docs/CONTENT_SCHEMA.md) — the dialog JSON
   format, what the stats mean, and the asset folder convention.
 - [`docs/SCRIPT_FORMAT.md`](docs/SCRIPT_FORMAT.md) — the plain-text
