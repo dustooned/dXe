@@ -1,6 +1,6 @@
 # Handoff / Project Status
 
-Last updated: 2026-07-23. Read this first if you're picking this project
+Last updated: 2026-07-25. Read this first if you're picking this project
 up cold — it's the "why," not the "what" (the code and the other docs in
 this folder cover the what).
 
@@ -13,16 +13,23 @@ UI framework, Vite for dev/build only.
 
 ## What's actually playable right now
 
+Boot plays the inkflo Graphics intro (loading phase -> logo, skippable),
+then lands on the title screen for new players or chapter select for
+returning ones.
+
 One chapter: **Truth Debt: Lake Ulysses**. Title screen -> chapter menu
--> About/Contact -> **Loadout screen** (pick Guns / Bible / Crystals —
-sets your emotion set for the run) -> Prologue (typewriter-drawn narrative
-cutscene) -> Therapist (location 1 — the tutorial NPC, a single swipe
-exchange, no in-fiction explanation of mechanics; teaches truth/lie purely
-by playing it) -> Deborah -> Rwanda -> Samun -> Rick (dialog, swipe
-truth/lie) -> Reckoning (confess or double down on your lies) -> one of
-four endings (Clean Cut / Functional Mask / Collapse / Living Lie) based
-on final Truth Debt. Progress (which endings you've seen) persists in
-`localStorage`.
+-> About/Contact -> Opening quote (cutscene) -> Bob Baiter (cutscene, the
+councilman's lake-reopening pitch) -> **Questionnaire** (three swipe
+questions whose answers *implicitly* set your class — Guns / Bible /
+Crystals — followed by the Therapist's cryptic diagnosis; the class name is
+never shown) -> Prologue (typewriter-drawn narrative cutscene) -> Therapist
+(location 1 — the tutorial NPC, a single swipe exchange, no in-fiction
+explanation of mechanics; teaches truth/lie purely by playing it) ->
+Deborah -> Rwanda -> Samun -> Rick (dialog, swipe truth/lie) -> Reckoning
+(confess or double down on your lies) -> one of four endings (Clean Cut /
+Functional Mask / Collapse / Living Lie) based on final Truth Debt.
+`localStorage` persists endings seen and chapters completed; the latter
+also decides where the intro drops you.
 
 This is the *reduced demo scope* from the original design docs, not the
 full vision — see "What was deliberately cut" below.
@@ -76,17 +83,34 @@ full vision — see "What was deliberately cut" below.
   each amplifies lives in `engine/loadout.js`; `cardEngine.js` reads from
   there. Note for future testing: synthetic `.click()` calls don't trigger
   selection — real `pointerdown/pointerup` events are required.
-- **Class loadout system.** Three classes (Guns / Bible / Crystals) each
-  carry 3 emotions from the Plutchik 8. Class is chosen on a pre-prologue
-  screen (`scenes/loadoutScene.js`), stored as `run.loadout`, and
-  determines which segments are active on the dartboard for the entire
-  run. Replay variety: same content, different amplification map.
+- **Class loadout system, assigned by questionnaire not by menu.** Three
+  classes (Guns / Bible / Crystals) each carry 3 emotions from the Plutchik
+  8. Class was originally an explicit pick on a pre-prologue screen; it's
+  now inferred from three swipe answers in `scenes/questionnaireScene.js`,
+  which then delivers a Therapist "diagnosis" with individual words tinted
+  in the class palette. The player is never told the class name — they just
+  notice different emotions available on the dartboard. Stored as
+  `run.loadout`, determines which segments are active for the entire run.
+  Replay variety: same content, different amplification map.
+  (`scenes/loadoutScene.js` is the old explicit-pick screen and is now dead
+  code — nothing imports it.)
   Guns = Anger/Fear/Anticipation (same as the old 3-button default, so
   the existing authored FEELZ effects and amplifications are unchanged).
   Bible = Trust/Disgust/Anticipation. Crystals = Joy/Sadness/Surprise.
   Amplification table (×1.5, lucidity deliberately never amplified):
   Anger→stability, Fear→integrity, Anticipation→trust, Trust→trust,
   Disgust→integrity, Joy→stability, Sadness→integrity, Surprise→trust.
+
+- **The canvas scales to the viewport; scene art must be relative.** The
+  390×844 canvas is a design reference, not a fixed size. `.dx-canvas` takes
+  `max-width: min(390px, 100dvh * 390/844)`, so it fills whatever the device
+  gives it and letterboxes nothing — `dvh` rather than `vh` because mobile
+  browser chrome shows and hides. The consequence for content: **anything
+  positioned in raw pixels will break at real phone sizes.** Bob Baiter was
+  cut off exactly this way (`bottom: 130px; height: 600px` on a canvas that
+  had scaled below 844px tall). Cutscene sprites are now bottom-anchored
+  with a percentage height. Use percentages or viewport-relative units for
+  scene art.
 
 ## Stats — what's wired up and what isn't
 
@@ -133,6 +157,12 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 
 **Shared sprites** (`public/assets/shared/sprites/`):
 - `spr_inkflo_logo.webm` / `.mp4` — inkflo Graphics logo animation, white-on-black, 256KB / 192KB. Played by the preloader screen.
+  The white-on-black is **baked into the encode**, not a CSS filter. Source
+  PNGs are RGBA with a transparent background and black ink, so the ffmpeg
+  pipeline maps ink alpha straight to luma
+  (`geq=r='alpha(X,Y)':g='alpha(X,Y)':b='alpha(X,Y)'`). Don't reach for
+  `negate` if these ever get re-encoded — it inverts the alpha channel too
+  and yields an all-white video.
 
 **Audio** (`public/assets/lake-ulysses/audio/`):
 - `lk_01.mp3` — lake ambient loop. Used in `bob_baiter` scene.
@@ -151,8 +181,12 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 - NPC portrait art — dialog scenes use colored-initial placeholders.
 - Placeholder audio — emotion stems and hit sounds are oscillator tones in `shell/audio.js`; no real instrumental stems yet.
 - `ann_01.mp3` is in the repo but not wired to any scene.
-- Cutscene has real content (the Prologue); mini-game has none, and no
-  concrete concept picked yet — see "What's next" below.
+- `src/scenes/loadoutScene.js` is dead code — the explicit class-pick screen
+  it implements was replaced by the questionnaire. Safe to delete; left in
+  place only because nothing forced the decision yet.
+- Cutscenes have real content (opening quote, Bob Baiter, Prologue);
+  mini-game has none, and no concrete concept picked yet — see "What's
+  next" below.
 - All existing nodes have `feelzOptions: [Anger, Fear, Anticipation]` —
   the manuscript FEELZ line predates the class system. Bible/Crystals
   players see their class emotions regardless (dartboard always shows the
@@ -171,7 +205,9 @@ Roughly in order of how ready each one is to just start:
   the Prologue.
 - ~~FEELZ Dartboard~~ — done: 8-segment SVG wheel, class loadout system,
   abstract symbols, drag-to-card interaction. (`engine/loadout.js`,
-  `ui/feelzDartboard.js`, `scenes/loadoutScene.js`.)
+  `ui/feelzDartboard.js`, `scenes/questionnaireScene.js`.)
+- ~~inkflo Graphics preloader~~ — done, two-phase; see the entry under
+  "Needs something from outside this repo" below.
 - **More depth in Lake Ulysses** — additional dialog branches on existing
   NPCs. Pure content through the manuscript pipeline, no engine changes.
   Obvious targets: a third node on any NPC (all currently cap at 2),
@@ -189,12 +225,15 @@ Roughly in order of how ready each one is to just start:
   Explicitly not scoped for now; noted here so it isn't lost.
 
 **Needs something from outside this repo:**
-- ~~inkflo Graphics preloader~~ — done. Logo animation (`spr_inkflo_logo.webm/.mp4`,
-  white-on-black, 224–240KB) plays before tap-to-start while heavy chapter assets
-  prefetch in the background. Logo sting (`snd_inkflo_logo.mp3`, 160KB) plays via
-  plain `<audio>` autoplay alongside the video. Implemented in `src/main.js`
-  `renderPreloader()`. Assets in `public/assets/shared/sprites/` and
-  `public/assets/shared/audio/`.
+- ~~inkflo Graphics preloader~~ — done, two-phase. Phase 1: spinner plus a
+  pulsing "Reticulating Spines..." while heavy chapter assets prefetch; a tap
+  here unlocks the AudioContext early. Phase 2: the logo animation
+  (`spr_inkflo_logo.webm/.mp4`, white-on-black, 224–240KB) plays with its sting
+  (`snd_inkflo_logo.mp3`, 160KB) through the Web Audio graph, with TAP TO SKIP.
+  Implemented in `src/main.js` `renderPreloader()`; assets in
+  `public/assets/shared/sprites/` and `public/assets/shared/audio/`.
+  See ARCHITECTURE.md "Boot sequence vs. routing" for why this runs at boot
+  rather than on the title route — that distinction is load-bearing.
 - More real art/audio assets — sprite and audio folders populated for Lake Ulysses
   (`spr_lake_bg_001`, `spr_bb`, `spr_QuoteBG`, `lk_01.mp3`, `heavens_waiting_room.mp3`);
   `ann_01.mp3` is sourced but destination scene TBD.

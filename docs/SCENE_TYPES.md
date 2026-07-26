@@ -54,6 +54,27 @@ in `CONTENT_SCHEMA.md`.
 { "type": "dialog", "id": "deborah", "npc": /* NPC content JSON */ }
 ```
 
+### `questionnaire` (`src/scenes/questionnaireScene.js`)
+
+Three swipe questions that assign the player's class loadout, followed by
+the Therapist's diagnosis. Carries no content in the scene object — the
+questions, scoring, and diagnosis text are all constants inside the
+handler.
+
+```json
+{ "type": "questionnaire", "id": "questionnaire" }
+```
+
+Each answer scores a point toward Guns / Bible / Crystals; highest total
+wins, ties break to the first answer ("first instinct"). The result is
+written to `run.loadout`, which drives which dartboard segments are live
+for the rest of the run (`engine/loadout.js`).
+
+The player is never shown the class name. The diagnosis instead tints
+individual words in that class's emotion colors — the intent is that it
+reads as character voice, not as a stat screen. Keep it that way if you
+extend this: naming the class turns an atmospheric beat into a menu.
+
 ### `reckoning` (`src/scenes/reckoningScene.js`)
 
 Builds a confess/double-down deck from `run.get().ledger` and plays it.
@@ -143,6 +164,20 @@ line at all. First real use: the Prologue's opening beat, currently a
 labeled placeholder SVG (no real art yet — same "reuse a cheap procedural
 or hand-made placeholder rather than block on real assets" pattern used
 everywhere else in the game).
+
+**Character sprite (`sprite` / `spriteAnim`).** A beat can carry a
+character layer above the background: `sprite` for a static path, or
+`spriteAnim` for a key into the scene's `anims` map (animated via
+`ui/spriteAnimator.js`, which cycles numbered WebP frames and preserves
+frame position across beats using the same key, so a sprite doesn't
+restart from 0 on every tap).
+
+The sprite is bottom-anchored and sized as a **percentage of canvas
+height** (`height: 72%`), centered horizontally. Do not position these in
+raw pixels — the canvas scales to the viewport (see HANDOFF.md), and fixed
+pixel offsets get clipped on shorter screens. A sprite wider than the
+canvas at that height will bleed past the left and right edges, which for
+a bust shot like Bob Baiter is intentional framing rather than a bug.
 
 **Interactive beat (`interactive`).** A beat can carry
 `{ interactive: { type: 'choice', options: [...] } }` instead of (or

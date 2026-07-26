@@ -18,6 +18,31 @@ The shell renders Title / Menu / About screens directly, and for chapters
 it hands a container element to the chapter module and gets an `unmount`
 function back.
 
+### Boot sequence vs. routing
+
+Boot is deliberately *not* a route. `main.js` keeps a `booted` flag; the
+router's first fire is intercepted, the requested route is stashed in
+`bootRoute`, and `renderPreloader()` runs instead. Only after the intro
+finishes does `afterLogo()` decide where to land, and every later
+`hashchange` dispatches normally.
+
+This split exists because the obvious design — hanging the preloader off
+the `title` route — is quietly broken. Any leftover hash (the browser
+restoring a tab, a reload, a bookmark) resolves to a non-title route and
+skips the intro entirely. It's self-inflicting, too: `afterLogo()` sends
+returning players to `#/menu`, so after one playthrough that hash persists
+and the intro never plays again.
+
+So `afterLogo()` ignores a stale `#/menu` or `#/about` — hashes the app
+wrote itself — and routes by save state instead (`chaptersCompleted`
+non-empty → chapter select, otherwise title). A `#/chapter/...` boot route
+*is* honored, since that's a deliberate deep-link and stays useful for
+jumping straight to a scene while testing.
+
+One sharp edge worth knowing: assigning `location.hash` a value it already
+holds fires no `hashchange`, so a plain `navigate()` would render nothing.
+`goto()` in `main.js` checks for that and dispatches directly instead.
+
 ## Chapter contract (`src/chapters/<id>/index.js`)
 
 Every chapter exports:
