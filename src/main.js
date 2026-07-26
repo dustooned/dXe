@@ -4,7 +4,7 @@ import './scenes/scenes.css';
 import { onRouteChange, navigate } from './shell/router.js';
 import { loadSave } from './shell/save.js';
 import { initFx, fadeToBlack } from './shell/fx.js';
-import { startTitleMusic, stopTitleMusic, playStartJingle, playLogoSting } from './shell/audio.js';
+import { startTitleMusic, stopTitleMusic, playStartJingle, playLogoSting, unlockAudio } from './shell/audio.js';
 
 // Chapter registry — adding a new chapter later is one entry here.
 const CHAPTERS = {
@@ -30,10 +30,11 @@ function teardown() {
 }
 
 // ─── Preloader ────────────────────────────────────────────────────────────────
-// inkflo Graphics logo plays (muted autoplay) while heavy assets prefetch.
-// Spinner rotates during load. When video ends AND assets are ready the
-// spinner stops and "TAP TO PLAY" appears — that tap is the AudioContext
-// gesture unlock, plays the logo sting, then goes straight to the title menu.
+// Phase 1 — Loading: spinner + flashing "Reticulating Splines..." while assets
+//   prefetch. Any tap during this phase unlocks AudioContext early.
+// Phase 2 — Logo: inkflo Graphics video plays with audio. Tap skips.
+// After logo: returning players (chaptersCompleted > 0) go to chapter select;
+//   new players go to the title menu.
 
 const PRELOAD_ASSETS = [
   '/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0000.webp',
@@ -51,17 +52,45 @@ function prefetchAssets() {
   );
 }
 
+function afterLogo() {
+  const save = loadSave();
+  if (save.chaptersCompleted.length > 0) {
+    navigate('menu');
+  } else {
+    startTitleMusic();
+    renderTitleMenu();
+  }
+}
+
 function renderPreloader() {
   teardown();
 
   const screen = document.createElement('div');
   screen.className = 'dx-screen dx-preloader-screen';
 
+  // ── Phase 1: loading indicator ──────────────────────────────────────────────
+  const loadingPhase = document.createElement('div');
+  loadingPhase.className = 'dx-loading-phase';
+
+  const spinner = document.createElement('div');
+  spinner.className = 'dx-preloader-spinner';
+
+  const loadingText = document.createElement('p');
+  loadingText.className = 'dx-loading-text dx-press-start';
+  loadingText.textContent = 'Reticulating Spines...';
+
+  loadingPhase.appendChild(spinner);
+  loadingPhase.appendChild(loadingText);
+
+  // ── Phase 2: logo video ─────────────────────────────────────────────────────
+  const logoPhase = document.createElement('div');
+  logoPhase.className = 'dx-logo-phase';
+  logoPhase.hidden = true;
+
   const vid = document.createElement('video');
   vid.className = 'dx-preloader-video';
   vid.muted = true;
   vid.playsInline = true;
-  vid.autoplay = true;
   vid.appendChild(Object.assign(document.createElement('source'), {
     src: '/assets/shared/sprites/spr_inkflo_logo.webm', type: 'video/webm',
   }));
@@ -69,49 +98,55 @@ function renderPreloader() {
     src: '/assets/shared/sprites/spr_inkflo_logo.mp4', type: 'video/mp4',
   }));
 
-  const spinner = document.createElement('div');
-  spinner.className = 'dx-preloader-spinner';
+  const skipPrompt = document.createElement('p');
+  skipPrompt.className = 'dx-logo-skip dx-press-start';
+  skipPrompt.textContent = '▶ TAP TO SKIP';
 
-  const tapPrompt = document.createElement('p');
-  tapPrompt.className = 'dx-preloader-tap dx-press-start';
-  tapPrompt.textContent = '▶ TAP TO PLAY';
-  tapPrompt.hidden = true;
+  logoPhase.appendChild(vid);
+  logoPhase.appendChild(skipPrompt);
 
-  screen.appendChild(vid);
-  screen.appendChild(spinner);
-  screen.appendChild(tapPrompt);
+  screen.appendChild(loadingPhase);
+  screen.appendChild(logoPhase);
   canvas.appendChild(screen);
 
-  let assetsReady = false;
-  let videoEnded = false;
-  let readyToTap = false;
+  let audioUnlocked = false;
 
-  function showTapPrompt() {
-    if (readyToTap) return;
-    if (!assetsReady || !videoEnded) return;
-    readyToTap = true;
-    spinner.classList.add('dx-preloader-spinner--done');
-    tapPrompt.hidden = false;
-    screen.addEventListener('click', onTap, { once: true });
+  // Any tap during loading phase unlocks AudioContext early
+  screen.addEventListener('click', () => {
+    if (!audioUnlocked) { audioUnlocked = true; unlockAudio(); }
+  });
+
+  function startLogo() {
+    loadingPhase.hidden = true;
+    logoPhase.hidden = false;
+    vid.play().catch(() => {});
+
+    let stingStop = () => {};
+    playLogoSting().then(handle => {
+      stingStop = handle.stop.bind(handle);
+    }).catch(() => {});
+
+    let finished = false;
+    function finish() {
+      if (finished) return;
+      finished = true;
+      vid.removeEventListener('ended', finish);
+      logoPhase.removeEventListener('click', finish);
+      stingStop();
+      screen.classList.add('dx-preloader-out');
+      const fallback = setTimeout(() => { teardown(); afterLogo(); }, 700);
+      screen.addEventListener('transitionend', () => {
+        clearTimeout(fallback);
+        teardown();
+        afterLogo();
+      }, { once: true });
+    }
+
+    vid.addEventListener('ended', finish, { once: true });
+    logoPhase.addEventListener('click', finish, { once: true });
   }
 
-  function onTap() {
-    screen.removeEventListener('click', onTap);
-    // Gesture unlocks AudioContext — play sting, then title music
-    playLogoSting().catch(() => {});
-    startTitleMusic();
-    screen.classList.add('dx-preloader-out');
-    const fallback = setTimeout(() => { teardown(); renderTitleMenu(); }, 700);
-    screen.addEventListener('transitionend', () => {
-      clearTimeout(fallback);
-      teardown();
-      renderTitleMenu();
-    }, { once: true });
-  }
-
-  prefetchAssets().then(() => { assetsReady = true; showTapPrompt(); });
-  vid.addEventListener('ended', () => { videoEnded = true; showTapPrompt(); });
-
+  prefetchAssets().then(startLogo);
   currentUnmount = () => {};
 }
 

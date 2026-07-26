@@ -281,6 +281,11 @@ export function stopLeitmotif() {
 
 // ─── Preloader logo sting ─────────────────────────────────────────────────────
 
+// Call on first user gesture to unblock AudioContext before the logo starts.
+export function unlockAudio() {
+  ensureContext();
+}
+
 export async function playLogoSting() {
   const audioCtx = ensureContext();
   const buffer = await loadAudio('/assets/shared/audio/snd_inkflo_logo.mp3');
@@ -291,7 +296,10 @@ export async function playLogoSting() {
   source.buffer = buffer;
   source.connect(gain);
   source.start();
-  return new Promise(resolve => { source.onended = resolve; });
+  return {
+    stop() { try { source.stop(); } catch (_) {} },
+    promise: new Promise(resolve => { source.onended = resolve; }),
+  };
 }
 
 // ─── Title screen music ───────────────────────────────────────────────────────
