@@ -1,14 +1,13 @@
 #!/usr/bin/env node
-// Renders docs/*.md into a single self-contained HTML manual with a grouped
-// sidebar, per-document contents, and client-side search.
+// Renders docs/*.md into docs/manual.html — one self-contained file you can
+// open by double-clicking it. Everything is inlined, so there is no server,
+// no build step to remember, and nothing to deploy.
 //
-// Output: public/manual/index.html — which means it is served by the dev
-// server at /manual/, copied into dist/ by the Vite build, and also opens
-// directly from disk via file:// (everything is inlined; nothing is fetched).
+// The .md files stay the source of truth. Re-run this after editing them:
 //
-// Usage: node scripts/build-manual.mjs           (build)
-//        node scripts/build-manual.mjs --open    (build, then open it)
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
+//   npm run manual          rebuild
+//   npm run manual -- --open  rebuild and open it
+import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawn } from 'node:child_process';
@@ -16,8 +15,7 @@ import { marked } from 'marked';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DOCS_DIR = join(ROOT, 'docs');
-const OUT_DIR = join(ROOT, 'public', 'manual');
-const OUT_FILE = join(OUT_DIR, 'index.html');
+const OUT_FILE = join(DOCS_DIR, 'manual.html');
 
 // Grouping is editorial, not alphabetical — a newcomer should be able to read
 // down the first group and stop, without wading through shelved concept docs.
@@ -204,16 +202,14 @@ function build() {
 
   const html = page({ sidebar, articles, order, count: rendered.length });
 
-  if (!existsSync(OUT_DIR)) mkdirSync(OUT_DIR, { recursive: true });
   writeFileSync(OUT_FILE, html, 'utf8');
 
   const kb = Math.round(Buffer.byteLength(html, 'utf8') / 1024);
-  console.log(`built manual: ${rendered.length} documents -> public/manual/index.html (${kb}KB)`);
+  console.log(`built manual: ${rendered.length} documents -> docs/manual.html (${kb}KB)`);
 
   if (process.argv.includes('--open')) openInBrowser(OUT_FILE);
 }
 
-// The manual inlines everything, so file:// works — no dev server needed.
 function openInBrowser(file) {
   const url = pathToFileURL(file).href;
   const [cmd, args] = process.platform === 'win32' ? ['cmd', ['/c', 'start', '', url]]

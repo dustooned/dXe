@@ -37,26 +37,18 @@ Writing dialog by hand as plain text instead of JSON? See
 - `scripts/build-content.mjs` — the manuscript → JSON build tool
 - `scripts/build-manual.mjs` — the docs → browsable HTML manual build tool
 
-### Reading the docs as a manual
+### Reading the docs as one page
 
-All of the below is also built into a single browsable page — grouped
-sidebar, per-document contents, and search across everything:
+[`docs/manual.html`](docs/manual.html) is all of the docs below in a single
+browsable file — sidebar, per-document contents, and search. Just open it;
+it's committed to the repo and needs no server or build step.
+
+It's generated from the `.md` files, which stay the source of truth. After
+editing docs, regenerate it:
 
 ```bash
 npm run manual
 ```
-
-That regenerates it and opens it in your browser. It's a self-contained
-HTML file, so it works straight off disk with no server. `npm run dev` and
-`npm run build` also regenerate it, so it's never stale — while the dev
-server is up it's at
-[localhost:5173/manual/index.html](http://localhost:5173/manual/index.html),
-and it deploys to [dreamxtre.me/manual/](https://dreamxtre.me/manual/).
-
-The markdown files stay the single source of truth; the manual is
-generated output and is gitignored. Grouping and titles live in
-`scripts/build-manual.mjs` — a new doc gets picked up automatically, and
-lands under "Unsorted" until you file it there.
 
 Docs, in the order you'll want them:
 

@@ -5,12 +5,11 @@
   "type": "module",
   "description": "Dream Xtreme — episodic interactive zine/adventure. Native JS, chapter-based, played on the web.",
   "scripts": {
-    "dev": "node scripts/build-manual.mjs && vite",
-    "build": "node scripts/build-manual.mjs && vite build",
+    "dev": "vite",
+    "build": "vite build",
     "preview": "vite preview",
     "build:content": "node scripts/build-content.mjs",
-    "build:manual": "node scripts/build-manual.mjs",
-    "manual": "node scripts/build-manual.mjs --open"
+    "manual": "node scripts/build-manual.mjs"
   },
   "devDependencies": {
     "marked": "^18.0.7",
