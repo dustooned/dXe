@@ -17,9 +17,15 @@ Boot plays the inkflo Graphics intro (loading phase -> logo, skippable),
 then lands on the title screen for new players or chapter select for
 returning ones.
 
-One chapter: **Truth Debt: Lake Ulysses**. Title screen -> chapter menu
--> About/Contact -> Opening quote (cutscene) -> Bob Baiter (cutscene, the
-councilman's lake-reopening pitch) -> **Questionnaire** (three swipe
+Shell chrome around it: title screen, chapter select, About/Contact. A
+returning player who hits ENTER on the title gets a "You've been here
+before — skip the story?" prompt; SKIP jumps straight to the
+questionnaire, REPLAY starts the chapter from the top
+(`showSkipDialog()` in `main.js`).
+
+One chapter: **Truth Debt: Lake Ulysses**, in scene order: Opening quote
+(cutscene) -> Bob Baiter (cutscene, the councilman's lake-reopening pitch)
+-> **Questionnaire** (three swipe
 questions whose answers *implicitly* set your class — Guns / Bible /
 Crystals — followed by the Therapist's cryptic diagnosis; the class name is
 never shown) -> Prologue (typewriter-drawn narrative cutscene) -> Therapist
@@ -53,9 +59,11 @@ full vision — see "What was deliberately cut" below.
   reckoning -> ending" directly in the chapter's `index.js`. That got
   generalized into `engine/sceneSequencer.js` + `src/scenes/` (dialog /
   reckoning / ending as scene *types*) specifically so cutscenes and
-  mini-games — both wanted, neither built yet — have a well-defined slot
-  to drop into later without another rewrite. See `SCENE_TYPES.md` for
-  the contract, including the planned (unbuilt) `minigame` shape.
+  mini-games had a well-defined slot to drop into later without another
+  rewrite. That paid off: `cutscene` and `questionnaire` have since slotted
+  in with no sequencer changes, and there are now three cutscenes in the
+  chapter. `minigame` is still the one planned-but-unbuilt type. See
+  `SCENE_TYPES.md` for the contract.
 - **Vite version pinned to latest (^8), not what the original spec
   implied.** Started on 5.x, found a moderate dev-server vulnerability in
   its bundled esbuild, bumped to 8.x, zero vulnerabilities. No reason to
@@ -156,7 +164,7 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 - `spr_QuoteBG/` — 5-frame quote-screen background. Used in `opening_quote` scene.
 
 **Shared sprites** (`public/assets/shared/sprites/`):
-- `spr_inkflo_logo.webm` / `.mp4` — inkflo Graphics logo animation, white-on-black, 256KB / 192KB. Played by the preloader screen.
+- `spr_inkflo_logo.webm` (609KB) / `.mp4` (308KB) — inkflo Graphics logo animation, white-on-black. Played by the preloader screen.
   The white-on-black is **baked into the encode**, not a CSS filter. Source
   PNGs are RGBA with a transparent background and black ink, so the ffmpeg
   pipeline maps ink alpha straight to luma
@@ -165,9 +173,12 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
   and yields an all-white video.
 
 **Audio** (`public/assets/lake-ulysses/audio/`):
-- `lk_01.mp3` — lake ambient loop. Used in `bob_baiter` scene.
-- `heavens_waiting_room.mp3` — Therapist leitmotif/ambient. Used in questionnaire scene.
-- `ann_01.mp3` — **sourced, not yet wired**. Destination scene TBD.
+- `lk_01.mp3` (1.2MB) — lake ambient loop. Used in `bob_baiter` scene.
+- `heavens_waiting_room.mp3` (501KB) — Therapist leitmotif/ambient. Used in questionnaire scene.
+- `ann_01.mp3` (1.2MB) — **not a distinct asset**: byte-identical to
+  `lk_01.mp3` (same MD5). It's an accidental duplicate, not sourced
+  content awaiting a scene. Deleting it is a free 1.2MB off the deploy;
+  if a second ambient track is wanted, it still needs to be sourced.
 
 **Shared audio** (`public/assets/shared/audio/`):
 - `snd_inkflo_logo.mp3` (160KB) — logo sting, plays during preloader.
@@ -180,10 +191,16 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 
 - NPC portrait art — dialog scenes use colored-initial placeholders.
 - Placeholder audio — emotion stems and hit sounds are oscillator tones in `shell/audio.js`; no real instrumental stems yet.
-- `ann_01.mp3` is in the repo but not wired to any scene.
-- `src/scenes/loadoutScene.js` is dead code — the explicit class-pick screen
-  it implements was replaced by the questionnaire. Safe to delete; left in
-  place only because nothing forced the decision yet.
+- Three pieces of dead weight, all safe to delete, left only because
+  nothing forced the decision:
+  - `public/assets/lake-ulysses/audio/ann_01.mp3` — duplicate of
+    `lk_01.mp3`, 1.2MB shipped for nothing.
+  - `src/scenes/loadoutScene.js` — the explicit class-pick screen the
+    questionnaire replaced. Nothing imports it.
+  - `firstPlayScene: 'questionnaire'` in the `CHAPTERS` registry
+    (`src/main.js`) — declared but never read by anything. The equivalent
+    behaviour lives in `showSkipDialog()` instead, which hardcodes the
+    same scene id.
 - Cutscenes have real content (opening quote, Bob Baiter, Prologue);
   mini-game has none, and no concrete concept picked yet — see "What's
   next" below.
@@ -228,7 +245,7 @@ Roughly in order of how ready each one is to just start:
 - ~~inkflo Graphics preloader~~ — done, two-phase. Phase 1: spinner plus a
   pulsing "Reticulating Spines..." while heavy chapter assets prefetch; a tap
   here unlocks the AudioContext early. Phase 2: the logo animation
-  (`spr_inkflo_logo.webm/.mp4`, white-on-black, 224–240KB) plays with its sting
+  (`spr_inkflo_logo.webm/.mp4`, white-on-black, 609KB/308KB) plays with its sting
   (`snd_inkflo_logo.mp3`, 160KB) through the Web Audio graph, with TAP TO SKIP.
   Implemented in `src/main.js` `renderPreloader()`; assets in
   `public/assets/shared/sprites/` and `public/assets/shared/audio/`.

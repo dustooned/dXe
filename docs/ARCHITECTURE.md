@@ -94,8 +94,9 @@ export function mount(stageEl, { exit }) {
 
 This is *why* cutscenes and mini-games don't require an engine change:
 they're just new scene `type`s with a handler registered in `HANDLERS` and
-entries added to `SCENES`. See `SCENE_TYPES.md` for the handler contract
-and the planned (not yet built) `cutscene` and `minigame` shapes.
+entries added to `SCENES`. `cutscene` and `questionnaire` were both added
+this way, with no sequencer changes. See `SCENE_TYPES.md` for the handler
+contract and for `minigame`, the one shape still unbuilt.
 
 A chapter is free to skip the sequencer entirely and manage its own
 `mount`/`unmount` by hand (that's what the very first version of
