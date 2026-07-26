@@ -279,6 +279,21 @@ export function stopLeitmotif() {
   activeLeitmotif = null;
 }
 
+// ─── Preloader logo sting ─────────────────────────────────────────────────────
+
+export async function playLogoSting() {
+  const audioCtx = ensureContext();
+  const buffer = await loadAudio('/assets/shared/audio/snd_inkflo_logo.mp3');
+  const gain = audioCtx.createGain();
+  gain.gain.value = 0.8;
+  gain.connect(masterGain);
+  const source = audioCtx.createBufferSource();
+  source.buffer = buffer;
+  source.connect(gain);
+  source.start();
+  return new Promise(resolve => { source.onended = resolve; });
+}
+
 // ─── Title screen music ───────────────────────────────────────────────────────
 // Two simultaneous looping layers: snd_lake_title (pad) + snd_titlemusic
 // (theme). Both start together and stop together when play begins.

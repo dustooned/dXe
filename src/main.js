@@ -4,7 +4,7 @@ import './scenes/scenes.css';
 import { onRouteChange, navigate } from './shell/router.js';
 import { loadSave } from './shell/save.js';
 import { initFx, fadeToBlack } from './shell/fx.js';
-import { startTitleMusic, stopTitleMusic, playStartJingle } from './shell/audio.js';
+import { startTitleMusic, stopTitleMusic, playStartJingle, playLogoSting } from './shell/audio.js';
 
 // Chapter registry — adding a new chapter later is one entry here.
 const CHAPTERS = {
@@ -29,15 +29,11 @@ function teardown() {
   canvas.innerHTML = '';
 }
 
-// ─── Title screen ─────────────────────────────────────────────────────────────
-// Two-phase: intro (unlocks audio, starts music) → menu (ENTER / SKIP).
-// Browsers suspend AudioContext until first user gesture, so we need the
-// intro tap to happen before showing the menu buttons.
-
 // ─── Preloader ────────────────────────────────────────────────────────────────
-// Shows inkflo Graphics logo video while heavy assets are prefetched.
-// Advances to renderIntro() once both the video has ended AND assets are ready.
-// Once loading is done a tap/click also skips.
+// inkflo Graphics logo plays (muted autoplay) while heavy assets prefetch.
+// Spinner rotates during load. When video ends AND assets are ready the
+// spinner stops and "TAP TO PLAY" appears — that tap is the AudioContext
+// gesture unlock, plays the logo sting, then goes straight to the title menu.
 
 const PRELOAD_ASSETS = [
   '/assets/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0000.webp',
@@ -66,55 +62,55 @@ function renderPreloader() {
   vid.muted = true;
   vid.playsInline = true;
   vid.autoplay = true;
+  vid.appendChild(Object.assign(document.createElement('source'), {
+    src: '/assets/shared/sprites/spr_inkflo_logo.webm', type: 'video/webm',
+  }));
+  vid.appendChild(Object.assign(document.createElement('source'), {
+    src: '/assets/shared/sprites/spr_inkflo_logo.mp4', type: 'video/mp4',
+  }));
 
-  const webm = document.createElement('source');
-  webm.src = '/assets/shared/sprites/spr_inkflo_logo.webm';
-  webm.type = 'video/webm';
-  const mp4 = document.createElement('source');
-  mp4.src = '/assets/shared/sprites/spr_inkflo_logo.mp4';
-  mp4.type = 'video/mp4';
-  vid.appendChild(webm);
-  vid.appendChild(mp4);
+  const spinner = document.createElement('div');
+  spinner.className = 'dx-preloader-spinner';
 
-  // Logo sting — plain <audio> so it can attempt autoplay before AudioContext unlock.
-  // Silently fails on strict mobile browsers; that's acceptable.
-  const aud = new Audio('/assets/shared/audio/snd_inkflo_logo.mp3');
-  aud.play().catch(() => {});
+  const tapPrompt = document.createElement('p');
+  tapPrompt.className = 'dx-preloader-tap dx-press-start';
+  tapPrompt.textContent = '▶ TAP TO PLAY';
+  tapPrompt.hidden = true;
 
   screen.appendChild(vid);
+  screen.appendChild(spinner);
+  screen.appendChild(tapPrompt);
   canvas.appendChild(screen);
 
   let assetsReady = false;
   let videoEnded = false;
-  let advanced = false;
+  let readyToTap = false;
 
-  function maybeAdvance() {
-    if (advanced) return;
+  function showTapPrompt() {
+    if (readyToTap) return;
     if (!assetsReady || !videoEnded) return;
-    advanced = true;
+    readyToTap = true;
+    spinner.classList.add('dx-preloader-spinner--done');
+    tapPrompt.hidden = false;
+    screen.addEventListener('click', onTap, { once: true });
+  }
+
+  function onTap() {
+    screen.removeEventListener('click', onTap);
+    // Gesture unlocks AudioContext — play sting, then title music
+    playLogoSting().catch(() => {});
+    startTitleMusic();
     screen.classList.add('dx-preloader-out');
-    // transitionend may not fire if the tab is not compositing — fall back after 700ms
-    const fallback = setTimeout(() => { teardown(); renderIntro(); }, 700);
+    const fallback = setTimeout(() => { teardown(); renderTitleMenu(); }, 700);
     screen.addEventListener('transitionend', () => {
       clearTimeout(fallback);
       teardown();
-      renderIntro();
+      renderTitleMenu();
     }, { once: true });
   }
 
-  prefetchAssets().then(() => {
-    assetsReady = true;
-    maybeAdvance();
-  });
-
-  vid.addEventListener('ended', () => {
-    videoEnded = true;
-    // Allow tap-to-skip once video is done
-    screen.addEventListener('click', () => {
-      if (assetsReady) maybeAdvance();
-    }, { once: true });
-    maybeAdvance();
-  });
+  prefetchAssets().then(() => { assetsReady = true; showTapPrompt(); });
+  vid.addEventListener('ended', () => { videoEnded = true; showTapPrompt(); });
 
   currentUnmount = () => {};
 }
@@ -122,25 +118,6 @@ function renderPreloader() {
 function renderTitle() {
   teardown();
   renderPreloader();
-}
-
-function renderIntro() {
-  const screen = document.createElement('div');
-  screen.className = 'dx-screen dx-intro-screen';
-  screen.innerHTML = `
-    <h1 class="dx-title">DREAM XTREME</h1>
-    <p class="dx-press-start">▶ TAP TO START</p>
-  `;
-
-  function onTap() {
-    screen.removeEventListener('click', onTap);
-    startTitleMusic();
-    renderTitleMenu();
-  }
-  screen.addEventListener('click', onTap);
-  canvas.appendChild(screen);
-
-  currentUnmount = stopTitleMusic;
 }
 
 function renderTitleMenu() {
