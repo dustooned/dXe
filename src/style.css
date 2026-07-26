@@ -148,10 +148,19 @@ body {
   to { transform: rotate(360deg); }
 }
 
+/* Pulses rather than hard-blinks — a step-start blink is invisible half the
+   time at this size, which read as the loading screen not being there. */
 .dx-loading-text {
-  font-size: 7px;
+  font-size: 9px;
+  line-height: 1.8;
   text-align: center;
-  animation: dx-blink 0.8s step-start infinite;
+  letter-spacing: 0.06em;
+  animation: dx-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes dx-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.25; }
 }
 
 @keyframes dx-blink {

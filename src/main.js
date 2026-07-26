@@ -1,7 +1,7 @@
 import './style.css';
 import './ui/ui.css';
 import './scenes/scenes.css';
-import { onRouteChange, navigate } from './shell/router.js';
+import { onRouteChange, navigate, getCurrentRoute } from './shell/router.js';
 import { loadSave } from './shell/save.js';
 import { initFx, fadeToBlack } from './shell/fx.js';
 import { startTitleMusic, stopTitleMusic, playStartJingle, playLogoSting, unlockAudio } from './shell/audio.js';
@@ -44,22 +44,46 @@ const PRELOAD_ASSETS = [
   '/assets/shared/audio/title/snd_titlemusic.mp3',
 ];
 
+// Assets are often warm in cache, which would flash the loading phase past
+// before it can be read. Hold it on screen long enough to actually register.
+const MIN_LOADING_MS = 2200;
+
 function prefetchAssets() {
-  return Promise.all(
+  const fetches = Promise.all(
     PRELOAD_ASSETS.map(src =>
       fetch(src, { priority: 'low' }).catch(() => null)
     )
   );
+  const minimumHold = new Promise(resolve => setTimeout(resolve, MIN_LOADING_MS));
+  return Promise.all([fetches, minimumHold]);
 }
 
+// The boot sequence runs the preloader exactly once, before the router takes
+// over. Without this gate a leftover hash (#/menu, #/chapter/...) would route
+// straight past the intro — and afterLogo() writing #/menu made that leftover
+// hash permanent after a single playthrough.
+let booted = false;
+let bootRoute = null;
+
 function afterLogo() {
-  const save = loadSave();
-  if (save.chaptersCompleted.length > 0) {
-    navigate('menu');
-  } else {
-    startTitleMusic();
-    renderTitleMenu();
-  }
+  booted = true;
+  const route = bootRoute;
+  bootRoute = null;
+
+  // Only a chapter deep-link is honored (useful for jumping to a scene).
+  // A stale #/menu or #/about is ignored — those are hashes the app wrote
+  // itself on a previous visit, and obeying them strands you past the intro.
+  if (route && route.screen === 'chapter') { dispatch(route); return; }
+
+  // Everything else routes by save: returning → chapter select, new → title.
+  goto(loadSave().chaptersCompleted.length > 0 ? 'menu' : 'title');
+}
+
+// navigate(), but still renders when the hash already equals the target —
+// assigning an unchanged location.hash fires no hashchange event.
+function goto(path) {
+  if (location.hash === `#/${path}`) dispatch(getCurrentRoute());
+  else navigate(path);
 }
 
 function renderPreloader() {
@@ -152,7 +176,8 @@ function renderPreloader() {
 
 function renderTitle() {
   teardown();
-  renderPreloader();
+  startTitleMusic();
+  renderTitleMenu();
 }
 
 function renderTitleMenu() {
@@ -303,9 +328,19 @@ async function renderChapter(chapterId, startAt) {
 
 // ─── Router ───────────────────────────────────────────────────────────────────
 
-onRouteChange(({ screen, param, startAt }) => {
+function dispatch({ screen, param, startAt }) {
   if (screen === 'menu')         renderMenu();
   else if (screen === 'about')   renderAbout();
   else if (screen === 'chapter') renderChapter(param, startAt);
   else                           renderTitle();
+}
+
+onRouteChange((route) => {
+  // First fire is app boot — hold the route and play the intro first.
+  if (!booted) {
+    bootRoute = route;
+    renderPreloader();
+    return;
+  }
+  dispatch(route);
 });
