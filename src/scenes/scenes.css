@@ -206,10 +206,10 @@
 .dx-cutscene-sprite {
   position: absolute;
   z-index: 1;
-  bottom: 130px;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  height: 600px;
+  height: 72%;
   width: auto;
   pointer-events: none;
 }
