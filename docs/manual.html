@@ -169,7 +169,7 @@ mark { background: var(--mark); color: var(--fg); }
       <p class="doc-source">Start here · <code>docs/HANDOFF.md</code></p>
       <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-handoff--what-dream-xtreme-is">What Dream Xtreme is</a></li><li><a href="#doc-handoff--what39s-actually-playable-right-now">What&amp;#39;s actually playable right now</a></li><li><a href="#doc-handoff--key-decisions-and-why">Key decisions and why</a></li><li><a href="#doc-handoff--stats-what39s-wired-up-and-what-isn39t">Stats — what&amp;#39;s wired up and what isn&amp;#39;t</a></li><li><a href="#doc-handoff--what-was-deliberately-cut-from-the-original-design-docs">What was deliberately cut from the original design docs</a></li><li><a href="#doc-handoff--asset-inventory">Asset inventory</a></li><li><a href="#doc-handoff--known-gaps-not-bugs-just-not-done">Known gaps (not bugs, just not done)</a></li><li><a href="#doc-handoff--what39s-next">What&amp;#39;s next</a></li><li><a href="#doc-handoff--deployment">Deployment</a></li><li><a href="#doc-handoff--running-it">Running it</a></li></ul></nav>
       <h1 id="doc-handoff--handoff-project-status"><a class="anchor" href="#doc-handoff--handoff-project-status" aria-label="Link to this section">#</a>Handoff / Project Status</h1>
-<p>Last updated: 2026-07-25. Read this first if you&#39;re picking this project
+<p>Last updated: 2026-08-04. Read this first if you&#39;re picking this project
 up cold — it&#39;s the &quot;why,&quot; not the &quot;what&quot; (the code and the other docs in
 this folder cover the what).</p>
 <p>Other docs, roughly in reading order: <a class="doc-ref" href="#doc-architecture" data-doc="doc-architecture"><code>ARCHITECTURE.md</code></a> (shell/chapter
@@ -230,8 +230,9 @@ reckoning / ending as scene <em>types</em>) specifically so cutscenes and
 mini-games had a well-defined slot to drop into later without another
 rewrite. That paid off: <code>cutscene</code> and <code>questionnaire</code> have since slotted
 in with no sequencer changes, and there are now three cutscenes in the
-chapter. <code>minigame</code> is still the one planned-but-unbuilt type. See
-<a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a> for the contract.</p>
+chapter. <code>minigame</code> (<code>scenes/minigameScene.js</code>) is now built too, ahead
+of any chapter using it — see <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a> for the contract and the
+can&#39;t-lose design philosophy behind it.</p>
 </li>
 <li><p><strong>Vite version pinned to latest (^8), not what the original spec
 implied.</strong> Started on 5.x, found a moderate dev-server vulnerability in
@@ -367,8 +368,8 @@ of <code>lk_01.mp3</code>, 1.2MB shipped for nothing. Kept deliberately for now.
 <li><code>loadoutScene.js</code> and the unread <code>firstPlayScene</code> registry field were
 removed from the build; both are preserved verbatim in <a class="doc-ref" href="#doc-attic" data-doc="doc-attic"><code>ATTIC.md</code></a> with
 restore instructions.</li>
-<li>Cutscenes have real content (opening quote, Bob Baiter, Prologue);
-mini-game has none, and no concrete concept picked yet — see &quot;What&#39;s
+<li>Cutscenes have real content (opening quote, Bob Baiter, Prologue); the
+<code>minigame</code> scene type is built but no chapter has one yet — see &quot;What&#39;s
 next&quot; below.</li>
 <li>All existing nodes have <code>feelzOptions: [Anger, Fear, Anticipation]</code> —
 the manuscript FEELZ line predates the class system. Bible/Crystals
@@ -397,10 +398,15 @@ or Bible/Crystals-class-aware FEELZ options on existing nodes.</li>
 </ul>
 <p><strong>Needs a dedicated design pass first:</strong></p>
 <ul>
-<li><strong>Mini-game</strong> — the sequencer already supports the type for free
-(proven by how cheaply <code>cutscene</code> slotted in); still no concrete
-concept. Best candidate so far: a point-A-to-B explore beat in
-Deborah&#39;s condo hallway.</li>
+<li><strong>Mini-game content</strong> — the <code>minigame</code> scene type itself is now built
+(<code>src/scenes/minigameScene.js</code>; see <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>), ahead of any
+chapter using it. Verified end-to-end (lazy-load, mount, <code>onComplete</code>,
+unmount, sequencer advance) with a throwaway stub, then reverted so
+nothing changed for players. The design decided: can&#39;t-lose, no
+stat-effect contract — point-A-to-B exploration strung with quick
+WarioWare-style obstacle gimmicks, ending in the NPC encounter it was
+building toward. What&#39;s still missing is a concrete first concept.
+Best candidate so far: exactly that shape in Deborah&#39;s condo hallway.</li>
 <li><strong>Hint system (&quot;eventually,&quot; per the user)</strong> — a callable check-in
 (plausibly another Therapist call, given the character now exists)
 that surfaces <em>one</em> hint about which way the player&#39;s currently
@@ -598,7 +604,7 @@ card/dialog schema (see <a class="doc-ref" href="#doc-content_schema" data-doc="
     </article>
 <article class="doc" id="doc-scene_types" data-title="Scene Types" data-file="SCENE_TYPES.md" hidden>
       <p class="doc-source">Start here · <code>docs/SCENE_TYPES.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-scene_types--the-handler-contract">The handler contract</a></li><li><a href="#doc-scene_types--implemented-types">Implemented types</a></li><li><a href="#doc-scene_types--planned-types-not-built-yet-build-when-there39s-real-content">Planned types (not built yet — build when there&amp;#39;s real content for them)</a></li><li><a href="#doc-scene_types--adding-a-new-type">Adding a new type</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-scene_types--the-handler-contract">The handler contract</a></li><li><a href="#doc-scene_types--implemented-types">Implemented types</a></li><li><a href="#doc-scene_types--adding-a-new-type">Adding a new type</a></li></ul></nav>
       <h1 id="doc-scene_types--scene-types"><a class="anchor" href="#doc-scene_types--scene-types" aria-label="Link to this section">#</a>Scene Types</h1>
 <p>A chapter is a list of scenes, run in order by <code>createSceneSequencer</code>
 (<code>src/engine/sceneSequencer.js</code>). Each entry in the list looks like
@@ -781,26 +787,52 @@ technical blocker).</p>
 <p>Only <code>type: &#39;choice&#39;</code> exists. A timed-tap or drag interactive type is a
 natural extension of the same <code>interactive</code> field (a different <code>type</code>
 value) whenever there&#39;s real content that needs one.</p>
-<h2 id="doc-scene_types--planned-types-not-built-yet-build-when-there39s-real-content"><a class="anchor" href="#doc-scene_types--planned-types-not-built-yet-build-when-there39s-real-content" aria-label="Link to this section">#</a>Planned types (not built yet — build when there&#39;s real content for them)</h2>
-<h3 id="doc-scene_types--minigame"><a class="anchor" href="#doc-scene_types--minigame" aria-label="Link to this section">#</a><code>minigame</code></h3>
-<p>For actual gameplay breaks — a chapter shouldn&#39;t have to know how a
-mini-game works internally, only that it eventually finishes:</p>
+<h3 id="doc-scene_types--minigame-srcscenesminigamescenejs"><a class="anchor" href="#doc-scene_types--minigame-srcscenesminigamescenejs" aria-label="Link to this section">#</a><code>minigame</code> (<code>src/scenes/minigameScene.js</code>)</h3>
+<p>The wrapper is built; no chapter uses it yet — this is infrastructure
+waiting on its first real game, not a stub. A chapter shouldn&#39;t have to
+know how a mini-game works internally, only that it eventually finishes:</p>
 <pre><code class="language-json">{
   &quot;type&quot;: &quot;minigame&quot;,
   &quot;id&quot;: &quot;some-game&quot;,
   &quot;load&quot;: &quot;() =&gt; import(&#39;./minigames/some-game.js&#39;)&quot;
 }
 </code></pre>
-<p>Lazy-loaded the same way chapters are lazy-loaded from <code>main.js</code>, since a
+<p><code>minigameScene.js</code> shows a small spinner (<code>.dx-minigame-loading</code> in
+<code>scenes.css</code>, deliberately separate from <code>main.js</code>&#39;s boot preloader —
+different concern, and it keeps this file from touching that already-
+stabilized boot sequence), calls <code>scene.load()</code>,
+and once that resolves, delegates the scene-handler contract straight to
+the loaded module: <code>mount(stageEl, scene, context) -&gt; unmount</code>. It is
+lazy-loaded the same way chapters are lazy-loaded from <code>main.js</code>, since a
 mini-game is likely to be the heaviest thing in a chapter (its own canvas,
-its own render loop) and shouldn&#39;t bloat the initial bundle. The loaded
-module is a normal scene handler (<code>mount(stageEl, scene, context) -&gt; unmount</code>) — completely free to manage its own canvas/<code>requestAnimationFrame</code>
-loop and input handling (reuse <code>attachSwipe</code> from <code>shell/input.js</code> if it
-fits, or add its own listeners). Calls <code>onComplete(result)</code> when finished;
-<code>result</code> can carry whatever the chapter wants to react to (e.g.
-<code>{ won: true, score: 120 }</code> -&gt; the chapter&#39;s own glue code decides if
-that should affect Truth Debt or a meter — that logic does not belong
-inside <code>sceneSequencer.js</code> itself, which stays result-shape-agnostic).</p>
+its own render loop) and shouldn&#39;t bloat the initial bundle.</p>
+<p>The loaded module is a completely normal scene handler — free to manage
+its own canvas/<code>requestAnimationFrame</code> loop and input handling (reuse
+<code>attachSwipe</code> from <code>shell/input.js</code> if it fits a horizontal swipe; add its
+own pointer listeners if it needs 2D movement, which <code>attachSwipe</code> does
+not support).</p>
+<p><strong>Design philosophy — read this before writing one.</strong> Mini-games in this
+project are <em>can&#39;t-lose</em> pacing beats, not skill checks: point-A-to-B
+exploration for world-building, strung with quick, easy &quot;obstacle gimmick&quot;
+interactions in a WarioWare register — fast, simple, varied, over before
+they can get old — then handing off into the next dialog scene (the NPC
+&quot;encounter&quot; the walk was building toward). The player always reaches the
+end; failure isn&#39;t a state that exists.</p>
+<p>This is a deliberate constraint, not a placeholder for a harder version
+later: <strong>there is no result/effects contract, and none should be added.</strong>
+<code>onComplete()</code> needs no payload — a mini-game finishing means &quot;the player
+reached B,&quot; nothing more. Earlier scene types apply effects with a real
+contract (<code>resolveCard()</code>&#39;s patch object for dialog); mini-games
+intentionally don&#39;t get an equivalent, because there&#39;s nothing for one to
+carry. If a future mini-game concept genuinely needs to move a stat, that
+is a sign it isn&#39;t this kind of mini-game — model it as an explicit scene
+in the chapter&#39;s own <code>SCENES</code> list instead of smuggling a side-effect
+through this wrapper.</p>
+<p>Internally, a mini-game module is free to structure its own sequence of
+steps however it wants — <code>cutsceneScene.js</code>&#39;s beat list (tap-to-advance,
+optional <code>interactive</code> branches) is the closest existing pattern for a
+sequential &quot;walk then gimmick then walk&quot; structure and is a reasonable
+starting point to imitate rather than a chapter/scene handler to import.</p>
 <h2 id="doc-scene_types--adding-a-new-type"><a class="anchor" href="#doc-scene_types--adding-a-new-type" aria-label="Link to this section">#</a>Adding a new type</h2>
 <ol>
 <li>Write <code>src/scenes/&lt;type&gt;Scene.js</code> implementing the contract above.</li>

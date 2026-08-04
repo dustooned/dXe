@@ -206,12 +206,11 @@ Only `type: 'choice'` exists. A timed-tap or drag interactive type is a
 natural extension of the same `interactive` field (a different `type`
 value) whenever there's real content that needs one.
 
-## Planned types (not built yet — build when there's real content for them)
+### `minigame` (`src/scenes/minigameScene.js`)
 
-### `minigame`
-
-For actual gameplay breaks — a chapter shouldn't have to know how a
-mini-game works internally, only that it eventually finishes:
+The wrapper is built; no chapter uses it yet — this is infrastructure
+waiting on its first real game, not a stub. A chapter shouldn't have to
+know how a mini-game works internally, only that it eventually finishes:
 
 ```json
 {
@@ -221,17 +220,46 @@ mini-game works internally, only that it eventually finishes:
 }
 ```
 
-Lazy-loaded the same way chapters are lazy-loaded from `main.js`, since a
+`minigameScene.js` shows a small spinner (`.dx-minigame-loading` in
+`scenes.css`, deliberately separate from `main.js`'s boot preloader —
+different concern, and it keeps this file from touching that already-
+stabilized boot sequence), calls `scene.load()`,
+and once that resolves, delegates the scene-handler contract straight to
+the loaded module: `mount(stageEl, scene, context) -> unmount`. It is
+lazy-loaded the same way chapters are lazy-loaded from `main.js`, since a
 mini-game is likely to be the heaviest thing in a chapter (its own canvas,
-its own render loop) and shouldn't bloat the initial bundle. The loaded
-module is a normal scene handler (`mount(stageEl, scene, context) ->
-unmount`) — completely free to manage its own canvas/`requestAnimationFrame`
-loop and input handling (reuse `attachSwipe` from `shell/input.js` if it
-fits, or add its own listeners). Calls `onComplete(result)` when finished;
-`result` can carry whatever the chapter wants to react to (e.g.
-`{ won: true, score: 120 }` -> the chapter's own glue code decides if
-that should affect Truth Debt or a meter — that logic does not belong
-inside `sceneSequencer.js` itself, which stays result-shape-agnostic).
+its own render loop) and shouldn't bloat the initial bundle.
+
+The loaded module is a completely normal scene handler — free to manage
+its own canvas/`requestAnimationFrame` loop and input handling (reuse
+`attachSwipe` from `shell/input.js` if it fits a horizontal swipe; add its
+own pointer listeners if it needs 2D movement, which `attachSwipe` does
+not support).
+
+**Design philosophy — read this before writing one.** Mini-games in this
+project are *can't-lose* pacing beats, not skill checks: point-A-to-B
+exploration for world-building, strung with quick, easy "obstacle gimmick"
+interactions in a WarioWare register — fast, simple, varied, over before
+they can get old — then handing off into the next dialog scene (the NPC
+"encounter" the walk was building toward). The player always reaches the
+end; failure isn't a state that exists.
+
+This is a deliberate constraint, not a placeholder for a harder version
+later: **there is no result/effects contract, and none should be added.**
+`onComplete()` needs no payload — a mini-game finishing means "the player
+reached B," nothing more. Earlier scene types apply effects with a real
+contract (`resolveCard()`'s patch object for dialog); mini-games
+intentionally don't get an equivalent, because there's nothing for one to
+carry. If a future mini-game concept genuinely needs to move a stat, that
+is a sign it isn't this kind of mini-game — model it as an explicit scene
+in the chapter's own `SCENES` list instead of smuggling a side-effect
+through this wrapper.
+
+Internally, a mini-game module is free to structure its own sequence of
+steps however it wants — `cutsceneScene.js`'s beat list (tap-to-advance,
+optional `interactive` branches) is the closest existing pattern for a
+sequential "walk then gimmick then walk" structure and is a reasonable
+starting point to imitate rather than a chapter/scene handler to import.
 
 ## Adding a new type
 

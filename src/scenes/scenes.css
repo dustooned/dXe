@@ -128,6 +128,22 @@
   min-height: 40px;
 }
 
+/* Shown briefly while a mini-game module's lazy import resolves. Visually
+   distinct from — and independent of — the boot preloader's spinner. */
+.dx-minigame-loading {
+  justify-content: center;
+  align-items: center;
+}
+
+.dx-minigame-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-top-color: var(--color-white);
+  border-radius: 50%;
+  animation: dx-spin 0.9s linear infinite;
+}
+
 .dx-tap-hint {
   opacity: 0.5;
   font-size: 7px;

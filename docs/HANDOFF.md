@@ -1,6 +1,6 @@
 # Handoff / Project Status
 
-Last updated: 2026-07-25. Read this first if you're picking this project
+Last updated: 2026-08-04. Read this first if you're picking this project
 up cold — it's the "why," not the "what" (the code and the other docs in
 this folder cover the what).
 
@@ -68,8 +68,9 @@ full vision — see "What was deliberately cut" below.
   mini-games had a well-defined slot to drop into later without another
   rewrite. That paid off: `cutscene` and `questionnaire` have since slotted
   in with no sequencer changes, and there are now three cutscenes in the
-  chapter. `minigame` is still the one planned-but-unbuilt type. See
-  `SCENE_TYPES.md` for the contract.
+  chapter. `minigame` (`scenes/minigameScene.js`) is now built too, ahead
+  of any chapter using it — see `SCENE_TYPES.md` for the contract and the
+  can't-lose design philosophy behind it.
 - **Vite version pinned to latest (^8), not what the original spec
   implied.** Started on 5.x, found a moderate dev-server vulnerability in
   its bundled esbuild, bumped to 8.x, zero vulnerabilities. No reason to
@@ -202,8 +203,8 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 - `loadoutScene.js` and the unread `firstPlayScene` registry field were
   removed from the build; both are preserved verbatim in `ATTIC.md` with
   restore instructions.
-- Cutscenes have real content (opening quote, Bob Baiter, Prologue);
-  mini-game has none, and no concrete concept picked yet — see "What's
+- Cutscenes have real content (opening quote, Bob Baiter, Prologue); the
+  `minigame` scene type is built but no chapter has one yet — see "What's
   next" below.
 - All existing nodes have `feelzOptions: [Anger, Fear, Anticipation]` —
   the manuscript FEELZ line predates the class system. Bible/Crystals
@@ -232,10 +233,15 @@ Roughly in order of how ready each one is to just start:
   or Bible/Crystals-class-aware FEELZ options on existing nodes.
 
 **Needs a dedicated design pass first:**
-- **Mini-game** — the sequencer already supports the type for free
-  (proven by how cheaply `cutscene` slotted in); still no concrete
-  concept. Best candidate so far: a point-A-to-B explore beat in
-  Deborah's condo hallway.
+- **Mini-game content** — the `minigame` scene type itself is now built
+  (`src/scenes/minigameScene.js`; see `SCENE_TYPES.md`), ahead of any
+  chapter using it. Verified end-to-end (lazy-load, mount, `onComplete`,
+  unmount, sequencer advance) with a throwaway stub, then reverted so
+  nothing changed for players. The design decided: can't-lose, no
+  stat-effect contract — point-A-to-B exploration strung with quick
+  WarioWare-style obstacle gimmicks, ending in the NPC encounter it was
+  building toward. What's still missing is a concrete first concept.
+  Best candidate so far: exactly that shape in Deborah's condo hallway.
 - **Hint system ("eventually," per the user)** — a callable check-in
   (plausibly another Therapist call, given the character now exists)
   that surfaces *one* hint about which way the player's currently
