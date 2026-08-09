@@ -342,6 +342,28 @@ intensity-only feedback dialog swipes use, never color-coded right/wrong.
 It takes over the screen rather than blending into the walk, which keeps
 its interaction code independent of the room renderer's.
 
+Four things in `quickBeat.js` exist specifically to keep a can't-lose beat
+from *feeling* like a test, and shouldn't be undone casually:
+
+- **The clock stops on the first `pointermove`.** Otherwise a swipe begun
+  near the deadline has its own timeout fire mid-drag: the miss flourish
+  plays and the `pointerup` lands on a dead no-op, punishing a player who
+  did the right thing. A drag that ends below threshold restarts the clock
+  rather than leaving the beat hanging.
+- **The prompt renders its direction** (`← THE SMELL …`). The response is
+  authored as `swipe-left`/`swipe-right`, and without showing it the first
+  encounter with any beat is a coin flip — text has to be read and mapped,
+  where WarioWare's art conveys the verb instantly.
+- **Threshold is 45px, not `attachSwipe`'s 90px default.** 90 suits a
+  deliberate dialog card; on a ~375px canvas it's a quarter of the screen
+  for what is meant to be a reflex.
+- **`onDrag` moves the prompt and tints it past threshold**, matching the
+  dialog card's language. Without it nothing moved, so the player had no
+  signal their input was registering.
+
+Tap-targets hit-test with ~24px of slop for the same reason: a tap just
+outside the art should read as intent, not as a miss.
+
 **Built and playable.** `engine/walkSequencer.js` runs the `STEPS` list;
 `ui/walkRoom.js` and `ui/quickBeat.js` are the two step renderers. The first
 mini-game is `chapters/lake-ulysses/minigames/deborah-hallway.js`, wired in

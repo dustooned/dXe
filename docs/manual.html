@@ -937,6 +937,27 @@ flourish — <code>fx.flash()</code> / <code>fx.shake()</code> at weak or strong
 intensity-only feedback dialog swipes use, never color-coded right/wrong.
 It takes over the screen rather than blending into the walk, which keeps
 its interaction code independent of the room renderer&#39;s.</p>
+<p>Four things in <code>quickBeat.js</code> exist specifically to keep a can&#39;t-lose beat
+from <em>feeling</em> like a test, and shouldn&#39;t be undone casually:</p>
+<ul>
+<li><strong>The clock stops on the first <code>pointermove</code>.</strong> Otherwise a swipe begun
+near the deadline has its own timeout fire mid-drag: the miss flourish
+plays and the <code>pointerup</code> lands on a dead no-op, punishing a player who
+did the right thing. A drag that ends below threshold restarts the clock
+rather than leaving the beat hanging.</li>
+<li><strong>The prompt renders its direction</strong> (<code>← THE SMELL …</code>). The response is
+authored as <code>swipe-left</code>/<code>swipe-right</code>, and without showing it the first
+encounter with any beat is a coin flip — text has to be read and mapped,
+where WarioWare&#39;s art conveys the verb instantly.</li>
+<li><strong>Threshold is 45px, not <code>attachSwipe</code>&#39;s 90px default.</strong> 90 suits a
+deliberate dialog card; on a ~375px canvas it&#39;s a quarter of the screen
+for what is meant to be a reflex.</li>
+<li><strong><code>onDrag</code> moves the prompt and tints it past threshold</strong>, matching the
+dialog card&#39;s language. Without it nothing moved, so the player had no
+signal their input was registering.</li>
+</ul>
+<p>Tap-targets hit-test with ~24px of slop for the same reason: a tap just
+outside the art should read as intent, not as a miss.</p>
 <p><strong>Built and playable.</strong> <code>engine/walkSequencer.js</code> runs the <code>STEPS</code> list;
 <code>ui/walkRoom.js</code> and <code>ui/quickBeat.js</code> are the two step renderers. The first
 mini-game is <code>chapters/lake-ulysses/minigames/deborah-hallway.js</code>, wired in
@@ -1903,6 +1924,16 @@ thematically consistent with his violence.</p>
 sharp/flat enharmonic equivalence, standard reference pitches, bad-input
 error handling), then a full four-NPC browser playthrough confirming zero
 console errors across every leitmotif&#39;s oscillator scheduling.</p>
+<p><strong>Regression note (2026-08-04).</strong> This section described the wiring
+accurately, but the wiring itself had gone missing — <code>startLeitmotif</code> was
+exported and never called from anywhere, so the whole system was silently
+dead while the docs still claimed it was live. Found by auditing exports
+for callers. Re-wired in <code>dialogScene.js</code> (start before <code>enterNode()</code>, stop
+in <code>unmount</code>) and confirmed by deep-linking straight to the Therapist,
+which skips the questionnaire, and watching <code>heavens_waiting_room.mp3</code> get
+fetched — a request only <code>startLeitmotif(&#39;THERAPIST&#39;)</code> can produce on that
+route. Worth knowing that &quot;documented as built&quot; and &quot;still reachable&quot; are
+different claims.</p>
 <h2 id="doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs"><a class="anchor" href="#doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs" aria-label="Link to this section">#</a>Meter-gated branching (built — <code>cardEngine.js</code> + <code>dialogScene.js</code>)</h2>
 <p>The second thing reading the four meters back (after the epilogue), and
 the first to actually change <em>what content shows</em>, not just what gets
@@ -4726,8 +4757,10 @@ is imported or executed — it exists so a decision can be reversed without
 digging through git history.</p>
 <p>If you restore something from here, delete it from this file. An attic
 that also pretends to be live code is worse than no attic.</p>
-<p>The <code>.css</code> for these is generally still in the live stylesheets (it&#39;s
-cheap and harmless), so restoring usually only means putting the JS back.</p>
+<p>Restoring something means putting back its JS <strong>and</strong> its CSS — the
+stylesheets are kept free of rules nothing renders, so any styles an
+attic&#39;d component needs are recorded here alongside its source rather than
+left sitting in the live sheets.</p>
 <hr>
 <h2 id="doc-attic--loadout-scene-explicit-class-picker"><a class="anchor" href="#doc-attic--loadout-scene-explicit-class-picker" aria-label="Link to this section">#</a><code>loadout</code> scene — explicit class picker</h2>
 <p><strong>Removed:</strong> 2026-07-25. <strong>Was:</strong> <code>src/scenes/loadoutScene.js</code>.</p>
@@ -4742,9 +4775,32 @@ in the fiction — the player just notices different emotions on the
 dartboard later.</p>
 <p><strong>To restore:</strong> write the file back to <code>src/scenes/loadoutScene.js</code>,
 import it in <code>chapters/lake-ulysses/index.js</code>, add
-<code>loadout: loadoutScene</code> to <code>HANDLERS</code>, and put
-<code>{ type: &#39;loadout&#39;, id: &#39;loadout&#39; }</code> in <code>SCENES</code> ahead of the prologue.
-Its CSS (<code>.dx-loadout-*</code>) is still in <code>src/scenes/scenes.css</code>.</p>
+<code>loadout: loadoutScene</code> to <code>HANDLERS</code>, put
+<code>{ type: &#39;loadout&#39;, id: &#39;loadout&#39; }</code> in <code>SCENES</code> ahead of the prologue, and
+paste the CSS below back into <code>src/scenes/scenes.css</code> (it was removed from
+the live sheet in the 2026-08-04 cleanup, since nothing rendered it).</p>
+<pre><code class="language-css">.dx-loadout-screen { gap: 14px; justify-content: center; }
+.dx-loadout-heading { margin: 0; }
+.dx-loadout-sub {
+  font-size: 7px; line-height: 1.8; opacity: 0.7; margin: 0; text-align: center;
+}
+.dx-loadout-list { display: flex; flex-direction: column; gap: 10px; }
+.dx-loadout-card {
+  display: flex; flex-direction: column; gap: 8px; padding: 14px;
+  border: 2px solid var(--color-white); background: var(--color-black);
+  color: var(--color-white); font-family: inherit; text-align: left;
+  cursor: pointer; transition: background 0.1s ease, color 0.1s ease;
+}
+.dx-loadout-card:active,
+.dx-loadout-card:focus-visible { background: var(--color-white); color: var(--color-black); }
+.dx-loadout-card__label { font-size: 11px; margin: 0; }
+.dx-loadout-card__desc { font-size: 7px; line-height: 1.7; opacity: 0.8; margin: 0; }
+.dx-loadout-card__pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.dx-loadout-pill {
+  font-size: 6px; border: 1px solid var(--pill-color, var(--color-white));
+  color: var(--pill-color, var(--color-white)); padding: 3px 7px;
+}
+</code></pre>
 <pre><code class="language-js">// Scene type: &#39;loadout&#39;. Shows the three character classes (Guns / Bible /
 // Crystals) and lets the player pick one before the chapter starts. The
 // choice is written to run state as `loadout` and drives which emotions the

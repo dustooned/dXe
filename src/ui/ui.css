@@ -112,31 +112,9 @@
   display: block;
 }
 
-.dx-feelz {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-
-.dx-feelz__bubble {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  border: 2px solid var(--bubble-color, var(--color-white));
-  background: transparent;
-  color: var(--bubble-color, var(--color-white));
-  font-family: inherit;
-  font-size: 6px;
-  cursor: grab;
-  touch-action: none;
-  user-select: none;
-}
-
-.dx-feelz__bubble.is-selected {
-  background: var(--bubble-color, var(--color-white));
-  color: var(--color-black);
-}
-
+/* The drag ghost that follows the pointer when a dartboard segment is
+   dragged onto the swipe card. The old 3-button FEELZ row this belonged to
+   was replaced by ui/feelzDartboard.js; only the ghost survived. */
 .dx-feelz__ghost {
   position: fixed;
   z-index: 1000;
@@ -183,13 +161,6 @@
 }
 
 /* ── Intro / title screens ── */
-.dx-intro-screen {
-  justify-content: center;
-  gap: 28px;
-  cursor: pointer;
-  user-select: none;
-}
-
 .dx-press-start {
   font-size: 8px;
   letter-spacing: 0.18em;

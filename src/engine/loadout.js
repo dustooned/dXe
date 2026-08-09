@@ -41,8 +41,6 @@ export const CLASSES = {
   },
 };
 
-export const DEFAULT_CLASS = 'Guns';
-
 // Returns the CSS color var for an emotion, or white if unknown.
 export function emotionColor(emotion) {
   return EMOTIONS[emotion]?.color ?? 'var(--color-white)';
@@ -51,9 +49,4 @@ export function emotionColor(emotion) {
 // Returns which stat an emotion amplifies, or null if unknown / not loaded.
 export function emotionAmplifies(emotion) {
   return EMOTIONS[emotion]?.amplifies ?? null;
-}
-
-// Returns true if the given emotion is in a class's loaded set.
-export function isLoaded(className, emotion) {
-  return CLASSES[className]?.emotions.includes(emotion) ?? false;
 }

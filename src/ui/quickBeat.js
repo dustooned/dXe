@@ -12,19 +12,39 @@
 import { attachSwipe } from '../shell/input.js';
 import * as fx from '../shell/fx.js';
 
-const DEFAULT_TIMEOUT_MS = 2600;
+// Long enough to read the prompt, not just react to it — these are text
+// prompts, and text has to be parsed before it can be answered.
+const DEFAULT_TIMEOUT_MS = 3600;
 const RESOLVE_HOLD_MS = 620; // let the flourish land before moving on
+
+// Lower than the swipe card's 90px default. That threshold suits a deliberate
+// dialog choice; this is a reflex beat on a ~375px-wide canvas, where 90px is
+// a quarter of the screen.
+const SWIPE_THRESHOLD_PX = 45;
+
+// A near-miss tap still counts. Without this, an exploratory tap a few pixels
+// outside the box is an instant miss with no forgiveness.
+const TARGET_SLOP_PX = 24;
 
 const FRAME_W = 390;
 const FRAME_H = 844;
+
+const ARROW = { left: '←', right: '→' };
 
 export function createQuickBeat(step, { onDone }) {
   const el = document.createElement('div');
   el.className = 'dx-beat';
 
+  const want = step.response === 'swipe-left' ? 'left' : 'right';
+
   const prompt = document.createElement('p');
   prompt.className = 'dx-beat__prompt';
-  prompt.textContent = step.prompt?.text ?? '';
+  // Show the direction rather than making the player infer it from prose.
+  // Without this the first encounter with any swipe beat is a coin flip.
+  const text = step.prompt?.text ?? '';
+  prompt.textContent = step.target ? text
+    : want === 'left' ? `${ARROW.left}  ${text}`
+    : `${text}  ${ARROW.right}`;
   el.appendChild(prompt);
 
   let resolved = false;
@@ -32,10 +52,19 @@ export function createQuickBeat(step, { onDone }) {
   let timeoutTimer = null;
   let holdTimer = null;
 
+  // Once the player commits to a gesture the clock stops. Otherwise a swipe
+  // started at 3.5s gets its own timeout fired mid-drag, the miss flourish
+  // plays, and the pointerup lands on a dead no-op — punishing a player who
+  // did the right thing, in a beat that can't be failed.
+  function stopClock() {
+    clearTimeout(timeoutTimer);
+    timeoutTimer = null;
+  }
+
   function resolve(matched) {
     if (resolved) return;
     resolved = true;
-    clearTimeout(timeoutTimer);
+    stopClock();
     detachSwipe?.();
     detachSwipe = null;
 
@@ -60,15 +89,37 @@ export function createQuickBeat(step, { onDone }) {
     target.style.top    = `${(step.target.y / FRAME_H) * 100}%`;
     target.style.width  = `${(step.target.w / FRAME_W) * 100}%`;
     target.style.height = `${(step.target.h / FRAME_H) * 100}%`;
-    target.addEventListener('click', (e) => { e.stopPropagation(); resolve(true); });
     el.appendChild(target);
-    // Tapping anywhere else still resolves it — just as a miss.
-    el.addEventListener('click', () => resolve(false));
+
+    // Hit-test with slop instead of relying on the button's own click, so a
+    // tap just outside the art still reads as intent.
+    el.addEventListener('click', (e) => {
+      const r = target.getBoundingClientRect();
+      const hit = e.clientX >= r.left - TARGET_SLOP_PX && e.clientX <= r.right + TARGET_SLOP_PX
+               && e.clientY >= r.top  - TARGET_SLOP_PX && e.clientY <= r.bottom + TARGET_SLOP_PX;
+      resolve(hit);
+    });
   } else {
-    const want = step.response === 'swipe-left' ? 'left' : 'right';
     detachSwipe = attachSwipe(el, {
+      threshold: SWIPE_THRESHOLD_PX,
+      onDrag(dx) {
+        // The dialog swipe card moves under the finger; this did not, so the
+        // player had no signal their input was landing. Match that language.
+        stopClock();
+        prompt.style.transform = `translateX(${dx * 0.5}px)`;
+        prompt.classList.toggle('is-committing', Math.abs(dx) >= SWIPE_THRESHOLD_PX);
+      },
       onEnd: (dir) => {
-        if (dir === null) return; // too small to count as a swipe; keep waiting
+        prompt.style.transform = '';
+        prompt.classList.remove('is-committing');
+        if (dir === null) {
+          // Too small to count. Restart the clock rather than leaving the beat
+          // hanging with no way out.
+          if (!resolved) {
+            timeoutTimer = setTimeout(() => resolve(false), step.timeoutMs ?? DEFAULT_TIMEOUT_MS);
+          }
+          return;
+        }
         resolve(dir === want);
       },
     });

@@ -7,8 +7,10 @@ digging through git history.
 If you restore something from here, delete it from this file. An attic
 that also pretends to be live code is worse than no attic.
 
-The `.css` for these is generally still in the live stylesheets (it's
-cheap and harmless), so restoring usually only means putting the JS back.
+Restoring something means putting back its JS **and** its CSS — the
+stylesheets are kept free of rules nothing renders, so any styles an
+attic'd component needs are recorded here alongside its source rather than
+left sitting in the live sheets.
 
 ---
 
@@ -29,9 +31,34 @@ dartboard later.
 
 **To restore:** write the file back to `src/scenes/loadoutScene.js`,
 import it in `chapters/lake-ulysses/index.js`, add
-`loadout: loadoutScene` to `HANDLERS`, and put
-`{ type: 'loadout', id: 'loadout' }` in `SCENES` ahead of the prologue.
-Its CSS (`.dx-loadout-*`) is still in `src/scenes/scenes.css`.
+`loadout: loadoutScene` to `HANDLERS`, put
+`{ type: 'loadout', id: 'loadout' }` in `SCENES` ahead of the prologue, and
+paste the CSS below back into `src/scenes/scenes.css` (it was removed from
+the live sheet in the 2026-08-04 cleanup, since nothing rendered it).
+
+```css
+.dx-loadout-screen { gap: 14px; justify-content: center; }
+.dx-loadout-heading { margin: 0; }
+.dx-loadout-sub {
+  font-size: 7px; line-height: 1.8; opacity: 0.7; margin: 0; text-align: center;
+}
+.dx-loadout-list { display: flex; flex-direction: column; gap: 10px; }
+.dx-loadout-card {
+  display: flex; flex-direction: column; gap: 8px; padding: 14px;
+  border: 2px solid var(--color-white); background: var(--color-black);
+  color: var(--color-white); font-family: inherit; text-align: left;
+  cursor: pointer; transition: background 0.1s ease, color 0.1s ease;
+}
+.dx-loadout-card:active,
+.dx-loadout-card:focus-visible { background: var(--color-white); color: var(--color-black); }
+.dx-loadout-card__label { font-size: 11px; margin: 0; }
+.dx-loadout-card__desc { font-size: 7px; line-height: 1.7; opacity: 0.8; margin: 0; }
+.dx-loadout-card__pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.dx-loadout-pill {
+  font-size: 6px; border: 1px solid var(--pill-color, var(--color-white));
+  color: var(--pill-color, var(--color-white)); padding: 3px 7px;
+}
+```
 
 ```js
 // Scene type: 'loadout'. Shows the three character classes (Guns / Bible /

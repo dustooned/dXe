@@ -124,6 +124,17 @@ sharp/flat enharmonic equivalence, standard reference pitches, bad-input
 error handling), then a full four-NPC browser playthrough confirming zero
 console errors across every leitmotif's oscillator scheduling.
 
+**Regression note (2026-08-04).** This section described the wiring
+accurately, but the wiring itself had gone missing — `startLeitmotif` was
+exported and never called from anywhere, so the whole system was silently
+dead while the docs still claimed it was live. Found by auditing exports
+for callers. Re-wired in `dialogScene.js` (start before `enterNode()`, stop
+in `unmount`) and confirmed by deep-linking straight to the Therapist,
+which skips the questionnaire, and watching `heavens_waiting_room.mp3` get
+fetched — a request only `startLeitmotif('THERAPIST')` can produce on that
+route. Worth knowing that "documented as built" and "still reachable" are
+different claims.
+
 ## Meter-gated branching (built — `cardEngine.js` + `dialogScene.js`)
 
 The second thing reading the four meters back (after the epilogue), and

@@ -165,11 +165,17 @@ export function mount(stageEl, scene, { run, onComplete }) {
     onComplete();
   }
 
+  // The NPC's leitmotif is this character's continuous underscore for the
+  // whole encounter — started once here, not in enterNode(), so it doesn't
+  // restart on every node. It deliberately keeps playing through reactions,
+  // where the emotion stems stop. See STAT_MATH.md "Per-NPC leitmotif".
+  audio.startLeitmotif(npc.npc);
   enterNode();
 
   return function unmount() {
     clearTimeout(reactionTimer);
     audio.stopEmotionStems();
+    audio.stopLeitmotif();
     stageEl.innerHTML = '';
   };
 }

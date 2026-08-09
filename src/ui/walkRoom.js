@@ -15,7 +15,7 @@
 // scales with the canvas; nothing pixel-valued ever reaches a style property.
 import { createSpriteAnimator } from './spriteAnimator.js';
 import { createTypewriter } from './typewriterText.js';
-import { playTypewriterTick } from '../shell/audio.js';
+import { preloadTypewriterTick, playTypewriterTick } from '../shell/audio.js';
 
 const FRAME_W = 390;
 const FRAME_H = 844;
@@ -35,6 +35,11 @@ function captionFor(text, loadout) {
 }
 
 export function createWalkRoom(room, { loadout, onAdvance }) {
+  // playTypewriterTick() no-ops until its buffer is loaded. In normal play a
+  // cutscene has already preloaded it, but a deep link straight to a mini-game
+  // would render every caption silently — don't depend on scene order.
+  preloadTypewriterTick();
+
   const el = document.createElement('div');
   el.className = 'dx-room';
 
