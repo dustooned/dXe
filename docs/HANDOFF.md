@@ -27,19 +27,35 @@ Shell chrome around it: title screen, chapter select, About/Contact. A
 returning player who hits ENTER on the title gets a "You've been here
 before — skip the story?" prompt; SKIP jumps straight to the
 questionnaire, REPLAY starts the chapter from the top
-(`showSkipDialog()` in `main.js`).
+(`showSkipDialog()` in `main.js`). SKIP now cleanly bypasses all three
+opening cutscenes and drops you at the quiz -> Therapist call; before the
+Prologue/Questionnaire swap it skipped to the quiz but then still played
+the Prologue afterwards.
 
 One chapter: **Truth Debt: Lake Ulysses**, in scene order: Opening quote
 (cutscene) -> Bob Baiter (cutscene, the councilman's lake-reopening pitch)
--> **Questionnaire** (three swipe
-questions whose answers *implicitly* set your class — Guns / Bible /
-Crystals — followed by the Therapist's cryptic diagnosis; the class name is
-never shown) -> Prologue (typewriter-drawn narrative cutscene) -> Therapist
-(location 1 — the tutorial NPC, a single swipe exchange, no in-fiction
-explanation of mechanics; teaches truth/lie purely by playing it) ->
-Deborah -> Rwanda -> Samun -> Rick (dialog, swipe truth/lie) -> Reckoning
-(confess or double down on your lies) -> one of four endings (Clean Cut /
-Functional Mask / Collapse / Living Lie) based on final Truth Debt.
+-> Prologue (typewriter-drawn narrative cutscene; ends on "Your phone
+buzzes against the gravel") -> **Questionnaire** (three swipe questions
+whose answers *implicitly* set your class — Guns / Bible / Crystals —
+followed by the Therapist's cryptic diagnosis; the class name is never
+shown) -> Therapist (location 1 — the tutorial NPC, a single swipe
+exchange, no in-fiction explanation of mechanics; teaches truth/lie purely
+by playing it) -> Deborah -> Rwanda -> Samun -> Rick (dialog, swipe
+truth/lie) -> Reckoning (confess or double down on your lies) -> one of
+four endings (Clean Cut / Functional Mask / Collapse / Living Lie) based
+on final Truth Debt.
+
+Prologue / Questionnaire / Therapist are deliberately one continuous
+unit — **the chapter's opening call**, and the intended routine opener for
+future chapters too: you're on site, the Therapist buzzes in, she evaluates
+you. The order is load-bearing and the existing writing already assumed it.
+Prologue's final beat is the phone buzzing; the Therapist dialog's opening
+line is "The screen lights up... cuts through the ringing in your ears,"
+which answers both that buzz and Prologue's earlier "Ears ringing" beat.
+Questionnaire originally ran *before* Prologue, which fired the Therapist's
+diagnosis before the story had established why she'd be talking to you —
+swapping the two fixed a pre-existing content/order mismatch rather than
+imposing a new one. Don't reorder these three without re-reading the copy.
 `localStorage` persists endings seen and chapters completed; the latter
 also decides where the intro drops you.
 
@@ -232,16 +248,28 @@ Roughly in order of how ready each one is to just start:
   Obvious targets: a third node on any NPC (all currently cap at 2),
   or Bible/Crystals-class-aware FEELZ options on existing nodes.
 
+**Ready to build, design settled:**
+- **Mini-game walk/gimmick steps** — the outer `minigame` scene type is
+  built (`src/scenes/minigameScene.js`); the *inner* step system is fully
+  designed but unbuilt. See `SCENE_TYPES.md` for the full contract. In
+  short: a mini-game module runs its own ordered `STEPS` list of two step
+  types. `walk` = a room (looping animated bg sprite, stop-motion feel)
+  with inspect hotspots (tap -> scale-pop -> close-up + inner-thought
+  caption, caption text varies by `run.loadout`) plus a reserved advance
+  hotspot that stays invisible until every inspect hotspot has been tapped
+  once. `gimmick` = one reusable data-only "Quick Beat" template (prompt ->
+  swipe or tap-target -> cosmetic `fx` flourish), no fail state ever.
+  Still needs building: `engine/walkSequencer.js` + the two renderers.
+
+  **Placement plan:** one mini-game immediately precedes each of the four
+  remaining NPCs (Deborah / Rwanda / Samun / Rick), so the chapter reads as
+  explore -> encounter, four times. Therapist is exempt — it's part of the
+  opening call, not part of that pattern. No entries are in `SCENES` yet
+  because no content exists; there's a TODO comment at the array marking
+  where they go. Adding one is a single line.
+  First concept to write: Deborah's condo hallway.
+
 **Needs a dedicated design pass first:**
-- **Mini-game content** — the `minigame` scene type itself is now built
-  (`src/scenes/minigameScene.js`; see `SCENE_TYPES.md`), ahead of any
-  chapter using it. Verified end-to-end (lazy-load, mount, `onComplete`,
-  unmount, sequencer advance) with a throwaway stub, then reverted so
-  nothing changed for players. The design decided: can't-lose, no
-  stat-effect contract — point-A-to-B exploration strung with quick
-  WarioWare-style obstacle gimmicks, ending in the NPC encounter it was
-  building toward. What's still missing is a concrete first concept.
-  Best candidate so far: exactly that shape in Deborah's condo hallway.
 - **Hint system ("eventually," per the user)** — a callable check-in
   (plausibly another Therapist call, given the character now exists)
   that surfaces *one* hint about which way the player's currently

@@ -26,11 +26,26 @@ export const title = 'Truth Debt: Lake Ulysses';
 // lets a dialog scene skip straight to 'reckoning' when Truth Debt maxes
 // out mid-NPC. Adding a cutscene before an NPC, or a mini-game between two,
 // is just another entry here — see docs/SCENE_TYPES.md.
+//
+// Opening call (scenes 3-5) is one continuous unit, and the order matters:
+// prologue's last beat is "Your phone buzzes against the gravel," so the
+// questionnaire reads as answering that call and the therapist dialog as the
+// same call continuing. Running questionnaire before prologue (as it did
+// originally) fired the Therapist's diagnosis before the story established
+// why she'd be talking to you at all. This shape is meant to be the routine
+// chapter opener: you're on site, she buzzes in, she evaluates you.
+//
+// TODO — mini-games: each remaining NPC gets one immediately before it
+// (deborah / rwanda / samun / rick), so the chapter reads as
+// explore -> encounter, four times. The `minigame` scene type is built
+// (scenes/minigameScene.js) but no content exists yet, so no entries here
+// yet — adding one is a single line. See docs/SCENE_TYPES.md for the walk /
+// gimmick step design.
 const SCENES = [
   { type: 'cutscene', id: 'opening-quote', beats: openingQuote.beats, anims: ANIMS },
   { type: 'cutscene', id: 'bob-baiter', beats: bobBaiter.beats, anims: ANIMS, ambient: '/assets/lake-ulysses/audio/lk_01.mp3' },
-  { type: 'questionnaire', id: 'questionnaire' },
   { type: 'cutscene', id: 'prologue', beats: prologue.beats },
+  { type: 'questionnaire', id: 'questionnaire' },
   { type: 'dialog', id: 'therapist', npc: therapist },
   { type: 'dialog', id: 'deborah', npc: deborah },
   { type: 'dialog', id: 'rwanda', npc: rwanda },

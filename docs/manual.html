@@ -190,18 +190,33 @@ returning ones.</p>
 returning player who hits ENTER on the title gets a &quot;You&#39;ve been here
 before — skip the story?&quot; prompt; SKIP jumps straight to the
 questionnaire, REPLAY starts the chapter from the top
-(<code>showSkipDialog()</code> in <code>main.js</code>).</p>
+(<code>showSkipDialog()</code> in <code>main.js</code>). SKIP now cleanly bypasses all three
+opening cutscenes and drops you at the quiz -&gt; Therapist call; before the
+Prologue/Questionnaire swap it skipped to the quiz but then still played
+the Prologue afterwards.</p>
 <p>One chapter: <strong>Truth Debt: Lake Ulysses</strong>, in scene order: Opening quote
 (cutscene) -&gt; Bob Baiter (cutscene, the councilman&#39;s lake-reopening pitch)
--&gt; <strong>Questionnaire</strong> (three swipe
-questions whose answers <em>implicitly</em> set your class — Guns / Bible /
-Crystals — followed by the Therapist&#39;s cryptic diagnosis; the class name is
-never shown) -&gt; Prologue (typewriter-drawn narrative cutscene) -&gt; Therapist
-(location 1 — the tutorial NPC, a single swipe exchange, no in-fiction
-explanation of mechanics; teaches truth/lie purely by playing it) -&gt;
-Deborah -&gt; Rwanda -&gt; Samun -&gt; Rick (dialog, swipe truth/lie) -&gt; Reckoning
-(confess or double down on your lies) -&gt; one of four endings (Clean Cut /
-Functional Mask / Collapse / Living Lie) based on final Truth Debt.
+-&gt; Prologue (typewriter-drawn narrative cutscene; ends on &quot;Your phone
+buzzes against the gravel&quot;) -&gt; <strong>Questionnaire</strong> (three swipe questions
+whose answers <em>implicitly</em> set your class — Guns / Bible / Crystals —
+followed by the Therapist&#39;s cryptic diagnosis; the class name is never
+shown) -&gt; Therapist (location 1 — the tutorial NPC, a single swipe
+exchange, no in-fiction explanation of mechanics; teaches truth/lie purely
+by playing it) -&gt; Deborah -&gt; Rwanda -&gt; Samun -&gt; Rick (dialog, swipe
+truth/lie) -&gt; Reckoning (confess or double down on your lies) -&gt; one of
+four endings (Clean Cut / Functional Mask / Collapse / Living Lie) based
+on final Truth Debt.</p>
+<p>Prologue / Questionnaire / Therapist are deliberately one continuous
+unit — <strong>the chapter&#39;s opening call</strong>, and the intended routine opener for
+future chapters too: you&#39;re on site, the Therapist buzzes in, she evaluates
+you. The order is load-bearing and the existing writing already assumed it.
+Prologue&#39;s final beat is the phone buzzing; the Therapist dialog&#39;s opening
+line is &quot;The screen lights up... cuts through the ringing in your ears,&quot;
+which answers both that buzz and Prologue&#39;s earlier &quot;Ears ringing&quot; beat.
+Questionnaire originally ran <em>before</em> Prologue, which fired the Therapist&#39;s
+diagnosis before the story had established why she&#39;d be talking to you —
+swapping the two fixed a pre-existing content/order mismatch rather than
+imposing a new one. Don&#39;t reorder these three without re-reading the copy.
 <code>localStorage</code> persists endings seen and chapters completed; the latter
 also decides where the intro drops you.</p>
 <p>This is the <em>reduced demo scope</em> from the original design docs, not the
@@ -396,17 +411,30 @@ NPCs. Pure content through the manuscript pipeline, no engine changes.
 Obvious targets: a third node on any NPC (all currently cap at 2),
 or Bible/Crystals-class-aware FEELZ options on existing nodes.</li>
 </ul>
+<p><strong>Ready to build, design settled:</strong></p>
+<ul>
+<li><p><strong>Mini-game walk/gimmick steps</strong> — the outer <code>minigame</code> scene type is
+built (<code>src/scenes/minigameScene.js</code>); the <em>inner</em> step system is fully
+designed but unbuilt. See <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a> for the full contract. In
+short: a mini-game module runs its own ordered <code>STEPS</code> list of two step
+types. <code>walk</code> = a room (looping animated bg sprite, stop-motion feel)
+with inspect hotspots (tap -&gt; scale-pop -&gt; close-up + inner-thought
+caption, caption text varies by <code>run.loadout</code>) plus a reserved advance
+hotspot that stays invisible until every inspect hotspot has been tapped
+once. <code>gimmick</code> = one reusable data-only &quot;Quick Beat&quot; template (prompt -&gt;
+swipe or tap-target -&gt; cosmetic <code>fx</code> flourish), no fail state ever.
+Still needs building: <code>engine/walkSequencer.js</code> + the two renderers.</p>
+<p><strong>Placement plan:</strong> one mini-game immediately precedes each of the four
+remaining NPCs (Deborah / Rwanda / Samun / Rick), so the chapter reads as
+explore -&gt; encounter, four times. Therapist is exempt — it&#39;s part of the
+opening call, not part of that pattern. No entries are in <code>SCENES</code> yet
+because no content exists; there&#39;s a TODO comment at the array marking
+where they go. Adding one is a single line.
+First concept to write: Deborah&#39;s condo hallway.</p>
+</li>
+</ul>
 <p><strong>Needs a dedicated design pass first:</strong></p>
 <ul>
-<li><strong>Mini-game content</strong> — the <code>minigame</code> scene type itself is now built
-(<code>src/scenes/minigameScene.js</code>; see <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>), ahead of any
-chapter using it. Verified end-to-end (lazy-load, mount, <code>onComplete</code>,
-unmount, sequencer advance) with a throwaway stub, then reverted so
-nothing changed for players. The design decided: can&#39;t-lose, no
-stat-effect contract — point-A-to-B exploration strung with quick
-WarioWare-style obstacle gimmicks, ending in the NPC encounter it was
-building toward. What&#39;s still missing is a concrete first concept.
-Best candidate so far: exactly that shape in Deborah&#39;s condo hallway.</li>
 <li><strong>Hint system (&quot;eventually,&quot; per the user)</strong> — a callable check-in
 (plausibly another Therapist call, given the character now exists)
 that surfaces <em>one</em> hint about which way the player&#39;s currently
@@ -828,11 +856,78 @@ carry. If a future mini-game concept genuinely needs to move a stat, that
 is a sign it isn&#39;t this kind of mini-game — model it as an explicit scene
 in the chapter&#39;s own <code>SCENES</code> list instead of smuggling a side-effect
 through this wrapper.</p>
-<p>Internally, a mini-game module is free to structure its own sequence of
-steps however it wants — <code>cutsceneScene.js</code>&#39;s beat list (tap-to-advance,
-optional <code>interactive</code> branches) is the closest existing pattern for a
-sequential &quot;walk then gimmick then walk&quot; structure and is a reasonable
-starting point to imitate rather than a chapter/scene handler to import.</p>
+<p><strong>Placement.</strong> One mini-game immediately precedes each NPC dialog scene,
+so a chapter reads as explore -&gt; encounter, repeating. In <code>lake-ulysses</code>
+that&#39;s Deborah / Rwanda / Samun / Rick — four slots. Therapist is exempt:
+it belongs to the chapter&#39;s opening call (Prologue -&gt; Questionnaire -&gt;
+Therapist), not to this pattern.</p>
+<h4 id="doc-scene_types--the-step-system-designed-not-yet-built"><a class="anchor" href="#doc-scene_types--the-step-system-designed-not-yet-built" aria-label="Link to this section">#</a>The step system (designed, not yet built)</h4>
+<p>A mini-game module runs its own ordered <code>STEPS</code> list — a second, smaller
+sequencer nested inside the scene sequencer, the same way <code>cutsceneScene.js</code>
+sequences its own beats. Two step types:</p>
+<pre><code class="language-js">const STEPS = [
+  { type: &#39;walk&#39;, rooms: [ /* see below */ ] },
+  { type: &#39;gimmick&#39;, prompt: { text: &#39;DUCK!&#39; }, response: &#39;swipe-left&#39; },
+  { type: &#39;walk&#39;, rooms: [ /* ... */ ] },
+];
+</code></pre>
+<p>When <code>STEPS</code> is exhausted the module calls <code>context.onComplete()</code> — the
+chapter&#39;s own, threaded down untouched through <code>minigameScene.js</code> — and the
+chapter advances into the NPC dialog. The chapter never learns any of this
+happened.</p>
+<p><strong><code>walk</code> — a room with hotspots.</strong> No static background: a looping animated
+bg sprite (numbered WebP frames via <code>ui/spriteAnimator.js</code>, same as
+<code>spr_lake_bg_001</code>) authored for a <em>stop-motion</em> feel — low frame count,
+hard cuts, kinetic rather than tweened (reference: Tetsuo the Iron Man).
+Objects are sprites layered over it, not invisible tap regions.</p>
+<pre><code class="language-js">{
+  bg: { base: &#39;/assets/&lt;chapter&gt;/sprites/spr_hallway/spr_hallway_&#39;, frames: 6, fps: 8 },
+  hotspots: [
+    { x: 15, y: 20, w: 20, h: 25, closeup: &#39;...&#39;, text: {
+        Guns:     &quot;Her diploma. Crooked. Nobody straightened it.&quot;,
+        Bible:    &quot;Her diploma. Class of &#39;09. She earned that.&quot;,
+        Crystals: &quot;Her diploma, tilted. Something here gave up a while ago.&quot;,
+    } },
+  ],
+  advance: { x: 72, y: 55, w: 14, h: 30, sprite: &#39;...&#39;, to: &#39;next-room-id&#39; },
+}
+</code></pre>
+<ul>
+<li><strong>Inspect hotspots</strong>: tap -&gt; quick scale-up pop (snappy, un-eased, to match
+the stop-motion register) -&gt; close-up image + inner-thought caption,
+typewriter-drawn via <code>ui/typewriterText.js</code>. Tap dismisses back to the
+room. Permanently re-tappable; no lockout, no &quot;already seen&quot; state.</li>
+<li><strong>Caption text varies by class.</strong> <code>text</code> is an object keyed by
+<code>run.loadout</code> (Guns / Bible / Crystals) — the same trick
+<code>questionnaireScene.js</code>&#39;s <code>DIAGNOSES</code> already uses, and it needs no new
+run state since <code>loadout</code> is set before any mini-game runs. Three variants
+per hotspot. Gimmick prompts deliberately do <em>not</em> vary — they&#39;re short
+and functional; the interpretive weight lives in the captions.</li>
+<li><strong>The advance hotspot is a reserved 4th slot</strong>, authored into every room
+from the start but invisible and inert until every inspect hotspot in that
+room has been tapped at least once. Then it reveals itself as a hint that
+you can move on. Tapping it loads the next room, or ends the <code>walk</code> step
+if it was the last. Progression is therefore gated on <em>curiosity</em>, not
+skill — you can&#39;t get stuck and you can&#39;t fail, you just have to look.</li>
+<li>Positions are <strong>percentages</strong>, never pixels — the canvas scales to the
+viewport (see <a class="doc-ref" href="#doc-handoff" data-doc="doc-handoff"><code>HANDOFF.md</code></a> and <a class="doc-ref" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><code>ASSET_GUIDELINES.md</code></a>).</li>
+<li>Per-room visited-tracking lives in the renderer&#39;s own closure, not in
+<code>run</code> — same convention <code>dialogScene</code>/<code>cutsceneScene</code> use for scene-local
+state.</li>
+</ul>
+<p><strong><code>gimmick</code> — the &quot;Quick Beat&quot; template.</strong> One reusable, data-only shape,
+<em>not</em> a catalog of bespoke micro-games and not its own lazy-loaded module:
+a short prompt appears, the player answers with either an <code>attachSwipe</code>
+left/right or a tap on a single target hotspot, and <strong>any</strong> response
+resolves it. Match vs. miss (including a timeout) only changes the cosmetic
+flourish — <code>fx.flash()</code> / <code>fx.shake()</code> at weak or strong, the same
+intensity-only feedback dialog swipes use, never color-coded right/wrong.
+It takes over the screen rather than blending into the walk, which keeps
+its interaction code independent of the room renderer&#39;s.</p>
+<p>Still to build: <code>engine/walkSequencer.js</code> (the <code>STEPS</code> runner) plus the two
+step renderers. No chapter has mini-game content yet, so none of this is
+wired into a live <code>SCENES</code> array — there&#39;s a TODO comment at
+<code>chapters/lake-ulysses/index.js</code>&#39;s array marking the four intended slots.</p>
 <h2 id="doc-scene_types--adding-a-new-type"><a class="anchor" href="#doc-scene_types--adding-a-new-type" aria-label="Link to this section">#</a>Adding a new type</h2>
 <ol>
 <li>Write <code>src/scenes/&lt;type&gt;Scene.js</code> implementing the contract above.</li>

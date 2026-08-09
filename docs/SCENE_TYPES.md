@@ -255,11 +255,87 @@ is a sign it isn't this kind of mini-game — model it as an explicit scene
 in the chapter's own `SCENES` list instead of smuggling a side-effect
 through this wrapper.
 
-Internally, a mini-game module is free to structure its own sequence of
-steps however it wants — `cutsceneScene.js`'s beat list (tap-to-advance,
-optional `interactive` branches) is the closest existing pattern for a
-sequential "walk then gimmick then walk" structure and is a reasonable
-starting point to imitate rather than a chapter/scene handler to import.
+**Placement.** One mini-game immediately precedes each NPC dialog scene,
+so a chapter reads as explore -> encounter, repeating. In `lake-ulysses`
+that's Deborah / Rwanda / Samun / Rick — four slots. Therapist is exempt:
+it belongs to the chapter's opening call (Prologue -> Questionnaire ->
+Therapist), not to this pattern.
+
+#### The step system (designed, not yet built)
+
+A mini-game module runs its own ordered `STEPS` list — a second, smaller
+sequencer nested inside the scene sequencer, the same way `cutsceneScene.js`
+sequences its own beats. Two step types:
+
+```js
+const STEPS = [
+  { type: 'walk', rooms: [ /* see below */ ] },
+  { type: 'gimmick', prompt: { text: 'DUCK!' }, response: 'swipe-left' },
+  { type: 'walk', rooms: [ /* ... */ ] },
+];
+```
+
+When `STEPS` is exhausted the module calls `context.onComplete()` — the
+chapter's own, threaded down untouched through `minigameScene.js` — and the
+chapter advances into the NPC dialog. The chapter never learns any of this
+happened.
+
+**`walk` — a room with hotspots.** No static background: a looping animated
+bg sprite (numbered WebP frames via `ui/spriteAnimator.js`, same as
+`spr_lake_bg_001`) authored for a *stop-motion* feel — low frame count,
+hard cuts, kinetic rather than tweened (reference: Tetsuo the Iron Man).
+Objects are sprites layered over it, not invisible tap regions.
+
+```js
+{
+  bg: { base: '/assets/<chapter>/sprites/spr_hallway/spr_hallway_', frames: 6, fps: 8 },
+  hotspots: [
+    { x: 15, y: 20, w: 20, h: 25, closeup: '...', text: {
+        Guns:     "Her diploma. Crooked. Nobody straightened it.",
+        Bible:    "Her diploma. Class of '09. She earned that.",
+        Crystals: "Her diploma, tilted. Something here gave up a while ago.",
+    } },
+  ],
+  advance: { x: 72, y: 55, w: 14, h: 30, sprite: '...', to: 'next-room-id' },
+}
+```
+
+- **Inspect hotspots**: tap -> quick scale-up pop (snappy, un-eased, to match
+  the stop-motion register) -> close-up image + inner-thought caption,
+  typewriter-drawn via `ui/typewriterText.js`. Tap dismisses back to the
+  room. Permanently re-tappable; no lockout, no "already seen" state.
+- **Caption text varies by class.** `text` is an object keyed by
+  `run.loadout` (Guns / Bible / Crystals) — the same trick
+  `questionnaireScene.js`'s `DIAGNOSES` already uses, and it needs no new
+  run state since `loadout` is set before any mini-game runs. Three variants
+  per hotspot. Gimmick prompts deliberately do *not* vary — they're short
+  and functional; the interpretive weight lives in the captions.
+- **The advance hotspot is a reserved 4th slot**, authored into every room
+  from the start but invisible and inert until every inspect hotspot in that
+  room has been tapped at least once. Then it reveals itself as a hint that
+  you can move on. Tapping it loads the next room, or ends the `walk` step
+  if it was the last. Progression is therefore gated on *curiosity*, not
+  skill — you can't get stuck and you can't fail, you just have to look.
+- Positions are **percentages**, never pixels — the canvas scales to the
+  viewport (see `HANDOFF.md` and `ASSET_GUIDELINES.md`).
+- Per-room visited-tracking lives in the renderer's own closure, not in
+  `run` — same convention `dialogScene`/`cutsceneScene` use for scene-local
+  state.
+
+**`gimmick` — the "Quick Beat" template.** One reusable, data-only shape,
+*not* a catalog of bespoke micro-games and not its own lazy-loaded module:
+a short prompt appears, the player answers with either an `attachSwipe`
+left/right or a tap on a single target hotspot, and **any** response
+resolves it. Match vs. miss (including a timeout) only changes the cosmetic
+flourish — `fx.flash()` / `fx.shake()` at weak or strong, the same
+intensity-only feedback dialog swipes use, never color-coded right/wrong.
+It takes over the screen rather than blending into the walk, which keeps
+its interaction code independent of the room renderer's.
+
+Still to build: `engine/walkSequencer.js` (the `STEPS` runner) plus the two
+step renderers. No chapter has mini-game content yet, so none of this is
+wired into a live `SCENES` array — there's a TODO comment at
+`chapters/lake-ulysses/index.js`'s array marking the four intended slots.
 
 ## Adding a new type
 
