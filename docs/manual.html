@@ -169,7 +169,7 @@ mark { background: var(--mark); color: var(--fg); }
       <p class="doc-source">Start here · <code>docs/HANDOFF.md</code></p>
       <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-handoff--what-dream-xtreme-is">What Dream Xtreme is</a></li><li><a href="#doc-handoff--what39s-actually-playable-right-now">What&amp;#39;s actually playable right now</a></li><li><a href="#doc-handoff--key-decisions-and-why">Key decisions and why</a></li><li><a href="#doc-handoff--stats-what39s-wired-up-and-what-isn39t">Stats — what&amp;#39;s wired up and what isn&amp;#39;t</a></li><li><a href="#doc-handoff--what-was-deliberately-cut-from-the-original-design-docs">What was deliberately cut from the original design docs</a></li><li><a href="#doc-handoff--asset-inventory">Asset inventory</a></li><li><a href="#doc-handoff--known-gaps-not-bugs-just-not-done">Known gaps (not bugs, just not done)</a></li><li><a href="#doc-handoff--what39s-next">What&amp;#39;s next</a></li><li><a href="#doc-handoff--deployment">Deployment</a></li><li><a href="#doc-handoff--running-it">Running it</a></li></ul></nav>
       <h1 id="doc-handoff--handoff-project-status"><a class="anchor" href="#doc-handoff--handoff-project-status" aria-label="Link to this section">#</a>Handoff / Project Status</h1>
-<p>Last updated: 2026-08-04. Read this first if you&#39;re picking this project
+<p>Last updated: 2026-08-09. Read this first if you&#39;re picking this project
 up cold — it&#39;s the &quot;why,&quot; not the &quot;what&quot; (the code and the other docs in
 this folder cover the what).</p>
 <p>Other docs, roughly in reading order: <a class="doc-ref" href="#doc-architecture" data-doc="doc-architecture"><code>ARCHITECTURE.md</code></a> (shell/chapter
@@ -202,10 +202,16 @@ whose answers <em>implicitly</em> set your class — Guns / Bible / Crystals —
 followed by the Therapist&#39;s cryptic diagnosis; the class name is never
 shown) -&gt; Therapist (location 1 — the tutorial NPC, a single swipe
 exchange, no in-fiction explanation of mechanics; teaches truth/lie purely
-by playing it) -&gt; Deborah -&gt; Rwanda -&gt; Samun -&gt; Rick (dialog, swipe
-truth/lie) -&gt; Reckoning (confess or double down on your lies) -&gt; one of
-four endings (Clean Cut / Functional Mask / Collapse / Living Lie) based
-on final Truth Debt.</p>
+by playing it) -&gt; Deborah -&gt; Rwanda -&gt; Samun -&gt; Rick -&gt; Reckoning (confess
+or double down on your lies) -&gt; one of four endings (Clean Cut / Functional
+Mask / Collapse / Living Lie) based on final Truth Debt.</p>
+<p>Each of the four NPCs is now a three-beat unit — <strong>explore -&gt; confront -&gt;
+encounter</strong>: a mini-game walk to their door, a confrontation where you see
+them and pick how to open, then the dialog itself. The confrontation choice
+isn&#39;t decoration: it selects which node the NPC opens on, so the same
+character starts guarded, warm, or already cornered depending on how you
+came at them. All of it is placeholder art and placeholder prose right now
+(see &quot;Known gaps&quot;), but the shape is real and playable end to end.</p>
 <p>Prologue / Questionnaire / Therapist are deliberately one continuous
 unit — <strong>the chapter&#39;s opening call</strong>, and the intended routine opener for
 future chapters too: you&#39;re on site, the Therapist buzzes in, she evaluates
@@ -244,10 +250,11 @@ generalized into <code>engine/sceneSequencer.js</code> + <code>src/scenes/</code
 reckoning / ending as scene <em>types</em>) specifically so cutscenes and
 mini-games had a well-defined slot to drop into later without another
 rewrite. That paid off: <code>cutscene</code> and <code>questionnaire</code> have since slotted
-in with no sequencer changes, and there are now three cutscenes in the
-chapter. <code>minigame</code> (<code>scenes/minigameScene.js</code>) is now built too, ahead
-of any chapter using it — see <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a> for the contract and the
-can&#39;t-lose design philosophy behind it.</p>
+in with no sequencer changes, and <code>minigame</code> (<code>scenes/minigameScene.js</code>)
+followed — see <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a> for the contract and the can&#39;t-lose design
+philosophy behind it. The pre-battle confrontations are the clearest
+vindication of the split: they needed no new scene type at all, just one
+extra field on the cutscene type that was already there.</p>
 </li>
 <li><p><strong>Vite version pinned to latest (^8), not what the original spec
 implied.</strong> Started on 5.x, found a moderate dev-server vulnerability in
@@ -375,11 +382,13 @@ if a second ambient track is wanted, it still needs to be sourced.</li>
 </ul>
 <p><strong>Mini-game room art</strong> (<code>public/assets/lake-ulysses/sprites/</code>):</p>
 <ul>
-<li><code>spr_hallway_bg/</code> (6 SVG frames) + <code>hallway_{diploma,doormat,lightbulb,door}.svg</code>
-and their <code>_closeup.svg</code> pairs — <strong>all generated placeholders</strong>, produced by
-<code>scripts/make-placeholder-room.mjs</code> (deterministic, so regenerating causes no
-git churn). They exist so the walk system could be built and played before
-real art. Replace them and delete the script when real art lands.</li>
+<li>Four rooms — <code>spr_{hallway,alley,garage,barlot}_bg/</code> (6 SVG frames each) plus
+a sprite and <code>_closeup.svg</code> pair per object — and four confrontation busts,
+<code>npc_{deborah,rwanda,samun,rick}.svg</code>. <strong>All generated placeholders</strong>,
+produced by <code>scripts/make-placeholder-room.mjs</code> (deterministic, so
+regenerating causes no git churn). They exist so the walk and confrontation
+systems could be built and played before real art. Replace them and delete
+the script when real art lands.</li>
 </ul>
 <p><strong>NPC portraits</strong> are still colored initials (<code>ui/npcPortrait.js</code>) — no character art yet for dialog scenes.</p>
 <h2 id="doc-handoff--known-gaps-not-bugs-just-not-done"><a class="anchor" href="#doc-handoff--known-gaps-not-bugs-just-not-done" aria-label="Link to this section">#</a>Known gaps (not bugs, just not done)</h2>
@@ -391,9 +400,11 @@ of <code>lk_01.mp3</code>, 1.2MB shipped for nothing. Kept deliberately for now.
 <li><code>loadoutScene.js</code> and the unread <code>firstPlayScene</code> registry field were
 removed from the build; both are preserved verbatim in <a class="doc-ref" href="#doc-attic" data-doc="doc-attic"><code>ATTIC.md</code></a> with
 restore instructions.</li>
-<li>Cutscenes have real content (opening quote, Bob Baiter, Prologue).
-Mini-games are built and one is playable (Deborah&#39;s hallway), but its art
-and captions are placeholders and the other three NPCs have none.</li>
+<li>Cutscenes have real content (opening quote, Bob Baiter, Prologue). The
+four mini-games and the four confrontations are <strong>entirely placeholder</strong> —
+generated vector art, and prose written to exercise the class-variation and
+opener-branching paths rather than to be read. They are the largest block of
+placeholder content in the project and the most obvious thing to replace.</li>
 <li>All existing nodes have <code>feelzOptions: [Anger, Fear, Anticipation]</code> —
 the manuscript FEELZ line predates the class system. Bible/Crystals
 players see their class emotions regardless (dartboard always shows the
@@ -421,13 +432,24 @@ abstract symbols, drag-to-card interaction. (<code>engine/loadout.js</code>,
 </li>
 <li><p><strong>More depth in Lake Ulysses</strong> — additional dialog branches on existing
 NPCs. Pure content through the manuscript pipeline, no engine changes.
-Obvious targets: a third node on any NPC (all currently cap at 2),
-or Bible/Crystals-class-aware FEELZ options on existing nodes.</p>
+Every NPC is now three openers wide (the confrontation picks one) but
+still only two nodes deep. Obvious targets: a third node on any NPC, or
+Bible/Crystals-class-aware FEELZ options on existing nodes.</p>
 </li>
-<li><p><strong>Mini-games for Rwanda / Samun / Rick</strong> — the whole system is built and
-the first one (Deborah&#39;s hallway) is playable, so these are pure content:
-a room definition + captions + a <code>SCENES</code> line each. See <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>
-for the step contract and <a class="doc-ref" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><code>ASSET_GUIDELINES.md</code></a> for the art hand-off spec.</p>
+<li><p><del>Mini-games for Rwanda / Samun / Rick</del> — done, all four exist and play.
+Art and prose are placeholder; see <a class="doc-ref" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><code>ASSET_GUIDELINES.md</code></a> for the hand-off
+spec on replacing them.</p>
+</li>
+<li><p><del>Pre-battle confrontations</del> — done, one per NPC. Not a new scene type: a
+cutscene with <code>opensDialog</code> plus an <code>opener</code> on each choice, which writes
+the node the following dialog scene starts on (<a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>). Adding
+more branches is authoring two things in step — a manuscript node and a
+matching option.</p>
+</li>
+<li><p><strong>Real prose for the placeholder beats</strong> — the biggest content job now.
+Four room intros ×3 classes, twelve hotspot captions ×3 classes, four
+confrontations, and eight opener nodes are all written to exercise their
+code path rather than to be read.</p>
 </li>
 </ul>
 <p><strong>Needs a dedicated design pass first:</strong></p>
@@ -680,6 +702,32 @@ node (or <code>onComplete</code> if the graph&#39;s exhausted). Content shape do
 in <a class="doc-ref" href="#doc-content_schema" data-doc="doc-content_schema"><code>CONTENT_SCHEMA.md</code></a>.</p>
 <pre><code class="language-json">{ &quot;type&quot;: &quot;dialog&quot;, &quot;id&quot;: &quot;deborah&quot;, &quot;npc&quot;: /* NPC content JSON */ }
 </code></pre>
+<p><strong>Which node it opens on.</strong> Normally the first node in the content file. If
+an earlier confrontation cutscene wrote <code>run.openers[&lt;this scene&#39;s id&gt;]</code>
+(see the <code>cutscene</code> section&#39;s <code>opensDialog</code>), that node is used instead. An
+unknown id falls back to the first node rather than erroring, so deleting a
+node from a manuscript can&#39;t strand the scene — but it <em>will</em> silently undo
+the player&#39;s choice, so keep opener ids and confrontation options in sync.</p>
+<p>Gates still apply on top: <code>resolveGatedNode</code> runs against whichever opener
+was chosen, which is why every alternate opener for a gated NPC needs the
+same <code>GATE:</code> line. Rick&#39;s three openers all carry <code>trust &lt; 3 -&gt; rick_shut_down</code>; without that, picking a non-default opener would quietly
+bypass his gate.</p>
+<p><strong>The reaction is tap-gated, never timed.</strong> After a swipe, the NPC&#39;s
+reaction is typewriter-drawn and stays up until the player taps — first tap
+finishes the draw, second advances. The &quot;(tap to continue)&quot; hint only
+appears once the text is fully drawn. There is deliberately no auto-advance
+timer here: this beat is the payoff for the choice and the one screen the
+player most needs to actually read. It used to advance itself after 2.2s,
+which cut off longer reactions mid-read.</p>
+<p><strong>Reactions answer the FEELZ wheel.</strong> The authored <code>npcReaction</code> is joined
+with a coda from <code>engine/reactions.js</code>, a shared table keyed by
+<code>[emotion][truth|lie]</code> — 8 emotions × 2 sides, one table for the whole
+game. This is why an NPC needs no extra authoring to respond to all 8
+emotions, and why adding an NPC doesn&#39;t mean writing 16 more variants.</p>
+<p>Codas describe <strong>delivery</strong> — how the line left you — never whether the
+choice was right. That&#39;s the same rule the fx intensity follows: weight,
+not verdict. Keep it that way; a coda that grades the player turns an
+atmospheric beat into a score screen.</p>
 <h3 id="doc-scene_types--questionnaire-srcscenesquestionnairescenejs"><a class="anchor" href="#doc-scene_types--questionnaire-srcscenesquestionnairescenejs" aria-label="Link to this section">#</a><code>questionnaire</code> (<code>src/scenes/questionnaireScene.js</code>)</h3>
 <p>Three swipe questions that assign the player&#39;s class loadout, followed by
 the Therapist&#39;s diagnosis. Carries no content in the scene object — the
@@ -818,10 +866,41 @@ technical blocker).</p>
 <p>Only <code>type: &#39;choice&#39;</code> exists. A timed-tap or drag interactive type is a
 natural extension of the same <code>interactive</code> field (a different <code>type</code>
 value) whenever there&#39;s real content that needs one.</p>
+<p><strong>Confrontations (<code>opensDialog</code> + an option&#39;s <code>opener</code>).</strong> A scene-level
+<code>opensDialog</code> names a later dialog scene; an option&#39;s <code>opener</code> names a node
+in that NPC&#39;s graph. Choosing the option writes <code>run.openers[opensDialog]</code>,
+and the dialog scene opens on that node instead of its first one.</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;cutscene&quot;, &quot;id&quot;: &quot;deborah-confront&quot;, &quot;opensDialog&quot;: &quot;deborah&quot;,
+  &quot;beats&quot;: [
+    { &quot;sprite&quot;: &quot;/assets/lake-ulysses/sprites/npc_deborah.svg&quot;,
+      &quot;text&quot;: &quot;The door opens before you knock.&quot; },
+    { &quot;speaker&quot;: &quot;DEBORAH&quot;, &quot;sprite&quot;: &quot;…&quot;, &quot;text&quot;: &quot;You&#39;re not the church.&quot;,
+      &quot;interactive&quot;: { &quot;type&quot;: &quot;choice&quot;, &quot;options&quot;: [
+        { &quot;label&quot;: &quot;Say nothing. Let her fill it.&quot;,   &quot;opener&quot;: &quot;deborah_01&quot; },
+        { &quot;label&quot;: &quot;\&quot;You look like you haven&#39;t slept.\&quot;&quot;, &quot;opener&quot;: &quot;deborah_01_soft&quot; },
+        { &quot;label&quot;: &quot;\&quot;I heard about your son.\&quot;&quot;,     &quot;opener&quot;: &quot;deborah_01_hard&quot; }
+      ] } }
+  ]
+}
+</code></pre>
+<p>That is the whole pre-battle confrontation mechanic — <strong>there is no
+<code>confrontation</code> scene type and there shouldn&#39;t be one.</strong> A confrontation is
+a cutscene that happens to shape what follows: sprite, speaker nameplate,
+typewriter text and branching choices were all already here, and the only
+thing missing was one field of state. A separate type would have duplicated
+all of it to add a single assignment.</p>
+<p><code>opener</code> composes with <code>jumpTo</code> and <code>nextBeat</code> rather than replacing them —
+the opener is written first, then the option resolves as normal. An option
+with <code>opener</code> and nothing else just advances, which is why a confrontation&#39;s
+choice beat is normally the last beat in the list.</p>
+<p>Every NPC in <code>lake-ulysses</code> now runs <strong>explore → confront → encounter</strong>:
+mini-game, confrontation cutscene, dialog. Each NPC has three openers (the
+original node plus a <code>_soft</code> and a <code>_hard</code> variant) authored in their
+manuscript like any other node.</p>
 <h3 id="doc-scene_types--minigame-srcscenesminigamescenejs"><a class="anchor" href="#doc-scene_types--minigame-srcscenesminigamescenejs" aria-label="Link to this section">#</a><code>minigame</code> (<code>src/scenes/minigameScene.js</code>)</h3>
-<p>The wrapper is built; no chapter uses it yet — this is infrastructure
-waiting on its first real game, not a stub. A chapter shouldn&#39;t have to
-know how a mini-game works internally, only that it eventually finishes:</p>
+<p>A chapter shouldn&#39;t have to know how a mini-game works internally, only
+that it eventually finishes:</p>
 <pre><code class="language-json">{
   &quot;type&quot;: &quot;minigame&quot;,
   &quot;id&quot;: &quot;some-game&quot;,
@@ -859,11 +938,11 @@ carry. If a future mini-game concept genuinely needs to move a stat, that
 is a sign it isn&#39;t this kind of mini-game — model it as an explicit scene
 in the chapter&#39;s own <code>SCENES</code> list instead of smuggling a side-effect
 through this wrapper.</p>
-<p><strong>Placement.</strong> One mini-game immediately precedes each NPC dialog scene,
-so a chapter reads as explore -&gt; encounter, repeating. In <code>lake-ulysses</code>
-that&#39;s Deborah / Rwanda / Samun / Rick — four slots. Therapist is exempt:
-it belongs to the chapter&#39;s opening call (Prologue -&gt; Questionnaire -&gt;
-Therapist), not to this pattern.</p>
+<p><strong>Placement.</strong> One mini-game precedes each NPC, with the confrontation
+cutscene between the two, so a chapter reads as explore -&gt; confront -&gt;
+encounter, repeating. In <code>lake-ulysses</code> that&#39;s Deborah / Rwanda / Samun /
+Rick — four slots. Therapist is exempt: she belongs to the chapter&#39;s opening
+call (Prologue -&gt; Questionnaire -&gt; Therapist), not to this pattern.</p>
 <h4 id="doc-scene_types--the-step-system-enginewalksequencerjs"><a class="anchor" href="#doc-scene_types--the-step-system-enginewalksequencerjs" aria-label="Link to this section">#</a>The step system (<code>engine/walkSequencer.js</code>)</h4>
 <p>A mini-game module runs its own ordered <code>STEPS</code> list — a second, smaller
 sequencer nested inside the scene sequencer, the same way <code>cutsceneScene.js</code>
@@ -887,6 +966,11 @@ regions and not painted into the bg — the tap feedback scales an object up,
 which is impossible if it&#39;s baked into a flat background frame.</p>
 <pre><code class="language-js">{
   bg: { base: &#39;/assets/&lt;chapter&gt;/sprites/spr_hallway/spr_hallway_&#39;, frames: 6, fps: 8 },
+  intro: {   // optional entry caption, per class — see below
+    Guns:     &#39;Third floor. The stairwell door behind you doesn\&#39;t latch.&#39;,
+    Bible:    &#39;Third floor. Somebody swept this hallway recently.&#39;,
+    Crystals: &#39;Third floor. The air is thick with something that has been sitting here.&#39;,
+  },
   hotspots: [
     // x/y/w/h are design-space pixels against the 390×844 frame, top-left
     // origin — the numbers straight off the artboard. The renderer divides
@@ -901,6 +985,13 @@ which is impossible if it&#39;s baked into a flat background frame.</p>
 }
 </code></pre>
 <ul>
+<li><strong>Room intro</strong> (<code>intro</code>, optional): a descriptive line drawn over the room
+the instant it mounts — where you just arrived, before anything is
+tappable. It scrims the room rather than replacing it, so the bg is
+already animating behind the text instead of the player landing on a dead
+screen, and it covers the hotspots while up so the beat can&#39;t be tapped
+through by accident. Same two-tap gesture as a close-up: finish the draw,
+then dismiss. Varies by class exactly like hotspot captions.</li>
 <li><strong>Inspect hotspots</strong>: tap -&gt; quick scale-up pop (snappy, un-eased, to match
 the stop-motion register) -&gt; close-up image + inner-thought caption,
 typewriter-drawn via <code>ui/typewriterText.js</code>. Tap dismisses back to the
@@ -937,9 +1028,16 @@ flourish — <code>fx.flash()</code> / <code>fx.shake()</code> at weak or strong
 intensity-only feedback dialog swipes use, never color-coded right/wrong.
 It takes over the screen rather than blending into the walk, which keeps
 its interaction code independent of the room renderer&#39;s.</p>
-<p>Four things in <code>quickBeat.js</code> exist specifically to keep a can&#39;t-lose beat
+<p>Five things in <code>quickBeat.js</code> exist specifically to keep a can&#39;t-lose beat
 from <em>feeling</em> like a test, and shouldn&#39;t be undone casually:</p>
 <ul>
+<li><strong>A tap resolves the beat too, and resolves it as a hit.</strong> The swipe is
+the flavor of the moment, not a requirement — a player who doesn&#39;t want to
+swipe should never be stuck waiting out the clock, and every other step in
+a mini-game (intro, close-up, advance) already passes on a tap. It counts
+as a hit rather than a miss because tapping is a deliberate answer. A
+completed swipe has already set <code>resolved</code>, so the trailing click can&#39;t
+double-fire.</li>
 <li><strong>The clock stops on the first <code>pointermove</code>.</strong> Otherwise a swipe begun
 near the deadline has its own timeout fire mid-drag: the miss flourish
 plays and the <code>pointerup</code> lands on a dead no-op, punishing a player who
@@ -959,12 +1057,13 @@ signal their input was registering.</li>
 <p>Tap-targets hit-test with ~24px of slop for the same reason: a tap just
 outside the art should read as intent, not as a miss.</p>
 <p><strong>Built and playable.</strong> <code>engine/walkSequencer.js</code> runs the <code>STEPS</code> list;
-<code>ui/walkRoom.js</code> and <code>ui/quickBeat.js</code> are the two step renderers. The first
-mini-game is <code>chapters/lake-ulysses/minigames/deborah-hallway.js</code>, wired in
-ahead of Deborah — its art is generated placeholder vectors
-(<code>scripts/make-placeholder-room.mjs</code>) and its captions exist to exercise the
-class-variation path, not as final prose. Rwanda / Samun / Rick still need
-theirs; each is one line in <code>SCENES</code> plus a content module.</p>
+<code>ui/walkRoom.js</code> and <code>ui/quickBeat.js</code> are the two step renderers. All four
+NPCs now have one: <code>deborah-hallway</code>, <code>rwanda-alley</code>, <code>samun-garage</code>,
+<code>rick-barlot</code>, each a module under <code>chapters/lake-ulysses/minigames/</code> and one
+line in <code>SCENES</code>. Every one of them is <strong>placeholder throughout</strong> — the art
+is generated vectors (<code>scripts/make-placeholder-room.mjs</code>) and the intros and
+captions exist to exercise the class-variation path, not as final prose.
+Replacing them is content and art work, no engine changes.</p>
 <p>Two implementation notes worth knowing:</p>
 <ul>
 <li><code>createSpriteAnimator</code> takes an optional <code>ext</code> (default <code>&#39;webp&#39;</code>). It
@@ -1203,6 +1302,10 @@ got numbers from a different board.</p>
 <td align="left">Frame sequence folder + frame count + fps</td>
 </tr>
 <tr>
+<td align="left">Room intro</td>
+<td align="left">Descriptive entry text ×3 — one per class</td>
+</tr>
+<tr>
 <td align="left">Each object</td>
 <td align="left">Sprite file, plus <code>x, y, w, h</code> in design-space px</td>
 </tr>
@@ -1219,9 +1322,16 @@ got numbers from a different board.</p>
 <td align="left">Sprite file + <code>x, y, w, h</code>, same as any object</td>
 </tr>
 </tbody></table>
+<p>The <strong>room intro</strong> is writing, not art, but it&#39;s part of the room hand-off:
+one or two sentences that establish where the player just arrived, drawn
+over the room the moment it mounts and dismissed by tapping. It varies by
+class like the object captions do, and for the same reason — it&#39;s the
+player&#39;s read on the place, not a neutral label. Keep it to what the
+character would notice walking in; the objects are where detail belongs.</p>
 <p>Which lands as room data shaped like this — pixels in, no math done by you:</p>
 <pre><code class="language-js">{
   bg: { base: &#39;/assets/lake-ulysses/sprites/spr_hallway/spr_hallway_&#39;, frames: 6, fps: 8 },
+  intro: { Guns: &#39;…&#39;, Bible: &#39;…&#39;, Crystals: &#39;…&#39; },
   hotspots: [
     { x: 58, y: 170, w: 78, h: 210,      // design-space px, top-left origin
       sprite:  &#39;/assets/lake-ulysses/sprites/hallway_diploma.webp&#39;,
@@ -1247,6 +1357,17 @@ small and irregularly shaped; they compress well at q70.</li>
 room is early in a chapter. Close-ups load on demand — the player may
 never tap that object.</li>
 </ul>
+<h3 id="doc-asset_guidelines--confrontation-busts-one-per-npc"><a class="anchor" href="#doc-asset_guidelines--confrontation-busts-one-per-npc" aria-label="Link to this section">#</a>Confrontation busts (one per NPC)</h3>
+<p>Between a room and its NPC dialog sits the <strong>confrontation</strong> — a short
+cutscene where you see the character and choose how to open on them. It
+needs one bust per NPC, used as a cutscene <code>sprite</code>.</p>
+<p>Same rules as any cutscene sprite: bottom-anchored, sized as a percentage
+of canvas height (72%), so author a tall figure rather than a full frame.
+Bleeding past the left and right edges is fine and usually right for a bust
+shot; bleeding past the bottom is not. A still is enough — these don&#39;t need
+frame sequences, though a <code>spriteAnim</code> key works if one gets animated later.</p>
+<p>Current files are generated placeholders (<code>npc_&lt;name&gt;.svg</code>, from
+<code>scripts/make-placeholder-room.mjs</code>). Real busts drop in at the same paths.</p>
 <h3 id="doc-asset_guidelines--static-images"><a class="anchor" href="#doc-asset_guidelines--static-images" aria-label="Link to this section">#</a>Static images</h3>
 <p>A beat can use <code>image</code> / <code>sprite</code> with a direct path instead of an anim
 key. Same sizing rules apply. Placeholder SVGs are acceptable and used
@@ -1506,7 +1627,7 @@ convert. See &quot;Mini-game rooms&quot; above.)</li>
 <li>Interactive objects <strong>left out of the bg frames</strong> (they&#39;re layered
 sprites, and painting them in too causes double-drawing)?</li>
 <li>Every object has a sprite, a close-up, and three caption variants
-(Guns / Bible / Crystals)?</li>
+(Guns / Bible / Crystals) — and the room itself has three intro variants?</li>
 <li>Coordinates measured against 390×844 — and scaled down if the artboard
 was larger?</li>
 </ol>
@@ -1631,10 +1752,19 @@ is broken elsewhere.</li>
 <h2 id="doc-script_format--what-this-format-doesn39t-cover-yet"><a class="anchor" href="#doc-script_format--what-this-format-doesn39t-cover-yet" aria-label="Link to this section">#</a>What this format doesn&#39;t cover yet</h2>
 <p>Endings (<code>content/endings.json</code>) aren&#39;t part of this pipeline — that
 file&#39;s shape is different (ending name → title/text), and small enough
-to hand-edit directly for now. Cutscenes and mini-games (see
-<a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>) don&#39;t have a manuscript format yet either, since
-neither is built. Both are natural extensions of this same idea once
-there&#39;s real content for them.</p>
+to hand-edit directly for now. Cutscenes (including the pre-battle
+confrontations) and mini-game rooms don&#39;t have a manuscript format yet
+either — both are built and both are hand-authored JSON or JS today. They
+are natural extensions of this same idea, and now that there&#39;s real
+content in them, the strongest candidates for the next format.</p>
+<p>One thing to know if you&#39;re writing a confrontation: its choices name
+node ids in <em>this</em> file (see <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>&#39;s <code>opensDialog</code>). An NPC&#39;s
+alternate openers are just ordinary nodes here, by convention
+<code>&lt;npcname&gt;_01_soft</code> / <code>&lt;npcname&gt;_01_hard</code>. If you rename or delete one,
+the confrontation silently falls back to the NPC&#39;s first node instead of
+failing the build — so rename them in step. If the NPC has a <code>GATE:</code> on
+their opening node, every alternate opener needs the same line, or
+choosing one quietly bypasses the gate.</p>
 
       <nav class="pager">
         <a href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><span>Previous</span>Asset Guidelines</a>

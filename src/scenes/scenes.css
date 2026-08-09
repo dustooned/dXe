@@ -160,6 +160,27 @@
   min-height: 96px;
 }
 
+/* Entry caption — the line you read on stepping into a room. It scrims the
+   room rather than replacing it, so the bg is already animating behind the
+   text instead of the player arriving to a dead screen. */
+.dx-room__intro {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: flex-end;
+  background: rgba(0, 0, 0, 0.72);
+  cursor: pointer;
+}
+
+.dx-room__intro-text {
+  width: 100%;
+  background: var(--color-black);
+  border-top: 2px solid var(--color-white);
+  padding: 16px;
+  min-height: 96px;
+}
+
 /* ── Mini-game: Quick Beat gimmick ─────────────────────────── */
 .dx-beat {
   position: relative;

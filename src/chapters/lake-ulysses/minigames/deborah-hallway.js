@@ -16,6 +16,11 @@ const BG = { base: `${SPR}spr_hallway_bg/spr_hallway_bg_`, frames: 6, fps: 8, ex
 const ROOMS = {
   'hallway-01': {
     bg: BG,
+    intro: {
+      Guns:     "Third floor. The stairwell door behind you doesn't latch. Nobody in this building would hear a thing.",
+      Bible:    'Third floor. Somebody swept this hallway recently. Somebody up here is still trying.',
+      Crystals: 'Third floor. The air is thick with something that has been sitting here a long time.',
+    },
     hotspots: [
       {
         x: 78, y: 250, w: 74, h: 96,

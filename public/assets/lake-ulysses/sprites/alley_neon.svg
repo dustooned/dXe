@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 58">
+  <rect x="1" y="1" width="94" height="56" fill="#15151b" stroke="#4a4a58" stroke-width="2"/>
+  <line x1="1" y1="1" x2="95" y2="57" stroke="#2a2a34" stroke-width="1"/>
+  <line x1="95" y1="1" x2="1" y2="57" stroke="#2a2a34" stroke-width="1"/>
+  <text x="48" y="29" text-anchor="middle" dominant-baseline="middle" font-family="monospace" font-size="9" fill="#6a6a7a">NEON</text>
+</svg>

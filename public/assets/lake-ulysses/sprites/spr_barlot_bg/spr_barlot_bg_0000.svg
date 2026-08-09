@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844">
+  <rect width="390" height="844" fill="#0d0d10"/>
+  <!-- walls, jittered per frame for the stop-motion read -->
+  <path d="M0,119.17414256961743 L390,149.02991241241335 L390,700.8405788253716 L0,741.2190411103512 Z" fill="#1e1e26"/>
+  <path d="M61.15711426858656,170.22691273769686 L331.44578576225126,194.13448834448795 L331.09125360967187,659.1026204827253 L58.827068299207404,700.6635386357846 Z" fill="#0d0d10"/>
+  <line x1="0" y1="739.12299990683" x2="390" y2="699.0003908576912" stroke="#2a2a34" stroke-width="2"/>
+  <line x1="0" y1="121.16366869335234" x2="390" y2="150.87478637805896" stroke="#2a2a34" stroke-width="2"/>
+  <rect x="268" y="147" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="354" y="768" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="374" y="711" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="32" y="557" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="122" y="401" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="235" y="444" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="90" y="664" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="298" y="328" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="135" y="216" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="181" y="748" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="121" y="821" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="1" y="241" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="324" y="574" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="259" y="42" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="377" y="126" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="131" y="477" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="189" y="800" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="226" y="456" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="301" y="198" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="252" y="579" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="315" y="9" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="249" y="777" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="133" y="345" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="87" y="194" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="34" y="208" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="363" y="379" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="32" y="152" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="195" y="533" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="47" y="825" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="104" y="765" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="228" y="571" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="252" y="818" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="292" y="604" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="254" y="797" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="130" y="443" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="291" y="780" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="217" y="802" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="352" y="426" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="54" y="283" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <rect x="185" y="177" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
+  <text x="195" y="804" text-anchor="middle" font-family="monospace" font-size="11" fill="#3a3a46" letter-spacing="2">PLACEHOLDER BG — BARLOT</text>
+  <text x="195" y="820" text-anchor="middle" font-family="monospace" font-size="9" fill="#3a3a46" letter-spacing="1">frame 0</text>
+</svg>

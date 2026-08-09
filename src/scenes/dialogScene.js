@@ -4,7 +4,9 @@
 //
 // scene shape: { type: 'dialog', id: string, npc: <NPC content JSON> }
 import { resolveCard, resolveGatedNode } from '../engine/cardEngine.js';
+import { composeReaction } from '../engine/reactions.js';
 import { checkBloomTriggers } from '../engine/debtEngine.js';
+import { createTypewriter } from '../ui/typewriterText.js';
 import { createMeterGroup } from '../ui/meterBar.js';
 import { createNpcPortrait } from '../ui/npcPortrait.js';
 import { createFeelzDartboard } from '../ui/feelzDartboard.js';
@@ -15,20 +17,27 @@ import { drawEmotionPattern } from '../ui/emotionPattern.js';
 import * as fx from '../shell/fx.js';
 import * as audio from '../shell/audio.js';
 
-const REACTION_DELAY_MS = 2200;
-
 // Weak vs strong hit feedback is derived from how big a swipe's effects
 // are, not from truth/lie — intensity signals weight, not judgment.
 const STRONG_HIT_THRESHOLD = 8;
 
+// Which node this NPC opens on. A confrontation scene earlier in the chapter
+// can have written an opener id into run.openers (see confrontationScene.js);
+// without one, or with a stale id, fall back to the first authored node.
+function openingNodeId(scene, npc, state) {
+  const chosen = state.openers?.[scene.id];
+  return chosen && npc.nodes[chosen] ? chosen : Object.keys(npc.nodes)[0];
+}
+
 export function mount(stageEl, scene, { run, onComplete }) {
   const { npc } = scene;
-  let currentNodeId = resolveGatedNode(Object.keys(npc.nodes)[0], npc, run.get());
+  let currentNodeId = resolveGatedNode(openingNodeId(scene, npc, run.get()), npc, run.get());
   let activeEmotion = null;
   let activeEmotionColor = null;
   let pendingReaction = null;
   let reactionEmotion = null;
-  let reactionTimer = null;
+  let reactionSwipeKey = null;
+  let typewriter = null;
 
   function currentNode() {
     return npc.nodes[currentNodeId];
@@ -44,6 +53,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   function render() {
     const runState = run.get();
+    typewriter?.destroy();
+    typewriter = null;
     stageEl.innerHTML = '';
 
     const screen = document.createElement('div');
@@ -66,15 +77,27 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (pendingReaction) {
       const reaction = document.createElement('p');
       reaction.className = 'dx-text dx-reaction';
-      reaction.textContent = pendingReaction.npcReaction;
       content.appendChild(reaction);
 
       const tapHint = document.createElement('p');
       tapHint.className = 'dx-text dx-tap-hint';
       tapHint.textContent = '(tap to continue)';
+      tapHint.hidden = true;
       content.appendChild(tapHint);
 
-      screen.addEventListener('click', () => continueAfterReaction(), { once: true });
+      typewriter = createTypewriter(
+        reaction,
+        composeReaction(pendingReaction.npcReaction, reactionEmotion, reactionSwipeKey),
+        { onChar: audio.playTypewriterTick, onDone: () => { tapHint.hidden = false; } },
+      );
+
+      // Nothing here advances on a timer — the reaction is the beat the player
+      // is meant to actually read. First tap finishes the draw, second moves on,
+      // the same gesture cutscene beats and room close-ups already teach.
+      screen.addEventListener('click', () => {
+        if (typewriter && !typewriter.isDone()) typewriter.finish();
+        else continueAfterReaction();
+      });
     } else {
       const prompt = document.createElement('p');
       prompt.className = 'dx-text';
@@ -124,6 +147,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     run.set(patch);
     pendingReaction = edge;
     reactionEmotion = activeEmotion;
+    reactionSwipeKey = swipeKey;
 
     const magnitude =
       Object.values(edge.effects || {}).reduce((sum, v) => sum + Math.abs(v), 0) +
@@ -136,11 +160,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
     audio.stopEmotionStems();
 
     render();
-    reactionTimer = setTimeout(continueAfterReaction, REACTION_DELAY_MS);
   }
 
   function continueAfterReaction() {
-    clearTimeout(reactionTimer);
     if (!pendingReaction) return;
     const edge = pendingReaction;
     pendingReaction = null;
@@ -170,10 +192,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // restart on every node. It deliberately keeps playing through reactions,
   // where the emotion stems stop. See STAT_MATH.md "Per-NPC leitmotif".
   audio.startLeitmotif(npc.npc);
+  audio.preloadTypewriterTick();
   enterNode();
 
   return function unmount() {
-    clearTimeout(reactionTimer);
+    typewriter?.destroy();
     audio.stopEmotionStems();
     audio.stopLeitmotif();
     stageEl.innerHTML = '';

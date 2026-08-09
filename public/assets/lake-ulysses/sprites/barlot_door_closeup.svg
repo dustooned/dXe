@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844">
+  <rect width="390" height="844" fill="#0d0d10"/>
+  <rect x="45" y="220" width="300" height="300" fill="#15151b" stroke="#4a4a58" stroke-width="2"/>
+  <line x1="45" y1="220" x2="345" y2="520" stroke="#2a2a34" stroke-width="1"/>
+  <line x1="345" y1="220" x2="45" y2="520" stroke="#2a2a34" stroke-width="1"/>
+  <text x="195" y="370" text-anchor="middle" font-family="monospace" font-size="13" fill="#6a6a7a" letter-spacing="1">DOOR</text>
+  <text x="195" y="560" text-anchor="middle" font-family="monospace" font-size="10" fill="#3a3a46" letter-spacing="2">PLACEHOLDER CLOSE-UP</text>
+</svg>

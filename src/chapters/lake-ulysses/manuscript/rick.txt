@@ -82,3 +82,45 @@ DEBT: +1
 TAGS: Masculinity
 LEDGER: You tried to talk your way past Rick after word of your lies had already reached him.
 NEXT: (end)
+
+=== rick_01_soft
+GATE: trust < 3 -> rick_shut_down
+PROMPT: (He takes the drink without looking at it.) You buying because you want something, or because I scare you?
+FEELZ: Anger, Fear, Anticipation
+
+-- TRUTH
+SAY: Little of both.
+REACT: He barks one laugh. "Honest. Alright." He drinks.
+EFFECTS: integrity+2 lucidity+1 trust+1
+DEBT: 0
+NEXT: rick_02_confronted
+
+-- LIE
+SAY: Neither. Just being friendly.
+REACT: "Friendly." He turns the glass a quarter turn on the bar. "Sure."
+EFFECTS: integrity-1 stability+1 trust+1
+DEBT: +2
+TAGS: Masculinity
+LEDGER: You pretended to Rick that you wanted nothing from him.
+NEXT: rick_02_enabled
+
+=== rick_01_hard
+GATE: trust < 3 -> rick_shut_down
+PROMPT: The guy outside. (He wipes his knuckles on his jeans, slow, so that you watch him do it.) What about him.
+FEELZ: Anger, Fear, Anticipation
+
+-- TRUTH
+SAY: You put him down and you want somebody to have seen you do it.
+REACT: The wiping stops. The rest of the bar seems to move ten feet further away.
+EFFECTS: integrity+3 lucidity+2 stability-2 trust-2
+DEBT: 0
+NEXT: rick_02_confronted
+
+-- LIE
+SAY: Nothing. Looked like he had it coming.
+REACT: He nods, slow and satisfied, and makes room on the bench. "See, you get it."
+EFFECTS: integrity-2 stability+3 trust+2
+DEBT: +4
+TAGS: Violence, Masculinity
+LEDGER: You told Rick the man he beat half to death had it coming.
+NEXT: rick_02_enabled

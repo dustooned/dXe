@@ -126,7 +126,17 @@ Every node needs exactly two: `-- TRUTH` and `-- LIE`.
 
 Endings (`content/endings.json`) aren't part of this pipeline — that
 file's shape is different (ending name → title/text), and small enough
-to hand-edit directly for now. Cutscenes and mini-games (see
-`SCENE_TYPES.md`) don't have a manuscript format yet either, since
-neither is built. Both are natural extensions of this same idea once
-there's real content for them.
+to hand-edit directly for now. Cutscenes (including the pre-battle
+confrontations) and mini-game rooms don't have a manuscript format yet
+either — both are built and both are hand-authored JSON or JS today. They
+are natural extensions of this same idea, and now that there's real
+content in them, the strongest candidates for the next format.
+
+One thing to know if you're writing a confrontation: its choices name
+node ids in *this* file (see `SCENE_TYPES.md`'s `opensDialog`). An NPC's
+alternate openers are just ordinary nodes here, by convention
+`<npcname>_01_soft` / `<npcname>_01_hard`. If you rename or delete one,
+the confrontation silently falls back to the NPC's first node instead of
+failing the build — so rename them in step. If the NPC has a `GATE:` on
+their opening node, every alternate opener needs the same line, or
+choosing one quietly bypasses the gate.

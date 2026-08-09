@@ -173,6 +173,102 @@
           "nextNodeId": null
         }
       }
+    },
+    "rick_01_soft": {
+      "id": "rick_01_soft",
+      "npc": "RICK",
+      "location": 5,
+      "prompt": "(He takes the drink without looking at it.) You buying because you want something, or because I scare you?",
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
+      "swipes": {
+        "truth": {
+          "playerText": "Little of both.",
+          "npcReaction": "He barks one laugh. \"Honest. Alright.\" He drinks.",
+          "effects": {
+            "integrity": 2,
+            "lucidity": 1,
+            "trust": 1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": "rick_02_confronted"
+        },
+        "lie": {
+          "playerText": "Neither. Just being friendly.",
+          "npcReaction": "\"Friendly.\" He turns the glass a quarter turn on the bar. \"Sure.\"",
+          "effects": {
+            "integrity": -1,
+            "stability": 1,
+            "trust": 1
+          },
+          "debtDelta": 2,
+          "tags": [
+            "Masculinity"
+          ],
+          "ledgerEntry": "You pretended to Rick that you wanted nothing from him.",
+          "nextNodeId": "rick_02_enabled"
+        }
+      },
+      "gate": {
+        "stat": "trust",
+        "op": "<",
+        "value": 3,
+        "elseNodeId": "rick_shut_down"
+      }
+    },
+    "rick_01_hard": {
+      "id": "rick_01_hard",
+      "npc": "RICK",
+      "location": 5,
+      "prompt": "The guy outside. (He wipes his knuckles on his jeans, slow, so that you watch him do it.) What about him.",
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
+      "swipes": {
+        "truth": {
+          "playerText": "You put him down and you want somebody to have seen you do it.",
+          "npcReaction": "The wiping stops. The rest of the bar seems to move ten feet further away.",
+          "effects": {
+            "integrity": 3,
+            "lucidity": 2,
+            "stability": -2,
+            "trust": -2
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": "rick_02_confronted"
+        },
+        "lie": {
+          "playerText": "Nothing. Looked like he had it coming.",
+          "npcReaction": "He nods, slow and satisfied, and makes room on the bench. \"See, you get it.\"",
+          "effects": {
+            "integrity": -2,
+            "stability": 3,
+            "trust": 2
+          },
+          "debtDelta": 4,
+          "tags": [
+            "Violence",
+            "Masculinity"
+          ],
+          "ledgerEntry": "You told Rick the man he beat half to death had it coming.",
+          "nextNodeId": "rick_02_enabled"
+        }
+      },
+      "gate": {
+        "stat": "trust",
+        "op": "<",
+        "value": 3,
+        "elseNodeId": "rick_shut_down"
+      }
     }
   }
 }

@@ -1,0 +1,21 @@
+{
+  "beats": [
+    {
+      "sprite": "/assets/lake-ulysses/sprites/npc_samun.svg",
+      "text": "He's wiping his hands on a rag that stopped being clean a long time ago.\n\nHe keeps doing it after they're dry."
+    },
+    {
+      "speaker": "SAMUN",
+      "sprite": "/assets/lake-ulysses/sprites/npc_samun.svg",
+      "text": "Hey. {slow}Hey.{/slow}{pause:350} You need something, or you just walking around tonight?",
+      "interactive": {
+        "type": "choice",
+        "options": [
+          { "label": "Let him keep talking.", "opener": "samun_01" },
+          { "label": "\"How's business been?\"", "opener": "samun_01_soft" },
+          { "label": "Look at his hands until he stops.", "opener": "samun_01_hard" }
+        ]
+      }
+    }
+  ]
+}

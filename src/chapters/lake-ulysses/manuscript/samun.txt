@@ -61,3 +61,43 @@ DEBT: +2
 TAGS: Denial
 LEDGER: You walked back the truth with Samun to avoid discomfort.
 NEXT: (end)
+
+=== samun_01_soft
+PROMPT: Business? Business is great, man. Look around. Everybody's real busy.
+FEELZ: Anger, Fear, Anticipation
+
+-- TRUTH
+SAY: There's nobody here, Samun.
+REACT: He laughs, and it runs a beat too long, and then it stops all at once.
+EFFECTS: integrity+2 lucidity+1 stability-1
+DEBT: 0
+NEXT: samun_02_confronted
+
+-- LIE
+SAY: Place looks like it's holding up fine.
+REACT: "Right? That's what I keep saying." He settles into it like a chair.
+EFFECTS: integrity-2 stability+1 trust+2
+DEBT: +3
+TAGS: Denial
+LEDGER: You agreed with Samun that the shop was doing fine.
+NEXT: samun_02_enabled
+
+=== samun_01_hard
+PROMPT: (He puts the rag down.) Ask it, then. Everybody who comes in here asks it eventually.
+FEELZ: Anger, Fear, Anticipation
+
+-- TRUTH
+SAY: What are you on, Samun?
+REACT: He doesn't flinch. He almost looks grateful somebody finally said it out loud.
+EFFECTS: integrity+3 lucidity+2 stability-1 trust-1
+DEBT: 0
+NEXT: samun_02_confronted
+
+-- LIE
+SAY: I wasn't going to ask anything.
+REACT: "Course not." He picks the rag back up. "Nobody ever is."
+EFFECTS: integrity-2 stability+1 trust-1
+DEBT: +2
+TAGS: Denial
+LEDGER: You backed off the question Samun had already braced himself to answer.
+NEXT: samun_02_enabled

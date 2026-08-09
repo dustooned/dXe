@@ -113,8 +113,9 @@ export function createQuickBeat(step, { onDone }) {
         prompt.style.transform = '';
         prompt.classList.remove('is-committing');
         if (dir === null) {
-          // Too small to count. Restart the clock rather than leaving the beat
-          // hanging with no way out.
+          // Too small to count as a swipe — but the click that follows will
+          // pass the beat, so this only needs to restart the clock for a drag
+          // that never became a tap either.
           if (!resolved) {
             timeoutTimer = setTimeout(() => resolve(false), step.timeoutMs ?? DEFAULT_TIMEOUT_MS);
           }
@@ -123,6 +124,13 @@ export function createQuickBeat(step, { onDone }) {
         resolve(dir === want);
       },
     });
+
+    // A tap passes the beat too. These are pacing beats, not reflex tests, so
+    // the swipe is the flavor of the moment rather than a requirement — a
+    // player who doesn't want to swipe should never be stuck waiting out the
+    // clock. It resolves as a hit: tapping is a deliberate answer, not a miss.
+    // A completed swipe has already set `resolved`, so this can't double-fire.
+    el.addEventListener('click', () => resolve(true));
   }
 
   timeoutTimer = setTimeout(() => resolve(false), step.timeoutMs ?? DEFAULT_TIMEOUT_MS);

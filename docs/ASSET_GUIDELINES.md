@@ -195,16 +195,25 @@ For each room, this is the complete set:
 | Item | What's needed |
 | :-- | :-- |
 | Room bg | Frame sequence folder + frame count + fps |
+| Room intro | Descriptive entry text ×3 — one per class |
 | Each object | Sprite file, plus `x, y, w, h` in design-space px |
 | Each object | Close-up image |
 | Each object | Caption text ×3 — one per class (Guns / Bible / Crystals) |
 | Advance object | Sprite file + `x, y, w, h`, same as any object |
+
+The **room intro** is writing, not art, but it's part of the room hand-off:
+one or two sentences that establish where the player just arrived, drawn
+over the room the moment it mounts and dismissed by tapping. It varies by
+class like the object captions do, and for the same reason — it's the
+player's read on the place, not a neutral label. Keep it to what the
+character would notice walking in; the objects are where detail belongs.
 
 Which lands as room data shaped like this — pixels in, no math done by you:
 
 ```js
 {
   bg: { base: '/assets/lake-ulysses/sprites/spr_hallway/spr_hallway_', frames: 6, fps: 8 },
+  intro: { Guns: '…', Bible: '…', Crystals: '…' },
   hotspots: [
     { x: 58, y: 170, w: 78, h: 210,      // design-space px, top-left origin
       sprite:  '/assets/lake-ulysses/sprites/hallway_diploma.webp',
@@ -232,6 +241,21 @@ Rooms multiply in a way single animations don't — a bg plus 3 objects plus
 - Only the **bg's first frame** goes in `PRELOAD_ASSETS`, and only if the
   room is early in a chapter. Close-ups load on demand — the player may
   never tap that object.
+
+### Confrontation busts (one per NPC)
+
+Between a room and its NPC dialog sits the **confrontation** — a short
+cutscene where you see the character and choose how to open on them. It
+needs one bust per NPC, used as a cutscene `sprite`.
+
+Same rules as any cutscene sprite: bottom-anchored, sized as a percentage
+of canvas height (72%), so author a tall figure rather than a full frame.
+Bleeding past the left and right edges is fine and usually right for a bust
+shot; bleeding past the bottom is not. A still is enough — these don't need
+frame sequences, though a `spriteAnim` key works if one gets animated later.
+
+Current files are generated placeholders (`npc_<name>.svg`, from
+`scripts/make-placeholder-room.mjs`). Real busts drop in at the same paths.
 
 ### Static images
 
@@ -404,6 +428,6 @@ For a mini-game room specifically, also:
 10. Interactive objects **left out of the bg frames** (they're layered
     sprites, and painting them in too causes double-drawing)?
 11. Every object has a sprite, a close-up, and three caption variants
-    (Guns / Bible / Crystals)?
+    (Guns / Bible / Crystals) — and the room itself has three intro variants?
 12. Coordinates measured against 390×844 — and scaled down if the artboard
     was larger?

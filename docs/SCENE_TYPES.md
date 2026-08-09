@@ -54,6 +54,38 @@ in `CONTENT_SCHEMA.md`.
 { "type": "dialog", "id": "deborah", "npc": /* NPC content JSON */ }
 ```
 
+**Which node it opens on.** Normally the first node in the content file. If
+an earlier confrontation cutscene wrote `run.openers[<this scene's id>]`
+(see the `cutscene` section's `opensDialog`), that node is used instead. An
+unknown id falls back to the first node rather than erroring, so deleting a
+node from a manuscript can't strand the scene — but it *will* silently undo
+the player's choice, so keep opener ids and confrontation options in sync.
+
+Gates still apply on top: `resolveGatedNode` runs against whichever opener
+was chosen, which is why every alternate opener for a gated NPC needs the
+same `GATE:` line. Rick's three openers all carry `trust < 3 ->
+rick_shut_down`; without that, picking a non-default opener would quietly
+bypass his gate.
+
+**The reaction is tap-gated, never timed.** After a swipe, the NPC's
+reaction is typewriter-drawn and stays up until the player taps — first tap
+finishes the draw, second advances. The "(tap to continue)" hint only
+appears once the text is fully drawn. There is deliberately no auto-advance
+timer here: this beat is the payoff for the choice and the one screen the
+player most needs to actually read. It used to advance itself after 2.2s,
+which cut off longer reactions mid-read.
+
+**Reactions answer the FEELZ wheel.** The authored `npcReaction` is joined
+with a coda from `engine/reactions.js`, a shared table keyed by
+`[emotion][truth|lie]` — 8 emotions × 2 sides, one table for the whole
+game. This is why an NPC needs no extra authoring to respond to all 8
+emotions, and why adding an NPC doesn't mean writing 16 more variants.
+
+Codas describe **delivery** — how the line left you — never whether the
+choice was right. That's the same rule the fx intensity follows: weight,
+not verdict. Keep it that way; a coda that grades the player turns an
+atmospheric beat into a score screen.
+
 ### `questionnaire` (`src/scenes/questionnaireScene.js`)
 
 Three swipe questions that assign the player's class loadout, followed by
@@ -206,11 +238,48 @@ Only `type: 'choice'` exists. A timed-tap or drag interactive type is a
 natural extension of the same `interactive` field (a different `type`
 value) whenever there's real content that needs one.
 
+**Confrontations (`opensDialog` + an option's `opener`).** A scene-level
+`opensDialog` names a later dialog scene; an option's `opener` names a node
+in that NPC's graph. Choosing the option writes `run.openers[opensDialog]`,
+and the dialog scene opens on that node instead of its first one.
+
+```json
+{
+  "type": "cutscene", "id": "deborah-confront", "opensDialog": "deborah",
+  "beats": [
+    { "sprite": "/assets/lake-ulysses/sprites/npc_deborah.svg",
+      "text": "The door opens before you knock." },
+    { "speaker": "DEBORAH", "sprite": "…", "text": "You're not the church.",
+      "interactive": { "type": "choice", "options": [
+        { "label": "Say nothing. Let her fill it.",   "opener": "deborah_01" },
+        { "label": "\"You look like you haven't slept.\"", "opener": "deborah_01_soft" },
+        { "label": "\"I heard about your son.\"",     "opener": "deborah_01_hard" }
+      ] } }
+  ]
+}
+```
+
+That is the whole pre-battle confrontation mechanic — **there is no
+`confrontation` scene type and there shouldn't be one.** A confrontation is
+a cutscene that happens to shape what follows: sprite, speaker nameplate,
+typewriter text and branching choices were all already here, and the only
+thing missing was one field of state. A separate type would have duplicated
+all of it to add a single assignment.
+
+`opener` composes with `jumpTo` and `nextBeat` rather than replacing them —
+the opener is written first, then the option resolves as normal. An option
+with `opener` and nothing else just advances, which is why a confrontation's
+choice beat is normally the last beat in the list.
+
+Every NPC in `lake-ulysses` now runs **explore → confront → encounter**:
+mini-game, confrontation cutscene, dialog. Each NPC has three openers (the
+original node plus a `_soft` and a `_hard` variant) authored in their
+manuscript like any other node.
+
 ### `minigame` (`src/scenes/minigameScene.js`)
 
-The wrapper is built; no chapter uses it yet — this is infrastructure
-waiting on its first real game, not a stub. A chapter shouldn't have to
-know how a mini-game works internally, only that it eventually finishes:
+A chapter shouldn't have to know how a mini-game works internally, only
+that it eventually finishes:
 
 ```json
 {
@@ -255,11 +324,11 @@ is a sign it isn't this kind of mini-game — model it as an explicit scene
 in the chapter's own `SCENES` list instead of smuggling a side-effect
 through this wrapper.
 
-**Placement.** One mini-game immediately precedes each NPC dialog scene,
-so a chapter reads as explore -> encounter, repeating. In `lake-ulysses`
-that's Deborah / Rwanda / Samun / Rick — four slots. Therapist is exempt:
-it belongs to the chapter's opening call (Prologue -> Questionnaire ->
-Therapist), not to this pattern.
+**Placement.** One mini-game precedes each NPC, with the confrontation
+cutscene between the two, so a chapter reads as explore -> confront ->
+encounter, repeating. In `lake-ulysses` that's Deborah / Rwanda / Samun /
+Rick — four slots. Therapist is exempt: she belongs to the chapter's opening
+call (Prologue -> Questionnaire -> Therapist), not to this pattern.
 
 #### The step system (`engine/walkSequencer.js`)
 
@@ -291,6 +360,11 @@ which is impossible if it's baked into a flat background frame.
 ```js
 {
   bg: { base: '/assets/<chapter>/sprites/spr_hallway/spr_hallway_', frames: 6, fps: 8 },
+  intro: {   // optional entry caption, per class — see below
+    Guns:     'Third floor. The stairwell door behind you doesn\'t latch.',
+    Bible:    'Third floor. Somebody swept this hallway recently.',
+    Crystals: 'Third floor. The air is thick with something that has been sitting here.',
+  },
   hotspots: [
     // x/y/w/h are design-space pixels against the 390×844 frame, top-left
     // origin — the numbers straight off the artboard. The renderer divides
@@ -305,6 +379,13 @@ which is impossible if it's baked into a flat background frame.
 }
 ```
 
+- **Room intro** (`intro`, optional): a descriptive line drawn over the room
+  the instant it mounts — where you just arrived, before anything is
+  tappable. It scrims the room rather than replacing it, so the bg is
+  already animating behind the text instead of the player landing on a dead
+  screen, and it covers the hotspots while up so the beat can't be tapped
+  through by accident. Same two-tap gesture as a close-up: finish the draw,
+  then dismiss. Varies by class exactly like hotspot captions.
 - **Inspect hotspots**: tap -> quick scale-up pop (snappy, un-eased, to match
   the stop-motion register) -> close-up image + inner-thought caption,
   typewriter-drawn via `ui/typewriterText.js`. Tap dismisses back to the
@@ -342,9 +423,16 @@ intensity-only feedback dialog swipes use, never color-coded right/wrong.
 It takes over the screen rather than blending into the walk, which keeps
 its interaction code independent of the room renderer's.
 
-Four things in `quickBeat.js` exist specifically to keep a can't-lose beat
+Five things in `quickBeat.js` exist specifically to keep a can't-lose beat
 from *feeling* like a test, and shouldn't be undone casually:
 
+- **A tap resolves the beat too, and resolves it as a hit.** The swipe is
+  the flavor of the moment, not a requirement — a player who doesn't want to
+  swipe should never be stuck waiting out the clock, and every other step in
+  a mini-game (intro, close-up, advance) already passes on a tap. It counts
+  as a hit rather than a miss because tapping is a deliberate answer. A
+  completed swipe has already set `resolved`, so the trailing click can't
+  double-fire.
 - **The clock stops on the first `pointermove`.** Otherwise a swipe begun
   near the deadline has its own timeout fire mid-drag: the miss flourish
   plays and the `pointerup` lands on a dead no-op, punishing a player who
@@ -365,12 +453,13 @@ Tap-targets hit-test with ~24px of slop for the same reason: a tap just
 outside the art should read as intent, not as a miss.
 
 **Built and playable.** `engine/walkSequencer.js` runs the `STEPS` list;
-`ui/walkRoom.js` and `ui/quickBeat.js` are the two step renderers. The first
-mini-game is `chapters/lake-ulysses/minigames/deborah-hallway.js`, wired in
-ahead of Deborah — its art is generated placeholder vectors
-(`scripts/make-placeholder-room.mjs`) and its captions exist to exercise the
-class-variation path, not as final prose. Rwanda / Samun / Rick still need
-theirs; each is one line in `SCENES` plus a content module.
+`ui/walkRoom.js` and `ui/quickBeat.js` are the two step renderers. All four
+NPCs now have one: `deborah-hallway`, `rwanda-alley`, `samun-garage`,
+`rick-barlot`, each a module under `chapters/lake-ulysses/minigames/` and one
+line in `SCENES`. Every one of them is **placeholder throughout** — the art
+is generated vectors (`scripts/make-placeholder-room.mjs`) and the intros and
+captions exist to exercise the class-variation path, not as final prose.
+Replacing them is content and art work, no engine changes.
 
 Two implementation notes worth knowing:
 

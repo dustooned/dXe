@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844">
   <rect width="390" height="844" fill="#0d0d10"/>
-  <!-- corridor walls, jittered per frame for the stop-motion read -->
+  <!-- walls, jittered per frame for the stop-motion read -->
   <path d="M0,119.91641557282601 L390,148.64108455187693 L390,701.2576889706578 L0,740.1722364433446 Z" fill="#1e1e26"/>
   <path d="M60.1160745628253,169.8039999014251 L330.5310258874814,196.2817411435683 L330.6419305811366,660.415274620948 L60.09356403425036,699.360117912693 Z" fill="#0d0d10"/>
   <line x1="0" y1="740.2123422630655" x2="390" y2="700.5706167230711" stroke="#2a2a34" stroke-width="2"/>
@@ -45,6 +45,6 @@
   <rect x="164" y="581" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
   <rect x="11" y="655" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
   <rect x="335" y="698" width="2" height="2" fill="#2a2a34" opacity="0.5"/>
-  <text x="195" y="804" text-anchor="middle" font-family="monospace" font-size="11" fill="#3a3a46" letter-spacing="2">PLACEHOLDER ROOM BG</text>
+  <text x="195" y="804" text-anchor="middle" font-family="monospace" font-size="11" fill="#3a3a46" letter-spacing="2">PLACEHOLDER BG — HALLWAY</text>
   <text x="195" y="820" text-anchor="middle" font-family="monospace" font-size="9" fill="#3a3a46" letter-spacing="1">frame 1</text>
 </svg>

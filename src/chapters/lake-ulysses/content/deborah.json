@@ -129,6 +129,89 @@
           "nextNodeId": null
         }
       }
+    },
+    "deborah_01_soft": {
+      "id": "deborah_01_soft",
+      "npc": "DEBORAH",
+      "location": 2,
+      "prompt": "You noticed. Nobody notices. Sit down — I'll make coffee neither of us is going to drink.",
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
+      "swipes": {
+        "truth": {
+          "playerText": "I'm not here for coffee. I'm here about your son.",
+          "npcReaction": "The pot stays exactly where she set it. \"Of course you are.\"",
+          "effects": {
+            "integrity": 2,
+            "lucidity": 1,
+            "stability": -1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": "deborah_02_confronted"
+        },
+        "lie": {
+          "playerText": "Coffee sounds good, actually.",
+          "npcReaction": "She busies both hands. The kitchen fills up with the sound of not saying it.",
+          "effects": {
+            "integrity": -1,
+            "stability": 2,
+            "trust": 1
+          },
+          "debtDelta": 2,
+          "tags": [
+            "Faith"
+          ],
+          "ledgerEntry": "You let Deborah change the subject away from her son.",
+          "nextNodeId": "deborah_02_denial"
+        }
+      }
+    },
+    "deborah_01_hard": {
+      "id": "deborah_01_hard",
+      "npc": "DEBORAH",
+      "location": 2,
+      "prompt": "[She stops in the doorway and does not move out of it.] You heard. Everybody heard. Go on — say the part where it was God's will.",
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
+      "swipes": {
+        "truth": {
+          "playerText": "I wasn't going to say that.",
+          "npcReaction": "She studies you a second longer than is comfortable. Then she steps aside.",
+          "effects": {
+            "integrity": 2,
+            "lucidity": 1,
+            "trust": 1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": "deborah_02_confronted"
+        },
+        "lie": {
+          "playerText": "It was God's will.",
+          "npcReaction": "Her shoulders drop an inch. She needed somebody to say it out loud where she could hear it.",
+          "effects": {
+            "integrity": -2,
+            "stability": 2,
+            "trust": 1
+          },
+          "debtDelta": 4,
+          "tags": [
+            "Faith",
+            "Health"
+          ],
+          "ledgerEntry": "You told Deborah her son's death was God's will, standing on her doorstep.",
+          "nextNodeId": "deborah_02_denial"
+        }
+      }
     }
   }
 }

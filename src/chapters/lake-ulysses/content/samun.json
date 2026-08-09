@@ -129,6 +129,89 @@
           "nextNodeId": null
         }
       }
+    },
+    "samun_01_soft": {
+      "id": "samun_01_soft",
+      "npc": "SAMUN",
+      "location": 4,
+      "prompt": "Business? Business is great, man. Look around. Everybody's real busy.",
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
+      "swipes": {
+        "truth": {
+          "playerText": "There's nobody here, Samun.",
+          "npcReaction": "He laughs, and it runs a beat too long, and then it stops all at once.",
+          "effects": {
+            "integrity": 2,
+            "lucidity": 1,
+            "stability": -1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": "samun_02_confronted"
+        },
+        "lie": {
+          "playerText": "Place looks like it's holding up fine.",
+          "npcReaction": "\"Right? That's what I keep saying.\" He settles into it like a chair.",
+          "effects": {
+            "integrity": -2,
+            "stability": 1,
+            "trust": 2
+          },
+          "debtDelta": 3,
+          "tags": [
+            "Denial"
+          ],
+          "ledgerEntry": "You agreed with Samun that the shop was doing fine.",
+          "nextNodeId": "samun_02_enabled"
+        }
+      }
+    },
+    "samun_01_hard": {
+      "id": "samun_01_hard",
+      "npc": "SAMUN",
+      "location": 4,
+      "prompt": "(He puts the rag down.) Ask it, then. Everybody who comes in here asks it eventually.",
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
+      "swipes": {
+        "truth": {
+          "playerText": "What are you on, Samun?",
+          "npcReaction": "He doesn't flinch. He almost looks grateful somebody finally said it out loud.",
+          "effects": {
+            "integrity": 3,
+            "lucidity": 2,
+            "stability": -1,
+            "trust": -1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": "samun_02_confronted"
+        },
+        "lie": {
+          "playerText": "I wasn't going to ask anything.",
+          "npcReaction": "\"Course not.\" He picks the rag back up. \"Nobody ever is.\"",
+          "effects": {
+            "integrity": -2,
+            "stability": 1,
+            "trust": -1
+          },
+          "debtDelta": 2,
+          "tags": [
+            "Denial"
+          ],
+          "ledgerEntry": "You backed off the question Samun had already braced himself to answer.",
+          "nextNodeId": "samun_02_enabled"
+        }
+      }
     }
   }
 }

@@ -3,7 +3,7 @@
 // instantly; tap again (or wait, for a timed beat) to continue.
 //
 // scene shape: {
-//   type: 'cutscene', id, beats, anims?, ambient?
+//   type: 'cutscene', id, beats, anims?, ambient?, opensDialog?
 // }
 // beat shape: {
 //   text?, speaker?, style?,
@@ -15,7 +15,7 @@ import { createTypewriter } from '../ui/typewriterText.js';
 import { preloadTypewriterTick, playTypewriterTick, startAmbient, stopAmbient } from '../shell/audio.js';
 import { createSpriteAnimator } from '../ui/spriteAnimator.js';
 
-export function mount(stageEl, scene, { onComplete }) {
+export function mount(stageEl, scene, { run, onComplete }) {
   preloadTypewriterTick();
   let beatIndex = 0;
   let typewriter = null;
@@ -147,7 +147,17 @@ export function mount(stageEl, scene, { onComplete }) {
     textBox.appendChild(choices);
   }
 
+  // A confrontation is just a cutscene that shapes what comes next: with
+  // `opensDialog` naming a later dialog scene, an option's `opener` picks which
+  // node that NPC opens on. Everything else — sprite, speaker, branching
+  // beats — this scene type already had, so there's no separate type for it.
+  function applyOpener(option) {
+    if (!option.opener || !scene.opensDialog) return;
+    run.set({ openers: { ...run.get().openers, [scene.opensDialog]: option.opener } });
+  }
+
   function resolveChoice(option) {
+    applyOpener(option);
     if (option.jumpTo) {
       onComplete({ jumpTo: option.jumpTo });
       return;

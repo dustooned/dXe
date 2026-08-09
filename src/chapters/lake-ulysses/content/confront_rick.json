@@ -1,0 +1,21 @@
+{
+  "beats": [
+    {
+      "sprite": "/assets/lake-ulysses/sprites/npc_rick.svg",
+      "text": "He's at the end of the bar with his back to the wall, which is where he always sits.\n\nThere's blood on his knuckles that isn't his."
+    },
+    {
+      "speaker": "RICK",
+      "sprite": "/assets/lake-ulysses/sprites/npc_rick.svg",
+      "text": "{slow}You're new.{/slow}{pause:400} Sit if you're sitting.",
+      "interactive": {
+        "type": "choice",
+        "options": [
+          { "label": "Sit down and say nothing.", "opener": "rick_01" },
+          { "label": "Buy him a drink first.", "opener": "rick_01_soft" },
+          { "label": "\"What happened to the guy outside?\"", "opener": "rick_01_hard" }
+        ]
+      }
+    }
+  ]
+}

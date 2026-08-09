@@ -128,6 +128,89 @@
           "nextNodeId": null
         }
       }
+    },
+    "rwanda_01_soft": {
+      "id": "rwanda_01_soft",
+      "npc": "RWANDA",
+      "location": 3,
+      "prompt": "(She doesn't turn around.) You see it too, right. Whatever's out there tonight.",
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
+      "swipes": {
+        "truth": {
+          "playerText": "I see something. I don't know what it is yet.",
+          "npcReaction": "\"At least you're not pretending.\" She makes room at the window.",
+          "effects": {
+            "integrity": 2,
+            "lucidity": 1,
+            "trust": 1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": "rwanda_02_open"
+        },
+        "lie": {
+          "playerText": "There's nothing out there. It's a quiet night.",
+          "npcReaction": "She turns around slowly. \"Okay.\" She stops looking at the window at all.",
+          "effects": {
+            "integrity": -2,
+            "stability": 1,
+            "trust": -1
+          },
+          "debtDelta": 3,
+          "tags": [
+            "Identity"
+          ],
+          "ledgerEntry": "You told Rwanda that what she was seeing wasn't there.",
+          "nextNodeId": "rwanda_02_closed"
+        }
+      }
+    },
+    "rwanda_01_hard": {
+      "id": "rwanda_01_hard",
+      "npc": "RWANDA",
+      "location": 3,
+      "prompt": "Word travels. You've been at three doors tonight already. What is it you're collecting?",
+      "feelzOptions": [
+        "Anger",
+        "Fear",
+        "Anticipation"
+      ],
+      "swipes": {
+        "truth": {
+          "playerText": "I don't know yet. That's the honest answer.",
+          "npcReaction": "\"Huh.\" She weighs it. \"That's more than the last one gave me.\"",
+          "effects": {
+            "integrity": 2,
+            "lucidity": 2,
+            "trust": 1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": "rwanda_02_open"
+        },
+        "lie": {
+          "playerText": "Nothing. I'm just passing through.",
+          "npcReaction": "She smiles without any of it reaching anywhere. \"Sure you are.\"",
+          "effects": {
+            "integrity": -2,
+            "stability": 1,
+            "trust": -2
+          },
+          "debtDelta": 3,
+          "tags": [
+            "Identity",
+            "Community"
+          ],
+          "ledgerEntry": "You lied to Rwanda about why you were at her door at all.",
+          "nextNodeId": "rwanda_02_closed"
+        }
+      }
     }
   }
 }

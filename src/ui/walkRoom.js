@@ -7,6 +7,7 @@
 //
 // room shape:
 //   { bg: {base, frames, fps, ext?},
+//     intro?:   string | {Guns,Bible,Crystals},
 //     hotspots: [{ x, y, w, h, sprite, closeup, text: {Guns,Bible,Crystals} }],
 //     advance:  { x, y, w, h, sprite, to } }
 //
@@ -133,9 +134,45 @@ export function createWalkRoom(room, { loadout, onAdvance }) {
 
   el.appendChild(advanceEl);
 
+  // Entry caption, if this room has one. Same two-tap gesture as a close-up:
+  // finish the draw, then dismiss into the room. It covers the hotspots while
+  // it's up, so the descriptive beat can't be tapped through by accident.
+  let introEl = null;
+  let introTypewriter = null;
+
+  function closeIntro() {
+    introTypewriter?.destroy();
+    introTypewriter = null;
+    introEl?.remove();
+    introEl = null;
+  }
+
+  if (room.intro) {
+    introEl = document.createElement('div');
+    introEl.className = 'dx-room__intro';
+
+    const box = document.createElement('div');
+    box.className = 'dx-room__intro-text';
+    const p = document.createElement('p');
+    p.className = 'dx-text';
+    box.appendChild(p);
+    introEl.appendChild(box);
+    el.appendChild(introEl);
+
+    introTypewriter = createTypewriter(p, captionFor(room.intro, loadout), {
+      onChar: playTypewriterTick,
+    });
+
+    introEl.addEventListener('click', () => {
+      if (introTypewriter && !introTypewriter.isDone()) introTypewriter.finish();
+      else closeIntro();
+    });
+  }
+
   return {
     el,
     destroy() {
+      closeIntro();
       closeCloseup();
       bgAnimator.destroy();
     },

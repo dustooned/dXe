@@ -1,6 +1,6 @@
 # Handoff / Project Status
 
-Last updated: 2026-08-04. Read this first if you're picking this project
+Last updated: 2026-08-09. Read this first if you're picking this project
 up cold — it's the "why," not the "what" (the code and the other docs in
 this folder cover the what).
 
@@ -40,10 +40,17 @@ whose answers *implicitly* set your class — Guns / Bible / Crystals —
 followed by the Therapist's cryptic diagnosis; the class name is never
 shown) -> Therapist (location 1 — the tutorial NPC, a single swipe
 exchange, no in-fiction explanation of mechanics; teaches truth/lie purely
-by playing it) -> Deborah -> Rwanda -> Samun -> Rick (dialog, swipe
-truth/lie) -> Reckoning (confess or double down on your lies) -> one of
-four endings (Clean Cut / Functional Mask / Collapse / Living Lie) based
-on final Truth Debt.
+by playing it) -> Deborah -> Rwanda -> Samun -> Rick -> Reckoning (confess
+or double down on your lies) -> one of four endings (Clean Cut / Functional
+Mask / Collapse / Living Lie) based on final Truth Debt.
+
+Each of the four NPCs is now a three-beat unit — **explore -> confront ->
+encounter**: a mini-game walk to their door, a confrontation where you see
+them and pick how to open, then the dialog itself. The confrontation choice
+isn't decoration: it selects which node the NPC opens on, so the same
+character starts guarded, warm, or already cornered depending on how you
+came at them. All of it is placeholder art and placeholder prose right now
+(see "Known gaps"), but the shape is real and playable end to end.
 
 Prologue / Questionnaire / Therapist are deliberately one continuous
 unit — **the chapter's opening call**, and the intended routine opener for
@@ -83,10 +90,11 @@ full vision — see "What was deliberately cut" below.
   reckoning / ending as scene *types*) specifically so cutscenes and
   mini-games had a well-defined slot to drop into later without another
   rewrite. That paid off: `cutscene` and `questionnaire` have since slotted
-  in with no sequencer changes, and there are now three cutscenes in the
-  chapter. `minigame` (`scenes/minigameScene.js`) is now built too, ahead
-  of any chapter using it — see `SCENE_TYPES.md` for the contract and the
-  can't-lose design philosophy behind it.
+  in with no sequencer changes, and `minigame` (`scenes/minigameScene.js`)
+  followed — see `SCENE_TYPES.md` for the contract and the can't-lose design
+  philosophy behind it. The pre-battle confrontations are the clearest
+  vindication of the split: they needed no new scene type at all, just one
+  extra field on the cutscene type that was already there.
 - **Vite version pinned to latest (^8), not what the original spec
   implied.** Started on 5.x, found a moderate dev-server vulnerability in
   its bundled esbuild, bumped to 8.x, zero vulnerabilities. No reason to
@@ -209,11 +217,13 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 - `title/snd_lake_title.mp3`, `snd_titlemusic.mp3`, `snd_start.mp3` — title screen music + jingle.
 
 **Mini-game room art** (`public/assets/lake-ulysses/sprites/`):
-- `spr_hallway_bg/` (6 SVG frames) + `hallway_{diploma,doormat,lightbulb,door}.svg`
-  and their `_closeup.svg` pairs — **all generated placeholders**, produced by
-  `scripts/make-placeholder-room.mjs` (deterministic, so regenerating causes no
-  git churn). They exist so the walk system could be built and played before
-  real art. Replace them and delete the script when real art lands.
+- Four rooms — `spr_{hallway,alley,garage,barlot}_bg/` (6 SVG frames each) plus
+  a sprite and `_closeup.svg` pair per object — and four confrontation busts,
+  `npc_{deborah,rwanda,samun,rick}.svg`. **All generated placeholders**,
+  produced by `scripts/make-placeholder-room.mjs` (deterministic, so
+  regenerating causes no git churn). They exist so the walk and confrontation
+  systems could be built and played before real art. Replace them and delete
+  the script when real art lands.
 
 **NPC portraits** are still colored initials (`ui/npcPortrait.js`) — no character art yet for dialog scenes.
 
@@ -226,9 +236,11 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 - `loadoutScene.js` and the unread `firstPlayScene` registry field were
   removed from the build; both are preserved verbatim in `ATTIC.md` with
   restore instructions.
-- Cutscenes have real content (opening quote, Bob Baiter, Prologue).
-  Mini-games are built and one is playable (Deborah's hallway), but its art
-  and captions are placeholders and the other three NPCs have none.
+- Cutscenes have real content (opening quote, Bob Baiter, Prologue). The
+  four mini-games and the four confrontations are **entirely placeholder** —
+  generated vector art, and prose written to exercise the class-variation and
+  opener-branching paths rather than to be read. They are the largest block of
+  placeholder content in the project and the most obvious thing to replace.
 - All existing nodes have `feelzOptions: [Anger, Fear, Anticipation]` —
   the manuscript FEELZ line predates the class system. Bible/Crystals
   players see their class emotions regardless (dartboard always shows the
@@ -252,13 +264,22 @@ Roughly in order of how ready each one is to just start:
   "Needs something from outside this repo" below.
 - **More depth in Lake Ulysses** — additional dialog branches on existing
   NPCs. Pure content through the manuscript pipeline, no engine changes.
-  Obvious targets: a third node on any NPC (all currently cap at 2),
-  or Bible/Crystals-class-aware FEELZ options on existing nodes.
+  Every NPC is now three openers wide (the confrontation picks one) but
+  still only two nodes deep. Obvious targets: a third node on any NPC, or
+  Bible/Crystals-class-aware FEELZ options on existing nodes.
 
-- **Mini-games for Rwanda / Samun / Rick** — the whole system is built and
-  the first one (Deborah's hallway) is playable, so these are pure content:
-  a room definition + captions + a `SCENES` line each. See `SCENE_TYPES.md`
-  for the step contract and `ASSET_GUIDELINES.md` for the art hand-off spec.
+- ~~Mini-games for Rwanda / Samun / Rick~~ — done, all four exist and play.
+  Art and prose are placeholder; see `ASSET_GUIDELINES.md` for the hand-off
+  spec on replacing them.
+- ~~Pre-battle confrontations~~ — done, one per NPC. Not a new scene type: a
+  cutscene with `opensDialog` plus an `opener` on each choice, which writes
+  the node the following dialog scene starts on (`SCENE_TYPES.md`). Adding
+  more branches is authoring two things in step — a manuscript node and a
+  matching option.
+- **Real prose for the placeholder beats** — the biggest content job now.
+  Four room intros ×3 classes, twelve hotspot captions ×3 classes, four
+  confrontations, and eight opener nodes are all written to exercise their
+  code path rather than to be read.
 
 **Needs a dedicated design pass first:**
 - **IT / the hint system — now one item, not two.** These were tracked

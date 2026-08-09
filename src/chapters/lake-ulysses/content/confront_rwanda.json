@@ -1,0 +1,21 @@
+{
+  "beats": [
+    {
+      "sprite": "/assets/lake-ulysses/sprites/npc_rwanda.svg",
+      "text": "She's at the window with her back to the room.\n\nShe knew you came in. She hasn't decided yet whether to make that your problem."
+    },
+    {
+      "speaker": "RWANDA",
+      "sprite": "/assets/lake-ulysses/sprites/npc_rwanda.svg",
+      "text": "You gonna stand there,{pause:300} or you gonna say the thing you came to say?",
+      "interactive": {
+        "type": "choice",
+        "options": [
+          { "label": "Wait her out.", "opener": "rwanda_01" },
+          { "label": "\"What are you looking at out there?\"", "opener": "rwanda_01_soft" },
+          { "label": "\"People have been telling me about you.\"", "opener": "rwanda_01_hard" }
+        ]
+      }
+    }
+  ]
+}
