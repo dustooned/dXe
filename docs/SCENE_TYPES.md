@@ -284,19 +284,24 @@ happened.
 bg sprite (numbered WebP frames via `ui/spriteAnimator.js`, same as
 `spr_lake_bg_001`) authored for a *stop-motion* feel — low frame count,
 hard cuts, kinetic rather than tweened (reference: Tetsuo the Iron Man).
-Objects are sprites layered over it, not invisible tap regions.
+Objects are **separate sprite files** layered over it, not invisible tap
+regions and not painted into the bg — the tap feedback scales an object up,
+which is impossible if it's baked into a flat background frame.
 
 ```js
 {
   bg: { base: '/assets/<chapter>/sprites/spr_hallway/spr_hallway_', frames: 6, fps: 8 },
   hotspots: [
-    { x: 15, y: 20, w: 20, h: 25, closeup: '...', text: {
+    // x/y/w/h are design-space pixels against the 390×844 frame, top-left
+    // origin — the numbers straight off the artboard. The renderer divides
+    // by the frame to get percentages; do not pre-convert by hand.
+    { x: 58, y: 170, w: 78, h: 210, sprite: '...', closeup: '...', text: {
         Guns:     "Her diploma. Crooked. Nobody straightened it.",
         Bible:    "Her diploma. Class of '09. She earned that.",
         Crystals: "Her diploma, tilted. Something here gave up a while ago.",
     } },
   ],
-  advance: { x: 72, y: 55, w: 14, h: 30, sprite: '...', to: 'next-room-id' },
+  advance: { x: 281, y: 464, w: 55, h: 253, sprite: '...', to: 'next-room-id' },
 }
 ```
 
@@ -316,8 +321,13 @@ Objects are sprites layered over it, not invisible tap regions.
   you can move on. Tapping it loads the next room, or ends the `walk` step
   if it was the last. Progression is therefore gated on *curiosity*, not
   skill — you can't get stuck and you can't fail, you just have to look.
-- Positions are **percentages**, never pixels — the canvas scales to the
-  viewport (see `HANDOFF.md` and `ASSET_GUIDELINES.md`).
+- Positions are authored as **design-space pixels** against the 390×844
+  frame and converted to percentages by the renderer. This is the one place
+  pixel numbers are correct, because they're input data rather than
+  something reaching CSS — the canvas still scales to the viewport as
+  always. Art hand-off spec (what to produce per room, and the requirement
+  that interactive objects be their own sprite files rather than painted
+  into the bg) is in `ASSET_GUIDELINES.md`.
 - Per-room visited-tracking lives in the renderer's own closure, not in
   `run` — same convention `dialogScene`/`cutsceneScene` use for scene-local
   state.

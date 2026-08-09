@@ -1,11 +1,13 @@
 # Asset Guidelines
 
 How to prepare, name, place, and wire art and audio for Dream Xtreme.
-Written against what's actually in the repo as of 2026-07-25 — the numbers
+Written against what's actually in the repo as of 2026-08-04 — the numbers
 here are measured, not aspirational.
 
 The short version: **1-bit art, 390×844 design frame, WebP frame
-sequences, 128kbps MP3, and never position anything in raw pixels.**
+sequences, 128kbps MP3, and never position anything in raw pixels** — with
+one deliberate exception for mini-game room objects, which are authored as
+design-space pixels and converted by the renderer. See "Mini-game rooms."
 
 ---
 
@@ -28,6 +30,10 @@ the single most important consequence for asset work:
 > the canvas. A sprite at `bottom: 130px; height: 600px` looks correct in
 > a desktop browser and is cut off on an actual phone. This is exactly how
 > the Bob Baiter sprite broke — see HANDOFF.md.
+>
+> The rule is about values that reach CSS. Mini-game room objects are
+> *authored* in design-space pixels and converted before positioning, which
+> doesn't break it — see "Mini-game rooms."
 
 Bleeding past the left/right edges is fine and often intentional (a bust
 shot should fill the frame). Bleeding past the *bottom* is a bug.
@@ -134,6 +140,98 @@ count exactly. Then reference the key from a cutscene beat:
 `spriteAnim` renders as the bottom-anchored character layer. Frame
 position is preserved across beats for the same key, so a background
 doesn't restart from frame 0 every time the player taps.
+
+### Mini-game rooms (bg + placed object sprites)
+
+A mini-game `walk` step is a **room**: one full-frame looping bg sprite,
+with interactive object sprites layered over it at authored positions. See
+`SCENE_TYPES.md` for the interaction design; this section is only about
+preparing the art and handing over the numbers.
+
+**Layer 1 — the room bg.** A normal full-frame animation: 390×844, WebP
+frame sequence, registered in `anims.js` like any other. Authored for a
+*stop-motion* read — low frame count, hard cuts, kinetic rather than
+smoothly tweened. 4–8 frames at 6–10fps is the target, which is also well
+inside budget (a 6-frame room is ~600KB against the ≤1.5MB ceiling).
+
+**Layer 2 — object sprites.** Each interactive object is its **own file**,
+positioned over the bg. This is a hard requirement, not a preference: the
+tap feedback scales the object up slightly, and you cannot scale part of a
+flat image. Two consequences when authoring:
+
+- **Leave the interactive objects out of the bg frames.** If an object is
+  painted into the bg *and* layered on top, you get double-drawing — a
+  static ghost of it sitting behind the sprite that pops. Paint the room
+  without them; they're added back as sprites.
+- Object sprites can be single stills. They don't need to be animated
+  sequences unless you want them to be — a still is one file, not a folder.
+
+**Layer 3 — close-ups.** Each object also needs a close-up image, shown
+when the object is tapped. These are single stills, full-frame or
+near-full-frame, and are the cheapest place to spend detail since only one
+is on screen at a time.
+
+#### Coordinates: author in design-space pixels
+
+Position and size objects against the **390×844 design frame** and give the
+numbers in plain pixels — top-left origin, the same numbers your art tool
+shows. The renderer divides by the frame to get percentages before anything
+is positioned, so scaling is preserved automatically.
+
+> This is the one place raw pixel numbers are correct, because they're
+> *input data*, not CSS. The rule they'd otherwise break — never let a raw
+> pixel value reach a style property — still holds; the conversion happens
+> first. Do not hand-convert to percentages yourself.
+
+If you author on a larger artboard, scale the numbers down proportionally
+before handing them over (e.g. on a 780×1688 board — exactly 2× — halve
+everything). The renderer assumes 390×844 and has no way to detect that it
+got numbers from a different board.
+
+#### What to hand over per room
+
+For each room, this is the complete set:
+
+| Item | What's needed |
+| :-- | :-- |
+| Room bg | Frame sequence folder + frame count + fps |
+| Each object | Sprite file, plus `x, y, w, h` in design-space px |
+| Each object | Close-up image |
+| Each object | Caption text ×3 — one per class (Guns / Bible / Crystals) |
+| Advance object | Sprite file + `x, y, w, h`, same as any object |
+
+Which lands as room data shaped like this — pixels in, no math done by you:
+
+```js
+{
+  bg: { base: '/assets/lake-ulysses/sprites/spr_hallway/spr_hallway_', frames: 6, fps: 8 },
+  hotspots: [
+    { x: 58, y: 170, w: 78, h: 210,      // design-space px, top-left origin
+      sprite:  '/assets/lake-ulysses/sprites/hallway_diploma.webp',
+      closeup: '/assets/lake-ulysses/sprites/hallway_diploma_closeup.webp',
+      text: { Guns: '…', Bible: '…', Crystals: '…' } },
+  ],
+  advance: { x: 281, y: 464, w: 55, h: 253,
+             sprite: '/assets/lake-ulysses/sprites/hallway_door.webp',
+             to: 'hallway-02' },
+}
+```
+
+The `advance` object is authored exactly like the others but stays hidden
+until every hotspot in the room has been tapped once — so it still needs
+real art and a real position from the start, even though the player won't
+see it immediately.
+
+#### Room budgets
+
+Rooms multiply in a way single animations don't — a bg plus 3 objects plus
+3 close-ups is 7 assets for one screen. Targets:
+
+- **≤ 1MB per room, everything included.** Object sprites and close-ups are
+  small and irregularly shaped; they compress well at q70.
+- Only the **bg's first frame** goes in `PRELOAD_ASSETS`, and only if the
+  room is early in a chapter. Close-ups load on demand — the player may
+  never tap that object.
 
 ### Static images
 
@@ -292,9 +390,20 @@ minimum, and a bloated list turns that floor into a ceiling.
 1. Authored at 390×844 (backgrounds) or square (characters)?
 2. WebP q70 / MP3 128kbps?
 3. Named `<name>_0000.webp` with 4-digit padding, starting at zero, no gaps?
-4. Under budget (≤100KB/frame, ≤1.5MB/animation)?
+4. Under budget (≤100KB/frame, ≤1.5MB/animation, ≤1MB/mini-game room)?
 5. Registered in `anims.js` with a `frames` count that matches reality?
-6. Positioned with percentages, not pixels?
+6. Positioned with percentages, not pixels? (Mini-game room objects are the
+   one exception — hand those over as design-space px and let the renderer
+   convert. See "Mini-game rooms" above.)
 7. Large and early → added to `PRELOAD_ASSETS`?
 8. Audio mastered to match the existing loudness, played via `audio.js`?
 9. Verified at a real phone viewport (375×812), not just desktop?
+
+For a mini-game room specifically, also:
+
+10. Interactive objects **left out of the bg frames** (they're layered
+    sprites, and painting them in too causes double-drawing)?
+11. Every object has a sprite, a close-up, and three caption variants
+    (Guns / Bible / Crystals)?
+12. Coordinates measured against 390×844 — and scaled down if the artboard
+    was larger?

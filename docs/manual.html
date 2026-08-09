@@ -879,17 +879,22 @@ happened.</p>
 bg sprite (numbered WebP frames via <code>ui/spriteAnimator.js</code>, same as
 <code>spr_lake_bg_001</code>) authored for a <em>stop-motion</em> feel — low frame count,
 hard cuts, kinetic rather than tweened (reference: Tetsuo the Iron Man).
-Objects are sprites layered over it, not invisible tap regions.</p>
+Objects are <strong>separate sprite files</strong> layered over it, not invisible tap
+regions and not painted into the bg — the tap feedback scales an object up,
+which is impossible if it&#39;s baked into a flat background frame.</p>
 <pre><code class="language-js">{
   bg: { base: &#39;/assets/&lt;chapter&gt;/sprites/spr_hallway/spr_hallway_&#39;, frames: 6, fps: 8 },
   hotspots: [
-    { x: 15, y: 20, w: 20, h: 25, closeup: &#39;...&#39;, text: {
+    // x/y/w/h are design-space pixels against the 390×844 frame, top-left
+    // origin — the numbers straight off the artboard. The renderer divides
+    // by the frame to get percentages; do not pre-convert by hand.
+    { x: 58, y: 170, w: 78, h: 210, sprite: &#39;...&#39;, closeup: &#39;...&#39;, text: {
         Guns:     &quot;Her diploma. Crooked. Nobody straightened it.&quot;,
         Bible:    &quot;Her diploma. Class of &#39;09. She earned that.&quot;,
         Crystals: &quot;Her diploma, tilted. Something here gave up a while ago.&quot;,
     } },
   ],
-  advance: { x: 72, y: 55, w: 14, h: 30, sprite: &#39;...&#39;, to: &#39;next-room-id&#39; },
+  advance: { x: 281, y: 464, w: 55, h: 253, sprite: &#39;...&#39;, to: &#39;next-room-id&#39; },
 }
 </code></pre>
 <ul>
@@ -909,8 +914,13 @@ room has been tapped at least once. Then it reveals itself as a hint that
 you can move on. Tapping it loads the next room, or ends the <code>walk</code> step
 if it was the last. Progression is therefore gated on <em>curiosity</em>, not
 skill — you can&#39;t get stuck and you can&#39;t fail, you just have to look.</li>
-<li>Positions are <strong>percentages</strong>, never pixels — the canvas scales to the
-viewport (see <a class="doc-ref" href="#doc-handoff" data-doc="doc-handoff"><code>HANDOFF.md</code></a> and <a class="doc-ref" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><code>ASSET_GUIDELINES.md</code></a>).</li>
+<li>Positions are authored as <strong>design-space pixels</strong> against the 390×844
+frame and converted to percentages by the renderer. This is the one place
+pixel numbers are correct, because they&#39;re input data rather than
+something reaching CSS — the canvas still scales to the viewport as
+always. Art hand-off spec (what to produce per room, and the requirement
+that interactive objects be their own sprite files rather than painted
+into the bg) is in <a class="doc-ref" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><code>ASSET_GUIDELINES.md</code></a>.</li>
 <li>Per-room visited-tracking lives in the renderer&#39;s own closure, not in
 <code>run</code> — same convention <code>dialogScene</code>/<code>cutsceneScene</code> use for scene-local
 state.</li>
@@ -948,10 +958,12 @@ new scene type.</p>
       <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-asset_guidelines--the-design-frame">The design frame</a></li><li><a href="#doc-asset_guidelines--directory-layout">Directory layout</a></li><li><a href="#doc-asset_guidelines--sprites-animated-frame-sequences">Sprites (animated frame sequences)</a></li><li><a href="#doc-asset_guidelines--video">Video</a></li><li><a href="#doc-asset_guidelines--audio">Audio</a></li><li><a href="#doc-asset_guidelines--the-preload-list">The preload list</a></li><li><a href="#doc-asset_guidelines--checklist-for-adding-a-new-asset">Checklist for adding a new asset</a></li></ul></nav>
       <h1 id="doc-asset_guidelines--asset-guidelines"><a class="anchor" href="#doc-asset_guidelines--asset-guidelines" aria-label="Link to this section">#</a>Asset Guidelines</h1>
 <p>How to prepare, name, place, and wire art and audio for Dream Xtreme.
-Written against what&#39;s actually in the repo as of 2026-07-25 — the numbers
+Written against what&#39;s actually in the repo as of 2026-08-04 — the numbers
 here are measured, not aspirational.</p>
 <p>The short version: <strong>1-bit art, 390×844 design frame, WebP frame
-sequences, 128kbps MP3, and never position anything in raw pixels.</strong></p>
+sequences, 128kbps MP3, and never position anything in raw pixels</strong> — with
+one deliberate exception for mini-game room objects, which are authored as
+design-space pixels and converted by the renderer. See &quot;Mini-game rooms.&quot;</p>
 <hr>
 <h2 id="doc-asset_guidelines--the-design-frame"><a class="anchor" href="#doc-asset_guidelines--the-design-frame" aria-label="Link to this section">#</a>The design frame</h2>
 <p>Everything is authored against a <strong>390×844</strong> portrait canvas (iPhone
@@ -968,6 +980,9 @@ the single most important consequence for asset work:</p>
 the canvas. A sprite at <code>bottom: 130px; height: 600px</code> looks correct in
 a desktop browser and is cut off on an actual phone. This is exactly how
 the Bob Baiter sprite broke — see HANDOFF.md.</p>
+<p>The rule is about values that reach CSS. Mini-game room objects are
+<em>authored</em> in design-space pixels and converted before positioning, which
+doesn&#39;t break it — see &quot;Mini-game rooms.&quot;</p>
 </blockquote>
 <p>Bleeding past the left/right edges is fine and often intentional (a bust
 shot should fill the frame). Bleeding past the <em>bottom</em> is a bug.</p>
@@ -1097,6 +1112,105 @@ count exactly. Then reference the key from a cutscene beat:</p>
 <code>spriteAnim</code> renders as the bottom-anchored character layer. Frame
 position is preserved across beats for the same key, so a background
 doesn&#39;t restart from frame 0 every time the player taps.</p>
+<h3 id="doc-asset_guidelines--mini-game-rooms-bg-placed-object-sprites"><a class="anchor" href="#doc-asset_guidelines--mini-game-rooms-bg-placed-object-sprites" aria-label="Link to this section">#</a>Mini-game rooms (bg + placed object sprites)</h3>
+<p>A mini-game <code>walk</code> step is a <strong>room</strong>: one full-frame looping bg sprite,
+with interactive object sprites layered over it at authored positions. See
+<a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a> for the interaction design; this section is only about
+preparing the art and handing over the numbers.</p>
+<p><strong>Layer 1 — the room bg.</strong> A normal full-frame animation: 390×844, WebP
+frame sequence, registered in <code>anims.js</code> like any other. Authored for a
+<em>stop-motion</em> read — low frame count, hard cuts, kinetic rather than
+smoothly tweened. 4–8 frames at 6–10fps is the target, which is also well
+inside budget (a 6-frame room is ~600KB against the ≤1.5MB ceiling).</p>
+<p><strong>Layer 2 — object sprites.</strong> Each interactive object is its <strong>own file</strong>,
+positioned over the bg. This is a hard requirement, not a preference: the
+tap feedback scales the object up slightly, and you cannot scale part of a
+flat image. Two consequences when authoring:</p>
+<ul>
+<li><strong>Leave the interactive objects out of the bg frames.</strong> If an object is
+painted into the bg <em>and</em> layered on top, you get double-drawing — a
+static ghost of it sitting behind the sprite that pops. Paint the room
+without them; they&#39;re added back as sprites.</li>
+<li>Object sprites can be single stills. They don&#39;t need to be animated
+sequences unless you want them to be — a still is one file, not a folder.</li>
+</ul>
+<p><strong>Layer 3 — close-ups.</strong> Each object also needs a close-up image, shown
+when the object is tapped. These are single stills, full-frame or
+near-full-frame, and are the cheapest place to spend detail since only one
+is on screen at a time.</p>
+<h4 id="doc-asset_guidelines--coordinates-author-in-design-space-pixels"><a class="anchor" href="#doc-asset_guidelines--coordinates-author-in-design-space-pixels" aria-label="Link to this section">#</a>Coordinates: author in design-space pixels</h4>
+<p>Position and size objects against the <strong>390×844 design frame</strong> and give the
+numbers in plain pixels — top-left origin, the same numbers your art tool
+shows. The renderer divides by the frame to get percentages before anything
+is positioned, so scaling is preserved automatically.</p>
+<blockquote>
+<p>This is the one place raw pixel numbers are correct, because they&#39;re
+<em>input data</em>, not CSS. The rule they&#39;d otherwise break — never let a raw
+pixel value reach a style property — still holds; the conversion happens
+first. Do not hand-convert to percentages yourself.</p>
+</blockquote>
+<p>If you author on a larger artboard, scale the numbers down proportionally
+before handing them over (e.g. on a 780×1688 board — exactly 2× — halve
+everything). The renderer assumes 390×844 and has no way to detect that it
+got numbers from a different board.</p>
+<h4 id="doc-asset_guidelines--what-to-hand-over-per-room"><a class="anchor" href="#doc-asset_guidelines--what-to-hand-over-per-room" aria-label="Link to this section">#</a>What to hand over per room</h4>
+<p>For each room, this is the complete set:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Item</th>
+<th align="left">What&#39;s needed</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Room bg</td>
+<td align="left">Frame sequence folder + frame count + fps</td>
+</tr>
+<tr>
+<td align="left">Each object</td>
+<td align="left">Sprite file, plus <code>x, y, w, h</code> in design-space px</td>
+</tr>
+<tr>
+<td align="left">Each object</td>
+<td align="left">Close-up image</td>
+</tr>
+<tr>
+<td align="left">Each object</td>
+<td align="left">Caption text ×3 — one per class (Guns / Bible / Crystals)</td>
+</tr>
+<tr>
+<td align="left">Advance object</td>
+<td align="left">Sprite file + <code>x, y, w, h</code>, same as any object</td>
+</tr>
+</tbody></table>
+<p>Which lands as room data shaped like this — pixels in, no math done by you:</p>
+<pre><code class="language-js">{
+  bg: { base: &#39;/assets/lake-ulysses/sprites/spr_hallway/spr_hallway_&#39;, frames: 6, fps: 8 },
+  hotspots: [
+    { x: 58, y: 170, w: 78, h: 210,      // design-space px, top-left origin
+      sprite:  &#39;/assets/lake-ulysses/sprites/hallway_diploma.webp&#39;,
+      closeup: &#39;/assets/lake-ulysses/sprites/hallway_diploma_closeup.webp&#39;,
+      text: { Guns: &#39;…&#39;, Bible: &#39;…&#39;, Crystals: &#39;…&#39; } },
+  ],
+  advance: { x: 281, y: 464, w: 55, h: 253,
+             sprite: &#39;/assets/lake-ulysses/sprites/hallway_door.webp&#39;,
+             to: &#39;hallway-02&#39; },
+}
+</code></pre>
+<p>The <code>advance</code> object is authored exactly like the others but stays hidden
+until every hotspot in the room has been tapped once — so it still needs
+real art and a real position from the start, even though the player won&#39;t
+see it immediately.</p>
+<h4 id="doc-asset_guidelines--room-budgets"><a class="anchor" href="#doc-asset_guidelines--room-budgets" aria-label="Link to this section">#</a>Room budgets</h4>
+<p>Rooms multiply in a way single animations don&#39;t — a bg plus 3 objects plus
+3 close-ups is 7 assets for one screen. Targets:</p>
+<ul>
+<li><strong>≤ 1MB per room, everything included.</strong> Object sprites and close-ups are
+small and irregularly shaped; they compress well at q70.</li>
+<li>Only the <strong>bg&#39;s first frame</strong> goes in <code>PRELOAD_ASSETS</code>, and only if the
+room is early in a chapter. Close-ups load on demand — the player may
+never tap that object.</li>
+</ul>
 <h3 id="doc-asset_guidelines--static-images"><a class="anchor" href="#doc-asset_guidelines--static-images" aria-label="Link to this section">#</a>Static images</h3>
 <p>A beat can use <code>image</code> / <code>sprite</code> with a direct path instead of an anim
 key. Same sizing rules apply. Placeholder SVGs are acceptable and used
@@ -1342,12 +1456,23 @@ minimum, and a bloated list turns that floor into a ceiling.</p>
 <li>Authored at 390×844 (backgrounds) or square (characters)?</li>
 <li>WebP q70 / MP3 128kbps?</li>
 <li>Named <code>&lt;name&gt;_0000.webp</code> with 4-digit padding, starting at zero, no gaps?</li>
-<li>Under budget (≤100KB/frame, ≤1.5MB/animation)?</li>
+<li>Under budget (≤100KB/frame, ≤1.5MB/animation, ≤1MB/mini-game room)?</li>
 <li>Registered in <code>anims.js</code> with a <code>frames</code> count that matches reality?</li>
-<li>Positioned with percentages, not pixels?</li>
+<li>Positioned with percentages, not pixels? (Mini-game room objects are the
+one exception — hand those over as design-space px and let the renderer
+convert. See &quot;Mini-game rooms&quot; above.)</li>
 <li>Large and early → added to <code>PRELOAD_ASSETS</code>?</li>
 <li>Audio mastered to match the existing loudness, played via <code>audio.js</code>?</li>
 <li>Verified at a real phone viewport (375×812), not just desktop?</li>
+</ol>
+<p>For a mini-game room specifically, also:</p>
+<ol start="10">
+<li>Interactive objects <strong>left out of the bg frames</strong> (they&#39;re layered
+sprites, and painting them in too causes double-drawing)?</li>
+<li>Every object has a sprite, a close-up, and three caption variants
+(Guns / Bible / Crystals)?</li>
+<li>Coordinates measured against 390×844 — and scaled down if the artboard
+was larger?</li>
 </ol>
 
       <nav class="pager">
