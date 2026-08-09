@@ -373,6 +373,14 @@ if a second ambient track is wanted, it still needs to be sourced.</li>
 <li><code>tyagl.mp3</code>, <code>typewriter_tick.mp3</code> — SFX.</li>
 <li><code>title/snd_lake_title.mp3</code>, <code>snd_titlemusic.mp3</code>, <code>snd_start.mp3</code> — title screen music + jingle.</li>
 </ul>
+<p><strong>Mini-game room art</strong> (<code>public/assets/lake-ulysses/sprites/</code>):</p>
+<ul>
+<li><code>spr_hallway_bg/</code> (6 SVG frames) + <code>hallway_{diploma,doormat,lightbulb,door}.svg</code>
+and their <code>_closeup.svg</code> pairs — <strong>all generated placeholders</strong>, produced by
+<code>scripts/make-placeholder-room.mjs</code> (deterministic, so regenerating causes no
+git churn). They exist so the walk system could be built and played before
+real art. Replace them and delete the script when real art lands.</li>
+</ul>
 <p><strong>NPC portraits</strong> are still colored initials (<code>ui/npcPortrait.js</code>) — no character art yet for dialog scenes.</p>
 <h2 id="doc-handoff--known-gaps-not-bugs-just-not-done"><a class="anchor" href="#doc-handoff--known-gaps-not-bugs-just-not-done" aria-label="Link to this section">#</a>Known gaps (not bugs, just not done)</h2>
 <ul>
@@ -383,9 +391,9 @@ of <code>lk_01.mp3</code>, 1.2MB shipped for nothing. Kept deliberately for now.
 <li><code>loadoutScene.js</code> and the unread <code>firstPlayScene</code> registry field were
 removed from the build; both are preserved verbatim in <a class="doc-ref" href="#doc-attic" data-doc="doc-attic"><code>ATTIC.md</code></a> with
 restore instructions.</li>
-<li>Cutscenes have real content (opening quote, Bob Baiter, Prologue); the
-<code>minigame</code> scene type is built but no chapter has one yet — see &quot;What&#39;s
-next&quot; below.</li>
+<li>Cutscenes have real content (opening quote, Bob Baiter, Prologue).
+Mini-games are built and one is playable (Deborah&#39;s hallway), but its art
+and captions are placeholders and the other three NPCs have none.</li>
 <li>All existing nodes have <code>feelzOptions: [Anger, Fear, Anticipation]</code> —
 the manuscript FEELZ line predates the class system. Bible/Crystals
 players see their class emotions regardless (dartboard always shows the
@@ -396,50 +404,45 @@ class-specific emotion options once the manuscript format is extended.</li>
 <p>Roughly in order of how ready each one is to just start:</p>
 <p><strong>Ready to build, no further design needed:</strong></p>
 <ul>
-<li><del>Ending judgment beat</del> — done (<a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>&#39;s <code>ending</code> section).</li>
-<li><del>Meter-gated branching</del> — done, first use on Rick (<a class="doc-ref" href="#doc-stat_math" data-doc="doc-stat_math"><code>STAT_MATH.md</code></a>).
-Extending it to more NPCs/stats is pure content now, same pattern.</li>
-<li><del>Bandlands tutorial beat</del> — done: Therapist, location 1, right after
-the Prologue.</li>
-<li><del>FEELZ Dartboard</del> — done: 8-segment SVG wheel, class loadout system,
+<li><p><del>Ending judgment beat</del> — done (<a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>&#39;s <code>ending</code> section).</p>
+</li>
+<li><p><del>Meter-gated branching</del> — done, first use on Rick (<a class="doc-ref" href="#doc-stat_math" data-doc="doc-stat_math"><code>STAT_MATH.md</code></a>).
+Extending it to more NPCs/stats is pure content now, same pattern.</p>
+</li>
+<li><p><del>Bandlands tutorial beat</del> — done: Therapist, location 1, right after
+the Prologue.</p>
+</li>
+<li><p><del>FEELZ Dartboard</del> — done: 8-segment SVG wheel, class loadout system,
 abstract symbols, drag-to-card interaction. (<code>engine/loadout.js</code>,
-<code>ui/feelzDartboard.js</code>, <code>scenes/questionnaireScene.js</code>.)</li>
-<li><del>inkflo Graphics preloader</del> — done, two-phase; see the entry under
-&quot;Needs something from outside this repo&quot; below.</li>
-<li><strong>More depth in Lake Ulysses</strong> — additional dialog branches on existing
+<code>ui/feelzDartboard.js</code>, <code>scenes/questionnaireScene.js</code>.)</p>
+</li>
+<li><p><del>inkflo Graphics preloader</del> — done, two-phase; see the entry under
+&quot;Needs something from outside this repo&quot; below.</p>
+</li>
+<li><p><strong>More depth in Lake Ulysses</strong> — additional dialog branches on existing
 NPCs. Pure content through the manuscript pipeline, no engine changes.
 Obvious targets: a third node on any NPC (all currently cap at 2),
-or Bible/Crystals-class-aware FEELZ options on existing nodes.</li>
-</ul>
-<p><strong>Ready to build, design settled:</strong></p>
-<ul>
-<li><p><strong>Mini-game walk/gimmick steps</strong> — the outer <code>minigame</code> scene type is
-built (<code>src/scenes/minigameScene.js</code>); the <em>inner</em> step system is fully
-designed but unbuilt. See <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a> for the full contract. In
-short: a mini-game module runs its own ordered <code>STEPS</code> list of two step
-types. <code>walk</code> = a room (looping animated bg sprite, stop-motion feel)
-with inspect hotspots (tap -&gt; scale-pop -&gt; close-up + inner-thought
-caption, caption text varies by <code>run.loadout</code>) plus a reserved advance
-hotspot that stays invisible until every inspect hotspot has been tapped
-once. <code>gimmick</code> = one reusable data-only &quot;Quick Beat&quot; template (prompt -&gt;
-swipe or tap-target -&gt; cosmetic <code>fx</code> flourish), no fail state ever.
-Still needs building: <code>engine/walkSequencer.js</code> + the two renderers.</p>
-<p><strong>Placement plan:</strong> one mini-game immediately precedes each of the four
-remaining NPCs (Deborah / Rwanda / Samun / Rick), so the chapter reads as
-explore -&gt; encounter, four times. Therapist is exempt — it&#39;s part of the
-opening call, not part of that pattern. No entries are in <code>SCENES</code> yet
-because no content exists; there&#39;s a TODO comment at the array marking
-where they go. Adding one is a single line.
-First concept to write: Deborah&#39;s condo hallway.</p>
+or Bible/Crystals-class-aware FEELZ options on existing nodes.</p>
+</li>
+<li><p><strong>Mini-games for Rwanda / Samun / Rick</strong> — the whole system is built and
+the first one (Deborah&#39;s hallway) is playable, so these are pure content:
+a room definition + captions + a <code>SCENES</code> line each. See <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>
+for the step contract and <a class="doc-ref" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><code>ASSET_GUIDELINES.md</code></a> for the art hand-off spec.</p>
 </li>
 </ul>
 <p><strong>Needs a dedicated design pass first:</strong></p>
 <ul>
-<li><strong>Hint system (&quot;eventually,&quot; per the user)</strong> — a callable check-in
-(plausibly another Therapist call, given the character now exists)
-that surfaces <em>one</em> hint about which way the player&#39;s currently
-leaning — reads current stats/Truth Debt, doesn&#39;t state numbers.
-Explicitly not scoped for now; noted here so it isn&#39;t lost.</li>
+<li><strong>IT / the hint system — now one item, not two.</strong> These were tracked
+separately; they&#39;re the same feature. IT is <em>how</em> the game hints: words
+within IT&#39;s line are highlighted in color, and the coloring tells the
+player how they&#39;re being read, without naming a stat or a number. Fires
+at four moments — entering a room/section, exiting a scene, during
+pre-battle dialog exchange, and immediately before an NPC battle choice.
+Reuses the word-tinting trick <code>questionnaireScene.js</code> already uses for
+the Therapist&#39;s diagnosis, which makes &quot;colored word = the game is
+reading you&quot; a learnable language rather than a one-off. Full write-up
+in <a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a> (&quot;IT <em>is</em> the hint system&quot;). Deliberately not scoped
+for build yet.</li>
 </ul>
 <p><strong>Needs something from outside this repo:</strong></p>
 <ul>
@@ -861,7 +864,7 @@ so a chapter reads as explore -&gt; encounter, repeating. In <code>lake-ulysses<
 that&#39;s Deborah / Rwanda / Samun / Rick — four slots. Therapist is exempt:
 it belongs to the chapter&#39;s opening call (Prologue -&gt; Questionnaire -&gt;
 Therapist), not to this pattern.</p>
-<h4 id="doc-scene_types--the-step-system-designed-not-yet-built"><a class="anchor" href="#doc-scene_types--the-step-system-designed-not-yet-built" aria-label="Link to this section">#</a>The step system (designed, not yet built)</h4>
+<h4 id="doc-scene_types--the-step-system-enginewalksequencerjs"><a class="anchor" href="#doc-scene_types--the-step-system-enginewalksequencerjs" aria-label="Link to this section">#</a>The step system (<code>engine/walkSequencer.js</code>)</h4>
 <p>A mini-game module runs its own ordered <code>STEPS</code> list — a second, smaller
 sequencer nested inside the scene sequencer, the same way <code>cutsceneScene.js</code>
 sequences its own beats. Two step types:</p>
@@ -934,10 +937,22 @@ flourish — <code>fx.flash()</code> / <code>fx.shake()</code> at weak or strong
 intensity-only feedback dialog swipes use, never color-coded right/wrong.
 It takes over the screen rather than blending into the walk, which keeps
 its interaction code independent of the room renderer&#39;s.</p>
-<p>Still to build: <code>engine/walkSequencer.js</code> (the <code>STEPS</code> runner) plus the two
-step renderers. No chapter has mini-game content yet, so none of this is
-wired into a live <code>SCENES</code> array — there&#39;s a TODO comment at
-<code>chapters/lake-ulysses/index.js</code>&#39;s array marking the four intended slots.</p>
+<p><strong>Built and playable.</strong> <code>engine/walkSequencer.js</code> runs the <code>STEPS</code> list;
+<code>ui/walkRoom.js</code> and <code>ui/quickBeat.js</code> are the two step renderers. The first
+mini-game is <code>chapters/lake-ulysses/minigames/deborah-hallway.js</code>, wired in
+ahead of Deborah — its art is generated placeholder vectors
+(<code>scripts/make-placeholder-room.mjs</code>) and its captions exist to exercise the
+class-variation path, not as final prose. Rwanda / Samun / Rick still need
+theirs; each is one line in <code>SCENES</code> plus a content module.</p>
+<p>Two implementation notes worth knowing:</p>
+<ul>
+<li><code>createSpriteAnimator</code> takes an optional <code>ext</code> (default <code>&#39;webp&#39;</code>). It
+exists so placeholder frame sequences can be committed as SVG rather than
+generating throwaway binaries — real art should omit it.</li>
+<li>A room whose <code>advance.to</code> is <code>null</code> (or points at an unknown room id) ends
+the <code>walk</code> step and falls through to the next entry in <code>STEPS</code>. That&#39;s how
+a single-room walk terminates without needing a separate &quot;last room&quot; flag.</li>
+</ul>
 <h2 id="doc-scene_types--adding-a-new-type"><a class="anchor" href="#doc-scene_types--adding-a-new-type" aria-label="Link to this section">#</a>Adding a new type</h2>
 <ol>
 <li>Write <code>src/scenes/&lt;type&gt;Scene.js</code> implementing the contract above.</li>
@@ -2193,9 +2208,9 @@ End) need the same mapping decision before they can be assigned to scenes.</p>
     </article>
 <article class="doc" id="doc-it_design" data-title="IT — Design Document" data-file="IT_DESIGN.md" hidden>
       <p class="doc-source">Planning · <code>docs/IT_DESIGN.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-it_design--what-it-is">What IT Is</a></li><li><a href="#doc-it_design--how-it-works">How IT Works</a></li><li><a href="#doc-it_design--voice-profile-by-class">Voice Profile by Class</a></li><li><a href="#doc-it_design--where-it-appears">Where IT Appears</a></li><li><a href="#doc-it_design--visual-identity">Visual Identity</a></li><li><a href="#doc-it_design--the-mk2-intro-lines-it39s-first-appearance">The MK2 Intro Lines (IT&amp;#39;s First Appearance)</a></li><li><a href="#doc-it_design--what-needs-to-be-built">What Needs to Be Built</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-it_design--what-it-is">What IT Is</a></li><li><a href="#doc-it_design--how-it-works">How IT Works</a></li><li><a href="#doc-it_design--voice-profile-by-class">Voice Profile by Class</a></li><li><a href="#doc-it_design--where-it-appears">Where IT Appears</a></li><li><a href="#doc-it_design--it-is-the-hint-system">IT is the hint system</a></li><li><a href="#doc-it_design--visual-identity">Visual Identity</a></li><li><a href="#doc-it_design--the-mk2-intro-lines-it39s-first-appearance">The MK2 Intro Lines (IT&amp;#39;s First Appearance)</a></li><li><a href="#doc-it_design--what-needs-to-be-built">What Needs to Be Built</a></li></ul></nav>
       <h1 id="doc-it_design--it-design-document"><a class="anchor" href="#doc-it_design--it-design-document" aria-label="Link to this section">#</a>IT — Design Document</h1>
-<p>Last updated: 2026-07-18.</p>
+<p>Last updated: 2026-08-04.</p>
 <hr>
 <h2 id="doc-it_design--what-it-is"><a class="anchor" href="#doc-it_design--what-it-is" aria-label="Link to this section">#</a>What IT Is</h2>
 <p>IT is not a character. IT is the player&#39;s inner dialog — invasive thoughts,
@@ -2273,6 +2288,45 @@ could be the most direct the voice ever gets.</p>
 <h3 id="doc-it_design--bloom-events-truth-debt-thresholds"><a class="anchor" href="#doc-it_design--bloom-events-truth-debt-thresholds" aria-label="Link to this section">#</a>Bloom events (Truth Debt thresholds)</h3>
 <p>When Truth Debt crosses a threshold, IT intrudes mid-scene. The
 player doesn&#39;t choose this. IT just shows up.</p>
+<hr>
+<h2 id="doc-it_design--it-is-the-hint-system"><a class="anchor" href="#doc-it_design--it-is-the-hint-system" aria-label="Link to this section">#</a>IT <em>is</em> the hint system</h2>
+<p><strong>Added 2026-08-04. Not scoped for build yet — recorded so it isn&#39;t lost.</strong></p>
+<p>IT and the &quot;hint system&quot; were tracked as two separate backlog items in
+<a class="doc-ref" href="#doc-handoff" data-doc="doc-handoff"><code>HANDOFF.md</code></a>. They&#39;re one thing. IT is how the game hints.</p>
+<p>The mechanic: <strong>individual words within IT&#39;s line are highlighted in
+color</strong>, and the coloring is the hint. IT tells you where you&#39;re leaning —
+or how the game is currently reading you — without ever stating a number or
+naming a stat. The player learns to read the color as a tell.</p>
+<p>This is the same trick <code>questionnaireScene.js</code> already uses for the
+Therapist&#39;s diagnosis (<code>DIAGNOSES</code>, where individual words are tinted with
+<code>emotionColor()</code> from the player&#39;s class palette), and the same one the
+mini-game room captions will use for class-varying text. Reusing it a third
+time is deliberate: it makes &quot;colored word = the game is reading you&quot; a
+consistent, learnable language rather than a one-off flourish.</p>
+<p>Because it&#39;s a hint and not a readout, it stays inside the existing rule
+that feedback is <em>atmospheric, never right/wrong</em> — same reason <code>fx.js</code>
+is intensity-only with no truth/lie color-coding. A highlighted word should
+feel like being noticed, not like being scored.</p>
+<h3 id="doc-it_design--where-the-hints-fire"><a class="anchor" href="#doc-it_design--where-the-hints-fire" aria-label="Link to this section">#</a>Where the hints fire</h3>
+<p>Four placements, all of them moments where the player is about to commit or
+has just left something behind:</p>
+<ol>
+<li><strong>Entering a room or section</strong> — sets the lens before the player looks
+around. In mini-games this is the room&#39;s first frame.</li>
+<li><strong>Exiting a scene</strong> — the parting read on what just happened.</li>
+<li><strong>During pre-battle dialog exchange</strong>, before the player makes a choice —
+IT colors the exchange while it&#39;s still in progress.</li>
+<li><strong>Immediately before a battle choice with an NPC</strong> — the last beat before
+commitment, and the sharpest one.</li>
+</ol>
+<p>Placements 3 and 4 are distinct on purpose: one is ambient during the
+exchange, the other is the pointed moment right at the decision.</p>
+<p>Note that 1 and 2 land naturally in the mini-game walk step (entering a
+room, leaving for the encounter), and 3 and 4 in <code>dialogScene</code>. The
+existing &quot;During dialog scenes&quot; section above describes IT firing <em>after</em>
+a swipe; this adds the <em>before</em>-the-choice case, which is the one that
+actually functions as a hint — after the fact it&#39;s commentary, before the
+fact it&#39;s influence.</p>
 <hr>
 <h2 id="doc-it_design--visual-identity"><a class="anchor" href="#doc-it_design--visual-identity" aria-label="Link to this section">#</a>Visual Identity</h2>
 <p>IT&#39;s dialog should be visually distinct from everything else — not a

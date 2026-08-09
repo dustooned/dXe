@@ -1,6 +1,6 @@
 # IT — Design Document
 
-Last updated: 2026-07-18.
+Last updated: 2026-08-04.
 
 ---
 
@@ -97,6 +97,55 @@ could be the most direct the voice ever gets.
 ### Bloom events (Truth Debt thresholds)
 When Truth Debt crosses a threshold, IT intrudes mid-scene. The
 player doesn't choose this. IT just shows up.
+
+---
+
+## IT *is* the hint system
+
+**Added 2026-08-04. Not scoped for build yet — recorded so it isn't lost.**
+
+IT and the "hint system" were tracked as two separate backlog items in
+`HANDOFF.md`. They're one thing. IT is how the game hints.
+
+The mechanic: **individual words within IT's line are highlighted in
+color**, and the coloring is the hint. IT tells you where you're leaning —
+or how the game is currently reading you — without ever stating a number or
+naming a stat. The player learns to read the color as a tell.
+
+This is the same trick `questionnaireScene.js` already uses for the
+Therapist's diagnosis (`DIAGNOSES`, where individual words are tinted with
+`emotionColor()` from the player's class palette), and the same one the
+mini-game room captions will use for class-varying text. Reusing it a third
+time is deliberate: it makes "colored word = the game is reading you" a
+consistent, learnable language rather than a one-off flourish.
+
+Because it's a hint and not a readout, it stays inside the existing rule
+that feedback is *atmospheric, never right/wrong* — same reason `fx.js`
+is intensity-only with no truth/lie color-coding. A highlighted word should
+feel like being noticed, not like being scored.
+
+### Where the hints fire
+
+Four placements, all of them moments where the player is about to commit or
+has just left something behind:
+
+1. **Entering a room or section** — sets the lens before the player looks
+   around. In mini-games this is the room's first frame.
+2. **Exiting a scene** — the parting read on what just happened.
+3. **During pre-battle dialog exchange**, before the player makes a choice —
+   IT colors the exchange while it's still in progress.
+4. **Immediately before a battle choice with an NPC** — the last beat before
+   commitment, and the sharpest one.
+
+Placements 3 and 4 are distinct on purpose: one is ambient during the
+exchange, the other is the pointed moment right at the decision.
+
+Note that 1 and 2 land naturally in the mini-game walk step (entering a
+room, leaving for the encounter), and 3 and 4 in `dialogScene`. The
+existing "During dialog scenes" section above describes IT firing *after*
+a swipe; this adds the *before*-the-choice case, which is the one that
+actually functions as a hint — after the fact it's commentary, before the
+fact it's influence.
 
 ---
 

@@ -144,6 +144,131 @@
   animation: dx-spin 0.9s linear infinite;
 }
 
+/* ── Mini-game: walk room ──────────────────────────────────
+   All object placement is percentage-based; walkRoom.js converts the
+   authored design-space px before anything reaches these styles. */
+.dx-room {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.dx-room__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.dx-room__object {
+  position: absolute;
+  z-index: 1;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transform-origin: center center;
+  /* Snappy and un-eased, to sit with the stop-motion bg rather than fight it */
+  transition: transform 0.08s steps(2, end);
+}
+
+.dx-room__object img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.dx-room__object:active {
+  transform: scale(1.06);
+}
+
+.dx-room__object.is-popping {
+  animation: dx-object-pop 0.22s steps(3, end);
+}
+
+@keyframes dx-object-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+/* The advance object is authored like any other but stays hidden until every
+   hotspot in the room has been inspected — it IS the "you can move on" hint. */
+.dx-room__advance.is-revealing {
+  animation: dx-advance-in 0.5s steps(4, end);
+}
+
+@keyframes dx-advance-in {
+  0%   { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.dx-room__closeup {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--color-black);
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.dx-room__closeup-img {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  object-fit: contain;
+}
+
+.dx-room__closeup-text {
+  border-top: 2px solid var(--color-white);
+  padding: 16px;
+  min-height: 96px;
+}
+
+/* ── Mini-game: Quick Beat gimmick ─────────────────────────── */
+.dx-beat {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-black);
+  touch-action: none;
+  overflow: hidden;
+}
+
+.dx-beat__prompt {
+  font-size: 14px;
+  text-align: center;
+  margin: 0 24px;
+  letter-spacing: 0.08em;
+  animation: dx-beat-in 0.18s steps(2, end);
+}
+
+@keyframes dx-beat-in {
+  0%   { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.dx-beat__target {
+  position: absolute;
+  padding: 0;
+  background: none;
+  border: 2px solid var(--color-white);
+  cursor: pointer;
+}
+
+.dx-beat.is-hit .dx-beat__prompt {
+  transform: scale(1.1);
+}
+
+.dx-beat.is-miss .dx-beat__prompt {
+  opacity: 0.45;
+}
+
 .dx-tap-hint {
   opacity: 0.5;
   font-size: 7px;

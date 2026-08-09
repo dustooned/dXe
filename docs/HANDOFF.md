@@ -208,6 +208,13 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 - `tyagl.mp3`, `typewriter_tick.mp3` — SFX.
 - `title/snd_lake_title.mp3`, `snd_titlemusic.mp3`, `snd_start.mp3` — title screen music + jingle.
 
+**Mini-game room art** (`public/assets/lake-ulysses/sprites/`):
+- `spr_hallway_bg/` (6 SVG frames) + `hallway_{diploma,doormat,lightbulb,door}.svg`
+  and their `_closeup.svg` pairs — **all generated placeholders**, produced by
+  `scripts/make-placeholder-room.mjs` (deterministic, so regenerating causes no
+  git churn). They exist so the walk system could be built and played before
+  real art. Replace them and delete the script when real art lands.
+
 **NPC portraits** are still colored initials (`ui/npcPortrait.js`) — no character art yet for dialog scenes.
 
 ## Known gaps (not bugs, just not done)
@@ -219,9 +226,9 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 - `loadoutScene.js` and the unread `firstPlayScene` registry field were
   removed from the build; both are preserved verbatim in `ATTIC.md` with
   restore instructions.
-- Cutscenes have real content (opening quote, Bob Baiter, Prologue); the
-  `minigame` scene type is built but no chapter has one yet — see "What's
-  next" below.
+- Cutscenes have real content (opening quote, Bob Baiter, Prologue).
+  Mini-games are built and one is playable (Deborah's hallway), but its art
+  and captions are placeholders and the other three NPCs have none.
 - All existing nodes have `feelzOptions: [Anger, Fear, Anticipation]` —
   the manuscript FEELZ line predates the class system. Bible/Crystals
   players see their class emotions regardless (dartboard always shows the
@@ -248,33 +255,23 @@ Roughly in order of how ready each one is to just start:
   Obvious targets: a third node on any NPC (all currently cap at 2),
   or Bible/Crystals-class-aware FEELZ options on existing nodes.
 
-**Ready to build, design settled:**
-- **Mini-game walk/gimmick steps** — the outer `minigame` scene type is
-  built (`src/scenes/minigameScene.js`); the *inner* step system is fully
-  designed but unbuilt. See `SCENE_TYPES.md` for the full contract. In
-  short: a mini-game module runs its own ordered `STEPS` list of two step
-  types. `walk` = a room (looping animated bg sprite, stop-motion feel)
-  with inspect hotspots (tap -> scale-pop -> close-up + inner-thought
-  caption, caption text varies by `run.loadout`) plus a reserved advance
-  hotspot that stays invisible until every inspect hotspot has been tapped
-  once. `gimmick` = one reusable data-only "Quick Beat" template (prompt ->
-  swipe or tap-target -> cosmetic `fx` flourish), no fail state ever.
-  Still needs building: `engine/walkSequencer.js` + the two renderers.
-
-  **Placement plan:** one mini-game immediately precedes each of the four
-  remaining NPCs (Deborah / Rwanda / Samun / Rick), so the chapter reads as
-  explore -> encounter, four times. Therapist is exempt — it's part of the
-  opening call, not part of that pattern. No entries are in `SCENES` yet
-  because no content exists; there's a TODO comment at the array marking
-  where they go. Adding one is a single line.
-  First concept to write: Deborah's condo hallway.
+- **Mini-games for Rwanda / Samun / Rick** — the whole system is built and
+  the first one (Deborah's hallway) is playable, so these are pure content:
+  a room definition + captions + a `SCENES` line each. See `SCENE_TYPES.md`
+  for the step contract and `ASSET_GUIDELINES.md` for the art hand-off spec.
 
 **Needs a dedicated design pass first:**
-- **Hint system ("eventually," per the user)** — a callable check-in
-  (plausibly another Therapist call, given the character now exists)
-  that surfaces *one* hint about which way the player's currently
-  leaning — reads current stats/Truth Debt, doesn't state numbers.
-  Explicitly not scoped for now; noted here so it isn't lost.
+- **IT / the hint system — now one item, not two.** These were tracked
+  separately; they're the same feature. IT is *how* the game hints: words
+  within IT's line are highlighted in color, and the coloring tells the
+  player how they're being read, without naming a stat or a number. Fires
+  at four moments — entering a room/section, exiting a scene, during
+  pre-battle dialog exchange, and immediately before an NPC battle choice.
+  Reuses the word-tinting trick `questionnaireScene.js` already uses for
+  the Therapist's diagnosis, which makes "colored word = the game is
+  reading you" a learnable language rather than a one-off. Full write-up
+  in `IT_DESIGN.md` ("IT *is* the hint system"). Deliberately not scoped
+  for build yet.
 
 **Needs something from outside this repo:**
 - ~~inkflo Graphics preloader~~ — done, two-phase. Phase 1: spinner plus a

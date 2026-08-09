@@ -261,7 +261,7 @@ that's Deborah / Rwanda / Samun / Rick — four slots. Therapist is exempt:
 it belongs to the chapter's opening call (Prologue -> Questionnaire ->
 Therapist), not to this pattern.
 
-#### The step system (designed, not yet built)
+#### The step system (`engine/walkSequencer.js`)
 
 A mini-game module runs its own ordered `STEPS` list — a second, smaller
 sequencer nested inside the scene sequencer, the same way `cutsceneScene.js`
@@ -342,10 +342,22 @@ intensity-only feedback dialog swipes use, never color-coded right/wrong.
 It takes over the screen rather than blending into the walk, which keeps
 its interaction code independent of the room renderer's.
 
-Still to build: `engine/walkSequencer.js` (the `STEPS` runner) plus the two
-step renderers. No chapter has mini-game content yet, so none of this is
-wired into a live `SCENES` array — there's a TODO comment at
-`chapters/lake-ulysses/index.js`'s array marking the four intended slots.
+**Built and playable.** `engine/walkSequencer.js` runs the `STEPS` list;
+`ui/walkRoom.js` and `ui/quickBeat.js` are the two step renderers. The first
+mini-game is `chapters/lake-ulysses/minigames/deborah-hallway.js`, wired in
+ahead of Deborah — its art is generated placeholder vectors
+(`scripts/make-placeholder-room.mjs`) and its captions exist to exercise the
+class-variation path, not as final prose. Rwanda / Samun / Rick still need
+theirs; each is one line in `SCENES` plus a content module.
+
+Two implementation notes worth knowing:
+
+- `createSpriteAnimator` takes an optional `ext` (default `'webp'`). It
+  exists so placeholder frame sequences can be committed as SVG rather than
+  generating throwaway binaries — real art should omit it.
+- A room whose `advance.to` is `null` (or points at an unknown room id) ends
+  the `walk` step and falls through to the next entry in `STEPS`. That's how
+  a single-room walk terminates without needing a separate "last room" flag.
 
 ## Adding a new type
 

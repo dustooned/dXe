@@ -6,6 +6,7 @@ import * as cutsceneScene from '../../scenes/cutsceneScene.js';
 import * as dialogScene from '../../scenes/dialogScene.js';
 import * as reckoningScene from '../../scenes/reckoningScene.js';
 import * as endingScene from '../../scenes/endingScene.js';
+import * as minigameScene from '../../scenes/minigameScene.js';
 import { ANIMS } from './anims.js';
 import { playStaticTransition } from '../../ui/staticTransition.js';
 
@@ -35,18 +36,19 @@ export const title = 'Truth Debt: Lake Ulysses';
 // why she'd be talking to you at all. This shape is meant to be the routine
 // chapter opener: you're on site, she buzzes in, she evaluates you.
 //
-// TODO — mini-games: each remaining NPC gets one immediately before it
-// (deborah / rwanda / samun / rick), so the chapter reads as
-// explore -> encounter, four times. The `minigame` scene type is built
-// (scenes/minigameScene.js) but no content exists yet, so no entries here
-// yet — adding one is a single line. See docs/SCENE_TYPES.md for the walk /
-// gimmick step design.
+// Mini-games: one immediately precedes each NPC, so the chapter reads as
+// explore -> encounter. Only Deborah's exists so far, and its art/captions are
+// PLACEHOLDER (generated vectors — scripts/make-placeholder-room.mjs). Rwanda,
+// Samun and Rick get theirs when content is written; each is a single line.
+// Therapist is exempt — it belongs to the opening call, not this pattern.
+// See docs/SCENE_TYPES.md for the walk / gimmick step design.
 const SCENES = [
   { type: 'cutscene', id: 'opening-quote', beats: openingQuote.beats, anims: ANIMS },
   { type: 'cutscene', id: 'bob-baiter', beats: bobBaiter.beats, anims: ANIMS, ambient: '/assets/lake-ulysses/audio/lk_01.mp3' },
   { type: 'cutscene', id: 'prologue', beats: prologue.beats },
   { type: 'questionnaire', id: 'questionnaire' },
   { type: 'dialog', id: 'therapist', npc: therapist },
+  { type: 'minigame', id: 'deborah-hallway', load: () => import('./minigames/deborah-hallway.js') },
   { type: 'dialog', id: 'deborah', npc: deborah },
   { type: 'dialog', id: 'rwanda', npc: rwanda },
   { type: 'dialog', id: 'samun', npc: samun },
@@ -61,6 +63,7 @@ const HANDLERS = {
   dialog: dialogScene,
   reckoning: reckoningScene,
   ending: endingScene,
+  minigame: minigameScene,
 };
 
 const initialRunState = {
