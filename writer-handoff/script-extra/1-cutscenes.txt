@@ -1,0 +1,147 @@
+# ============================================================
+# CUTSCENES — the opening of the chapter
+# ============================================================
+#
+# Edit the text under each [TAG]. Do NOT change the [TAG] lines themselves.
+# Line breaks you type are real line breaks in the game.
+# Lines starting with # are notes to you and are ignored.
+#
+# These play before the player meets anybody. Keep beats to ~6 short lines.
+#
+
+
+# --- THE QUOTE. Cold open, white text, no characters. ---
+
+[opening_quote / beat 1]
+I think that there's probably
+a revelatory experience
+awaiting everyone
+that has to do with finding out
+{slow}who and what you really are.{/slow}
+
+[opening_quote / beat 2]
+I think that when that occurs,
+if it occurs,
+you reach Nirvana-Heaven
+and the degree to which
+you don't reach that place
+of realization...{pause:500}
+{slow}...you are in eternal hell.{/slow}
+
+[opening_quote / beat 3]
+James Toback,
+Oscar Nominated Screenwriter.
+
+[opening_quote / beat 4]
+{slow}Alleged Predator.{/slow}
+
+# --- BOB BAITER. The councilman's lake-reopening ad. The game's first lie.
+# Hand-wrapped on purpose — max 27 characters per line for the stilted read. ---
+
+[bob_baiter / beat 1] (BOB BAITER speaking)
+Ladies and Gentlemen!
+I'm Lake Ulysses
+councilman Bob Baiter!
+
+[bob_baiter / beat 2] (BOB BAITER speaking)
+It's my pleasure to announce
+after nearly a decade,
+
+[bob_baiter / beat 3] (BOB BAITER speaking)
+boating and fishing
+are once again permitted
+throughout our beautiful
+three-thousand acre jewel!
+
+[bob_baiter / beat 4] (BOB BAITER speaking)
+City council has been carefully
+monitoring toxicity levels.
+
+[bob_baiter / beat 5] (BOB BAITER speaking)
+With recent rains
+and cooler temperatures
+we are pleased to report that
+
+[bob_baiter / beat 6] (BOB BAITER speaking)
+state regional water boards
+have deemed Lake Ulysses
+as {slow}acceptable.{/slow}
+
+[bob_baiter / beat 7] (BOB BAITER speaking)
+You know what that means!
+Your family and friends are
+
+[bob_baiter / beat 8] (BOB BAITER speaking)
+legally allowed to return
+to our blue pride and joy!
+
+[bob_baiter / beat 9] (BOB BAITER speaking)
+Families are advised
+not to drink the water,
+
+[bob_baiter / beat 10] (BOB BAITER speaking)
+or allow your pets
+to enter the lake.
+
+[bob_baiter / beat 11] (BOB BAITER speaking)
+Pregnant women are cautioned
+to keep their skin covered
+at all times.
+
+[bob_baiter / beat 12] (BOB BAITER speaking)
+And {slow}most importantly{/slow} —
+
+[bob_baiter / beat 13] (BOB BAITER speaking)
+give your catch of the day
+a good scrubbin' with
+some fresh bottled water!
+
+[bob_baiter / beat 14] (BOB BAITER speaking)
+{slow}NOW AVAILABLE
+AT MY SHOP!{/slow}
+
+[bob_baiter / beat 15] (BOB BAITER speaking)
+From live bait
+to the latest fishing gear!
+
+[bob_baiter / beat 16] (BOB BAITER speaking)
+We've got you covered!
+
+[bob_baiter / beat 17] (BOB BAITER speaking)
+Whether you're local
+or just passin' by —
+
+[bob_baiter / beat 18] (BOB BAITER speaking)
+{slow}Welcome back,
+Lake Ulysses!{/slow}
+
+[bob_baiter / beat 19] (BOB BAITER speaking)
+Now let's go enjoy
+our watery playground!
+
+# --- PROLOGUE. Waking up on the shoulder of the road. ---
+
+[prologue / beat 1]
+Lake Ulysses. Three thousand acres, they call it. A jewel.
+
+[prologue / beat 2]
+{slow}The water looks fine today.{/slow}
+
+[prologue / beat 3]
+It always does. Right before it isn't.
+
+[prologue / beat 4]
+{pause:400}You wake up on the shoulder of Lakeshore Drive.{pause:300} Ears ringing. Clothes damp.
+
+[prologue / beat 5]
+No pain.{pause:300} Except the ringing.
+
+[prologue / beat 6]
+Your head throbs.
+
+[prologue / beat 6 / choice A] Get up.
+[prologue / beat 6 / choice B] Stay down a little longer.
+
+[prologue / beat 7]
+Your phone buzzes against the gravel.
+

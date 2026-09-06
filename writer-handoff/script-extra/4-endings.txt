@@ -1,0 +1,52 @@
+# ============================================================
+# ENDINGS — one of four, picked by final Truth Debt
+# ============================================================
+#
+# Edit the text under each [TAG]. Do NOT change the [TAG] lines themselves.
+# Line breaks you type are real line breaks in the game.
+# Lines starting with # are notes to you and are ignored.
+#
+# Each line below is its own line on screen. The epilogue is one extra
+# line added underneath, naming whichever meter moved furthest.
+#
+
+
+# --- CLEAN CUT (Debt 0–2) ---
+
+[CLEAN_CUT / line 1] The lake is closed again.
+[CLEAN_CUT / line 2] Downtown is half-boarded, but the water is finally clearing.
+[CLEAN_CUT / line 3] You told the truth and paid in full.
+[CLEAN_CUT / line 4] Nobody thanked you for it.
+[CLEAN_CUT / line 5] That's usually how it goes.
+
+# --- FUNCTIONAL MASK (Debt 3–5) ---
+
+[FUNCTIONAL_MASK / line 1] The lake reopens under enhanced monitoring.
+[FUNCTIONAL_MASK / line 2] Frothy PR videos. Carefully worded advisories.
+[FUNCTIONAL_MASK / line 3] A few dead fish, if you know where to look.
+[FUNCTIONAL_MASK / line 4] People still ski. Still post selfies.
+[FUNCTIONAL_MASK / line 5] Reality and branding hold an uneasy truce.
+
+# --- COLLAPSE (Debt 6–7) ---
+
+[COLLAPSE / line 1] The sirens go off at dusk and don't stop.
+[COLLAPSE / line 2] Dead fish wash up faster than anyone can count them.
+[COLLAPSE / line 3] Someone's lie meets someone else's lie at the shoreline, and neither one holds.
+[COLLAPSE / line 4] Lake Ulysses doesn't reopen. It doesn't stay closed either.
+[COLLAPSE / line 5] Nobody's in charge of what happens next.
+
+# --- LIVING LIE (Debt 8–10) ---
+
+[LIVING_LIE / line 1] The lake reopens under enhanced monitoring.
+[LIVING_LIE / line 2] Influencers pose near green water.
+[LIVING_LIE / line 3] Dead fish are edited out of the photos.
+[LIVING_LIE / line 4] The app has a 4.8 rating.
+[LIVING_LIE / line 5] Your personal life is stable. Your integrity bar is dust.
+[LIVING_LIE / line 6] The lake looks beautiful today.
+
+# --- EPILOGUE LINES (one is appended to whichever ending played) ---
+
+[epilogue / integrity] Integrity never came back all the way.
+[epilogue / trust] Trust didn't survive the trip.
+[epilogue / stability] Nothing about you sat still after that.
+[epilogue / lucidity] You saw it clearly, the whole time. That's its own kind of debt.

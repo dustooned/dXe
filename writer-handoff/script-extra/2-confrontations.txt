@@ -1,0 +1,69 @@
+# ============================================================
+# CONFRONTATIONS — meeting each NPC face to face
+# ============================================================
+#
+# Edit the text under each [TAG]. Do NOT change the [TAG] lines themselves.
+# Line breaks you type are real line breaks in the game.
+# Lines starting with # are notes to you and are ignored.
+#
+# PLACEHOLDER PROSE — all of this is up for rewriting.
+# Each choice picks which line the NPC opens on. Keep choices under 44 characters.
+#
+
+
+# --- DEBORAH ---
+
+[confront_deborah / beat 1]
+The door opens before you knock.
+
+She has been standing on the other side of it for a while.
+
+[confront_deborah / beat 2] (DEBORAH speaking)
+{slow}Well.{/slow}{pause:400} You're not the church.
+
+[confront_deborah / beat 2 / choice A] Say nothing. Let her fill it.
+[confront_deborah / beat 2 / choice B] "You look like you haven't slept."
+[confront_deborah / beat 2 / choice C] "I heard about your son."
+
+# --- RWANDA ---
+
+[confront_rwanda / beat 1]
+She's at the window with her back to the room.
+
+She knew you came in. She hasn't decided yet whether to make that your problem.
+
+[confront_rwanda / beat 2] (RWANDA speaking)
+You gonna stand there,{pause:300} or you gonna say the thing you came to say?
+
+[confront_rwanda / beat 2 / choice A] Wait her out.
+[confront_rwanda / beat 2 / choice B] "What are you looking at out there?"
+[confront_rwanda / beat 2 / choice C] "People have been telling me about you."
+
+# --- SAMUN ---
+
+[confront_samun / beat 1]
+He's wiping his hands on a rag that stopped being clean a long time ago.
+
+He keeps doing it after they're dry.
+
+[confront_samun / beat 2] (SAMUN speaking)
+Hey. {slow}Hey.{/slow}{pause:350} You need something, or you just walking around tonight?
+
+[confront_samun / beat 2 / choice A] Let him keep talking.
+[confront_samun / beat 2 / choice B] "How's business been?"
+[confront_samun / beat 2 / choice C] Look at his hands until he stops.
+
+# --- RICK ---
+
+[confront_rick / beat 1]
+He's at the end of the bar with his back to the wall, which is where he always sits.
+
+There's blood on his knuckles that isn't his.
+
+[confront_rick / beat 2] (RICK speaking)
+{slow}You're new.{/slow}{pause:400} Sit if you're sitting.
+
+[confront_rick / beat 2 / choice A] Sit down and say nothing.
+[confront_rick / beat 2 / choice B] Buy him a drink first.
+[confront_rick / beat 2 / choice C] "What happened to the guy outside?"
+

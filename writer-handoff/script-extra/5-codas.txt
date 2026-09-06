@@ -1,0 +1,48 @@
+# ============================================================
+# REACTION CODAS — the second half of every NPC reaction
+# ============================================================
+#
+# Edit the text under each [TAG]. Do NOT change the [TAG] lines themselves.
+# Line breaks you type are real line breaks in the game.
+# Lines starting with # are notes to you and are ignored.
+#
+# PLACEHOLDER PROSE — all of this is up for rewriting.
+# After a swipe the player reads the NPC reaction, a blank line, then ONE of
+# these — picked by the feeling they chose and which way they swiped. 16 lines
+# cover the entire game, so keep them general. They describe DELIVERY — how the
+# line left you — never whether the choice was right.
+#
+
+
+# --- Joy ---
+[coda / Joy / truth] It came out lighter than the thing deserved.
+[coda / Joy / lie] You enjoyed how easy that was. You notice yourself enjoying it.
+
+# --- Trust ---
+[coda / Trust / truth] You handed it over whole, without checking who was holding it.
+[coda / Trust / lie] You said it the way you say things to people who believe you.
+
+# --- Fear ---
+[coda / Fear / truth] You got it out before you could take it back.
+[coda / Fear / lie] You heard the safer version leave your mouth and let it go.
+
+# --- Surprise ---
+[coda / Surprise / truth] You weren't planning to say that. It was already said.
+[coda / Surprise / lie] The lie arrived fully built, and you had no memory of building it.
+
+# --- Sadness ---
+[coda / Sadness / truth] Quieter than you meant. It landed anyway.
+[coda / Sadness / lie] You said it gently, which somehow made it worse.
+
+# --- Disgust ---
+[coda / Disgust / truth] You could taste it on the way out.
+[coda / Disgust / lie] Something in you turned away while your mouth kept going.
+
+# --- Anger ---
+[coda / Anger / truth] Harder than you meant it. You do not take it back.
+[coda / Anger / lie] You put an edge on it so nobody would look too closely.
+
+# --- Anticipation ---
+[coda / Anticipation / truth] You were already braced for what comes after.
+[coda / Anticipation / lie] You were three moves ahead before the sentence finished.
+

@@ -9,7 +9,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "build:content": "node scripts/build-content.mjs",
-    "manual": "node scripts/build-manual.mjs"
+    "manual": "node scripts/build-manual.mjs",
+    "handoff": "node scripts/build-writer-handoff.mjs"
   },
   "devDependencies": {
     "marked": "^18.0.7",

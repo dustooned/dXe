@@ -26,16 +26,19 @@ const GROUPS = [
     name: 'Start here',
     blurb: 'The working documentation for what is actually built.',
     docs: [
+      ['GAME_MANUAL.md', 'Game Manual'],
       ['HANDOFF.md', 'Handoff / Project Status'],
       ['ARCHITECTURE.md', 'Architecture'],
       ['SCENE_TYPES.md', 'Scene Types'],
       ['ASSET_GUIDELINES.md', 'Asset Guidelines'],
+      ['ASSET_MANIFEST.md', 'Asset Manifest (Chapter 1 checklist)'],
     ],
   },
   {
     name: 'Authoring',
     blurb: 'Writing dialog and understanding the numbers behind it.',
     docs: [
+      ['SCRIPT_KEY.md', 'Script Key (writer quick reference)'],
       ['SCRIPT_FORMAT.md', 'Script Format'],
       ['CONTENT_SCHEMA.md', 'Content Schema'],
       ['STAT_MATH.md', 'Stat Math'],

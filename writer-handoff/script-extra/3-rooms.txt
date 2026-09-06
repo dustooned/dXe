@@ -1,0 +1,179 @@
+# ============================================================
+# MINI-GAME ROOMS — the walk to each NPC
+# ============================================================
+#
+# Edit the text under each [TAG]. Do NOT change the [TAG] lines themselves.
+# Line breaks you type are real line breaks in the game.
+# Lines starting with # are notes to you and are ignored.
+#
+# PLACEHOLDER PROSE — all of this is up for rewriting.
+# Every line has THREE versions, one per player class. Same room, different
+# read on it: Guns = confrontational, Bible = looks for who still cares,
+# Crystals = feels the atmosphere. Keep captions to ~3 lines.
+#
+
+
+# --- DEBORAH-HALLWAY ---
+
+[deborah-hallway / INTRO / Guns]
+Third floor. The stairwell door behind you doesn't latch. Nobody in this building would hear a thing.
+
+[deborah-hallway / INTRO / Bible]
+Third floor. Somebody swept this hallway recently. Somebody up here is still trying.
+
+[deborah-hallway / INTRO / Crystals]
+Third floor. The air is thick with something that has been sitting here a long time.
+
+[deborah-hallway / HALLWAY_DIPLOMA / Guns]
+A diploma. Crooked. Nobody in this building straightened it, including her.
+
+[deborah-hallway / HALLWAY_DIPLOMA / Bible]
+A diploma. Class of '09. She earned that, whatever else is true.
+
+[deborah-hallway / HALLWAY_DIPLOMA / Crystals]
+A diploma, tilted. Something in here gave up a long time before today.
+
+[deborah-hallway / HALLWAY_DOORMAT / Guns]
+A doormat that says GO AWAY. She means it. That's fine, so do you.
+
+[deborah-hallway / HALLWAY_DOORMAT / Bible]
+A doormat that says GO AWAY, in a font that is trying to be funny about it.
+
+[deborah-hallway / HALLWAY_DOORMAT / Crystals]
+A doormat that says GO AWAY. Somebody bought that as a joke and then stopped laughing.
+
+[deborah-hallway / HALLWAY_LIGHTBULB / Guns]
+Bulb is dying. Nobody replaced it. Nobody will.
+
+[deborah-hallway / HALLWAY_LIGHTBULB / Crystals]
+The bulb keeps almost going out. It has been almost going out for months.
+
+[deborah-hallway / HALLWAY_LIGHTBULB / Bible]
+A bulb on its way out. Someone should see to that.
+
+[deborah-hallway / QUICK BEAT — max 30 characters, no class variants]
+THE SMELL — GET PAST IT
+
+# --- RICK-BARLOT ---
+
+[rick-barlot / INTRO / Guns]
+Gravel lot. Six bikes, one door, and everyone inside already knows the sound of a stranger.
+
+[rick-barlot / INTRO / Bible]
+Gravel lot. Somebody has been coming here on the same night every week for years.
+
+[rick-barlot / INTRO / Crystals]
+Gravel lot. The bass through the wall arrives in your chest before your ears.
+
+[rick-barlot / BARLOT_BIKE / Guns]
+Parked across two spaces. That is the whole message, and it is meant for you.
+
+[rick-barlot / BARLOT_BIKE / Bible]
+Kept better than the man keeps himself. Everything on it has been touched lately.
+
+[rick-barlot / BARLOT_BIKE / Crystals]
+The chrome holds the door light and bends it into something almost soft.
+
+[rick-barlot / BARLOT_ASHTRAY / Guns]
+One brand, all of them. Same man, same spot, every night, waiting on something.
+
+[rick-barlot / BARLOT_ASHTRAY / Bible]
+Somebody stands out here alone a lot. Long enough to fill this twice.
+
+[rick-barlot / BARLOT_ASHTRAY / Crystals]
+Every one of them stubbed out the same careful way. Like a count of something.
+
+[rick-barlot / BARLOT_FLYER / Guns]
+A benefit ride. For a guy nobody in there will say the name of anymore.
+
+[rick-barlot / BARLOT_FLYER / Bible]
+A benefit ride, taped up crooked. They raised the money. That happened.
+
+[rick-barlot / BARLOT_FLYER / Crystals]
+The date on it already passed. Nobody took it down. Nobody is going to.
+
+[rick-barlot / QUICK BEAT — max 30 characters, no class variants]
+SOMEONE SHOULDERS PAST
+
+# --- RWANDA-ALLEY ---
+
+[rwanda-alley / INTRO / Guns]
+Behind the strip. One way in, one way out, and you came in the one way in.
+
+[rwanda-alley / INTRO / Bible]
+Behind the strip. Somebody put a mural on a wall nobody was ever going to look at.
+
+[rwanda-alley / INTRO / Crystals]
+Behind the strip. The neon hums a note that sits just under your teeth.
+
+[rwanda-alley / ALLEY_NEON / Guns]
+Half the letters are dead. The half still lit spells something shorter and meaner.
+
+[rwanda-alley / ALLEY_NEON / Bible]
+A sign somebody paid for once, back when this was going to work out.
+
+[rwanda-alley / ALLEY_NEON / Crystals]
+The dead letters still flicker sometimes. Like they forgot they were off.
+
+[rwanda-alley / ALLEY_PAYPHONE / Guns]
+Handset cord cut clean. Somebody wanted a call to stop happening.
+
+[rwanda-alley / ALLEY_PAYPHONE / Bible]
+A payphone. Still bolted up, still waiting on a quarter from nobody.
+
+[rwanda-alley / ALLEY_PAYPHONE / Crystals]
+You pick it up out of habit. There is no tone. You keep holding it anyway.
+
+[rwanda-alley / ALLEY_MURAL / Guns]
+Painted over twice. Whatever it said the first time, somebody didn't want it said.
+
+[rwanda-alley / ALLEY_MURAL / Bible]
+Somebody painted this carefully, in an alley, for free. That counts for something.
+
+[rwanda-alley / ALLEY_MURAL / Crystals]
+The faces in it are all looking slightly off to the left. At the same thing.
+
+[rwanda-alley / QUICK BEAT — max 30 characters, no class variants]
+THE DOG BEHIND THE FENCE
+
+# --- SAMUN-GARAGE ---
+
+[samun-garage / INTRO / Guns]
+The bay is open and nobody came out to see who pulled in. That tells you plenty.
+
+[samun-garage / INTRO / Bible]
+The bay is open. Tools laid out in order, like somebody meant to come back to them.
+
+[samun-garage / INTRO / Crystals]
+The bay is open, and the whole room smells like something that used to be running.
+
+[samun-garage / GARAGE_DRUM / Guns]
+Full to the lip. Nobody has hauled this off in a long, long while.
+
+[samun-garage / GARAGE_DRUM / Bible]
+An oil drum used as a trash can, used as a table. It has been three things.
+
+[samun-garage / GARAGE_DRUM / Crystals]
+Something in there is still moving very slowly. You decide not to look closer.
+
+[samun-garage / GARAGE_CALENDAR / Guns]
+Stopped on a month two years back. Nobody flips it because nobody is counting.
+
+[samun-garage / GARAGE_CALENDAR / Bible]
+Two years behind. Somebody stopped keeping track of the days on purpose.
+
+[samun-garage / GARAGE_CALENDAR / Crystals]
+The same month, over and over, for two years. It almost sounds restful.
+
+[samun-garage / GARAGE_RADIO / Guns]
+On, but tuned to nothing. He wants noise, not a station.
+
+[samun-garage / GARAGE_RADIO / Bible]
+Left playing for the company of it. You have done that yourself.
+
+[samun-garage / GARAGE_RADIO / Crystals]
+Static, at a volume somebody chose carefully. Loud enough. Not too loud.
+
+[samun-garage / QUICK BEAT — max 30 characters, no class variants]
+DUCK THE HOIST
+

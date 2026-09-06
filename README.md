@@ -17,9 +17,10 @@ Opens a dev server with hot reload. Build for production with
 `npm run build` (outputs to `dist/`), preview that build locally with
 `npm run preview`.
 
-Writing dialog by hand as plain text instead of JSON? See
-[`docs/SCRIPT_FORMAT.md`](docs/SCRIPT_FORMAT.md), then run
-`npm run build:content` to generate the JSON the game actually reads.
+Writing dialog? Start with [`docs/GAME_MANUAL.md`](docs/GAME_MANUAL.md)
+(what the game is) and [`docs/SCRIPT_KEY.md`](docs/SCRIPT_KEY.md) (the
+one-page working reference), then run `npm run build:content` to generate
+the JSON the game actually reads.
 
 ## Structure
 
@@ -52,14 +53,23 @@ npm run manual
 
 Docs, in the order you'll want them:
 
+- [`docs/GAME_MANUAL.md`](docs/GAME_MANUAL.md) — what the game is, how it
+  plays, the Chapter 1 beat list and full cast. **Start here if you're a
+  writer or artist**, then go to `SCRIPT_KEY.md`.
+- [`docs/SCRIPT_KEY.md`](docs/SCRIPT_KEY.md) — the writer's quick
+  reference: where every line lives, the inline pacing codes, and the
+  measured length budget per text slot.
 - [`docs/HANDOFF.md`](docs/HANDOFF.md) — project status, key decisions and
-  why, what's deliberately not built yet. Start here.
+  why, what's deliberately not built yet. Start here if you're coding.
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — how the shell, chapters,
   and scene sequencer fit together.
 - [`docs/SCENE_TYPES.md`](docs/SCENE_TYPES.md) — the scene handler
   contract for every scene type, plus the one still unbuilt (mini-game).
 - [`docs/ASSET_GUIDELINES.md`](docs/ASSET_GUIDELINES.md) — preparing art
   and audio: formats, naming, size budgets, and the encode gotchas.
+- [`docs/ASSET_MANIFEST.md`](docs/ASSET_MANIFEST.md) — the artist's
+  checklist: every asset Chapter 1 still needs, one row per file, with
+  its exact path, dimensions, and placeholder status.
 - [`docs/CONTENT_SCHEMA.md`](docs/CONTENT_SCHEMA.md) — the dialog JSON
   format, what the stats mean, and the asset folder convention.
 - [`docs/SCRIPT_FORMAT.md`](docs/SCRIPT_FORMAT.md) — the plain-text

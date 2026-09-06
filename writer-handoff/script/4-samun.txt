@@ -1,0 +1,98 @@
+NPC: SAMUN
+LOCATION: 4
+ACCENT: var(--color-samun)
+
+=== samun_01
+PROMPT: Man, everyone's hooked on something. Mine's just more honest.
+
+-- TRUTH
+SAY: Honest or not, you're still killing yourself slowly.
+REACT: He stops wiping his hands. Looks at you. Really looks.
+EFFECTS: integrity+2 lucidity+2 stability-1 trust-1
+DEBT: 0
+NEXT: samun_02_confronted
+
+-- LIE
+SAY: Yeah. Could be worse. At least you know what it is.
+REACT: He grins. Relieved. You just gave him permission for another month.
+EFFECTS: integrity-2 stability+2 trust+2
+DEBT: +4
+TAGS: Health, Addiction, Denial
+LEDGER: You cosigned Samun's denial about his addiction.
+NEXT: samun_02_enabled
+
+=== samun_02_enabled
+PROMPT: See? You get it. Nobody else does. They all want me fixed.
+
+-- TRUTH
+SAY: Maybe fixed is the wrong word. But not this — not this either.
+REACT: He gets quiet. Picks at the label on a bottle. Doesn't answer.
+EFFECTS: integrity+2 lucidity+1 trust-1
+DEBT: 0
+NEXT: (end)
+
+-- LIE
+SAY: They don't understand. You're holding it together fine.
+REACT: He nods hard, like he needed someone to say it. You said it.
+EFFECTS: integrity-2 stability+1 trust+2
+DEBT: +3
+TAGS: Addiction, Denial
+LEDGER: You told Samun that people wanting him to get better were wrong.
+NEXT: (end)
+
+=== samun_02_confronted
+PROMPT: Easy for you to say. You're not the one hurting.
+
+-- TRUTH
+SAY: You're right. I'm not. But you are. Every day.
+REACT: He turns away. But he doesn't argue. That's something.
+EFFECTS: integrity+2 lucidity+1 stability-1
+DEBT: 0
+NEXT: (end)
+
+-- LIE
+SAY: Sorry. Forget I said anything. It's your call.
+REACT: "Yeah. It is." He turns back to the counter. Conversation over.
+EFFECTS: integrity-1 stability+1 trust-1
+DEBT: +2
+TAGS: Denial
+LEDGER: You walked back the truth with Samun to avoid discomfort.
+NEXT: (end)
+
+=== samun_01_soft
+PROMPT: Business? Business is great, man. Look around. Everybody's real busy.
+
+-- TRUTH
+SAY: There's nobody here, Samun.
+REACT: He laughs, and it runs a beat too long, and then it stops all at once.
+EFFECTS: integrity+2 lucidity+1 stability-1
+DEBT: 0
+NEXT: samun_02_confronted
+
+-- LIE
+SAY: Place looks like it's holding up fine.
+REACT: "Right? That's what I keep saying." He settles into it like a chair.
+EFFECTS: integrity-2 stability+1 trust+2
+DEBT: +3
+TAGS: Denial
+LEDGER: You agreed with Samun that the shop was doing fine.
+NEXT: samun_02_enabled
+
+=== samun_01_hard
+PROMPT: (He puts the rag down.) Ask it, then. Everybody who comes in here asks it eventually.
+
+-- TRUTH
+SAY: What are you on, Samun?
+REACT: He doesn't flinch. He almost looks grateful somebody finally said it out loud.
+EFFECTS: integrity+3 lucidity+2 stability-1 trust-1
+DEBT: 0
+NEXT: samun_02_confronted
+
+-- LIE
+SAY: I wasn't going to ask anything.
+REACT: "Course not." He picks the rag back up. "Nobody ever is."
+EFFECTS: integrity-2 stability+1 trust-1
+DEBT: +2
+TAGS: Denial
+LEDGER: You backed off the question Samun had already braced himself to answer.
+NEXT: samun_02_enabled
