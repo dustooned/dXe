@@ -5,6 +5,14 @@
       "text": "He's wiping his hands on a rag that stopped being clean a long time ago.\n\nHe keeps doing it after they're dry."
     },
     {
+      "it": true,
+      "text": {
+        "Guns": "That's not a habit. That's something he can't put down.",
+        "Bible": "He's cleaning something that was never on his hands.",
+        "Crystals": "His hands have been dry for a while now. He hasn't noticed. Or he has, and it doesn't matter."
+      }
+    },
+    {
       "speaker": "SAMUN",
       "sprite": "/assets/lake-ulysses/sprites/npc_samun.svg",
       "text": "Hey. {slow}Hey.{/slow}{pause:350} You need something, or you just walking around tonight?",

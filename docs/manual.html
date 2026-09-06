@@ -1420,6 +1420,13 @@ monologue — uninvited, never a conversation. Its first build is a beat
 variant, not a new scene type, the same reasoning as confrontations above:</p>
 <pre><code class="language-json">{ &quot;it&quot;: true, &quot;text&quot;: &quot;You&#39;re probably wondering where you are.&quot; }
 </code></pre>
+<p><code>text</code> is either a plain string (class-neutral — the only option before
+the player has a loadout) or a <code>{ Guns, Bible, Crystals }</code> object, resolved
+against <code>run.get().loadout</code> the same way <code>ui/walkRoom.js</code>&#39;s captions are —
+an unknown/missing loadout falls back to the first variant rather than
+rendering blank. IT is explicitly class-dependent everywhere it fires
+after the opening lines, so any beat placed after the questionnaire should
+use the object form.</p>
 <p>Renders nothing like a normal beat: a centered popup over a scrim,
 inverted colors (white box, black text, vs. the rest of the game&#39;s
 black-on-white), and its own display font (<code>--font-it</code>, &quot;VT323&quot; — a rough
@@ -1444,10 +1451,18 @@ one of these coming — except on the last beat in the sequence, where
 nothing follows it and the X stays still.</p>
 <p>First real use: <code>content/it_intro.json</code>, three class-neutral lines wired
 in as their own scene (<code>it-intro</code>) ahead of the opening call, since they
-fire before the player has a loadout — see <code>lake-ulysses/index.js</code>. Every
-other trigger IT_DESIGN.md describes (post-swipe in dialog, bloom events,
-the reckoning) is unbuilt and would need the class/dominant-emotion-aware
-logic this first beat deliberately doesn&#39;t have yet.</p>
+fire before the player has a loadout — see <code>lake-ulysses/index.js</code>.</p>
+<p>Second real use: one class-variant IT beat in each of the four
+confrontation cutscenes (<code>content/confront_&lt;npc&gt;.json</code>), inserted between
+the establishing beat and the NPC&#39;s opener-choice beat — the player has
+already seen the NPC and is about to pick how to approach them, which is
+one of the sharper placements <a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a>&#39;s hint-system section calls
+out. <strong>Placeholder prose</strong> — one line per class per NPC, written to
+exercise the class-voice split (Guns blunt, Bible evaluating, Crystals
+porous — see <a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a>&#39;s voice profiles), not final writing.</p>
+<p>Every other trigger IT_DESIGN.md describes (post-swipe in dialog scenes,
+dominant-emotion-aware text, bloom events, the reckoning) is still
+unbuilt.</p>
 <h3 id="doc-scene_types--minigame-srcscenesminigamescenejs"><a class="anchor" href="#doc-scene_types--minigame-srcscenesminigamescenejs" aria-label="Link to this section">#</a><code>minigame</code> (<code>src/scenes/minigameScene.js</code>)</h3>
 <p>A chapter shouldn&#39;t have to know how a mini-game works internally, only
 that it eventually finishes:</p>
@@ -3732,15 +3747,17 @@ End) need the same mapping decision before they can be assigned to scenes.</p>
       <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-it_design--what-it-is">What IT Is</a></li><li><a href="#doc-it_design--how-it-works">How IT Works</a></li><li><a href="#doc-it_design--voice-profile-by-class">Voice Profile by Class</a></li><li><a href="#doc-it_design--where-it-appears">Where IT Appears</a></li><li><a href="#doc-it_design--it-is-the-hint-system">IT is the hint system</a></li><li><a href="#doc-it_design--visual-identity">Visual Identity</a></li><li><a href="#doc-it_design--the-mk2-intro-lines-it39s-first-appearance">The MK2 Intro Lines (IT&amp;#39;s First Appearance)</a></li><li><a href="#doc-it_design--what-needs-to-be-built">What Needs to Be Built</a></li></ul></nav>
       <h1 id="doc-it_design--it-design-document"><a class="anchor" href="#doc-it_design--it-design-document" aria-label="Link to this section">#</a>IT — Design Document</h1>
 <p>Last updated: 2026-08-04.</p>
-<p><strong>Status (2026-09-06): first beat type is built.</strong> The three MK2 intro
-lines below now play as their own scene at the very start of the chapter —
-a centered popup over a scrim, dismissed by an X, in a distinct jittery
-font. See <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>&#39;s &quot;IT beat&quot; section and <code>cutsceneScene.js</code>&#39;s
-<code>renderItBeat()</code>. Everything else on this page (post-swipe intrusions,
-bloom events, the reckoning, class/emotion-aware voice) is still design
-only — the first beat deliberately has none of that logic, since the intro
-lines are the one moment in the chapter with no class or emotion to key
-off yet.</p>
+<p><strong>Status (2026-09-06): beat type built, now class-aware, in two scenes.</strong>
+The three MK2 intro lines below play as their own scene at the very start
+of the chapter — a centered popup over a scrim, dismissed by an X, in a
+distinct display font. See <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>&#39;s &quot;IT beat&quot; section and
+<code>cutsceneScene.js</code>&#39;s <code>renderItBeat()</code>. The intro lines are class-neutral
+(no loadout exists yet at that point), but the beat itself now also
+supports a <code>{ Guns, Bible, Crystals }</code> text object resolved against the
+player&#39;s class — and each of the four confrontation cutscenes uses that
+form for one placeholder IT line, right before the player picks how to
+open the encounter. Still design only: post-swipe intrusions in dialog
+scenes, dominant-emotion-aware text, bloom events, and the reckoning.</p>
 <hr>
 <h2 id="doc-it_design--what-it-is"><a class="anchor" href="#doc-it_design--what-it-is" aria-label="Link to this section">#</a>What IT Is</h2>
 <p>IT is not a character. IT is the player&#39;s inner dialog — invasive thoughts,
@@ -3884,26 +3901,35 @@ exists before the player has a loadout. The voice is already there.</p>
 <h2 id="doc-it_design--what-needs-to-be-built"><a class="anchor" href="#doc-it_design--what-needs-to-be-built" aria-label="Link to this section">#</a>What Needs to Be Built</h2>
 <p><strong>Design (before any code):</strong></p>
 <ul>
-<li>Write IT line sets per class for each NPC scene (Therapist,
-Deborah, Rwanda, Samun, Rick)</li>
-<li>Decide which specific moments within each scene trigger IT</li>
+<li>Write IT line sets per class for the NPC <em>encounter</em> (dialog) scenes —
+Therapist, Deborah, Rwanda, Samun, Rick. The four confrontation
+cutscenes each have one placeholder line/class now; the encounters
+themselves (the actual swipe exchanges) still have none.</li>
+<li>Decide which specific moments within each dialog scene trigger IT</li>
 <li>Write IT dialog for the reckoning and each ending</li>
 </ul>
 <p><strong>Code:</strong></p>
 <ul>
 <li><del>IT beat type in cutsceneScene</del> — done: renders differently, no
-speaker label. Not yet class-aware — the first use (the intro lines)
-fires before a class exists, so that part of this item is still open.</li>
+speaker label, and now class-aware (<code>{ Guns, Bible, Crystals }</code> text,
+resolved against <code>run.get().loadout</code>) for any use after the player has a
+loadout. The intro lines stay class-neutral on purpose — no loadout
+exists yet at that point.</li>
 <li>IT intrusion system for dialog scenes (fires after certain swipes
-based on dominant emotion)</li>
+based on dominant emotion) — still unbuilt; this is a different scene
+type (<code>dialogScene.js</code>) than the cutscene beat used so far.</li>
 <li>IT bloom-event trigger (at Truth Debt thresholds)</li>
 </ul>
 <p><strong>Content:</strong></p>
 <ul>
-<li>Three voice profiles × five NPC scenes = 15 sets of IT lines minimum</li>
+<li>Three voice profiles × five NPC scenes = 15 sets of IT lines minimum
+for the encounters. Reduced scope now covered: one voice-profile line
+per class × four confrontations = 12 placeholder lines, done.</li>
 <li>Reckoning IT dialog × three classes = 3</li>
 <li><del>MK2 intro lines as the pre-questionnaire opening beat</del> — done
 (<code>content/it_intro.json</code>, the <code>it-intro</code> scene)</li>
+<li><del>One placeholder IT line per class in each confrontation</del> — done
+(<code>content/confront_&lt;npc&gt;.json</code>)</li>
 </ul>
 
       <nav class="pager">

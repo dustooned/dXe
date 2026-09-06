@@ -5,6 +5,14 @@
       "text": "She's at the window with her back to the room.\n\nShe knew you came in. She hasn't decided yet whether to make that your problem."
     },
     {
+      "it": true,
+      "text": {
+        "Guns": "She's not ignoring you. She's deciding if you're worth turning around for.",
+        "Bible": "Her back is a test. Most people fail it without knowing they took it.",
+        "Crystals": "There's something out that window she's not telling anyone about."
+      }
+    },
+    {
       "speaker": "RWANDA",
       "sprite": "/assets/lake-ulysses/sprites/npc_rwanda.svg",
       "text": "You gonna stand there,{pause:300} or you gonna say the thing you came to say?",

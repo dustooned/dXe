@@ -5,6 +5,14 @@
       "text": "The door opens before you knock.\n\nShe has been standing on the other side of it for a while."
     },
     {
+      "it": true,
+      "text": {
+        "Guns": "She was already at the door. She needed you to be someone.",
+        "Bible": "Waiting like that isn't patience. That's a vigil.",
+        "Crystals": "She's been standing there so long her feet must ache. Nobody stands like that for nothing."
+      }
+    },
+    {
       "speaker": "DEBORAH",
       "sprite": "/assets/lake-ulysses/sprites/npc_deborah.svg",
       "text": "{slow}Well.{/slow}{pause:400} You're not the church.",

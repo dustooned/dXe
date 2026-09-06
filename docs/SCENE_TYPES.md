@@ -284,6 +284,14 @@ variant, not a new scene type, the same reasoning as confrontations above:
 { "it": true, "text": "You're probably wondering where you are." }
 ```
 
+`text` is either a plain string (class-neutral — the only option before
+the player has a loadout) or a `{ Guns, Bible, Crystals }` object, resolved
+against `run.get().loadout` the same way `ui/walkRoom.js`'s captions are —
+an unknown/missing loadout falls back to the first variant rather than
+rendering blank. IT is explicitly class-dependent everywhere it fires
+after the opening lines, so any beat placed after the questionnaire should
+use the object form.
+
 Renders nothing like a normal beat: a centered popup over a scrim,
 inverted colors (white box, black text, vs. the rest of the game's
 black-on-white), and its own display font (`--font-it`, "VT323" — a rough
@@ -311,10 +319,20 @@ nothing follows it and the X stays still.
 
 First real use: `content/it_intro.json`, three class-neutral lines wired
 in as their own scene (`it-intro`) ahead of the opening call, since they
-fire before the player has a loadout — see `lake-ulysses/index.js`. Every
-other trigger IT_DESIGN.md describes (post-swipe in dialog, bloom events,
-the reckoning) is unbuilt and would need the class/dominant-emotion-aware
-logic this first beat deliberately doesn't have yet.
+fire before the player has a loadout — see `lake-ulysses/index.js`.
+
+Second real use: one class-variant IT beat in each of the four
+confrontation cutscenes (`content/confront_<npc>.json`), inserted between
+the establishing beat and the NPC's opener-choice beat — the player has
+already seen the NPC and is about to pick how to approach them, which is
+one of the sharper placements `IT_DESIGN.md`'s hint-system section calls
+out. **Placeholder prose** — one line per class per NPC, written to
+exercise the class-voice split (Guns blunt, Bible evaluating, Crystals
+porous — see `IT_DESIGN.md`'s voice profiles), not final writing.
+
+Every other trigger IT_DESIGN.md describes (post-swipe in dialog scenes,
+dominant-emotion-aware text, bloom events, the reckoning) is still
+unbuilt.
 
 ### `minigame` (`src/scenes/minigameScene.js`)
 

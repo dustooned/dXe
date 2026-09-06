@@ -2,15 +2,17 @@
 
 Last updated: 2026-08-04.
 
-**Status (2026-09-06): first beat type is built.** The three MK2 intro
-lines below now play as their own scene at the very start of the chapter —
-a centered popup over a scrim, dismissed by an X, in a distinct jittery
-font. See `SCENE_TYPES.md`'s "IT beat" section and `cutsceneScene.js`'s
-`renderItBeat()`. Everything else on this page (post-swipe intrusions,
-bloom events, the reckoning, class/emotion-aware voice) is still design
-only — the first beat deliberately has none of that logic, since the intro
-lines are the one moment in the chapter with no class or emotion to key
-off yet.
+**Status (2026-09-06): beat type built, now class-aware, in two scenes.**
+The three MK2 intro lines below play as their own scene at the very start
+of the chapter — a centered popup over a scrim, dismissed by an X, in a
+distinct display font. See `SCENE_TYPES.md`'s "IT beat" section and
+`cutsceneScene.js`'s `renderItBeat()`. The intro lines are class-neutral
+(no loadout exists yet at that point), but the beat itself now also
+supports a `{ Guns, Bible, Crystals }` text object resolved against the
+player's class — and each of the four confrontation cutscenes uses that
+form for one placeholder IT line, right before the player picks how to
+open the encounter. Still design only: post-swipe intrusions in dialog
+scenes, dominant-emotion-aware text, bloom events, and the reckoning.
 
 ---
 
@@ -192,21 +194,30 @@ exists before the player has a loadout. The voice is already there.
 ## What Needs to Be Built
 
 **Design (before any code):**
-- Write IT line sets per class for each NPC scene (Therapist,
-  Deborah, Rwanda, Samun, Rick)
-- Decide which specific moments within each scene trigger IT
+- Write IT line sets per class for the NPC *encounter* (dialog) scenes —
+  Therapist, Deborah, Rwanda, Samun, Rick. The four confrontation
+  cutscenes each have one placeholder line/class now; the encounters
+  themselves (the actual swipe exchanges) still have none.
+- Decide which specific moments within each dialog scene trigger IT
 - Write IT dialog for the reckoning and each ending
 
 **Code:**
 - ~~IT beat type in cutsceneScene~~ — done: renders differently, no
-  speaker label. Not yet class-aware — the first use (the intro lines)
-  fires before a class exists, so that part of this item is still open.
+  speaker label, and now class-aware (`{ Guns, Bible, Crystals }` text,
+  resolved against `run.get().loadout`) for any use after the player has a
+  loadout. The intro lines stay class-neutral on purpose — no loadout
+  exists yet at that point.
 - IT intrusion system for dialog scenes (fires after certain swipes
-  based on dominant emotion)
+  based on dominant emotion) — still unbuilt; this is a different scene
+  type (`dialogScene.js`) than the cutscene beat used so far.
 - IT bloom-event trigger (at Truth Debt thresholds)
 
 **Content:**
 - Three voice profiles × five NPC scenes = 15 sets of IT lines minimum
+  for the encounters. Reduced scope now covered: one voice-profile line
+  per class × four confrontations = 12 placeholder lines, done.
 - Reckoning IT dialog × three classes = 3
 - ~~MK2 intro lines as the pre-questionnaire opening beat~~ — done
   (`content/it_intro.json`, the `it-intro` scene)
+- ~~One placeholder IT line per class in each confrontation~~ — done
+  (`content/confront_<npc>.json`)

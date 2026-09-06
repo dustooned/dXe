@@ -5,6 +5,14 @@
       "text": "He's at the end of the bar with his back to the wall, which is where he always sits.\n\nThere's blood on his knuckles that isn't his."
     },
     {
+      "it": true,
+      "text": {
+        "Guns": "Not his blood. Somebody paid for something tonight.",
+        "Bible": "He sits like a man expecting to be called to answer for it.",
+        "Crystals": "Somewhere under that, something in him is still flinching."
+      }
+    },
+    {
       "speaker": "RICK",
       "sprite": "/assets/lake-ulysses/sprites/npc_rick.svg",
       "text": "{slow}You're new.{/slow}{pause:400} Sit if you're sitting.",

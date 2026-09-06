@@ -10,11 +10,26 @@
 //   bgAnim?, spriteAnim?,   ← animated (key into scene.anims)
 //   image?, sprite?,        ← static fallback (direct URL)
 //   autoAdvanceMs?, interactive?
-//   it?,                    ← IT intrusion beat (see renderItBeat below)
+//   it?,                    ← IT intrusion beat (see renderItBeat below).
+//                              `text` here may be a plain string (class-
+//                              neutral, e.g. the pre-questionnaire intro
+//                              lines) or a { Guns, Bible, Crystals } object
+//                              (IT is class-dependent everywhere else it
+//                              fires — docs/IT_DESIGN.md), same convention
+//                              as ui/walkRoom.js's per-class captions.
 // }
 import { createTypewriter } from '../ui/typewriterText.js';
 import { preloadTypewriterTick, playTypewriterTick, startAmbient, stopAmbient } from '../shell/audio.js';
 import { createSpriteAnimator } from '../ui/spriteAnimator.js';
+
+// Same fallback rule as ui/walkRoom.js's captionFor: a plain string is used
+// as-is (class-neutral), an object is keyed by the player's loadout, and an
+// unknown/missing loadout falls back to the first variant rather than
+// rendering blank — a half-authored beat still shows something.
+function resolveItText(text, loadout) {
+  if (typeof text === 'string') return text;
+  return text?.[loadout] ?? Object.values(text ?? {})[0] ?? '';
+}
 
 export function mount(stageEl, scene, { run, onComplete }) {
   preloadTypewriterTick();
@@ -165,7 +180,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // so there's nothing to signal.
     const isLastBeat = beatIndex >= scene.beats.length - 1;
 
-    typewriter = createTypewriter(textEl, beat.text, {
+    const text = resolveItText(beat.text, run.get().loadout);
+    typewriter = createTypewriter(textEl, text, {
       onChar: playTypewriterTick,
       onDone: () => { if (!isLastBeat) closeBtn.classList.add('is-flashing'); },
     });
