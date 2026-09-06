@@ -1,10 +1,10 @@
 Nice, we’re stitching it all together now.
 
-Below is DreamXtreme: Truth Debt – Lake Elsinore Edition, integrating:
+Below is DreamXtreme: Truth Debt – Lake Ulysses Edition, integrating:
 
 	•	Your existing DreamXtreme lore, FEELZ app, demo script, and NPCs
 
-	•	The real-world toxic-algae / “lake closed / lake reopened” history of Lake Elsinore, CA 
+	•	The real-world toxic-algae / “lake closed / lake reopened” pattern seen at real Southern California lakes
 
 All inside a mobile, swipe-left/right story game about the debt every lie creates.
 
@@ -14,17 +14,17 @@ All inside a mobile, swipe-left/right story game about the debt every lie create
 
 Title:
 
-DREAMXTREME: TRUTH DEBT – LAKE ELSINORE
+DREAMXTREME: TRUTH DEBT – LAKE ULYSSES
 
 Premise:
 
-You come to on the cracked shoulder of Lakeshore Drive in Lake Elsinore, ears ringing, clothes damp with lake water and mystery soda, with a half-remembered dream and a needle-sunk grapefruit bobbing somewhere behind your eyes. 
+You come to on the cracked shoulder of Lakeshore Drive in Lake Ulysses, ears ringing, clothes damp with lake water and mystery soda, with a half-remembered dream and a needle-sunk grapefruit bobbing somewhere behind your eyes. 
 
 Your only guide is FEELZ, a janky therapy app on your phone, and the people you meet around the lake: junkies, church ladies, queer artists, bikers, and city functionaries all clinging to their own favorite lies. 
 
 Every time you swipe right to tell a comforting lie, you stabilize the moment but add to a hidden Truth Debt. Every time you swipe left to let the truth in, something cracks now instead of later.
 
-The setting is explicitly Lake Elsinore—but in-world, the rebrand/civic myth calls it “Lake Ulysses” on the signs and ads: a “3,000 acre jewel” that keeps having toxic algae “incidents” that are always “under control.”   
+The setting is explicitly based on a real Southern California lake with a toxic-algae history—but in-world, the rebrand/civic myth calls it “Lake Ulysses” on the signs and ads: a “3,000 acre jewel” that keeps having toxic algae “incidents” that are always “under control.”   
 
 ---
 
@@ -38,15 +38,15 @@ The setting is explicitly Lake Elsinore—but in-world, the rebrand/civic myth c
 
 	•	Visual: a grapefruit with a needle slowly sinking beneath gray-green pixel water; as it disappears, the sun rises into its place and burns into the DREAMXTREME title. 
 
-2.2 Lake Elsinore Civic Ad → Lie \#0
+2.2 Lake Ulysses Civic Ad → Lie \#0
 
 Cut to a deliberately cheesy city promo:
 
-	•	Pixel-video of Lake Elsinore shoreline, palm trees, Launch Pointe marina, and downtown “historic” facades clearly built yesterday.   
+	•	Pixel-video of the lake shoreline, palm trees, a marina, and downtown “historic” facades clearly built yesterday.   
 
 	•	A councilman-style host (your Bob Baiter stand-in) beams:
 
-“Lake Elsinore is once again open for boating and fishing\! Lab tests show we’re within acceptable guidelines…” 
+“Lake Ulysses is once again open for boating and fishing\! Lab tests show we’re within acceptable guidelines…” 
 
 	•	Quick flashes of warning signs: “Danger: Toxic Algae – No Swimming / Don’t Let Pets Drink the Water / Don’t Eat the Fish,” echoing real advisories. 
 
@@ -56,7 +56,7 @@ This whole ad is your first unchosen lie: the game tags it internally as Debt \+
 
 Smash cut:
 
-	•	You’re sprawled at Bottoms Beach / The Bandlands by Lake Elsinore – a dried-out abandoned golf course sloping toward the scummy shoreline. Constant tinnitus hiss. 
+	•	You’re sprawled at Bottoms Beach / The Bandlands by Lake Ulysses – a dried-out abandoned golf course sloping toward the scummy shoreline. Constant tinnitus hiss. 
 
 	•	Text:
 
@@ -92,7 +92,7 @@ That sets your starting Truth Debt and your initial FEELZ color palette.
 
 	•	Center Card:
 
-	•	Pixel art scene (specific Lake Elsinore location)
+	•	Pixel art scene (specific Lake Ulysses location)
 
 	•	NPC sprite \+ face panel
 
@@ -148,15 +148,15 @@ As you drag:
 
 	•	No new Debt, but you might “pop” existing lies into mini-Reckonings.
 
-As Debt passes thresholds (10, 25, 40, 60…), Lake Elsinore visually degrades:
+As Debt passes thresholds (10, 25, 40, 60…), Lake Ulysses visually degrades:
 
 	•	Pixel water turns sickly, more dead fish sprites, glitching advisory banners, etc., paralleling real HAB “danger” advisories where the lake swings between “open” and “don’t touch the water at all.” 
 
 ---
 
-4\. Location & NPC Integration (Lake Elsinore Map)
+4\. Location & NPC Integration (Lake Ulysses Map)
 
-You keep your 5-stop structure from the docs, just made explicitly Lake Elsinore:
+You keep your 5-stop structure from the docs, just made explicitly Lake Ulysses:
 
 	1\.	The Bandlands – Abandoned Golf Course / Bottoms Beach
 
@@ -206,11 +206,11 @@ You keep your 5-stop structure from the docs, just made explicitly Lake Elsinore
 
 	•	Swiping left risks outing the performative brutality and his attraction to the very men he bullies, pushing toward either breakthrough or violence.
 
-Across all these stops, Lake Elsinore itself is a character: algae alerts, “Lake Watch” bulletins, half-hearted remediation efforts surface as in-game notifications and environmental storytelling. 
+Across all these stops, Lake Ulysses itself is a character: algae alerts, “Lake Watch” bulletins, half-hearted remediation efforts surface as in-game notifications and environmental storytelling. 
 
 ---
 
-5\. Truth Debt & Final Reckoning (Lake Elsinore Flavor)
+5\. Truth Debt & Final Reckoning (Lake Ulysses Flavor)
 
 As you accumulate lies:
 
@@ -238,7 +238,7 @@ We end with your “historic downtown” pseudo-nostalgia literally on fire, ech
 
 5.2 Endings Tied to Lake & Lies
 
-Use your previous ending types, but framed through Lake Elsinore:
+Use your previous ending types, but framed through Lake Ulysses:
 
 	•	Clean Cut:
 
@@ -266,5 +266,5 @@ Each ending unlocks new Masks (Therapist / Martyr / Optimist / Child) and maybe 
 
 	•	Website & poetic lore (ditchweed, Baja Blast, frogs, flooded house) → feed specific card imagery, background events, and layered vignettes (e.g., Flamenco Moon as a rare lucid-dream side quest layer when Lucidity is high). 
 
-	•	Game development doc (NPC core truths, Lake Ulysses/El Ulysses, Bandlands → Bottoms Beach, Locations 1–5, trailer structure) → become your Lake Elsinore map, NPC roster, and meta-myth about manufactured nostalgia & civic lies.
+	•	Game development doc (NPC core truths, Lake Ulysses/El Ulysses, Bandlands → Bottoms Beach, Locations 1–5, trailer structure) → become your Lake Ulysses map, NPC roster, and meta-myth about manufactured nostalgia & civic lies.
 

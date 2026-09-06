@@ -88,7 +88,7 @@ As Debt passes thresholds (10, 25, 40, 60…), Lake Ulyssess visually degrades:
 
 ---
 
-4\. Location & NPC Integration (Lake Elsinore Map)
+4\. Location & NPC Integration (Lake Ulysses Map)
 
 You keep your 5-stop structure from the docs, just made explicitly Lake Ulysees:
 

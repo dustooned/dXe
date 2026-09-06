@@ -126,7 +126,6 @@ Surrealist dream-like version of the final choice to burn the last location with
 - Combination of Kentucky racist sign, and Bombay Beach   
 - C64 Synthesis Voice  
 - Downtown Tour Beautification  
-- [https://www.instagram.com/cityoflakeelsinore/reel/DBZv-qeRLk9/](https://www.instagram.com/cityoflakeelsinore/reel/DBZv-qeRLk9/)  
 - Ends with Historic Building On Fire
 
 The constant ringing continues.
@@ -176,7 +175,7 @@ You see app notification for Therapy App (FEELZ)
   * Player will be able to go a path that doesn’t resolve the NPC’s issue, but might miss on critical information that will divert the outcomes of the later part of the story.  
   * No matter the choice however, the story progresses and the player’s experience centers.
 
-* **Worldbuilding:** Flesh out the lore and history of Lake Elsinore and its inhabitants.  
+* **Worldbuilding:** Flesh out the lore and history of Lake Ulysses and its inhabitants.  
 * **Character Design:** Create unique and memorable NPCs with distinct personalities and emotions.  
 * **Storytelling:** Craft a compelling narrative with branching paths based on player choices.  
 * **Dialogue Writing:** Write engaging dialogue that reflects the characters' emotions.
