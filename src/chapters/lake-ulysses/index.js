@@ -10,6 +10,7 @@ import * as minigameScene from '../../scenes/minigameScene.js';
 import { ANIMS } from './anims.js';
 import { playStaticTransition } from '../../ui/staticTransition.js';
 
+import itIntro from './content/it_intro.json';
 import openingQuote from './content/opening_quote.json';
 import bobBaiter from './content/bob_baiter.json';
 import prologue from './content/prologue.json';
@@ -32,7 +33,12 @@ export const title = 'Truth Debt: Lake Ulysses';
 // out mid-NPC. Adding a cutscene before an NPC, or a mini-game between two,
 // is just another entry here — see docs/SCENE_TYPES.md.
 //
-// Opening call (scenes 3-5) is one continuous unit, and the order matters:
+// 'it-intro' is IT introducing itself — three class-neutral lines, before
+// the player has a loadout or has seen a single swipe (docs/IT_DESIGN.md).
+// It's its own scene, ahead of the opening call below, on purpose: IT is
+// meant to be the very first thing that happens, full stop.
+//
+// Opening call (scenes 4-6) is one continuous unit, and the order matters:
 // prologue's last beat is "Your phone buzzes against the gravel," so the
 // questionnaire reads as answering that call and the therapist dialog as the
 // same call continuing. Running questionnaire before prologue (as it did
@@ -50,6 +56,7 @@ export const title = 'Truth Debt: Lake Ulysses';
 //   dialog     the encounter itself
 // Therapist is exempt from all of it — she belongs to the opening call.
 const SCENES = [
+  { type: 'cutscene', id: 'it-intro', beats: itIntro.beats },
   { type: 'cutscene', id: 'opening-quote', beats: openingQuote.beats, anims: ANIMS },
   { type: 'cutscene', id: 'bob-baiter', beats: bobBaiter.beats, anims: ANIMS, ambient: '/assets/lake-ulysses/audio/lk_01.mp3' },
   { type: 'cutscene', id: 'prologue', beats: prologue.beats },

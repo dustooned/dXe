@@ -2,6 +2,12 @@
 // with real audio file playback — both share the same masterGain chain.
 // All public functions that load files are async; callers fire-and-forget
 // (no await needed unless they care about the exact start time).
+//
+// Because they're fire-and-forget, every start/stop pair here is guarded by a
+// generation counter: a scene that unmounts while its track is still loading
+// would otherwise have nothing to stop, and the track would then start *after*
+// the stop and loop forever with no handle left to kill it. Each stop bumps the
+// generation; each start re-checks it after its await and bails if it's stale.
 let ctx = null;
 let masterGain = null;
 let stems = {};
@@ -10,12 +16,25 @@ let ambientSource = null;
 let ambientGain = null;
 let titleSources = [];
 
+let ambientGeneration = 0;
+let leitmotifGeneration = 0;
+let titleMusicGeneration = 0;
+
 const audioCache = new Map();
 
+// One oscillator config per Plutchik emotion (engine/loadout.js's EMOTIONS) —
+// every class's 3 loaded emotions need a stem here or picking one plays
+// nothing (see docs/HANDOFF.md's "known gaps": Bible/Crystals had no audio
+// until Trust/Disgust/Joy/Sadness/Surprise were added below).
 const STEM_CONFIG = {
   Anger:        { type: 'sawtooth', freq: 110 },
   Fear:         { type: 'sine',     freq: 220 },
   Anticipation: { type: 'triangle', freq: 165 },
+  Trust:        { type: 'sine',     freq: 196 },
+  Disgust:      { type: 'sawtooth', freq: 130 },
+  Joy:          { type: 'triangle', freq: 330 },
+  Sadness:      { type: 'sine',     freq: 147 },
+  Surprise:     { type: 'square',   freq: 250 },
 };
 
 const AMBIENT_GAIN       = 0.06;
@@ -111,8 +130,10 @@ async function loadAudio(url) {
 
 export async function startAmbient(url, volume = AMBIENT_MUSIC_GAIN) {
   stopAmbient();
+  const generation = ++ambientGeneration;
   const audioCtx = ensureContext();
   const buffer = await loadAudio(url);
+  if (generation !== ambientGeneration) return; // stopped or replaced mid-load
   ambientGain = audioCtx.createGain();
   ambientGain.gain.value = volume;
   ambientGain.connect(masterGain);
@@ -124,6 +145,7 @@ export async function startAmbient(url, volume = AMBIENT_MUSIC_GAIN) {
 }
 
 export function stopAmbient() {
+  ambientGeneration++;
   try { ambientSource?.stop(); } catch (_) { /* already stopped */ }
   ambientSource = null;
   ambientGain?.disconnect();
@@ -162,10 +184,15 @@ export async function playTyagl() {
 
 // ─── Emotion stems ────────────────────────────────────────────────────────────
 
-export function startEmotionStems() {
+// `activeEmotions` is the player's loaded class emotions (engine/loadout.js's
+// emotionsForClass). Only those get an oscillator: the other 5 aren't
+// selectable for this run, so droning them just muddies the bed — and with all
+// 8 running the ambient mix is ~2.7x louder than it was designed at.
+export function startEmotionStems(activeEmotions = Object.keys(STEM_CONFIG)) {
   const audioCtx = ensureContext();
-  for (const [key, cfg] of Object.entries(STEM_CONFIG)) {
-    if (stems[key]) continue;
+  for (const key of activeEmotions) {
+    const cfg = STEM_CONFIG[key];
+    if (!cfg || stems[key]) continue;
     const osc = audioCtx.createOscillator();
     osc.type = cfg.type;
     osc.frequency.value = cfg.freq;
@@ -187,17 +214,17 @@ export function setEmotionMix(mix) {
   }
 }
 
-export function emphasizeEmotion(emotion) {
+export function emphasizeEmotion(emotion, activeEmotions = Object.keys(STEM_CONFIG)) {
   const mix = {};
-  for (const key of Object.keys(STEM_CONFIG)) {
+  for (const key of activeEmotions) {
     mix[key] = key === emotion ? EMPHASIS_GAIN : AMBIENT_GAIN * 0.5;
   }
   setEmotionMix(mix);
 }
 
-export function ambientMix() {
+export function ambientMix(activeEmotions = Object.keys(STEM_CONFIG)) {
   const mix = {};
-  for (const key of Object.keys(STEM_CONFIG)) mix[key] = AMBIENT_GAIN;
+  for (const key of activeEmotions) mix[key] = AMBIENT_GAIN;
   setEmotionMix(mix);
 }
 
@@ -216,6 +243,7 @@ export function stopEmotionStems() {
 
 export async function startLeitmotif(npcKey) {
   stopLeitmotif();
+  const generation = ++leitmotifGeneration;
   const config = LEITMOTIFS[npcKey];
   if (!config) return;
 
@@ -223,6 +251,7 @@ export async function startLeitmotif(npcKey) {
 
   if (config.url) {
     const buffer = await loadAudio(config.url);
+    if (generation !== leitmotifGeneration) return; // stopped or replaced mid-load
     const gain = audioCtx.createGain();
     gain.gain.value = config.volume ?? LEITMOTIF_GAIN;
     gain.connect(masterGain);
@@ -275,6 +304,7 @@ export async function startLeitmotif(npcKey) {
 }
 
 export function stopLeitmotif() {
+  leitmotifGeneration++;
   activeLeitmotif?.stop();
   activeLeitmotif = null;
 }
@@ -308,6 +338,7 @@ export async function playLogoSting() {
 
 export async function startTitleMusic() {
   stopTitleMusic();
+  const generation = ++titleMusicGeneration;
   const audioCtx = ensureContext();
   const urls = [
     '/assets/shared/audio/title/snd_lake_title.mp3',
@@ -315,6 +346,7 @@ export async function startTitleMusic() {
   ];
   // Load both in parallel so they start at the exact same time.
   const buffers = await Promise.all(urls.map(loadAudio));
+  if (generation !== titleMusicGeneration) return; // player left the title mid-load
   for (const buffer of buffers) {
     const gain = audioCtx.createGain();
     gain.gain.value = TITLE_MUSIC_GAIN;
@@ -329,6 +361,7 @@ export async function startTitleMusic() {
 }
 
 export function stopTitleMusic() {
+  titleMusicGeneration++;
   for (const { source, gain } of titleSources) {
     try { source.stop(); } catch (_) {}
     gain.disconnect();

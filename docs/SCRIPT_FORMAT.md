@@ -34,7 +34,6 @@ ACCENT: var(--color-deborah)
 
 === deborah_01
 PROMPT: God took my boy when He needed him. I just have to trust that.
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: Your faith didn't protect him. Someone failed him.
@@ -61,6 +60,12 @@ NEXT: deborah_02_denial
 - `ACCENT:` — a CSS color for this NPC's visual accent. Use
   `var(--color-<name>)` and add the matching variable to `src/style.css`
   if this is a brand new NPC (ask if unsure).
+- `PORTRAIT:` (optional) — a path to this NPC's portrait image (e.g.
+  `/assets/lake-ulysses/sprites/portrait_deborah.webp` — see
+  `ASSET_MANIFEST.md`'s "Dialog portraits"), served straight from
+  `public/` (see CONTENT_SCHEMA.md's "Asset folders"). Leave the line out
+  entirely until real art exists — `ui/npcPortrait.js` falls back to the
+  colored-initial placeholder whenever this is unset.
 
 ### A node (one screen the player sees)
 
@@ -69,10 +74,10 @@ players never see it — but it has to be unique in the file and is how
 `NEXT:` refers back to it. Convention: `<npcname>_<number>[_<qualifier>]`,
 e.g. `deborah_01`, `deborah_02_denial`.
 
-- `PROMPT:` — what the NPC says, the line the player is reacting to.
-- `FEELZ:` — which 3 feelings show as picker options for this moment.
-  Right now the only three that exist are `Anger`, `Fear`, `Anticipation`
-  — list them in whatever order you want them to appear.
+- `PROMPT:` — what the NPC says, the line the player is reacting to. Draws
+  character-by-character like every other line in the game (`src/ui/
+  typewriterText.js`), so the `{slow}`/`{fast}`/`{pause:N}` pacing codes
+  work here too.
 - `GATE:` (optional) — redirects to a *different* node instead of this
   one, if a stat condition is true. Format:
   `GATE: <stat> <op> <value> -> <nodeId>`, e.g.
@@ -84,13 +89,25 @@ e.g. `deborah_01`, `deborah_02_denial`.
   nodes shouldn't have one. See `STAT_MATH.md` for the design reasoning
   and the current real example (Rick, gated on trust).
 
+There's no per-node feelings list, and that's deliberate. Which 3 of the 8
+emotions the player can pick from is set once by the opening Questionnaire
+— it assigns their class — and holds for the whole run (`engine/loadout.js`).
+A `FEELZ:` line used to sit in this block and was read by nothing; it's
+gone, and the build rejects one if it turns up in a file.
+
 ### A swipe (what happens for Truth vs. Lie)
 
 Every node needs exactly two: `-- TRUTH` and `-- LIE`.
 
-- `SAY:` — the line the player "says" if they pick this side.
-- `REACT:` — how the NPC responds. This is what actually displays after
-  the swipe.
+- `SAY:` — the line the player "says" if they pick this side. Displays as
+  its own beat right after the swipe (right-aligned, labeled `YOU`),
+  before `REACT:` draws in.
+- `REACT:` — how the NPC responds, the beat right after `SAY:`.
+- All three of `PROMPT:`/`SAY:`/`REACT:` accept `\n` (a literal backslash
+  then `n`) anywhere you want a forced line break — the manuscript format
+  is one physical line per field, so this is the escape for a break the
+  text wouldn't have wrapped on its own (a stanza, a beat, a line standing
+  alone).
 - `EFFECTS:` — how this changes the player's four meters. Space-separated,
   each one `statname` immediately followed by `+N` or `-N`. Valid stat
   names: `integrity`, `trust`, `stability`, `lucidity`. Skip any stat this

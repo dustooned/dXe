@@ -2,17 +2,13 @@
   "npc": "RWANDA",
   "location": 3,
   "accentColor": "var(--color-rwanda)",
+  "portrait": null,
   "nodes": {
     "rwanda_01": {
       "id": "rwanda_01",
       "npc": "RWANDA",
       "location": 3,
       "prompt": "Why do I gotta sand myself down just to be digestible?",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "Because people are scared of you being fully real.",
@@ -51,11 +47,6 @@
       "npc": "RWANDA",
       "location": 3,
       "prompt": "Right. Sure. I'm doing fine. (She turns back to the window.)",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "I was wrong. You don't have to minimize this for me.",
@@ -92,11 +83,6 @@
       "npc": "RWANDA",
       "location": 3,
       "prompt": "You actually mean that? Most people just want me to perform.",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "I know. And it's exhausting to watch, let alone live.",
@@ -134,11 +120,6 @@
       "npc": "RWANDA",
       "location": 3,
       "prompt": "(She doesn't turn around.) You see it too, right. Whatever's out there tonight.",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "I see something. I don't know what it is yet.",
@@ -175,11 +156,6 @@
       "npc": "RWANDA",
       "location": 3,
       "prompt": "Word travels. You've been at three doors tonight already. What is it you're collecting?",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "I don't know yet. That's the honest answer.",

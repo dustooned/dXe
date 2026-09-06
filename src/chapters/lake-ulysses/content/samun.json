@@ -2,17 +2,13 @@
   "npc": "SAMUN",
   "location": 4,
   "accentColor": "var(--color-samun)",
+  "portrait": null,
   "nodes": {
     "samun_01": {
       "id": "samun_01",
       "npc": "SAMUN",
       "location": 4,
       "prompt": "Man, everyone's hooked on something. Mine's just more honest.",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "Honest or not, you're still killing yourself slowly.",
@@ -52,11 +48,6 @@
       "npc": "SAMUN",
       "location": 4,
       "prompt": "See? You get it. Nobody else does. They all want me fixed.",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "Maybe fixed is the wrong word. But not this — not this either.",
@@ -94,11 +85,6 @@
       "npc": "SAMUN",
       "location": 4,
       "prompt": "Easy for you to say. You're not the one hurting.",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "You're right. I'm not. But you are. Every day.",
@@ -135,11 +121,6 @@
       "npc": "SAMUN",
       "location": 4,
       "prompt": "Business? Business is great, man. Look around. Everybody's real busy.",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "There's nobody here, Samun.",
@@ -176,11 +157,6 @@
       "npc": "SAMUN",
       "location": 4,
       "prompt": "(He puts the rag down.) Ask it, then. Everybody who comes in here asks it eventually.",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "What are you on, Samun?",

@@ -115,9 +115,11 @@ full vision — see "What was deliberately cut" below.
   clockwise). The player's class loads 3 of the 8 segments — those are
   colored and interactive; the other 5 are faint outlines, locked for
   the run. Segment labels are abstract symbols (★ ◉ ▲ etc.), not emotion
-  names. Tap a segment = select (no card color change — keeps drag
-  meaningful). Drag a segment onto the swipe card = select AND colors the
-  card border. Both paths call the same `onSelect(emotion, source)`.
+  names. Tap or drag a segment onto the swipe card both select it and
+  color the card border — tap used to skip the color change ("keeps drag
+  meaningful"), but a tap that visibly did nothing read as broken rather
+  than restrained, so both now give the same feedback. Both paths call
+  the same `onSelect(emotion, source)`.
   The class definition, all 8 emotions, their symbols, colors, and what
   each amplifies lives in `engine/loadout.js`; `cardEngine.js` reads from
   there. Note for future testing: synthetic `.click()` calls don't trigger
@@ -140,6 +142,26 @@ full vision — see "What was deliberately cut" below.
   Anger→stability, Fear→integrity, Anticipation→trust, Trust→trust,
   Disgust→integrity, Joy→stability, Sadness→integrity, Surprise→trust.
 
+- **Every audio start/stop pair is generation-guarded, and a new one must
+  be too.** `startAmbient`/`startLeitmotif`/`startTitleMusic` are
+  fire-and-forget async: they `await loadAudio()` and only then create and
+  start the source. A scene that unmounts while its track is still loading
+  used to find nothing to stop — and the track would then start *after* the
+  stop, loop forever, and have no handle left to kill it. That was the
+  "Heavens Waiting Room never cuts out" bug, and the same shape let title
+  music bleed over the opening cutscene. Each stop now bumps a generation
+  counter and each start re-checks it after its await. It only reproduces on
+  a cold cache, so it hides in dev and shows up on a real first visit —
+  if you add a new looping track, copy the guard.
+
+- **The boot logo has three independent escape hatches.** Browsers refuse
+  video autoplay in at least three different ways (a rejected `play()`, a
+  silent refusal that leaves it paused on frame 0, and a start that stalls
+  before `'ended'`), and the logo phase advances on `'ended'`. Handling only
+  the rejection left the player parked on a frozen logo with a tap as the
+  only way out — and no reason to know that. `startLogo()` in `main.js`
+  now covers all three. Don't collapse them back into one.
+
 - **The canvas scales to the viewport; scene art must be relative.** The
   390×844 canvas is a design reference, not a fixed size. `.dx-canvas` takes
   `max-width: min(390px, 100dvh * 390/844)`, so it fills whatever the device
@@ -157,8 +179,13 @@ Four meters (Integrity, Trust, Stability, Lucidity, 0–10) plus Truth Debt
 (0–10, separate). Full semantics are in `CONTENT_SCHEMA.md`; the math
 layered on top (Emotional Lean, the ending epilogue, meter-gated
 branching) is in `STAT_MATH.md`. Truth Debt is still the only stat
-driving the big structural stuff (bloom-event thresholds, forces the
-Reckoning at 10, picks the ending tier). The four meters feed two things:
+driving the big structural stuff (forces the Reckoning at 10, picks the
+ending tier). Its bloom thresholds at 3/6/8 fire in `debtEngine.js` but
+nothing consumes them yet, and neither does anything read `lakeHealth` —
+deliberately left wired rather than built or deleted, because
+`IT_DESIGN.md` already claims that trigger moment. Building a separate
+bloom presentation before the IT in/out call risks building it twice.
+The four meters feed two things:
 the ending epilogue line (names whichever meter moved furthest from
 baseline), and **actual content gating**: a node can carry an opt-in
 `gate` that redirects to a different node if a stat condition is met
@@ -230,7 +257,20 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 ## Known gaps (not bugs, just not done)
 
 - NPC portrait art — dialog scenes use colored-initial placeholders.
-- Placeholder audio — emotion stems and hit sounds are oscillator tones in `shell/audio.js`; no real instrumental stems yet.
+  `ui/npcPortrait.js` now has an image slot (an NPC's content JSON can carry
+  a `portrait` path, authored via a manuscript's `PORTRAIT:` line) — the
+  placeholder is only a fallback for when that's unset, so real art can
+  drop in with no further code changes. No art exists yet.
+- Placeholder audio — emotion stems and hit sounds are oscillator tones in
+  `shell/audio.js`; no real instrumental stems yet. `STEM_CONFIG` now
+  covers all 8 Plutchik emotions (was 3, matching only the Guns loadout —
+  a real bug where Bible and Crystals players got no stem audio at all on
+  their own class's emotions), so this is placeholder-quality but no
+  longer broken for two of the three classes. Only the player's *loaded*
+  3 actually get oscillators — `dialogScene` passes `emotionsForClass()`
+  into `startEmotionStems`/`ambientMix`/`emphasizeEmotion`. Running all 8
+  drones the 5 the class can't even select and makes the bed ~2.7× louder
+  than the gain constants were tuned for.
 - `public/assets/lake-ulysses/audio/ann_01.mp3` — byte-identical duplicate
   of `lk_01.mp3`, 1.2MB shipped for nothing. Kept deliberately for now.
 - `loadoutScene.js` and the unread `firstPlayScene` registry field were
@@ -241,11 +281,15 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
   generated vector art, and prose written to exercise the class-variation and
   opener-branching paths rather than to be read. They are the largest block of
   placeholder content in the project and the most obvious thing to replace.
-- All existing nodes have `feelzOptions: [Anger, Fear, Anticipation]` —
-  the manuscript FEELZ line predates the class system. Bible/Crystals
-  players see their class emotions regardless (dartboard always shows the
-  class's 3 active segments), but future nodes can be authored with
-  class-specific emotion options once the manuscript format is extended.
+- ~~Per-node `feelzOptions`~~ — removed. The field predated the class
+  system, was read by nothing, and carried no information (all 22 nodes
+  had the identical `[Anger, Fear, Anticipation]`). Wiring it as authored
+  would have soft-locked Bible and Crystals players, whose class emotions
+  aren't in that list — there'd have been nothing selectable. The class
+  loadout is now the only thing deciding which 3 emotions are available,
+  in the code and in the docs. If per-node narrowing is ever wanted, it
+  needs to be a new opt-in field that intersects with the class set and
+  falls back when the intersection is empty.
 
 ## What's next
 

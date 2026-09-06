@@ -2,17 +2,13 @@
   "npc": "RICK",
   "location": 5,
   "accentColor": "var(--color-rick)",
+  "portrait": null,
   "nodes": {
     "rick_01": {
       "id": "rick_01",
       "npc": "RICK",
       "location": 5,
       "prompt": "Guy looked at me wrong outside. Now he's got a busted jaw and I got my patch back. That's just how it works out here.",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "That's not how it works. You just wanted a reason.",
@@ -57,11 +53,6 @@
       "npc": "RICK",
       "location": 5,
       "prompt": "See, that's why I run with guys like you. Most people get soft, start asking questions.",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "Maybe the questions are the only thing keeping you human.",
@@ -99,11 +90,6 @@
       "npc": "RICK",
       "location": 5,
       "prompt": "You don't get to judge me. You don't know what it costs to keep this patch.",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "What's it cost, Rick? Who's it for? Who are you trying to prove this to?",
@@ -141,11 +127,6 @@
       "npc": "RICK",
       "location": 5,
       "prompt": "[Rick looks you over from the doorway and doesn't step aside.] Word gets around. I know what you are.",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "I'm not here to convince you of anything.",
@@ -179,11 +160,6 @@
       "npc": "RICK",
       "location": 5,
       "prompt": "(He takes the drink without looking at it.) You buying because you want something, or because I scare you?",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "Little of both.",
@@ -226,11 +202,6 @@
       "npc": "RICK",
       "location": 5,
       "prompt": "The guy outside. (He wipes his knuckles on his jeans, slow, so that you watch him do it.) What about him.",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "You put him down and you want somebody to have seen you do it.",

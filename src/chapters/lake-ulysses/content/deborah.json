@@ -2,17 +2,13 @@
   "npc": "DEBORAH",
   "location": 2,
   "accentColor": "var(--color-deborah)",
+  "portrait": null,
   "nodes": {
     "deborah_01": {
       "id": "deborah_01",
       "npc": "DEBORAH",
       "location": 2,
       "prompt": "God took my boy when He needed him. I just have to trust that.",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "Your faith didn't protect him. Someone failed him.",
@@ -51,11 +47,6 @@
       "npc": "DEBORAH",
       "location": 2,
       "prompt": "I knew you'd understand. Most people don't want to hear it.",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "I lied to you. Your grief deserves better than that.",
@@ -93,11 +84,6 @@
       "npc": "DEBORAH",
       "location": 2,
       "prompt": "You don't know what it's like to lose a child.",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "No. But you do. And you're still here.",
@@ -135,11 +121,6 @@
       "npc": "DEBORAH",
       "location": 2,
       "prompt": "You noticed. Nobody notices. Sit down — I'll make coffee neither of us is going to drink.",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "I'm not here for coffee. I'm here about your son.",
@@ -176,11 +157,6 @@
       "npc": "DEBORAH",
       "location": 2,
       "prompt": "[She stops in the doorway and does not move out of it.] You heard. Everybody heard. Go on — say the part where it was God's will.",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "I wasn't going to say that.",

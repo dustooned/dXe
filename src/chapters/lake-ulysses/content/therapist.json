@@ -2,17 +2,13 @@
   "npc": "THERAPIST",
   "location": 1,
   "accentColor": "var(--color-therapist)",
+  "portrait": null,
   "nodes": {
     "therapist_01": {
       "id": "therapist_01",
       "npc": "THERAPIST",
       "location": 1,
       "prompt": "The screen lights up. A voice, tired but warm, cuts through the ringing in your ears. \"You're still there? Okay. Good. What happened in the dream?\"",
-      "feelzOptions": [
-        "Anger",
-        "Fear",
-        "Anticipation"
-      ],
       "swipes": {
         "truth": {
           "playerText": "I don't know. Water. Something underneath it. I couldn't breathe.",

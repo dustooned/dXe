@@ -47,6 +47,17 @@ const PRELOAD_ASSETS = [
 // before it can be read. Hold it on screen long enough to actually register.
 const MIN_LOADING_MS = 2200;
 
+// Grace period before checking whether the logo video actually started. A
+// video that's going to play is unpaused well inside this; one that's been
+// refused is still paused, and waiting out the ceiling below would mean
+// staring at a frozen frame.
+const PLAY_PROBE_MS = 1200;
+
+// Hard ceiling on the logo phase. The video runs ~10s, so normal playback
+// always ends well before this — it only fires if playback starts and then
+// stalls without ever reaching 'ended'.
+const LOGO_MAX_MS = 15000;
+
 function prefetchAssets() {
   const fetches = Promise.all(
     PRELOAD_ASSETS.map(src =>
@@ -142,17 +153,25 @@ function renderPreloader() {
   function startLogo() {
     loadingPhase.hidden = true;
     logoPhase.hidden = false;
-    vid.play().catch(() => {});
 
+    // The sting loads async, so a fast skip can land before there's anything to
+    // stop. Without this flag the sting starts *after* the logo is gone and
+    // plays over the title screen with no handle left to cut it.
     let stingStop = () => {};
+    let stingCancelled = false;
     playLogoSting().then(handle => {
+      if (stingCancelled) { handle.stop(); return; }
       stingStop = handle.stop.bind(handle);
     }).catch(() => {});
 
     let finished = false;
+    const timers = [];
+
     function finish() {
       if (finished) return;
       finished = true;
+      stingCancelled = true;
+      timers.forEach(clearTimeout);
       vid.removeEventListener('ended', finish);
       logoPhase.removeEventListener('click', finish);
       stingStop();
@@ -167,6 +186,15 @@ function renderPreloader() {
 
     vid.addEventListener('ended', finish, { once: true });
     logoPhase.addEventListener('click', finish, { once: true });
+
+    // A logo that can't play (iOS Low Power Mode, autoplay policy, an in-app
+    // browser) parks on frame 0, so 'ended' never fires and the only way out of
+    // the boot is a tap the player has no reason to know is required. Three
+    // ways out, because browsers fail this differently: an explicit rejection,
+    // a silent refusal that leaves it paused, and a start that never ends.
+    vid.play().catch(() => finish());
+    timers.push(setTimeout(() => { if (vid.paused) finish(); }, PLAY_PROBE_MS));
+    timers.push(setTimeout(finish, LOGO_MAX_MS));
   }
 
   prefetchAssets().then(startLogo);

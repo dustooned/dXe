@@ -4,7 +4,6 @@ ACCENT: var(--color-deborah)
 
 === deborah_01
 PROMPT: God took my boy when He needed him. I just have to trust that.
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: Your faith didn't protect him. Someone failed him.
@@ -24,7 +23,6 @@ NEXT: deborah_02_denial
 
 === deborah_02_denial
 PROMPT: I knew you'd understand. Most people don't want to hear it.
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: I lied to you. Your grief deserves better than that.
@@ -44,7 +42,6 @@ NEXT: (end)
 
 === deborah_02_confronted
 PROMPT: You don't know what it's like to lose a child.
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: No. But you do. And you're still here.
@@ -64,7 +61,6 @@ NEXT: (end)
 
 === deborah_01_soft
 PROMPT: You noticed. Nobody notices. Sit down — I'll make coffee neither of us is going to drink.
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: I'm not here for coffee. I'm here about your son.
@@ -84,7 +80,6 @@ NEXT: deborah_02_denial
 
 === deborah_01_hard
 PROMPT: [She stops in the doorway and does not move out of it.] You heard. Everybody heard. Go on — say the part where it was God's will.
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: I wasn't going to say that.

@@ -1,0 +1,7 @@
+{
+  "beats": [
+    { "it": true, "text": "You're probably wondering where you are." },
+    { "it": true, "text": "Or... maybe you're not wondering at all." },
+    { "it": true, "text": "Either way, you're stuck with me." }
+  ]
+}

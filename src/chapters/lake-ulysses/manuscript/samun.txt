@@ -4,7 +4,6 @@ ACCENT: var(--color-samun)
 
 === samun_01
 PROMPT: Man, everyone's hooked on something. Mine's just more honest.
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: Honest or not, you're still killing yourself slowly.
@@ -24,7 +23,6 @@ NEXT: samun_02_enabled
 
 === samun_02_enabled
 PROMPT: See? You get it. Nobody else does. They all want me fixed.
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: Maybe fixed is the wrong word. But not this — not this either.
@@ -44,7 +42,6 @@ NEXT: (end)
 
 === samun_02_confronted
 PROMPT: Easy for you to say. You're not the one hurting.
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: You're right. I'm not. But you are. Every day.
@@ -64,7 +61,6 @@ NEXT: (end)
 
 === samun_01_soft
 PROMPT: Business? Business is great, man. Look around. Everybody's real busy.
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: There's nobody here, Samun.
@@ -84,7 +80,6 @@ NEXT: samun_02_enabled
 
 === samun_01_hard
 PROMPT: (He puts the rag down.) Ask it, then. Everybody who comes in here asks it eventually.
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: What are you on, Samun?

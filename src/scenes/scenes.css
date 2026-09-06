@@ -60,6 +60,32 @@
   min-height: 40px;
 }
 
+/* The player's own SAY: line — its own bordered box (same footprint as
+   .dx-swipe-card below, which just occupied this exact spot), text
+   right-aligned inside it so it still reads as the opposite side of the
+   exchange from the NPC's left-aligned reaction. */
+.dx-say-box {
+  border: 2px solid var(--color-white);
+  padding: 16px 14px;
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
+.dx-say-label {
+  text-align: right;
+  font-size: 7px;
+  opacity: 0.5;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+.dx-game-screen .dx-say {
+  text-align: right;
+}
+
 /* Shown briefly while a mini-game module's lazy import resolves. Visually
    distinct from — and independent of — the boot preloader's spinner. */
 .dx-minigame-loading {
@@ -345,6 +371,95 @@
   flex-direction: column;
   gap: 8px;
   margin-top: 12px;
+}
+
+/* ── IT — an uninvited thought, styled to feel like a popup ad, not a
+   line of dialog. Centered over a scrim (everything else here is bottom-
+   anchored full-bleed), inverted colors (white on black, vs. the rest of
+   the game's black-on-white), and closed only via an explicit X — never
+   a tap anywhere, on purpose. See cutsceneScene.js's renderItBeat(). ── */
+.dx-it-screen {
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  cursor: default;
+}
+
+.dx-it-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+/* Traditional RPG dialog box shape (Undertale/Deltarune): a portrait slot
+   at left, vertically centered, text beside it — not stacked, not
+   centered. The X sits outside that row, absolute in the corner, so it
+   doesn't compete with the row for space. */
+.dx-it-box {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--color-white);
+  color: var(--color-black);
+  border: 3px solid var(--color-black);
+  padding: 18px 30px 18px 16px;
+  cursor: pointer;
+}
+
+/* Portrait placeholder — an empty bordered slot, the same idea as
+   ui/npcPortrait.js's placeholder box, sized and positioned like the
+   character portrait in an RPG textbox. No glyph inside on purpose: IT
+   has no real identity/mark yet, so this is just the shape and size real
+   art will eventually drop into. */
+.dx-it-icon {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border: 2px solid var(--color-black);
+  background: var(--color-white);
+}
+
+.dx-it-close {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 2px solid var(--color-black);
+  background: var(--color-white);
+  color: var(--color-black);
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.dx-it-close:active {
+  background: var(--color-black);
+  color: var(--color-white);
+}
+
+/* Signals "there's another one of these after this" once the line finishes
+   drawing — reuses the same dx-pulse keyframes the critical debt sigil uses
+   (ui/ui.css), for the same "notice me" urgency. Never applied on the last
+   beat in the sequence, since nothing follows it. */
+.dx-it-close.is-flashing {
+  animation: dx-pulse 0.6s infinite alternate;
+}
+
+.dx-it-text {
+  flex: 1;
+  margin: 0;
+  font-family: var(--font-it);
+  font-size: 26px;
+  line-height: 1.3;
+  text-align: left;
 }
 
 .dx-continue-arrow {

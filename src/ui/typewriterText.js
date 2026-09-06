@@ -50,7 +50,11 @@ export function parseSegments(raw) {
   return segments;
 }
 
-export function createTypewriter(container, text, { onDone, onChar } = {}) {
+// `startRevealed` skips the character-by-character draw and shows the full
+// text immediately — for re-rendering a line that already finished drawing
+// once (e.g. dialogScene rebuilding its screen when the player picks a FEELZ
+// emotion, without replaying the node's prompt from scratch).
+export function createTypewriter(container, text, { onDone, onChar, startRevealed = false } = {}) {
   container.innerHTML = '';
   const segments = parseSegments(text);
 
@@ -115,7 +119,12 @@ export function createTypewriter(container, text, { onDone, onChar } = {}) {
     timer = setTimeout(step, seg.delayMs);
   }
 
-  step();
+  if (startRevealed) {
+    charSpans.forEach((span) => span.classList.add('is-visible'));
+    done = true;
+  } else {
+    step();
+  }
 
   return {
     finish: finishNow,

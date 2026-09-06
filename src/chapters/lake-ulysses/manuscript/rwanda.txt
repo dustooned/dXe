@@ -4,7 +4,6 @@ ACCENT: var(--color-rwanda)
 
 === rwanda_01
 PROMPT: Why do I gotta sand myself down just to be digestible?
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: Because people are scared of you being fully real.
@@ -24,7 +23,6 @@ NEXT: rwanda_02_closed
 
 === rwanda_02_closed
 PROMPT: Right. Sure. I'm doing fine. (She turns back to the window.)
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: I was wrong. You don't have to minimize this for me.
@@ -44,7 +42,6 @@ NEXT: (end)
 
 === rwanda_02_open
 PROMPT: You actually mean that? Most people just want me to perform.
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: I know. And it's exhausting to watch, let alone live.
@@ -64,7 +61,6 @@ NEXT: (end)
 
 === rwanda_01_soft
 PROMPT: (She doesn't turn around.) You see it too, right. Whatever's out there tonight.
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: I see something. I don't know what it is yet.
@@ -84,7 +80,6 @@ NEXT: rwanda_02_closed
 
 === rwanda_01_hard
 PROMPT: Word travels. You've been at three doors tonight already. What is it you're collecting?
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: I don't know yet. That's the honest answer.

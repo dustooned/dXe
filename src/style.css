@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
 
 :root {
   --color-black: #000000;
@@ -20,6 +20,10 @@
   --color-feelz-surprise: #ff6d00;
 
   --font-pixel: 'Press Start 2P', 'Courier New', monospace;
+  /* IT's voice only — a rough CRT-terminal font, not the game's clean
+     pixel font. Reads as an old system intruding, not another piece of
+     the game's own UI chrome. */
+  --font-it: 'VT323', 'Courier New', monospace;
 
   --canvas-w: 390px;
   --canvas-h: 844px;

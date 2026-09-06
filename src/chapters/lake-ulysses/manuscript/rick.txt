@@ -5,7 +5,6 @@ ACCENT: var(--color-rick)
 === rick_01
 GATE: trust < 3 -> rick_shut_down
 PROMPT: Guy looked at me wrong outside. Now he's got a busted jaw and I got my patch back. That's just how it works out here.
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: That's not how it works. You just wanted a reason.
@@ -25,7 +24,6 @@ NEXT: rick_02_enabled
 
 === rick_02_enabled
 PROMPT: See, that's why I run with guys like you. Most people get soft, start asking questions.
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: Maybe the questions are the only thing keeping you human.
@@ -45,7 +43,6 @@ NEXT: (end)
 
 === rick_02_confronted
 PROMPT: You don't get to judge me. You don't know what it costs to keep this patch.
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: What's it cost, Rick? Who's it for? Who are you trying to prove this to?
@@ -65,7 +62,6 @@ NEXT: (end)
 
 === rick_shut_down
 PROMPT: [Rick looks you over from the doorway and doesn't step aside.] Word gets around. I know what you are.
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: I'm not here to convince you of anything.
@@ -86,7 +82,6 @@ NEXT: (end)
 === rick_01_soft
 GATE: trust < 3 -> rick_shut_down
 PROMPT: (He takes the drink without looking at it.) You buying because you want something, or because I scare you?
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: Little of both.
@@ -107,7 +102,6 @@ NEXT: rick_02_enabled
 === rick_01_hard
 GATE: trust < 3 -> rick_shut_down
 PROMPT: The guy outside. (He wipes his knuckles on his jeans, slow, so that you watch him do it.) What about him.
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: You put him down and you want somebody to have seen you do it.

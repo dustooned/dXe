@@ -10,7 +10,7 @@ import { createTypewriter } from '../ui/typewriterText.js';
 import { createMeterGroup } from '../ui/meterBar.js';
 import { createNpcPortrait } from '../ui/npcPortrait.js';
 import { createFeelzDartboard } from '../ui/feelzDartboard.js';
-import { emotionColor } from '../engine/loadout.js';
+import { emotionColor, emotionsForClass } from '../engine/loadout.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
 import { createDebtSigil } from '../ui/debtSigil.js';
 import { drawEmotionPattern } from '../ui/emotionPattern.js';
@@ -34,7 +34,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let currentNodeId = resolveGatedNode(openingNodeId(scene, npc, run.get()), npc, run.get());
   let activeEmotion = null;
   let activeEmotionColor = null;
-  let pendingReaction = null;
+  // 'prompt' (NPC's opening line, FEELZ + swipe card) -> 'say' (the player's
+  // own SAY: line, drawn once a swipe resolves) -> 'reaction' (NPC's REACT:).
+  let stage = 'prompt';
+  let promptRevealed = false;
+  let pendingEdge = null;
   let reactionEmotion = null;
   let reactionSwipeKey = null;
   let typewriter = null;
@@ -46,8 +50,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
   function enterNode() {
     activeEmotion = null;
     activeEmotionColor = null;
-    audio.startEmotionStems();
-    audio.ambientMix();
+    stage = 'prompt';
+    promptRevealed = false;
+    const loadedEmotions = emotionsForClass(run.get().loadout);
+    audio.startEmotionStems(loadedEmotions);
+    audio.ambientMix(loadedEmotions);
     render();
   }
 
@@ -70,11 +77,49 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
     content.appendChild(createMeterGroup(runState).el);
 
-    const portrait = createNpcPortrait(npc.npc, npc.accentColor);
+    const portrait = createNpcPortrait(npc.npc, npc.accentColor, npc.portrait);
     content.appendChild(portrait.el);
     content.appendChild(portrait.nameplate);
 
-    if (pendingReaction) {
+    if (stage === 'say') {
+      // Its own bordered box, in the same screen slot the swipe card and
+      // dartboard just occupied — the player's line replaces the choice UI
+      // rather than appearing as loose text, so it reads as "this is what
+      // that choice was" in the exact place the choice just happened.
+      const sayBox = document.createElement('div');
+      sayBox.className = 'dx-say-box';
+      content.appendChild(sayBox);
+
+      const sayLabel = document.createElement('p');
+      sayLabel.className = 'dx-text dx-say-label';
+      sayLabel.textContent = 'YOU';
+      sayBox.appendChild(sayLabel);
+
+      const say = document.createElement('p');
+      say.className = 'dx-text dx-say';
+      sayBox.appendChild(say);
+
+      const tapHint = document.createElement('p');
+      tapHint.className = 'dx-text dx-tap-hint';
+      tapHint.textContent = '(tap to continue)';
+      tapHint.hidden = true;
+      content.appendChild(tapHint);
+
+      typewriter = createTypewriter(say, pendingEdge.playerText, {
+        onChar: audio.playTypewriterTick,
+        onDone: () => { tapHint.hidden = false; },
+      });
+
+      // Same tap-once-to-finish, tap-again-to-continue gesture every other
+      // beat in the game already uses.
+      screen.addEventListener('click', () => {
+        if (typewriter && !typewriter.isDone()) typewriter.finish();
+        else {
+          stage = 'reaction';
+          render();
+        }
+      });
+    } else if (stage === 'reaction') {
       const reaction = document.createElement('p');
       reaction.className = 'dx-text dx-reaction';
       content.appendChild(reaction);
@@ -87,13 +132,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
       typewriter = createTypewriter(
         reaction,
-        composeReaction(pendingReaction.npcReaction, reactionEmotion, reactionSwipeKey),
+        composeReaction(pendingEdge.npcReaction, reactionEmotion, reactionSwipeKey),
         { onChar: audio.playTypewriterTick, onDone: () => { tapHint.hidden = false; } },
       );
 
-      // Nothing here advances on a timer — the reaction is the beat the player
-      // is meant to actually read. First tap finishes the draw, second moves on,
-      // the same gesture cutscene beats and room close-ups already teach.
       screen.addEventListener('click', () => {
         if (typewriter && !typewriter.isDone()) typewriter.finish();
         else continueAfterReaction();
@@ -101,8 +143,14 @@ export function mount(stageEl, scene, { run, onComplete }) {
     } else {
       const prompt = document.createElement('p');
       prompt.className = 'dx-text';
-      prompt.textContent = currentNode().prompt;
       content.appendChild(prompt);
+
+      // Card + dartboard build up front but stay hidden until the prompt
+      // finishes drawing — tapping the screen still finishes the draw early.
+      const interactive = document.createElement('div');
+      interactive.className = 'dx-dialog-interactive';
+      interactive.hidden = !promptRevealed;
+      content.appendChild(interactive);
 
       const card = createSwipeCard({
         promptText: activeEmotion ? 'Drag to respond.' : 'Pick a feeling first.',
@@ -111,7 +159,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
           handleSwipe(key);
         },
       });
-      content.appendChild(card.el);
+      interactive.appendChild(card.el);
 
       if (activeEmotionColor) {
         card.setSelectedColor(activeEmotionColor);
@@ -121,20 +169,36 @@ export function mount(stageEl, scene, { run, onComplete }) {
         loadout: run.get().loadout,
         dropTarget: card,
         selected: activeEmotion,
-        onSelect: (emotion, source) => {
+        // Both tap and drag color the card now — a tap that changes nothing
+        // visible reads as broken, not as restraint. (`source` is kept in
+        // the callback signature in case a future pass wants to bring back
+        // a lighter tap-only treatment; it isn't used for that today.)
+        onSelect: (emotion, _source) => {
           activeEmotion = emotion;
-          activeEmotionColor = source === 'drag' ? emotionColor(emotion) : null;
-          audio.emphasizeEmotion(emotion);
+          activeEmotionColor = emotionColor(emotion);
+          audio.emphasizeEmotion(emotion, emotionsForClass(run.get().loadout));
           render();
         },
       });
-      content.appendChild(dartboard.el);
+      interactive.appendChild(dartboard.el);
+
+      // Re-renders triggered by picking a FEELZ emotion reuse this same node's
+      // prompt — startRevealed skips replaying the draw from scratch.
+      typewriter = createTypewriter(prompt, currentNode().prompt, {
+        onChar: audio.playTypewriterTick,
+        onDone: () => { promptRevealed = true; interactive.hidden = false; },
+        startRevealed: promptRevealed,
+      });
+
+      screen.addEventListener('click', () => {
+        if (typewriter && !typewriter.isDone()) typewriter.finish();
+      });
     }
 
     content.appendChild(createDebtSigil(runState.truthDebt).el);
     stageEl.appendChild(screen);
 
-    if (pendingReaction) {
+    if (stage === 'say' || stage === 'reaction') {
       drawEmotionPattern(patternCanvas, {
         seedStr: `${npc.npc}:${currentNodeId}:${reactionEmotion}`,
         key: reactionEmotion,
@@ -145,9 +209,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
   function handleSwipe(swipeKey) {
     const { edge, patch } = resolveCard(run.get(), currentNode(), swipeKey, activeEmotion);
     run.set(patch);
-    pendingReaction = edge;
+    pendingEdge = edge;
     reactionEmotion = activeEmotion;
     reactionSwipeKey = swipeKey;
+    stage = edge.playerText ? 'say' : 'reaction';
 
     const magnitude =
       Object.values(edge.effects || {}).reduce((sum, v) => sum + Math.abs(v), 0) +
@@ -163,9 +228,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
   function continueAfterReaction() {
-    if (!pendingReaction) return;
-    const edge = pendingReaction;
-    pendingReaction = null;
+    if (stage !== 'reaction' || !pendingEdge) return;
+    const edge = pendingEdge;
+    pendingEdge = null;
+    stage = 'prompt';
     advance(edge);
   }
 

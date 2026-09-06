@@ -10,6 +10,7 @@
 //   bgAnim?, spriteAnim?,   ← animated (key into scene.anims)
 //   image?, sprite?,        ← static fallback (direct URL)
 //   autoAdvanceMs?, interactive?
+//   it?,                    ← IT intrusion beat (see renderItBeat below)
 // }
 import { createTypewriter } from '../ui/typewriterText.js';
 import { preloadTypewriterTick, playTypewriterTick, startAmbient, stopAmbient } from '../shell/audio.js';
@@ -53,6 +54,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
     typewriter = null;
 
     const beat = currentBeat();
+
+    if (beat.it) {
+      renderItBeat(beat);
+      return;
+    }
 
     const screen = document.createElement('div');
     screen.className = `dx-screen dx-cutscene-screen${beat.style ? ` dx-cutscene-screen--${beat.style}` : ''}`;
@@ -110,6 +116,70 @@ export function mount(stageEl, scene, { run, onComplete }) {
     } else {
       handleBeatReady();
     }
+  }
+
+  // IT — an uninvited thought, not a narration beat. Deliberately not a
+  // variant of the normal textbox: it renders as a centered popup over a
+  // scrim (unlike everything else here, which is bottom-anchored and full-
+  // bleed), and closing it is gated behind an explicit X rather than a tap
+  // anywhere — the point is that it has to be *noticed and dismissed*, the
+  // way an intrusive ad does, not tapped past on the way to something else.
+  // No speaker label (IT never announces itself), no choices — IT only ever
+  // observes, it doesn't converse (docs/IT_DESIGN.md). Layout borrows the
+  // traditional RPG dialog box (Undertale/Deltarune): a portrait slot at
+  // left, vertically centered, text filling the rest of the box beside it.
+  // The slot is an empty bordered placeholder — no real IT identity/mark
+  // exists yet, so it's just the shape and size art will eventually fill.
+  function renderItBeat(beat) {
+    const screen = document.createElement('div');
+    screen.className = 'dx-screen dx-cutscene-screen dx-it-screen';
+    stageEl.appendChild(screen);
+
+    const scrim = document.createElement('div');
+    scrim.className = 'dx-it-scrim';
+    screen.appendChild(scrim);
+
+    const box = document.createElement('div');
+    box.className = 'dx-it-box';
+    screen.appendChild(box);
+
+    const icon = document.createElement('div');
+    icon.className = 'dx-it-icon';
+    box.appendChild(icon);
+
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'dx-it-close';
+    closeBtn.setAttribute('aria-label', 'Dismiss');
+    closeBtn.textContent = 'X';
+    box.appendChild(closeBtn);
+
+    const textEl = document.createElement('p');
+    textEl.className = 'dx-it-text';
+    box.appendChild(textEl);
+
+    // The X flashes once the line finishes drawing to say "there's another
+    // one of these after this" — the same job the ▼ cue does everywhere
+    // else, just aimed at the control that actually does something here.
+    // It never flashes on the last beat in the sequence: nothing follows,
+    // so there's nothing to signal.
+    const isLastBeat = beatIndex >= scene.beats.length - 1;
+
+    typewriter = createTypewriter(textEl, beat.text, {
+      onChar: playTypewriterTick,
+      onDone: () => { if (!isLastBeat) closeBtn.classList.add('is-flashing'); },
+    });
+
+    // Tapping the box only finishes the draw early. Only the X advances —
+    // see the function comment for why that's deliberate, not an oversight.
+    box.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (typewriter && !typewriter.isDone()) typewriter.finish();
+    });
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      advance();
+    });
   }
 
   function handleBeatReady() {

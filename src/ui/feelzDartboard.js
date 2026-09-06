@@ -4,8 +4,13 @@
 // dimmed outlines — visible but locked for this run.
 //
 // Same tap + drag-to-card API as feelzWheel.js:
-//   - tap a segment → select, source = 'tap' (no card color change)
-//   - drag segment onto card → select, source = 'drag' (card colors)
+//   - tap a segment → select, source = 'tap'
+//   - drag segment onto card → select, source = 'drag'
+// `source` used to also decide whether the card's border colored (drag
+// only, "keeps drag meaningful") — a tap that visibly did nothing read as
+// broken rather than restrained, so dialogScene.js now colors the card on
+// both. `source` is still passed through for whatever distinction, if any,
+// turns out to be worth keeping.
 //
 // API: createFeelzDartboard({ loadout, dropTarget, onSelect, selected })
 //   loadout   — class key ('Guns' | 'Bible' | 'Crystals')

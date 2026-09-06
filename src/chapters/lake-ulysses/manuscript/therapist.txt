@@ -4,7 +4,6 @@ ACCENT: var(--color-therapist)
 
 === therapist_01
 PROMPT: The screen lights up. A voice, tired but warm, cuts through the ringing in your ears. "You're still there? Okay. Good. What happened in the dream?"
-FEELZ: Anger, Fear, Anticipation
 
 -- TRUTH
 SAY: I don't know. Water. Something underneath it. I couldn't breathe.

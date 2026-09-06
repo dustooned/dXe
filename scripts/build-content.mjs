@@ -37,11 +37,20 @@ function parseDebt(line) {
   return value === '0' ? 0 : Number(value.replace('+', ''));
 }
 
+// PROMPT:/SAY:/REACT: are each one physical line in the manuscript format,
+// but the typewriter engine already renders a real "\n" character as a line
+// break (src/ui/typewriterText.js). Writing \n (backslash-n) lets a writer
+// author a break without the parser needing multi-line field continuation.
+function parseText(line) {
+  return line.trim().replace(/\\n/g, '\n');
+}
+
 function parseManuscript(text, fileName) {
   const lines = text.split(/\r?\n/);
   let npc = null;
   let location = null;
   let accentColor = null;
+  let portrait = null;
   const nodes = {};
 
   let currentNodeId = null;
@@ -77,18 +86,14 @@ function parseManuscript(text, fileName) {
       location = Number(line.slice(9).trim());
     } else if (line.startsWith('ACCENT:')) {
       accentColor = line.slice(7).trim();
+    } else if (line.startsWith('PORTRAIT:')) {
+      portrait = line.slice(9).trim();
     } else if (line.startsWith('===')) {
       commitNode();
       currentNodeId = line.replace(/^=+/, '').trim();
-      currentNode = { id: currentNodeId, npc, location, prompt: '', feelzOptions: [], swipes: {} };
+      currentNode = { id: currentNodeId, npc, location, prompt: '', swipes: {} };
     } else if (line.startsWith('PROMPT:')) {
-      currentNode.prompt = line.slice(7).trim();
-    } else if (line.startsWith('FEELZ:')) {
-      currentNode.feelzOptions = line
-        .slice(6)
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean);
+      currentNode.prompt = parseText(line.slice(7));
     } else if (line.startsWith('GATE:')) {
       currentNode.gate = parseGate(line.slice(5), fileName, lineNumber);
     } else if (line.startsWith('--')) {
@@ -108,9 +113,9 @@ function parseManuscript(text, fileName) {
         nextNodeId: null,
       };
     } else if (line.startsWith('SAY:')) {
-      currentEdge.playerText = line.slice(4).trim();
+      currentEdge.playerText = parseText(line.slice(4));
     } else if (line.startsWith('REACT:')) {
-      currentEdge.npcReaction = line.slice(6).trim();
+      currentEdge.npcReaction = parseText(line.slice(6));
     } else if (line.startsWith('EFFECTS:')) {
       currentEdge.effects = parseEffects(line.slice(8), fileName, lineNumber);
     } else if (line.startsWith('DEBT:')) {
@@ -132,7 +137,7 @@ function parseManuscript(text, fileName) {
   });
   commitNode();
 
-  return { npc, location, accentColor, nodes };
+  return { npc, location, accentColor, portrait, nodes };
 }
 
 function buildChapter(chapterId) {

@@ -112,7 +112,10 @@ Framework-agnostic game logic:
 - `cardEngine.js` — `resolveCard(state, node, swipeKey)`: applies stat
   deltas, debt, and ledger entries for a dialog choice
 - `debtEngine.js` — Truth Debt thresholds, bloom-event triggers, lake
-  health calculation
+  health calculation. Note that `newlyFired` and `lakeHealth` are both
+  computed and stored but **nothing reads them back yet** — the trigger is
+  wired and waiting for something to present it (see `IT_DESIGN.md`); the
+  Reckoning-at-10 cutoff lives in `dialogScene.js`, not here.
 - `endingEngine.js` — ending selection from final debt
 - `reckoning.js` — builds the end-of-run "confess vs. double down" deck
   from the ledger

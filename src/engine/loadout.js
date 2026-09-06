@@ -50,3 +50,10 @@ export function emotionColor(emotion) {
 export function emotionAmplifies(emotion) {
   return EMOTIONS[emotion]?.amplifies ?? null;
 }
+
+// The 3 emotions a class actually has loaded — the only ones the dartboard
+// lets the player select, and so the only ones that should have audio stems
+// running. Falls back to all 8 if the class is unknown.
+export function emotionsForClass(loadout) {
+  return CLASSES[loadout]?.emotions ?? EMOTION_ORDER;
+}

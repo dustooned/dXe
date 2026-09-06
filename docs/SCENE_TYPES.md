@@ -276,6 +276,46 @@ mini-game, confrontation cutscene, dialog. Each NPC has three openers (the
 original node plus a `_soft` and a `_hard` variant) authored in their
 manuscript like any other node.
 
+**IT beat (`it: true`).** IT (`docs/IT_DESIGN.md`) is the player's inner
+monologue — uninvited, never a conversation. Its first build is a beat
+variant, not a new scene type, the same reasoning as confrontations above:
+
+```json
+{ "it": true, "text": "You're probably wondering where you are." }
+```
+
+Renders nothing like a normal beat: a centered popup over a scrim,
+inverted colors (white box, black text, vs. the rest of the game's
+black-on-white), and its own display font (`--font-it`, "VT323" — a rough
+CRT-terminal face) instead of the game's pixel font — the point is that it
+should read as wrong, not as another piece of UI chrome. No speaker label
+(IT doesn't announce itself), no choices.
+
+Internal layout borrows the traditional RPG textbox (Undertale/Deltarune):
+a portrait slot at left, vertically centered, with the line filling the
+rest of the box beside it rather than centered underneath. The slot
+(`.dx-it-icon`, 56×56) is an empty bordered placeholder, the same idea as
+`ui/npcPortrait.js`'s fallback box — no glyph inside, since IT has no real
+identity/mark yet. Real art drops into that same slot with no layout
+changes needed.
+
+Dismissal is deliberately **not** the usual tap-anywhere-to-continue.
+Tapping the box only finishes the draw early, same as everywhere else;
+only the X in the corner advances the beat. The player has to notice and
+actively close it, like an intrusive ad — a stray tap can't skip past it
+by accident, which is the opposite of every other beat type in this file.
+Once the line finishes drawing, the X itself flashes (`.is-flashing`,
+reusing the debt sigil's `dx-pulse` keyframes) to signal there's another
+one of these coming — except on the last beat in the sequence, where
+nothing follows it and the X stays still.
+
+First real use: `content/it_intro.json`, three class-neutral lines wired
+in as their own scene (`it-intro`) ahead of the opening call, since they
+fire before the player has a loadout — see `lake-ulysses/index.js`. Every
+other trigger IT_DESIGN.md describes (post-swipe in dialog, bloom events,
+the reckoning) is unbuilt and would need the class/dominant-emotion-aware
+logic this first beat deliberately doesn't have yet.
+
 ### `minigame` (`src/scenes/minigameScene.js`)
 
 A chapter shouldn't have to know how a mini-game works internally, only

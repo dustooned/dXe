@@ -13,11 +13,17 @@ One JSON file per NPC, e.g. `content/deborah.json`:
   "npc": "DEBORAH",
   "location": 2,
   "accentColor": "var(--color-deborah)",
+  "portrait": null,
   "nodes": {
     "deborah_01": { ...node }
   }
 }
 ```
+
+- `portrait` — optional path to a portrait image (served from `public/`,
+  see "Asset folders" below), or `null` for the colored-initial placeholder
+  `ui/npcPortrait.js` still falls back to. Author it via a manuscript's
+  `PORTRAIT:` line (`SCRIPT_FORMAT.md`) rather than hand-editing this JSON.
 
 ## Node
 
@@ -27,7 +33,6 @@ One JSON file per NPC, e.g. `content/deborah.json`:
   "npc": "DEBORAH",
   "location": 2,
   "prompt": "God took my boy when He needed him. I just have to trust that.",
-  "feelzOptions": ["Anger", "Fear", "Anticipation"],
   "swipes": {
     "truth": { ...edge },
     "lie": { ...edge }
@@ -41,11 +46,14 @@ One JSON file per NPC, e.g. `content/deborah.json`:
 }
 ```
 
-- `feelzOptions` — which of the 3 demo emotions (Anger / Fear /
-  Anticipation) show as FEELZ picker bubbles for this node. Picking one
-  amplifies that emotion's paired stat's swing on whatever swipe follows
-  (Emotional Lean — see `STAT_MATH.md`); it doesn't change which node
-  comes next.
+- There is no per-node emotion list. Which 3 of the 8 FEELZ emotions the
+  player can pick is decided once by their class (`run.loadout`, set by the
+  Questionnaire) and holds for the whole run — see `engine/loadout.js`.
+  Picking one amplifies that emotion's paired stat's swing on whatever
+  swipe follows (Emotional Lean — see `STAT_MATH.md`); it doesn't change
+  which node comes next. A `feelzOptions` field used to appear here and was
+  read by nothing; it was removed rather than wired, because a per-node list
+  that didn't intersect the player's class would leave them nothing to pick.
 - Swiping left = `truth`, right = `lie`.
 - `gate` (optional) — meter-gated branching. If present, checked whenever
   the game is about to show *this* node: if `state[stat] <op> value` is
@@ -107,8 +115,10 @@ them:
 - **`lucidity`** — your own clarity/self-awareness. Truths build it; lies
   rarely touch it.
 - **`debtDelta` (Truth Debt)** — the one meter with teeth. Only lies
-  should add to it. It drives bloom-event thresholds, forces the
-  Reckoning at 10, and picks the ending.
+  should add to it. It forces the Reckoning at 10 and picks the ending.
+  It also crosses bloom-event thresholds at 3/6/8, but nothing presents
+  those to the player yet — write debt for the ending and the Reckoning,
+  not for a bloom the player will see.
 
 ## Endings file
 
