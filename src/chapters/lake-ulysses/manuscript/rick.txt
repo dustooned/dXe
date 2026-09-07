@@ -30,7 +30,7 @@ SAY: Maybe the questions are the only thing keeping you human.
 REACT: He goes still. The bar noise seems to get louder around the silence.
 EFFECTS: integrity+2 lucidity+2 trust-2
 DEBT: 0
-NEXT: (end)
+NEXT: rick_03
 
 -- LIE
 SAY: Questions are for people who can't back it up. You can.
@@ -39,7 +39,7 @@ EFFECTS: integrity-1 stability+2 trust+2
 DEBT: +3
 TAGS: Masculinity, Loyalty
 LEDGER: You told Rick that violence was proof, not a problem.
-NEXT: (end)
+NEXT: rick_03
 
 === rick_02_confronted
 PROMPT: You don't get to judge me. You don't know what it costs to keep this patch.
@@ -49,7 +49,7 @@ SAY: What's it cost, Rick? Who's it for? Who are you trying to prove this to?
 REACT: Something cracks in his face — not anger this time. For a second he looks like he might actually answer. Then he doesn't.
 EFFECTS: integrity+3 lucidity+2 stability-1 trust-1
 DEBT: 0
-NEXT: (end)
+NEXT: rick_03
 
 -- LIE
 SAY: You're right. It's not my place.
@@ -58,7 +58,7 @@ EFFECTS: integrity-2 stability+1 trust+1
 DEBT: +2
 TAGS: Masculinity
 LEDGER: You backed off Rick right as he almost let something show.
-NEXT: (end)
+NEXT: rick_03
 
 === rick_shut_down
 PROMPT: [Rick looks you over from the doorway and doesn't step aside.] Word gets around. I know what you are.
@@ -118,3 +118,22 @@ DEBT: +4
 TAGS: Violence, Masculinity
 LEDGER: You told Rick the man he beat half to death had it coming.
 NEXT: rick_02_enabled
+
+=== rick_03
+PROMPT: (He turns the empty glass in a slow circle.) You know why I got the patch tattooed instead of just wearing it? Can't take off skin.
+
+-- TRUTH
+SAY: Sounds less like loyalty and more like you don't trust yourself to leave.
+REACT: His hand stops on the glass. He doesn't answer that one. First time tonight.
+EFFECTS: integrity+3 lucidity+2 trust-1
+DEBT: 0
+NEXT: (end)
+
+-- LIE
+SAY: That's real commitment. Most guys wouldn't go that far.
+REACT: He grins and rolls his sleeve back down, satisfied. "Damn right."
+EFFECTS: integrity-2 stability+2 trust+2
+DEBT: +3
+TAGS: Masculinity, Loyalty
+LEDGER: You told Rick his inability to leave the club was commitment.
+NEXT: (end)

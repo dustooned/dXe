@@ -65,7 +65,7 @@
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
-          "nextNodeId": null
+          "nextNodeId": "rick_03"
         },
         "lie": {
           "playerText": "Questions are for people who can't back it up. You can.",
@@ -81,7 +81,7 @@
             "Loyalty"
           ],
           "ledgerEntry": "You told Rick that violence was proof, not a problem.",
-          "nextNodeId": null
+          "nextNodeId": "rick_03"
         }
       }
     },
@@ -103,7 +103,7 @@
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
-          "nextNodeId": null
+          "nextNodeId": "rick_03"
         },
         "lie": {
           "playerText": "You're right. It's not my place.",
@@ -118,7 +118,7 @@
             "Masculinity"
           ],
           "ledgerEntry": "You backed off Rick right as he almost let something show.",
-          "nextNodeId": null
+          "nextNodeId": "rick_03"
         }
       }
     },
@@ -239,6 +239,43 @@
         "op": "<",
         "value": 3,
         "elseNodeId": "rick_shut_down"
+      }
+    },
+    "rick_03": {
+      "id": "rick_03",
+      "npc": "RICK",
+      "location": 5,
+      "prompt": "(He turns the empty glass in a slow circle.) You know why I got the patch tattooed instead of just wearing it? Can't take off skin.",
+      "swipes": {
+        "truth": {
+          "playerText": "Sounds less like loyalty and more like you don't trust yourself to leave.",
+          "npcReaction": "His hand stops on the glass. He doesn't answer that one. First time tonight.",
+          "effects": {
+            "integrity": 3,
+            "lucidity": 2,
+            "trust": -1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": null
+        },
+        "lie": {
+          "playerText": "That's real commitment. Most guys wouldn't go that far.",
+          "npcReaction": "He grins and rolls his sleeve back down, satisfied. \"Damn right.\"",
+          "effects": {
+            "integrity": -2,
+            "stability": 2,
+            "trust": 2
+          },
+          "debtDelta": 3,
+          "tags": [
+            "Masculinity",
+            "Loyalty"
+          ],
+          "ledgerEntry": "You told Rick his inability to leave the club was commitment.",
+          "nextNodeId": null
+        }
       }
     }
   }

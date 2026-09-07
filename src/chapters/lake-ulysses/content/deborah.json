@@ -60,7 +60,7 @@
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
-          "nextNodeId": null
+          "nextNodeId": "deborah_03"
         },
         "lie": {
           "playerText": "You're one of the few who still has real faith.",
@@ -75,7 +75,7 @@
             "Faith"
           ],
           "ledgerEntry": "You told Deborah she was spiritually superior for blaming God.",
-          "nextNodeId": null
+          "nextNodeId": "deborah_03"
         }
       }
     },
@@ -97,7 +97,7 @@
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
-          "nextNodeId": null
+          "nextNodeId": "deborah_03"
         },
         "lie": {
           "playerText": "You're right. I shouldn't have said that.",
@@ -112,7 +112,7 @@
             "Faith"
           ],
           "ledgerEntry": "You apologized for telling Deborah the truth.",
-          "nextNodeId": null
+          "nextNodeId": "deborah_03"
         }
       }
     },
@@ -186,6 +186,43 @@
           ],
           "ledgerEntry": "You told Deborah her son's death was God's will, standing on her doorstep.",
           "nextNodeId": "deborah_02_denial"
+        }
+      }
+    },
+    "deborah_03": {
+      "id": "deborah_03",
+      "npc": "DEBORAH",
+      "location": 2,
+      "prompt": "(She sits down at the kitchen table, like her legs finally admit it.) His name was Caleb. Nobody at this church says his name anymore.",
+      "swipes": {
+        "truth": {
+          "playerText": "Say it as much as you need to. I'm listening.",
+          "npcReaction": "She says it three more times, quiet, like she's checking it still works.",
+          "effects": {
+            "integrity": 2,
+            "lucidity": 1,
+            "trust": 2
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": null
+        },
+        "lie": {
+          "playerText": "He's at peace now. You don't need to keep saying it.",
+          "npcReaction": "She stops. Folds her hands. Goes back to being the woman who greets people at the door.",
+          "effects": {
+            "integrity": -2,
+            "stability": 1,
+            "trust": 1
+          },
+          "debtDelta": 3,
+          "tags": [
+            "Faith",
+            "Health"
+          ],
+          "ledgerEntry": "You told Deborah to stop saying her son's name.",
+          "nextNodeId": null
         }
       }
     }

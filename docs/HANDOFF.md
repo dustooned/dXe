@@ -321,11 +321,17 @@ Roughly in order of how ready each one is to just start:
   dominant-emotion read at the end of each NPC encounter, the Reckoning,
   and the ending. ~40 placeholder lines total. What's left is real prose
   in place of them, and the separate hint-system merge below.
-- **More depth in Lake Ulysses** — additional dialog branches on existing
-  NPCs. Pure content through the manuscript pipeline, no engine changes.
-  Every NPC is now three openers wide (the confrontation picks one) but
-  still only two nodes deep. Obvious targets: a third node on any NPC, or
-  Bible/Crystals-class-aware FEELZ options on existing nodes.
+- ~~A third node on all four confrontation NPCs~~ — done: `deborah_03`,
+  `rick_03`, `rwanda_03`, `samun_03`. Both existing second-node branches
+  (confronted/enabled, open/closed, etc.) now funnel into one shared
+  third node per NPC instead of ending there; that node closes the arc.
+  Placeholder prose, same bar as the rest of the content — written to be
+  read, just not final. `rick_shut_down` (the trust-gated lockout) was
+  left as a one-node dead end on purpose; it's supposed to be curt.
+- **More depth in Lake Ulysses** — still open: Bible/Crystals-class-aware
+  FEELZ options on existing nodes, or a fourth node continuing any of the
+  four arcs above. Pure content through the manuscript pipeline, no
+  engine changes.
 
 - ~~Mini-games for Rwanda / Samun / Rick~~ — done, all four exist and play.
   Art and prose are placeholder; see `ASSET_GUIDELINES.md` for the hand-off
