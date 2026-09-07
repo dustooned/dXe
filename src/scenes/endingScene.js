@@ -7,6 +7,8 @@
 import { getEndingKey, getEpilogueStat } from '../engine/endingEngine.js';
 import { drawEmotionPattern } from '../ui/emotionPattern.js';
 import { createTypewriter } from '../ui/typewriterText.js';
+import { createItPopup } from '../ui/itPopup.js';
+import { ENDING_IT_TEXT } from '../engine/itEndgame.js';
 import * as fx from '../shell/fx.js';
 import * as audio from '../shell/audio.js';
 
@@ -37,6 +39,7 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
 
   let typewriter = null;
   let judgmentTimer = null;
+  let itPopup = null;
 
   function renderJudgment() {
     stageEl.innerHTML = '';
@@ -84,7 +87,7 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
 
     const fullText = [...ending.text, epilogueLine].filter(Boolean).join('\n\n');
     typewriter = createTypewriter(textEl, fullText, {
-      onDone: () => appendMenuButton(screen),
+      onDone: () => showEndingIt(screen),
     });
   }
 
@@ -92,6 +95,21 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
     if (typewriter && !typewriter.isDone()) {
       typewriter.finish();
     }
+  }
+
+  // IT gets the actual last word of the chapter — one line, once the body
+  // text is fully drawn, before the player can leave.
+  function showEndingIt(screen) {
+    itPopup = createItPopup(stageEl, {
+      text: ENDING_IT_TEXT,
+      loadout: run.get().loadout,
+      flashClose: false,
+      onClose: () => {
+        itPopup?.destroy();
+        itPopup = null;
+        appendMenuButton(screen);
+      },
+    });
   }
 
   function appendMenuButton(screen) {
@@ -110,6 +128,7 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
   return function unmount() {
     clearTimeout(judgmentTimer);
     typewriter?.destroy();
+    itPopup?.destroy();
     stageEl.innerHTML = '';
   };
 }

@@ -7,12 +7,13 @@ import { resolveCard, resolveGatedNode } from '../engine/cardEngine.js';
 import { composeReaction } from '../engine/reactions.js';
 import { checkBloomTriggers } from '../engine/debtEngine.js';
 import { BLOOM_IT_TEXT } from '../engine/itBlooms.js';
+import { emotionLeanText } from '../engine/itEmotionLean.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createItPopup } from '../ui/itPopup.js';
 import { createMeterGroup } from '../ui/meterBar.js';
 import { createNpcPortrait } from '../ui/npcPortrait.js';
 import { createFeelzDartboard } from '../ui/feelzDartboard.js';
-import { emotionColor, emotionsForClass } from '../engine/loadout.js';
+import { emotionColor, emotionsForClass, getDominantEmotion } from '../engine/loadout.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
 import { createDebtSigil } from '../ui/debtSigil.js';
 import { drawEmotionPattern } from '../ui/emotionPattern.js';
@@ -212,6 +213,12 @@ export function mount(stageEl, scene, { run, onComplete }) {
   function handleSwipe(swipeKey) {
     const { edge, patch } = resolveCard(run.get(), currentNode(), swipeKey, activeEmotion);
     run.set(patch);
+
+    // Tally every FEELZ pick for the whole run, not just this node — feeds
+    // the dominant-emotion IT read at the end of the encounter (proceed()).
+    const counts = run.get().emotionCounts;
+    run.set({ emotionCounts: { ...counts, [activeEmotion]: (counts[activeEmotion] ?? 0) + 1 } });
+
     pendingEdge = edge;
     reactionEmotion = activeEmotion;
     reactionSwipeKey = swipeKey;
@@ -280,7 +287,32 @@ export function mount(stageEl, scene, { run, onComplete }) {
       return;
     }
 
-    onComplete();
+    // This NPC's encounter is over — IT reads the player's FEELZ pattern
+    // for the run so far, once there's actually a pattern to read. Skip
+    // below 2 picks: a single data point isn't a lean, it's a coin flip,
+    // and this is also what naturally excludes the Therapist (one swipe,
+    // exempt from the rest of the NPC shape anyway — see docs/HANDOFF.md).
+    const counts = run.get().emotionCounts;
+    const totalPicks = Object.values(counts).reduce((a, b) => a + b, 0);
+    if (totalPicks < 2) {
+      onComplete();
+      return;
+    }
+
+    showEmotionLeanIt(getDominantEmotion(counts), onComplete);
+  }
+
+  function showEmotionLeanIt(dominant, onClose) {
+    itPopup = createItPopup(stageEl, {
+      text: emotionLeanText(run.get().loadout, dominant),
+      loadout: run.get().loadout,
+      flashClose: false, // one-off interrupt — nothing follows it
+      onClose: () => {
+        itPopup?.destroy();
+        itPopup = null;
+        onClose();
+      },
+    });
   }
 
   // The NPC's leitmotif is this character's continuous underscore for the

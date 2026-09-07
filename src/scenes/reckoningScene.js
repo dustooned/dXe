@@ -4,10 +4,13 @@
 //
 // scene shape: { type: 'reckoning', id: string }
 import { buildReckoningDeck, resolveReckoningCard } from '../engine/reckoning.js';
+import { createItPopup } from '../ui/itPopup.js';
+import { RECKONING_IT_TEXT } from '../engine/itEndgame.js';
 
 export function mount(stageEl, scene, { run, onComplete }) {
   const deck = buildReckoningDeck(run.get().ledger);
   let cardIndex = 0;
+  let itPopup = null;
 
   if (deck.length === 0) {
     onComplete();
@@ -57,9 +60,21 @@ export function mount(stageEl, scene, { run, onComplete }) {
     else onComplete();
   }
 
-  render();
+  // "IT is loudest here" (docs/IT_DESIGN.md) — one line, before the first
+  // card, ahead of whatever gets confessed or doubled down on.
+  itPopup = createItPopup(stageEl, {
+    text: RECKONING_IT_TEXT,
+    loadout: run.get().loadout,
+    flashClose: false,
+    onClose: () => {
+      itPopup?.destroy();
+      itPopup = null;
+      render();
+    },
+  });
 
   return function unmount() {
+    itPopup?.destroy();
     stageEl.innerHTML = '';
   };
 }

@@ -57,3 +57,16 @@ export function emotionAmplifies(emotion) {
 export function emotionsForClass(loadout) {
   return CLASSES[loadout]?.emotions ?? EMOTION_ORDER;
 }
+
+// `counts` is a { [emotion]: number } tally of FEELZ picks across the run
+// (run.emotionCounts, incremented once per swipe in dialogScene.js).
+// Returns the emotion with a *unique* highest count, or null if the picks
+// are tied (including all-zero, before any pick has happened) — a spread
+// that even wasn't a lean, not a lean the game has to arbitrarily break.
+export function getDominantEmotion(counts) {
+  const entries = Object.entries(counts).filter(([, n]) => n > 0);
+  if (!entries.length) return null;
+  const max = Math.max(...entries.map(([, n]) => n));
+  const leaders = entries.filter(([, n]) => n === max);
+  return leaders.length === 1 ? leaders[0][0] : null;
+}

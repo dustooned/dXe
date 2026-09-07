@@ -5,7 +5,7 @@
 // of the interaction choices below — this file is the factored-out render,
 // not a new design.
 import { createTypewriter } from './typewriterText.js';
-import { playTypewriterTick } from '../shell/audio.js';
+import { playTypewriterTick, playTyagl } from '../shell/audio.js';
 
 // `text` is either a plain string (class-neutral — the only option before
 // the player has a loadout) or a { Guns, Bible, Crystals } object, resolved
@@ -30,6 +30,14 @@ export function resolveItText(text, loadout) {
 // same as it owns deciding what happens next.
 export function createItPopup(stageEl, { text, loadout, flashClose = false, onClose } = {}) {
   let typewriter = null;
+
+  // The same eerie sting questionnaireScene.js plays under the Therapist's
+  // diagnosis — deliberately reused, not a distinct IT stinger. Both are
+  // "the game reading you" (docs/IT_DESIGN.md's "IT is the hint system"),
+  // so they should sound like the same thing happening, not two different
+  // effects that happen to look similar. Fires the instant the popup
+  // mounts, ahead of the typewriter draw, to land with the appearance.
+  playTyagl();
 
   const screen = document.createElement('div');
   screen.className = 'dx-screen dx-it-screen';

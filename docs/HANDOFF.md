@@ -309,6 +309,11 @@ Roughly in order of how ready each one is to just start:
   `ui/feelzDartboard.js`, `scenes/questionnaireScene.js`.)
 - ~~inkflo Graphics preloader~~ — done, two-phase; see the entry under
   "Needs something from outside this repo" below.
+- ~~IT's trigger system~~ — done, all six moments `IT_DESIGN.md` scoped:
+  the pre-questionnaire intro, each confrontation, bloom events, a
+  dominant-emotion read at the end of each NPC encounter, the Reckoning,
+  and the ending. ~40 placeholder lines total. What's left is real prose
+  in place of them, and the separate hint-system merge below.
 - **More depth in Lake Ulysses** — additional dialog branches on existing
   NPCs. Pure content through the manuscript pipeline, no engine changes.
   Every NPC is now three openers wide (the confrontation picks one) but

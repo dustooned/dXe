@@ -97,6 +97,21 @@ it resumes exactly what `advance()` would otherwise have done immediately:
 the force-to-Reckoning jump at debt 10 still happens, just after the
 popup's been dismissed rather than instead of it.
 
+**The end of each NPC's encounter fires a second, independent IT
+interrupt** — the player's FEELZ pattern, not their debt. `handleSwipe()`
+tallies every pick into `run.emotionCounts` (never reset — a run-wide
+lean, not a per-NPC one); when an NPC's node graph ends (`edge.nextNodeId`
+is `null`), `proceed()` calls `engine/loadout.js`'s `getDominantEmotion()`
+and shows the matching line from `engine/itEmotionLean.js`, skipping
+entirely below 2 total picks (a single data point isn't a lean — this is
+also what excludes the Therapist without naming her specifically). A
+genuine tie resolves to a `neutral` line per class, written calmer and
+more detached than the emotion-specific ones on purpose, not a coin flip
+between two equally-true reads. This and the bloom interrupt above can
+both fire on the same closing swipe — bloom shows first (it's tied to
+*that* swipe), the emotion read shows after (it's about the whole
+encounter), each closed independently before the scene actually advances.
+
 ### `questionnaire` (`src/scenes/questionnaireScene.js`)
 
 Three swipe questions that assign the player's class loadout, followed by
@@ -127,6 +142,11 @@ Completes immediately if the ledger is empty.
 { "type": "reckoning", "id": "reckoning" }
 ```
 
+**One IT popup, before the first card** — "IT is loudest here"
+(`IT_DESIGN.md`). Only reachable when the deck isn't empty (the empty-deck
+path above returns before ever mounting the popup). One line per class,
+`engine/itEndgame.js`'s `RECKONING_IT_TEXT`; closing it reveals card 1/N.
+
 ### `ending` (`src/scenes/endingScene.js`)
 
 Terminal, two phases. Picks the ending by final Truth Debt and records
@@ -150,9 +170,11 @@ anywhere skips ahead immediately. The dramatic flash/shake/sting
 **Phase 2 — typewriter text.** Title renders instantly (a banner, not
 part of the draw); the ending's body text plus the epilogue line (see
 `STAT_MATH.md`) are joined into one block and typewriter-drawn together
-(`ui/typewriterText.js`). A tap while drawing finishes it instantly. The
-"BACK TO MENU" button only appears once the text is fully drawn — no
-premature exit mid-reveal.
+(`ui/typewriterText.js`). A tap while drawing finishes it instantly. Once
+the text is fully drawn, one IT popup appears — the actual last word of
+the chapter, one line per class (`engine/itEndgame.js`'s `ENDING_IT_TEXT`)
+— and only once *that's* closed does "BACK TO MENU" appear. No premature
+exit mid-reveal, and now none mid-IT either.
 
 Resolved open questions from the original plan: real ending art still
 doesn't exist, so the judgment beat uses the same procedural placeholder
@@ -313,7 +335,11 @@ inverted colors (white box, black text, vs. the rest of the game's
 black-on-white), and its own display font (`--font-it`, "VT323" — a rough
 CRT-terminal face) instead of the game's pixel font — the point is that it
 should read as wrong, not as another piece of UI chrome. No speaker label
-(IT doesn't announce itself), no choices.
+(IT doesn't announce itself), no choices. It also plays `audio.playTyagl()`
+the instant it mounts — the same sting `questionnaireScene.js` plays under
+the Therapist's diagnosis, reused deliberately rather than a distinct IT
+sound, since both are "the game reading you" (see IT_DESIGN.md's "IT is
+the hint system").
 
 Internal layout borrows the traditional RPG textbox (Undertale/Deltarune):
 a portrait slot at left, vertically centered, with the line filling the
@@ -346,16 +372,16 @@ out. **Placeholder prose** — one line per class per NPC, written to
 exercise the class-voice split (Guns blunt, Bible evaluating, Crystals
 porous — see `IT_DESIGN.md`'s voice profiles), not final writing.
 
-Third real use: the bloom-event interrupt in `dialogScene.js` (see the
-`dialog` section above) — `createItPopup()` called directly, not as a
-cutscene beat, one line per class per Truth Debt threshold
-(`engine/itBlooms.js`). This is why the popup lives in its own module
-instead of staying inline in `cutsceneScene.js`: a beat-shaped API doesn't
-fit a call site that isn't sequencing beats at all.
-
-Still unbuilt: dominant-emotion-aware IT text during the encounters
-themselves (a swipe's *emotion pick*, not just the debt threshold,
-changing what IT says), and IT dialog for the reckoning and the endings.
+Every other use calls `createItPopup()` directly rather than going through
+a beat at all — this is why the popup lives in its own module instead of
+staying inline in `cutsceneScene.js`: a beat-shaped API doesn't fit a call
+site that isn't sequencing beats. `dialogScene.js` has two independent
+triggers of its own (the bloom-event interrupt and the end-of-encounter
+dominant-emotion read — see the `dialog` section above for both), and
+`reckoningScene.js` / `endingScene.js` each have one (see their sections).
+Every trigger `IT_DESIGN.md` originally scoped is now built; what's left
+there is content (real prose in place of the placeholder lines) and the
+separate, still-unscoped hint-system merge.
 
 ### `minigame` (`src/scenes/minigameScene.js`)
 

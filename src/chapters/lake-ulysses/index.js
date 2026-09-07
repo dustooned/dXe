@@ -104,6 +104,10 @@ const initialRunState = {
   loadout: 'Guns',
   // dialogSceneId -> node id, written by a confrontation cutscene's choice.
   openers: {},
+  // { [emotion]: count } — every FEELZ pick across the whole run, keyed by
+  // emotion name. Drives the dominant-emotion IT interrupt at the end of
+  // each NPC encounter (engine/loadout.js's getDominantEmotion()).
+  emotionCounts: {},
 };
 
 export function mount(stageEl, { exit, startSceneId }) {

@@ -947,6 +947,12 @@ abstract symbols, drag-to-card interaction. (<code>engine/loadout.js</code>,
 <li><p><del>inkflo Graphics preloader</del> — done, two-phase; see the entry under
 &quot;Needs something from outside this repo&quot; below.</p>
 </li>
+<li><p><del>IT&#39;s trigger system</del> — done, all six moments <a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a> scoped:
+the pre-questionnaire intro, each confrontation, bloom events, a
+dominant-emotion read at the end of each NPC encounter, the Reckoning,
+and the ending. ~40 placeholder lines total. What&#39;s left is real prose
+in place of them, and the separate hint-system merge below.</p>
+</li>
 <li><p><strong>More depth in Lake Ulysses</strong> — additional dialog branches on existing
 NPCs. Pure content through the manuscript pipeline, no engine changes.
 Every NPC is now three openers wide (the confrontation picks one) but
@@ -1259,6 +1265,20 @@ crosses two thresholds in one swipe, only the top one gets shown). Closing
 it resumes exactly what <code>advance()</code> would otherwise have done immediately:
 the force-to-Reckoning jump at debt 10 still happens, just after the
 popup&#39;s been dismissed rather than instead of it.</p>
+<p><strong>The end of each NPC&#39;s encounter fires a second, independent IT
+interrupt</strong> — the player&#39;s FEELZ pattern, not their debt. <code>handleSwipe()</code>
+tallies every pick into <code>run.emotionCounts</code> (never reset — a run-wide
+lean, not a per-NPC one); when an NPC&#39;s node graph ends (<code>edge.nextNodeId</code>
+is <code>null</code>), <code>proceed()</code> calls <code>engine/loadout.js</code>&#39;s <code>getDominantEmotion()</code>
+and shows the matching line from <code>engine/itEmotionLean.js</code>, skipping
+entirely below 2 total picks (a single data point isn&#39;t a lean — this is
+also what excludes the Therapist without naming her specifically). A
+genuine tie resolves to a <code>neutral</code> line per class, written calmer and
+more detached than the emotion-specific ones on purpose, not a coin flip
+between two equally-true reads. This and the bloom interrupt above can
+both fire on the same closing swipe — bloom shows first (it&#39;s tied to
+<em>that</em> swipe), the emotion read shows after (it&#39;s about the whole
+encounter), each closed independently before the scene actually advances.</p>
 <h3 id="doc-scene_types--questionnaire-srcscenesquestionnairescenejs"><a class="anchor" href="#doc-scene_types--questionnaire-srcscenesquestionnairescenejs" aria-label="Link to this section">#</a><code>questionnaire</code> (<code>src/scenes/questionnaireScene.js</code>)</h3>
 <p>Three swipe questions that assign the player&#39;s class loadout, followed by
 the Therapist&#39;s diagnosis. Carries no content in the scene object — the
@@ -1279,6 +1299,10 @@ extend this: naming the class turns an atmospheric beat into a menu.</p>
 Completes immediately if the ledger is empty.</p>
 <pre><code class="language-json">{ &quot;type&quot;: &quot;reckoning&quot;, &quot;id&quot;: &quot;reckoning&quot; }
 </code></pre>
+<p><strong>One IT popup, before the first card</strong> — &quot;IT is loudest here&quot;
+(<a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a>). Only reachable when the deck isn&#39;t empty (the empty-deck
+path above returns before ever mounting the popup). One line per class,
+<code>engine/itEndgame.js</code>&#39;s <code>RECKONING_IT_TEXT</code>; closing it reveals card 1/N.</p>
 <h3 id="doc-scene_types--ending-srcscenesendingscenejs"><a class="anchor" href="#doc-scene_types--ending-srcscenesendingscenejs" aria-label="Link to this section">#</a><code>ending</code> (<code>src/scenes/endingScene.js</code>)</h3>
 <p>Terminal, two phases. Picks the ending by final Truth Debt and records
 it immediately on mount (not deferred to the end of the beat). Calls
@@ -1297,9 +1321,11 @@ anywhere skips ahead immediately. The dramatic flash/shake/sting
 <p><strong>Phase 2 — typewriter text.</strong> Title renders instantly (a banner, not
 part of the draw); the ending&#39;s body text plus the epilogue line (see
 <a class="doc-ref" href="#doc-stat_math" data-doc="doc-stat_math"><code>STAT_MATH.md</code></a>) are joined into one block and typewriter-drawn together
-(<code>ui/typewriterText.js</code>). A tap while drawing finishes it instantly. The
-&quot;BACK TO MENU&quot; button only appears once the text is fully drawn — no
-premature exit mid-reveal.</p>
+(<code>ui/typewriterText.js</code>). A tap while drawing finishes it instantly. Once
+the text is fully drawn, one IT popup appears — the actual last word of
+the chapter, one line per class (<code>engine/itEndgame.js</code>&#39;s <code>ENDING_IT_TEXT</code>)
+— and only once <em>that&#39;s</em> closed does &quot;BACK TO MENU&quot; appear. No premature
+exit mid-reveal, and now none mid-IT either.</p>
 <p>Resolved open questions from the original plan: real ending art still
 doesn&#39;t exist, so the judgment beat uses the same procedural placeholder
 pattern as everywhere else rather than blocking on real sprites. The
@@ -1451,7 +1477,11 @@ inverted colors (white box, black text, vs. the rest of the game&#39;s
 black-on-white), and its own display font (<code>--font-it</code>, &quot;VT323&quot; — a rough
 CRT-terminal face) instead of the game&#39;s pixel font — the point is that it
 should read as wrong, not as another piece of UI chrome. No speaker label
-(IT doesn&#39;t announce itself), no choices.</p>
+(IT doesn&#39;t announce itself), no choices. It also plays <code>audio.playTyagl()</code>
+the instant it mounts — the same sting <code>questionnaireScene.js</code> plays under
+the Therapist&#39;s diagnosis, reused deliberately rather than a distinct IT
+sound, since both are &quot;the game reading you&quot; (see IT_DESIGN.md&#39;s &quot;IT is
+the hint system&quot;).</p>
 <p>Internal layout borrows the traditional RPG textbox (Undertale/Deltarune):
 a portrait slot at left, vertically centered, with the line filling the
 rest of the box beside it rather than centered underneath. The slot
@@ -1479,15 +1509,16 @@ one of the sharper placements <a class="doc-ref" href="#doc-it_design" data-doc=
 out. <strong>Placeholder prose</strong> — one line per class per NPC, written to
 exercise the class-voice split (Guns blunt, Bible evaluating, Crystals
 porous — see <a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a>&#39;s voice profiles), not final writing.</p>
-<p>Third real use: the bloom-event interrupt in <code>dialogScene.js</code> (see the
-<code>dialog</code> section above) — <code>createItPopup()</code> called directly, not as a
-cutscene beat, one line per class per Truth Debt threshold
-(<code>engine/itBlooms.js</code>). This is why the popup lives in its own module
-instead of staying inline in <code>cutsceneScene.js</code>: a beat-shaped API doesn&#39;t
-fit a call site that isn&#39;t sequencing beats at all.</p>
-<p>Still unbuilt: dominant-emotion-aware IT text during the encounters
-themselves (a swipe&#39;s <em>emotion pick</em>, not just the debt threshold,
-changing what IT says), and IT dialog for the reckoning and the endings.</p>
+<p>Every other use calls <code>createItPopup()</code> directly rather than going through
+a beat at all — this is why the popup lives in its own module instead of
+staying inline in <code>cutsceneScene.js</code>: a beat-shaped API doesn&#39;t fit a call
+site that isn&#39;t sequencing beats. <code>dialogScene.js</code> has two independent
+triggers of its own (the bloom-event interrupt and the end-of-encounter
+dominant-emotion read — see the <code>dialog</code> section above for both), and
+<code>reckoningScene.js</code> / <code>endingScene.js</code> each have one (see their sections).
+Every trigger <a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a> originally scoped is now built; what&#39;s left
+there is content (real prose in place of the placeholder lines) and the
+separate, still-unscoped hint-system merge.</p>
 <h3 id="doc-scene_types--minigame-srcscenesminigamescenejs"><a class="anchor" href="#doc-scene_types--minigame-srcscenesminigamescenejs" aria-label="Link to this section">#</a><code>minigame</code> (<code>src/scenes/minigameScene.js</code>)</h3>
 <p>A chapter shouldn&#39;t have to know how a mini-game works internally, only
 that it eventually finishes:</p>
@@ -3770,22 +3801,42 @@ End) need the same mapping decision before they can be assigned to scenes.</p>
     </article>
 <article class="doc" id="doc-it_design" data-title="IT — Design Document" data-file="IT_DESIGN.md" hidden>
       <p class="doc-source">Planning · <code>docs/IT_DESIGN.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-it_design--what-it-is">What IT Is</a></li><li><a href="#doc-it_design--how-it-works">How IT Works</a></li><li><a href="#doc-it_design--voice-profile-by-class">Voice Profile by Class</a></li><li><a href="#doc-it_design--where-it-appears">Where IT Appears</a></li><li><a href="#doc-it_design--it-is-the-hint-system">IT is the hint system</a></li><li><a href="#doc-it_design--visual-identity">Visual Identity</a></li><li><a href="#doc-it_design--the-mk2-intro-lines-it39s-first-appearance">The MK2 Intro Lines (IT&amp;#39;s First Appearance)</a></li><li><a href="#doc-it_design--what-needs-to-be-built">What Needs to Be Built</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-it_design--what-it-is">What IT Is</a></li><li><a href="#doc-it_design--how-it-works">How IT Works</a></li><li><a href="#doc-it_design--voice-profile-by-class">Voice Profile by Class</a></li><li><a href="#doc-it_design--where-it-appears">Where IT Appears</a></li><li><a href="#doc-it_design--it-is-the-hint-system">IT is the hint system</a></li><li><a href="#doc-it_design--visual-identity">Visual Identity</a></li><li><a href="#doc-it_design--the-mk2-intro-lines-it39s-first-appearance">The MK2 Intro Lines (IT&amp;#39;s First Appearance)</a></li><li><a href="#doc-it_design--what-was-built">What Was Built</a></li></ul></nav>
       <h1 id="doc-it_design--it-design-document"><a class="anchor" href="#doc-it_design--it-design-document" aria-label="Link to this section">#</a>IT — Design Document</h1>
 <p>Last updated: 2026-08-04.</p>
-<p><strong>Status (2026-09-06): the popup is built and now fires in three places.</strong>
-The three MK2 intro lines below play as their own scene at the very start
-of the chapter — a centered popup over a scrim, dismissed by an X, in a
-distinct display font. The render is <code>ui/itPopup.js</code>&#39;s <code>createItPopup()</code>,
-usable from anywhere (see <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>&#39;s &quot;IT beat&quot; section), not just
-as a cutscene beat: <code>cutsceneScene.js</code> calls it for the intro lines and
-each confrontation&#39;s one placeholder line, and <code>dialogScene.js</code> calls it
-directly — no beat involved — whenever a Truth Debt bloom threshold is
-newly crossed, using placeholder text in <code>engine/itBlooms.js</code>. The intro
-lines stay class-neutral (no loadout exists yet at that point); every
-other use is the <code>{ Guns, Bible, Crystals }</code> form, resolved against the
-player&#39;s class. Still design only: dominant-emotion-aware text during the
-encounters themselves, and IT dialog for the reckoning and the endings.</p>
+<p><strong>Status (2026-09-06): every trigger this doc originally listed is built.</strong>
+The render is <code>ui/itPopup.js</code>&#39;s <code>createItPopup()</code>, usable from anywhere
+(see <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>&#39;s &quot;IT beat&quot; section), not tied to any one scene type:</p>
+<ul>
+<li><strong>Intro</strong> — three class-neutral lines, their own scene at the very start
+of the chapter (no loadout exists yet at that point).</li>
+<li><strong>Confrontations</strong> — one class-variant line per NPC, right before the
+opener choice (<code>cutsceneScene.js</code>, <code>content/confront_&lt;npc&gt;.json</code>).</li>
+<li><strong>Bloom events</strong> — one class-variant line per Truth Debt threshold
+(<code>dialogScene.js</code>, <code>engine/itBlooms.js</code>).</li>
+<li><strong>Post-swipe, dominant-emotion</strong> — one class-variant line at the end of
+each NPC encounter, keyed by whichever FEELZ emotion the player has
+leaned on most <em>across the whole run so far</em> (not per-NPC — the tally
+never resets). A genuine tie (including never having picked yet) falls
+back to a calmer, more detached &quot;neutral&quot; line rather than an arbitrary
+pick. See <code>engine/loadout.js</code>&#39;s <code>getDominantEmotion()</code> and
+<code>engine/itEmotionLean.js</code>. Skipped below 2 total picks, which is what
+naturally excludes the Therapist (one swipe, already documented as
+exempt from the standard NPC shape).</li>
+<li><strong>Reckoning</strong> — one class-variant line before the first card
+(<code>engine/itEndgame.js</code>&#39;s <code>RECKONING_IT_TEXT</code>).</li>
+<li><strong>Ending</strong> — one class-variant line once the body text finishes drawing,
+before &quot;BACK TO MENU&quot; — the actual last word of the chapter
+(<code>ENDING_IT_TEXT</code>, same file).</li>
+</ul>
+<p>Every popup also plays <code>audio.playTyagl()</code> on mount — the same sting
+<code>questionnaireScene.js</code> plays under the Therapist&#39;s diagnosis, reused
+deliberately since both are &quot;the game reading you.&quot; All of the above is
+<strong>placeholder prose</strong> (~40 lines total across every table), written to
+exercise the class/emotion/threshold splits, not final writing. What&#39;s
+left, and it&#39;s a content job now, not an engineering one: writing real
+prose in place of every placeholder line, and deciding whether IT should
+also become the hint system (see below — separately still unbuilt).</p>
 <hr>
 <h2 id="doc-it_design--what-it-is"><a class="anchor" href="#doc-it_design--what-it-is" aria-label="Link to this section">#</a>What IT Is</h2>
 <p>IT is not a character. IT is the player&#39;s inner dialog — invasive thoughts,
@@ -3926,47 +3977,59 @@ before they know what FEELZ is:</p>
 <p>These are class-neutral — they fire before the questionnaire. IT
 exists before the player has a loadout. The voice is already there.</p>
 <hr>
-<h2 id="doc-it_design--what-needs-to-be-built"><a class="anchor" href="#doc-it_design--what-needs-to-be-built" aria-label="Link to this section">#</a>What Needs to Be Built</h2>
-<p><strong>Design (before any code):</strong></p>
+<h2 id="doc-it_design--what-was-built"><a class="anchor" href="#doc-it_design--what-was-built" aria-label="Link to this section">#</a>What Was Built</h2>
+<p>Every item this section used to list as open is done. Kept here as a
+record of the design questions and how they were answered, not as a to-do
+list.</p>
+<p><strong>Design questions, and how they got resolved:</strong></p>
 <ul>
-<li>Write IT line sets per class for the NPC <em>encounter</em> (dialog) scenes —
-Therapist, Deborah, Rwanda, Samun, Rick. The four confrontation
-cutscenes each have one placeholder line/class now; the encounters
-themselves (the actual swipe exchanges) still have none.</li>
-<li>Decide which specific moments within each dialog scene trigger IT</li>
-<li>Write IT dialog for the reckoning and each ending</li>
+<li><em>&quot;What does &#39;dominant emotion&#39; even mean — a running lean, or the last
+pick?&quot;</em> Answered: a running tally across the <strong>whole run</strong>, not
+per-encounter — <code>run.emotionCounts</code>, incremented once per swipe
+(<code>dialogScene.js</code>&#39;s <code>handleSwipe</code>), read by <code>engine/loadout.js</code>&#39;s
+<code>getDominantEmotion()</code>. A tie (including zero picks) is treated as a
+genuine absence of a lean, not something to arbitrarily break — it gets
+its own calmer, more detached &quot;neutral&quot; line per class
+(<code>engine/itEmotionLean.js</code>), rather than reusing an emotion-specific
+line&#39;s jittery register for a beat that isn&#39;t about a pattern.</li>
+<li><em>&quot;Which specific moments trigger it?&quot;</em> Once per NPC encounter, at the
+end of that NPC&#39;s node graph (<code>dialogScene.js</code>&#39;s <code>proceed()</code>) — not
+after every swipe, which would be exhausting on top of the SAY/REACT
+beats already there. Skipped below 2 total picks for the run, which
+also naturally excludes the Therapist (one swipe, already documented
+elsewhere as exempt from the standard NPC shape) without needing to
+special-case her by name.</li>
 </ul>
 <p><strong>Code:</strong></p>
 <ul>
-<li><del>IT beat type in cutsceneScene</del> — done: renders differently, no
-speaker label, and now class-aware (<code>{ Guns, Bible, Crystals }</code> text,
-resolved against <code>run.get().loadout</code>) for any use after the player has a
-loadout. The intro lines stay class-neutral on purpose — no loadout
-exists yet at that point.</li>
-<li>IT intrusion system for dialog scenes based on dominant emotion during
-the swipe exchange itself — still unbuilt, and still needs a design
-answer for what &quot;dominant emotion&quot; even means (a running lean across the
-encounter? the single emotion just picked?) before it&#39;s an engineering
-task.</li>
-<li><del>IT bloom-event trigger (at Truth Debt thresholds)</del> — done:
-<code>dialogScene.js</code>&#39;s <code>advance()</code> calls <code>createItPopup()</code> directly whenever
-<code>checkBloomTriggers()</code> reports a newly-crossed threshold, overlaid on
-top of whatever&#39;s already on screen. At debt 10 the popup shows before
-the existing force-to-Reckoning jump runs, not instead of it.</li>
+<li>IT beat type in <code>cutsceneScene.js</code>, and the render factored out into
+<code>ui/itPopup.js</code>&#39;s <code>createItPopup()</code> so any scene can call it directly —
+used by <code>dialogScene.js</code> (bloom events, the dominant-emotion read),
+<code>reckoningScene.js</code>, and <code>endingScene.js</code>, none of which sequence beats
+at all.</li>
+<li>Every popup plays <code>audio.playTyagl()</code> on mount (the diagnosis sting,
+reused deliberately).</li>
 </ul>
-<p><strong>Content:</strong></p>
+<p><strong>Content — placeholder prose throughout, ~40 lines total:</strong></p>
 <ul>
-<li>Three voice profiles × five NPC scenes = 15 sets of IT lines minimum
-for the encounters. Reduced scope now covered: one voice-profile line
-per class × four confrontations = 12 placeholder lines, plus one line
-per class × four bloom thresholds = 12 more, both done.</li>
-<li>Reckoning IT dialog × three classes = 3</li>
-<li><del>MK2 intro lines as the pre-questionnaire opening beat</del> — done
-(<code>content/it_intro.json</code>, the <code>it-intro</code> scene)</li>
-<li><del>One placeholder IT line per class in each confrontation</del> — done
-(<code>content/confront_&lt;npc&gt;.json</code>)</li>
-<li><del>One placeholder IT line per class per bloom threshold</del> — done
-(<code>engine/itBlooms.js</code>)</li>
+<li>3 intro lines (class-neutral) — <code>content/it_intro.json</code></li>
+<li>12 confrontation lines (4 NPCs × 3 classes) — <code>content/confront_&lt;npc&gt;.json</code></li>
+<li>12 bloom-threshold lines (4 thresholds × 3 classes) — <code>engine/itBlooms.js</code></li>
+<li>12 dominant-emotion lines (3 classes × 3 emotions + 3 neutral) —
+<code>engine/itEmotionLean.js</code></li>
+<li>3 Reckoning lines + 3 ending lines (one per class each) —
+<code>engine/itEndgame.js</code></li>
+</ul>
+<p><strong>What&#39;s actually still open</strong>, and it&#39;s not engineering:</p>
+<ul>
+<li>All of the above is exercise prose, not final writing — same &quot;rewrite
+the words, the structure&#39;s already wired&quot; job as the rest of Chapter 1&#39;s
+placeholder content.</li>
+<li>Per-NPC-flavored IT lines during the encounters themselves (right now
+the dominant-emotion read is generic across all four NPCs, the same way
+bloom lines are generic across thresholds — a deliberate scope cut to
+keep the placeholder set at ~40 lines instead of ~160).</li>
+<li>The hint-system merge (below) — separately, still not scoped for build.</li>
 </ul>
 
       <nav class="pager">

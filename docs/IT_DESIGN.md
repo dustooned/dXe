@@ -2,19 +2,39 @@
 
 Last updated: 2026-08-04.
 
-**Status (2026-09-06): the popup is built and now fires in three places.**
-The three MK2 intro lines below play as their own scene at the very start
-of the chapter — a centered popup over a scrim, dismissed by an X, in a
-distinct display font. The render is `ui/itPopup.js`'s `createItPopup()`,
-usable from anywhere (see `SCENE_TYPES.md`'s "IT beat" section), not just
-as a cutscene beat: `cutsceneScene.js` calls it for the intro lines and
-each confrontation's one placeholder line, and `dialogScene.js` calls it
-directly — no beat involved — whenever a Truth Debt bloom threshold is
-newly crossed, using placeholder text in `engine/itBlooms.js`. The intro
-lines stay class-neutral (no loadout exists yet at that point); every
-other use is the `{ Guns, Bible, Crystals }` form, resolved against the
-player's class. Still design only: dominant-emotion-aware text during the
-encounters themselves, and IT dialog for the reckoning and the endings.
+**Status (2026-09-06): every trigger this doc originally listed is built.**
+The render is `ui/itPopup.js`'s `createItPopup()`, usable from anywhere
+(see `SCENE_TYPES.md`'s "IT beat" section), not tied to any one scene type:
+
+- **Intro** — three class-neutral lines, their own scene at the very start
+  of the chapter (no loadout exists yet at that point).
+- **Confrontations** — one class-variant line per NPC, right before the
+  opener choice (`cutsceneScene.js`, `content/confront_<npc>.json`).
+- **Bloom events** — one class-variant line per Truth Debt threshold
+  (`dialogScene.js`, `engine/itBlooms.js`).
+- **Post-swipe, dominant-emotion** — one class-variant line at the end of
+  each NPC encounter, keyed by whichever FEELZ emotion the player has
+  leaned on most *across the whole run so far* (not per-NPC — the tally
+  never resets). A genuine tie (including never having picked yet) falls
+  back to a calmer, more detached "neutral" line rather than an arbitrary
+  pick. See `engine/loadout.js`'s `getDominantEmotion()` and
+  `engine/itEmotionLean.js`. Skipped below 2 total picks, which is what
+  naturally excludes the Therapist (one swipe, already documented as
+  exempt from the standard NPC shape).
+- **Reckoning** — one class-variant line before the first card
+  (`engine/itEndgame.js`'s `RECKONING_IT_TEXT`).
+- **Ending** — one class-variant line once the body text finishes drawing,
+  before "BACK TO MENU" — the actual last word of the chapter
+  (`ENDING_IT_TEXT`, same file).
+
+Every popup also plays `audio.playTyagl()` on mount — the same sting
+`questionnaireScene.js` plays under the Therapist's diagnosis, reused
+deliberately since both are "the game reading you." All of the above is
+**placeholder prose** (~40 lines total across every table), written to
+exercise the class/emotion/threshold splits, not final writing. What's
+left, and it's a content job now, not an engineering one: writing real
+prose in place of every placeholder line, and deciding whether IT should
+also become the hint system (see below — separately still unbuilt).
 
 ---
 
@@ -193,42 +213,54 @@ exists before the player has a loadout. The voice is already there.
 
 ---
 
-## What Needs to Be Built
+## What Was Built
 
-**Design (before any code):**
-- Write IT line sets per class for the NPC *encounter* (dialog) scenes —
-  Therapist, Deborah, Rwanda, Samun, Rick. The four confrontation
-  cutscenes each have one placeholder line/class now; the encounters
-  themselves (the actual swipe exchanges) still have none.
-- Decide which specific moments within each dialog scene trigger IT
-- Write IT dialog for the reckoning and each ending
+Every item this section used to list as open is done. Kept here as a
+record of the design questions and how they were answered, not as a to-do
+list.
+
+**Design questions, and how they got resolved:**
+- *"What does 'dominant emotion' even mean — a running lean, or the last
+  pick?"* Answered: a running tally across the **whole run**, not
+  per-encounter — `run.emotionCounts`, incremented once per swipe
+  (`dialogScene.js`'s `handleSwipe`), read by `engine/loadout.js`'s
+  `getDominantEmotion()`. A tie (including zero picks) is treated as a
+  genuine absence of a lean, not something to arbitrarily break — it gets
+  its own calmer, more detached "neutral" line per class
+  (`engine/itEmotionLean.js`), rather than reusing an emotion-specific
+  line's jittery register for a beat that isn't about a pattern.
+- *"Which specific moments trigger it?"* Once per NPC encounter, at the
+  end of that NPC's node graph (`dialogScene.js`'s `proceed()`) — not
+  after every swipe, which would be exhausting on top of the SAY/REACT
+  beats already there. Skipped below 2 total picks for the run, which
+  also naturally excludes the Therapist (one swipe, already documented
+  elsewhere as exempt from the standard NPC shape) without needing to
+  special-case her by name.
 
 **Code:**
-- ~~IT beat type in cutsceneScene~~ — done: renders differently, no
-  speaker label, and now class-aware (`{ Guns, Bible, Crystals }` text,
-  resolved against `run.get().loadout`) for any use after the player has a
-  loadout. The intro lines stay class-neutral on purpose — no loadout
-  exists yet at that point.
-- IT intrusion system for dialog scenes based on dominant emotion during
-  the swipe exchange itself — still unbuilt, and still needs a design
-  answer for what "dominant emotion" even means (a running lean across the
-  encounter? the single emotion just picked?) before it's an engineering
-  task.
-- ~~IT bloom-event trigger (at Truth Debt thresholds)~~ — done:
-  `dialogScene.js`'s `advance()` calls `createItPopup()` directly whenever
-  `checkBloomTriggers()` reports a newly-crossed threshold, overlaid on
-  top of whatever's already on screen. At debt 10 the popup shows before
-  the existing force-to-Reckoning jump runs, not instead of it.
+- IT beat type in `cutsceneScene.js`, and the render factored out into
+  `ui/itPopup.js`'s `createItPopup()` so any scene can call it directly —
+  used by `dialogScene.js` (bloom events, the dominant-emotion read),
+  `reckoningScene.js`, and `endingScene.js`, none of which sequence beats
+  at all.
+- Every popup plays `audio.playTyagl()` on mount (the diagnosis sting,
+  reused deliberately).
 
-**Content:**
-- Three voice profiles × five NPC scenes = 15 sets of IT lines minimum
-  for the encounters. Reduced scope now covered: one voice-profile line
-  per class × four confrontations = 12 placeholder lines, plus one line
-  per class × four bloom thresholds = 12 more, both done.
-- Reckoning IT dialog × three classes = 3
-- ~~MK2 intro lines as the pre-questionnaire opening beat~~ — done
-  (`content/it_intro.json`, the `it-intro` scene)
-- ~~One placeholder IT line per class in each confrontation~~ — done
-  (`content/confront_<npc>.json`)
-- ~~One placeholder IT line per class per bloom threshold~~ — done
-  (`engine/itBlooms.js`)
+**Content — placeholder prose throughout, ~40 lines total:**
+- 3 intro lines (class-neutral) — `content/it_intro.json`
+- 12 confrontation lines (4 NPCs × 3 classes) — `content/confront_<npc>.json`
+- 12 bloom-threshold lines (4 thresholds × 3 classes) — `engine/itBlooms.js`
+- 12 dominant-emotion lines (3 classes × 3 emotions + 3 neutral) —
+  `engine/itEmotionLean.js`
+- 3 Reckoning lines + 3 ending lines (one per class each) —
+  `engine/itEndgame.js`
+
+**What's actually still open**, and it's not engineering:
+- All of the above is exercise prose, not final writing — same "rewrite
+  the words, the structure's already wired" job as the rest of Chapter 1's
+  placeholder content.
+- Per-NPC-flavored IT lines during the encounters themselves (right now
+  the dominant-emotion read is generic across all four NPCs, the same way
+  bloom lines are generic across thresholds — a deliberate scope cut to
+  keep the placeholder set at ~40 lines instead of ~160).
+- The hint-system merge (below) — separately, still not scoped for build.
