@@ -6,7 +6,9 @@
 import { resolveCard, resolveGatedNode } from '../engine/cardEngine.js';
 import { composeReaction } from '../engine/reactions.js';
 import { checkBloomTriggers } from '../engine/debtEngine.js';
+import { BLOOM_IT_TEXT } from '../engine/itBlooms.js';
 import { createTypewriter } from '../ui/typewriterText.js';
+import { createItPopup } from '../ui/itPopup.js';
 import { createMeterGroup } from '../ui/meterBar.js';
 import { createNpcPortrait } from '../ui/npcPortrait.js';
 import { createFeelzDartboard } from '../ui/feelzDartboard.js';
@@ -42,6 +44,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let reactionEmotion = null;
   let reactionSwipeKey = null;
   let typewriter = null;
+  let itPopup = null;
 
   function currentNode() {
     return npc.nodes[currentNodeId];
@@ -239,6 +242,33 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const bloom = checkBloomTriggers(run.get());
     run.set(bloom.patch);
 
+    // A newly-crossed threshold interrupts right here, over whatever's
+    // already on screen (the reaction the player just read) — "the player
+    // doesn't choose this, IT just shows up" (docs/IT_DESIGN.md). If more
+    // than one threshold was crossed in a single swipe (a big lie landing
+    // on a debt that was already close), only the highest gets a line —
+    // one intrusion, not a stack of them.
+    if (bloom.newlyFired.length > 0) {
+      showBloomIt(Math.max(...bloom.newlyFired), () => proceed(edge));
+      return;
+    }
+    proceed(edge);
+  }
+
+  function showBloomIt(threshold, onClose) {
+    itPopup = createItPopup(stageEl, {
+      text: BLOOM_IT_TEXT[threshold],
+      loadout: run.get().loadout,
+      flashClose: false, // one-off interrupt — nothing follows it
+      onClose: () => {
+        itPopup?.destroy();
+        itPopup = null;
+        onClose();
+      },
+    });
+  }
+
+  function proceed(edge) {
     if (run.get().truthDebt >= 10) {
       onComplete({ jumpTo: 'reckoning' });
       return;
@@ -263,6 +293,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   return function unmount() {
     typewriter?.destroy();
+    itPopup?.destroy();
     audio.stopEmotionStems();
     audio.stopLeitmotif();
     stageEl.innerHTML = '';

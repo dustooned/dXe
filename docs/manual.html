@@ -207,13 +207,13 @@ tone; rewrite it to describe what the choice cost or bought instead.</p>
 &quot;3,000 acres. A jewel,&quot; according to every sign and civic ad — and every
 few months, closed again, &quot;under control,&quot; reopened, closed again. The
 lake is a character. Its health is tracked the same way the player&#39;s
-lies are (<code>lakeHealth</code>, driven by Truth Debt) — though <strong>nothing surfaces
-that to the player yet</strong>: <code>lakeHealth</code> and the bloom-event thresholds at
-debt 3/6/8 are computed and stored, but Chapter 1 never draws them, so
-the lake doesn&#39;t visibly change during play. The one debt threshold with
-teeth today is 10, which forces the Reckoning. Making the lake react is
-an open job, currently pencilled in as an IT intrusion (<a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a>)
-rather than as its own art pass. The civic myth (&quot;the water&#39;s fine&quot;) is the game&#39;s
+lies are (<code>lakeHealth</code>, driven by Truth Debt), but the lake itself doesn&#39;t
+visibly change during play — that still needs art this project doesn&#39;t
+have. What Truth Debt&#39;s bloom thresholds (3/6/8/10) <em>do</em> trigger now is an
+IT interrupt: an uninvited popup, over whatever&#39;s already on screen,
+one line per class per threshold, placeholder prose exercising the class
+voice split rather than final writing (<a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a>, <code>engine/itBlooms.js</code>).
+The civic myth (&quot;the water&#39;s fine&quot;) is the game&#39;s
 first lie, told to the player before they&#39;ve made a single choice — the
 opening cutscene (Bob Baiter, the town&#39;s booster-councilman) is an
 <em>unchosen</em> lie, establishing the whole town&#39;s relationship to honesty
@@ -816,12 +816,15 @@ scene art.</p>
 layered on top (Emotional Lean, the ending epilogue, meter-gated
 branching) is in <a class="doc-ref" href="#doc-stat_math" data-doc="doc-stat_math"><code>STAT_MATH.md</code></a>. Truth Debt is still the only stat
 driving the big structural stuff (forces the Reckoning at 10, picks the
-ending tier). Its bloom thresholds at 3/6/8 fire in <code>debtEngine.js</code> but
-nothing consumes them yet, and neither does anything read <code>lakeHealth</code> —
-deliberately left wired rather than built or deleted, because
-<a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a> already claims that trigger moment. Building a separate
-bloom presentation before the IT in/out call risks building it twice.
-The four meters feed two things:
+ending tier). Its bloom thresholds at 3/6/8/10 (<code>debtEngine.js</code>&#39;s
+<code>checkBloomTriggers()</code>) now interrupt dialog scenes with an IT popup —
+one placeholder line per class per threshold (<code>engine/itBlooms.js</code>),
+overlaid on top of whatever&#39;s already on screen rather than replacing it,
+since &quot;the player doesn&#39;t choose this, IT just shows up&quot; is the whole
+point (<a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a>). At 10 the popup still shows before the existing
+force-to-Reckoning jump runs. <code>lakeHealth</code> (the lake visibly degrading)
+remains unbuilt — that needs actual art to visualize, unlike the bloom
+trigger which only needed text. The four meters feed two things:
 the ending epilogue line (names whichever meter moved furthest from
 baseline), and <strong>actual content gating</strong>: a node can carry an opt-in
 <code>gate</code> that redirects to a different node if a stat condition is met
@@ -1135,9 +1138,10 @@ contract.</p>
 <li><code>cardEngine.js</code> — <code>resolveCard(state, node, swipeKey)</code>: applies stat
 deltas, debt, and ledger entries for a dialog choice</li>
 <li><code>debtEngine.js</code> — Truth Debt thresholds, bloom-event triggers, lake
-health calculation. Note that <code>newlyFired</code> and <code>lakeHealth</code> are both
-computed and stored but <strong>nothing reads them back yet</strong> — the trigger is
-wired and waiting for something to present it (see <a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a>); the
+health calculation. <code>newlyFired</code> now drives an IT popup interrupt
+(<code>dialogScene.js</code>&#39;s <code>advance()</code>, text in <code>engine/itBlooms.js</code>) — see
+<a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a>. <code>lakeHealth</code> is still computed and stored but unread;
+visualizing it needs art this project doesn&#39;t have yet. The
 Reckoning-at-10 cutoff lives in <code>dialogScene.js</code>, not here.</li>
 <li><code>endingEngine.js</code> — ending selection from final debt</li>
 <li><code>reckoning.js</code> — builds the end-of-run &quot;confess vs. double down&quot; deck
@@ -1245,6 +1249,16 @@ emotions, and why adding an NPC doesn&#39;t mean writing 16 more variants.</p>
 choice was right. That&#39;s the same rule the fx intensity follows: weight,
 not verdict. Keep it that way; a coda that grades the player turns an
 atmospheric beat into a score screen.</p>
+<p><strong>A newly-crossed bloom threshold interrupts <code>advance()</code>.</strong> After the
+reaction, <code>checkBloomTriggers()</code> (<code>engine/debtEngine.js</code>) runs against the
+patched Truth Debt; if <code>newlyFired</code> isn&#39;t empty, an IT popup
+(<code>ui/itPopup.js</code>) appears over whatever&#39;s already on screen — the just-read
+reaction stays visible, dimmed under the scrim, not cleared — using the
+highest newly-crossed threshold&#39;s line (<code>engine/itBlooms.js</code>; if a big lie
+crosses two thresholds in one swipe, only the top one gets shown). Closing
+it resumes exactly what <code>advance()</code> would otherwise have done immediately:
+the force-to-Reckoning jump at debt 10 still happens, just after the
+popup&#39;s been dismissed rather than instead of it.</p>
 <h3 id="doc-scene_types--questionnaire-srcscenesquestionnairescenejs"><a class="anchor" href="#doc-scene_types--questionnaire-srcscenesquestionnairescenejs" aria-label="Link to this section">#</a><code>questionnaire</code> (<code>src/scenes/questionnaireScene.js</code>)</h3>
 <p>Three swipe questions that assign the player&#39;s class loadout, followed by
 the Therapist&#39;s diagnosis. Carries no content in the scene object — the
@@ -1417,7 +1431,12 @@ original node plus a <code>_soft</code> and a <code>_hard</code> variant) author
 manuscript like any other node.</p>
 <p><strong>IT beat (<code>it: true</code>).</strong> IT (<code>docs/IT_DESIGN.md</code>) is the player&#39;s inner
 monologue — uninvited, never a conversation. Its first build is a beat
-variant, not a new scene type, the same reasoning as confrontations above:</p>
+variant, not a new scene type, the same reasoning as confrontations above.
+The actual render is <code>ui/itPopup.js</code>&#39;s <code>createItPopup()</code> — a standalone
+factory, not cutscene-specific, so <code>dialogScene.js</code>&#39;s bloom-event interrupt
+(see the <code>dialog</code> section above) calls it directly without going through a
+beat at all. This section documents the popup itself; where it&#39;s a cutscene
+beat is just this one call site&#39;s choice of when to show it:</p>
 <pre><code class="language-json">{ &quot;it&quot;: true, &quot;text&quot;: &quot;You&#39;re probably wondering where you are.&quot; }
 </code></pre>
 <p><code>text</code> is either a plain string (class-neutral — the only option before
@@ -1460,9 +1479,15 @@ one of the sharper placements <a class="doc-ref" href="#doc-it_design" data-doc=
 out. <strong>Placeholder prose</strong> — one line per class per NPC, written to
 exercise the class-voice split (Guns blunt, Bible evaluating, Crystals
 porous — see <a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a>&#39;s voice profiles), not final writing.</p>
-<p>Every other trigger IT_DESIGN.md describes (post-swipe in dialog scenes,
-dominant-emotion-aware text, bloom events, the reckoning) is still
-unbuilt.</p>
+<p>Third real use: the bloom-event interrupt in <code>dialogScene.js</code> (see the
+<code>dialog</code> section above) — <code>createItPopup()</code> called directly, not as a
+cutscene beat, one line per class per Truth Debt threshold
+(<code>engine/itBlooms.js</code>). This is why the popup lives in its own module
+instead of staying inline in <code>cutsceneScene.js</code>: a beat-shaped API doesn&#39;t
+fit a call site that isn&#39;t sequencing beats at all.</p>
+<p>Still unbuilt: dominant-emotion-aware IT text during the encounters
+themselves (a swipe&#39;s <em>emotion pick</em>, not just the debt threshold,
+changing what IT says), and IT dialog for the reckoning and the endings.</p>
 <h3 id="doc-scene_types--minigame-srcscenesminigamescenejs"><a class="anchor" href="#doc-scene_types--minigame-srcscenesminigamescenejs" aria-label="Link to this section">#</a><code>minigame</code> (<code>src/scenes/minigameScene.js</code>)</h3>
 <p>A chapter shouldn&#39;t have to know how a mini-game works internally, only
 that it eventually finishes:</p>
@@ -3245,10 +3270,11 @@ things over (+stability); truths tend to crack something open
 <li><strong><code>lucidity</code></strong> — your own clarity/self-awareness. Truths build it; lies
 rarely touch it.</li>
 <li><strong><code>debtDelta</code> (Truth Debt)</strong> — the one meter with teeth. Only lies
-should add to it. It forces the Reckoning at 10 and picks the ending.
-It also crosses bloom-event thresholds at 3/6/8, but nothing presents
-those to the player yet — write debt for the ending and the Reckoning,
-not for a bloom the player will see.</li>
+should add to it. It forces the Reckoning at 10 and picks the ending. It
+also crosses bloom-event thresholds at 3/6/8/10, each of which now pops
+up an IT interrupt over whatever&#39;s on screen (<code>engine/itBlooms.js</code>) —
+those lines are generic to the threshold, not to any node, so nothing
+about how you write a swipe&#39;s debt needs to change for it.</li>
 </ul>
 <h2 id="doc-content_schema--endings-file"><a class="anchor" href="#doc-content_schema--endings-file" aria-label="Link to this section">#</a>Endings file</h2>
 <p><code>content/endings.json</code> maps an ending key to display content:</p>
@@ -3747,17 +3773,19 @@ End) need the same mapping decision before they can be assigned to scenes.</p>
       <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-it_design--what-it-is">What IT Is</a></li><li><a href="#doc-it_design--how-it-works">How IT Works</a></li><li><a href="#doc-it_design--voice-profile-by-class">Voice Profile by Class</a></li><li><a href="#doc-it_design--where-it-appears">Where IT Appears</a></li><li><a href="#doc-it_design--it-is-the-hint-system">IT is the hint system</a></li><li><a href="#doc-it_design--visual-identity">Visual Identity</a></li><li><a href="#doc-it_design--the-mk2-intro-lines-it39s-first-appearance">The MK2 Intro Lines (IT&amp;#39;s First Appearance)</a></li><li><a href="#doc-it_design--what-needs-to-be-built">What Needs to Be Built</a></li></ul></nav>
       <h1 id="doc-it_design--it-design-document"><a class="anchor" href="#doc-it_design--it-design-document" aria-label="Link to this section">#</a>IT — Design Document</h1>
 <p>Last updated: 2026-08-04.</p>
-<p><strong>Status (2026-09-06): beat type built, now class-aware, in two scenes.</strong>
+<p><strong>Status (2026-09-06): the popup is built and now fires in three places.</strong>
 The three MK2 intro lines below play as their own scene at the very start
 of the chapter — a centered popup over a scrim, dismissed by an X, in a
-distinct display font. See <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>&#39;s &quot;IT beat&quot; section and
-<code>cutsceneScene.js</code>&#39;s <code>renderItBeat()</code>. The intro lines are class-neutral
-(no loadout exists yet at that point), but the beat itself now also
-supports a <code>{ Guns, Bible, Crystals }</code> text object resolved against the
-player&#39;s class — and each of the four confrontation cutscenes uses that
-form for one placeholder IT line, right before the player picks how to
-open the encounter. Still design only: post-swipe intrusions in dialog
-scenes, dominant-emotion-aware text, bloom events, and the reckoning.</p>
+distinct display font. The render is <code>ui/itPopup.js</code>&#39;s <code>createItPopup()</code>,
+usable from anywhere (see <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>&#39;s &quot;IT beat&quot; section), not just
+as a cutscene beat: <code>cutsceneScene.js</code> calls it for the intro lines and
+each confrontation&#39;s one placeholder line, and <code>dialogScene.js</code> calls it
+directly — no beat involved — whenever a Truth Debt bloom threshold is
+newly crossed, using placeholder text in <code>engine/itBlooms.js</code>. The intro
+lines stay class-neutral (no loadout exists yet at that point); every
+other use is the <code>{ Guns, Bible, Crystals }</code> form, resolved against the
+player&#39;s class. Still design only: dominant-emotion-aware text during the
+encounters themselves, and IT dialog for the reckoning and the endings.</p>
 <hr>
 <h2 id="doc-it_design--what-it-is"><a class="anchor" href="#doc-it_design--what-it-is" aria-label="Link to this section">#</a>What IT Is</h2>
 <p>IT is not a character. IT is the player&#39;s inner dialog — invasive thoughts,
@@ -3915,21 +3943,30 @@ speaker label, and now class-aware (<code>{ Guns, Bible, Crystals }</code> text,
 resolved against <code>run.get().loadout</code>) for any use after the player has a
 loadout. The intro lines stay class-neutral on purpose — no loadout
 exists yet at that point.</li>
-<li>IT intrusion system for dialog scenes (fires after certain swipes
-based on dominant emotion) — still unbuilt; this is a different scene
-type (<code>dialogScene.js</code>) than the cutscene beat used so far.</li>
-<li>IT bloom-event trigger (at Truth Debt thresholds)</li>
+<li>IT intrusion system for dialog scenes based on dominant emotion during
+the swipe exchange itself — still unbuilt, and still needs a design
+answer for what &quot;dominant emotion&quot; even means (a running lean across the
+encounter? the single emotion just picked?) before it&#39;s an engineering
+task.</li>
+<li><del>IT bloom-event trigger (at Truth Debt thresholds)</del> — done:
+<code>dialogScene.js</code>&#39;s <code>advance()</code> calls <code>createItPopup()</code> directly whenever
+<code>checkBloomTriggers()</code> reports a newly-crossed threshold, overlaid on
+top of whatever&#39;s already on screen. At debt 10 the popup shows before
+the existing force-to-Reckoning jump runs, not instead of it.</li>
 </ul>
 <p><strong>Content:</strong></p>
 <ul>
 <li>Three voice profiles × five NPC scenes = 15 sets of IT lines minimum
 for the encounters. Reduced scope now covered: one voice-profile line
-per class × four confrontations = 12 placeholder lines, done.</li>
+per class × four confrontations = 12 placeholder lines, plus one line
+per class × four bloom thresholds = 12 more, both done.</li>
 <li>Reckoning IT dialog × three classes = 3</li>
 <li><del>MK2 intro lines as the pre-questionnaire opening beat</del> — done
 (<code>content/it_intro.json</code>, the <code>it-intro</code> scene)</li>
 <li><del>One placeholder IT line per class in each confrontation</del> — done
 (<code>content/confront_&lt;npc&gt;.json</code>)</li>
+<li><del>One placeholder IT line per class per bloom threshold</del> — done
+(<code>engine/itBlooms.js</code>)</li>
 </ul>
 
       <nav class="pager">

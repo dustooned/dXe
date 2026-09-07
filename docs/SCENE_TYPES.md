@@ -86,6 +86,17 @@ choice was right. That's the same rule the fx intensity follows: weight,
 not verdict. Keep it that way; a coda that grades the player turns an
 atmospheric beat into a score screen.
 
+**A newly-crossed bloom threshold interrupts `advance()`.** After the
+reaction, `checkBloomTriggers()` (`engine/debtEngine.js`) runs against the
+patched Truth Debt; if `newlyFired` isn't empty, an IT popup
+(`ui/itPopup.js`) appears over whatever's already on screen — the just-read
+reaction stays visible, dimmed under the scrim, not cleared — using the
+highest newly-crossed threshold's line (`engine/itBlooms.js`; if a big lie
+crosses two thresholds in one swipe, only the top one gets shown). Closing
+it resumes exactly what `advance()` would otherwise have done immediately:
+the force-to-Reckoning jump at debt 10 still happens, just after the
+popup's been dismissed rather than instead of it.
+
 ### `questionnaire` (`src/scenes/questionnaireScene.js`)
 
 Three swipe questions that assign the player's class loadout, followed by
@@ -278,7 +289,12 @@ manuscript like any other node.
 
 **IT beat (`it: true`).** IT (`docs/IT_DESIGN.md`) is the player's inner
 monologue — uninvited, never a conversation. Its first build is a beat
-variant, not a new scene type, the same reasoning as confrontations above:
+variant, not a new scene type, the same reasoning as confrontations above.
+The actual render is `ui/itPopup.js`'s `createItPopup()` — a standalone
+factory, not cutscene-specific, so `dialogScene.js`'s bloom-event interrupt
+(see the `dialog` section above) calls it directly without going through a
+beat at all. This section documents the popup itself; where it's a cutscene
+beat is just this one call site's choice of when to show it:
 
 ```json
 { "it": true, "text": "You're probably wondering where you are." }
@@ -330,9 +346,16 @@ out. **Placeholder prose** — one line per class per NPC, written to
 exercise the class-voice split (Guns blunt, Bible evaluating, Crystals
 porous — see `IT_DESIGN.md`'s voice profiles), not final writing.
 
-Every other trigger IT_DESIGN.md describes (post-swipe in dialog scenes,
-dominant-emotion-aware text, bloom events, the reckoning) is still
-unbuilt.
+Third real use: the bloom-event interrupt in `dialogScene.js` (see the
+`dialog` section above) — `createItPopup()` called directly, not as a
+cutscene beat, one line per class per Truth Debt threshold
+(`engine/itBlooms.js`). This is why the popup lives in its own module
+instead of staying inline in `cutsceneScene.js`: a beat-shaped API doesn't
+fit a call site that isn't sequencing beats at all.
+
+Still unbuilt: dominant-emotion-aware IT text during the encounters
+themselves (a swipe's *emotion pick*, not just the debt threshold,
+changing what IT says), and IT dialog for the reckoning and the endings.
 
 ### `minigame` (`src/scenes/minigameScene.js`)
 

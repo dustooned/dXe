@@ -374,12 +374,18 @@
 }
 
 /* ── IT — an uninvited thought, styled to feel like a popup ad, not a
-   line of dialog. Centered over a scrim (everything else here is bottom-
-   anchored full-bleed), inverted colors (white on black, vs. the rest of
-   the game's black-on-white), and closed only via an explicit X — never
-   a tap anywhere, on purpose. See cutsceneScene.js's renderItBeat(). ── */
+   line of dialog. Centered over a scrim, inverted colors (white on black,
+   vs. the rest of the game's black-on-white), and closed only via an
+   explicit X — never a tap anywhere, on purpose. See ui/itPopup.js.
+   Absolutely positioned (not a normal-flow .dx-screen) so it can overlay
+   on top of a scene that's already rendered — dialogScene's bloom
+   interrupt pops this up over the current dialog screen without clearing
+   it, not just into an empty stage the way a cutscene beat does. */
 .dx-it-screen {
-  position: relative;
+  position: absolute;
+  inset: 0;
+  z-index: 500;
+  padding: 0;
   justify-content: center;
   align-items: center;
   cursor: default;

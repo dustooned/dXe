@@ -2,17 +2,19 @@
 
 Last updated: 2026-08-04.
 
-**Status (2026-09-06): beat type built, now class-aware, in two scenes.**
+**Status (2026-09-06): the popup is built and now fires in three places.**
 The three MK2 intro lines below play as their own scene at the very start
 of the chapter — a centered popup over a scrim, dismissed by an X, in a
-distinct display font. See `SCENE_TYPES.md`'s "IT beat" section and
-`cutsceneScene.js`'s `renderItBeat()`. The intro lines are class-neutral
-(no loadout exists yet at that point), but the beat itself now also
-supports a `{ Guns, Bible, Crystals }` text object resolved against the
-player's class — and each of the four confrontation cutscenes uses that
-form for one placeholder IT line, right before the player picks how to
-open the encounter. Still design only: post-swipe intrusions in dialog
-scenes, dominant-emotion-aware text, bloom events, and the reckoning.
+distinct display font. The render is `ui/itPopup.js`'s `createItPopup()`,
+usable from anywhere (see `SCENE_TYPES.md`'s "IT beat" section), not just
+as a cutscene beat: `cutsceneScene.js` calls it for the intro lines and
+each confrontation's one placeholder line, and `dialogScene.js` calls it
+directly — no beat involved — whenever a Truth Debt bloom threshold is
+newly crossed, using placeholder text in `engine/itBlooms.js`. The intro
+lines stay class-neutral (no loadout exists yet at that point); every
+other use is the `{ Guns, Bible, Crystals }` form, resolved against the
+player's class. Still design only: dominant-emotion-aware text during the
+encounters themselves, and IT dialog for the reckoning and the endings.
 
 ---
 
@@ -207,17 +209,26 @@ exists before the player has a loadout. The voice is already there.
   resolved against `run.get().loadout`) for any use after the player has a
   loadout. The intro lines stay class-neutral on purpose — no loadout
   exists yet at that point.
-- IT intrusion system for dialog scenes (fires after certain swipes
-  based on dominant emotion) — still unbuilt; this is a different scene
-  type (`dialogScene.js`) than the cutscene beat used so far.
-- IT bloom-event trigger (at Truth Debt thresholds)
+- IT intrusion system for dialog scenes based on dominant emotion during
+  the swipe exchange itself — still unbuilt, and still needs a design
+  answer for what "dominant emotion" even means (a running lean across the
+  encounter? the single emotion just picked?) before it's an engineering
+  task.
+- ~~IT bloom-event trigger (at Truth Debt thresholds)~~ — done:
+  `dialogScene.js`'s `advance()` calls `createItPopup()` directly whenever
+  `checkBloomTriggers()` reports a newly-crossed threshold, overlaid on
+  top of whatever's already on screen. At debt 10 the popup shows before
+  the existing force-to-Reckoning jump runs, not instead of it.
 
 **Content:**
 - Three voice profiles × five NPC scenes = 15 sets of IT lines minimum
   for the encounters. Reduced scope now covered: one voice-profile line
-  per class × four confrontations = 12 placeholder lines, done.
+  per class × four confrontations = 12 placeholder lines, plus one line
+  per class × four bloom thresholds = 12 more, both done.
 - Reckoning IT dialog × three classes = 3
 - ~~MK2 intro lines as the pre-questionnaire opening beat~~ — done
   (`content/it_intro.json`, the `it-intro` scene)
 - ~~One placeholder IT line per class in each confrontation~~ — done
   (`content/confront_<npc>.json`)
+- ~~One placeholder IT line per class per bloom threshold~~ — done
+  (`engine/itBlooms.js`)

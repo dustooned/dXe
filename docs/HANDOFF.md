@@ -180,12 +180,15 @@ Four meters (Integrity, Trust, Stability, Lucidity, 0–10) plus Truth Debt
 layered on top (Emotional Lean, the ending epilogue, meter-gated
 branching) is in `STAT_MATH.md`. Truth Debt is still the only stat
 driving the big structural stuff (forces the Reckoning at 10, picks the
-ending tier). Its bloom thresholds at 3/6/8 fire in `debtEngine.js` but
-nothing consumes them yet, and neither does anything read `lakeHealth` —
-deliberately left wired rather than built or deleted, because
-`IT_DESIGN.md` already claims that trigger moment. Building a separate
-bloom presentation before the IT in/out call risks building it twice.
-The four meters feed two things:
+ending tier). Its bloom thresholds at 3/6/8/10 (`debtEngine.js`'s
+`checkBloomTriggers()`) now interrupt dialog scenes with an IT popup —
+one placeholder line per class per threshold (`engine/itBlooms.js`),
+overlaid on top of whatever's already on screen rather than replacing it,
+since "the player doesn't choose this, IT just shows up" is the whole
+point (`IT_DESIGN.md`). At 10 the popup still shows before the existing
+force-to-Reckoning jump runs. `lakeHealth` (the lake visibly degrading)
+remains unbuilt — that needs actual art to visualize, unlike the bloom
+trigger which only needed text. The four meters feed two things:
 the ending epilogue line (names whichever meter moved furthest from
 baseline), and **actual content gating**: a node can carry an opt-in
 `gate` that redirects to a different node if a stat condition is met

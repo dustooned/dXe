@@ -48,13 +48,13 @@ tone; rewrite it to describe what the choice cost or bought instead.
 "3,000 acres. A jewel," according to every sign and civic ad — and every
 few months, closed again, "under control," reopened, closed again. The
 lake is a character. Its health is tracked the same way the player's
-lies are (`lakeHealth`, driven by Truth Debt) — though **nothing surfaces
-that to the player yet**: `lakeHealth` and the bloom-event thresholds at
-debt 3/6/8 are computed and stored, but Chapter 1 never draws them, so
-the lake doesn't visibly change during play. The one debt threshold with
-teeth today is 10, which forces the Reckoning. Making the lake react is
-an open job, currently pencilled in as an IT intrusion (`IT_DESIGN.md`)
-rather than as its own art pass. The civic myth ("the water's fine") is the game's
+lies are (`lakeHealth`, driven by Truth Debt), but the lake itself doesn't
+visibly change during play — that still needs art this project doesn't
+have. What Truth Debt's bloom thresholds (3/6/8/10) *do* trigger now is an
+IT interrupt: an uninvited popup, over whatever's already on screen,
+one line per class per threshold, placeholder prose exercising the class
+voice split rather than final writing (`IT_DESIGN.md`, `engine/itBlooms.js`).
+The civic myth ("the water's fine") is the game's
 first lie, told to the player before they've made a single choice — the
 opening cutscene (Bob Baiter, the town's booster-councilman) is an
 *unchosen* lie, establishing the whole town's relationship to honesty

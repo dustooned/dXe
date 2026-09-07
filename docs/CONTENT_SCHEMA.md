@@ -115,10 +115,11 @@ them:
 - **`lucidity`** — your own clarity/self-awareness. Truths build it; lies
   rarely touch it.
 - **`debtDelta` (Truth Debt)** — the one meter with teeth. Only lies
-  should add to it. It forces the Reckoning at 10 and picks the ending.
-  It also crosses bloom-event thresholds at 3/6/8, but nothing presents
-  those to the player yet — write debt for the ending and the Reckoning,
-  not for a bloom the player will see.
+  should add to it. It forces the Reckoning at 10 and picks the ending. It
+  also crosses bloom-event thresholds at 3/6/8/10, each of which now pops
+  up an IT interrupt over whatever's on screen (`engine/itBlooms.js`) —
+  those lines are generic to the threshold, not to any node, so nothing
+  about how you write a swipe's debt needs to change for it.
 
 ## Endings file
 
