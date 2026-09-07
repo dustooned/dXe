@@ -864,9 +864,10 @@ it even before the resize. Used in <code>bob_baiter</code> scene.</li>
 </ul>
 <p><strong>Shared sprites</strong> (<code>public/assets/shared/sprites/</code>):</p>
 <ul>
-<li><code>spr_it_icon.webp</code> (3.4KB) — IT&#39;s mark, the portrait-slot art in every IT
-popup (<code>ui/itPopup.js</code>, <code>.dx-it-icon</code> in <code>scenes.css</code>). 112×112 (2x for
-the 56px slot), converted from a 128×128 source PNG.</li>
+<li><code>spr_it_icon.webp</code> (160B) — IT&#39;s mark, the portrait-slot art in every IT
+popup (<code>ui/itPopup.js</code>, <code>.dx-it-icon</code> in <code>scenes.css</code>). Native 32×32
+pixel-art source, lossless WebP, displayed with <code>image-rendering: pixelated</code> for a crisp upscale to the 56px slot rather than a blurry
+smooth scale — same treatment as the Bob Baiter sprites.</li>
 <li><code>spr_inkflo_logo.webm</code> (609KB) / <code>.mp4</code> (308KB) — inkflo Graphics logo animation, white-on-black. Played by the preloader screen.
 The white-on-black is <strong>baked into the encode</strong>, not a CSS filter. Source
 PNGs are RGBA with a transparent background and black ink, so the ffmpeg
@@ -4103,9 +4104,10 @@ distinct font (<code>fnt_it</code>) for IT — separate from the PLAYER dialog b
 The web equivalent should be its own CSS class with its own visual
 language.</p>
 <p><strong>IT has a real mark now</strong> (<code>public/assets/shared/sprites/spr_it_icon.webp</code>
-— an eye-in-a-triangle, dark-on-transparent, 112×112 for a crisp 2x on the
-56px slot) in place of the empty placeholder box in <code>.dx-it-icon</code>
-(<code>scenes.css</code>). Wired in <code>ui/itPopup.js</code>.</p>
+— an eye-in-a-triangle, dark-on-transparent) in place of the empty
+placeholder box in <code>.dx-it-icon</code> (<code>scenes.css</code>). Wired in <code>ui/itPopup.js</code>.
+Native 32×32 pixel-art source; <code>image-rendering: pixelated</code> on the icon
+keeps the upscale to the 56px slot crisp rather than smoothing it out.</p>
 <hr>
 <h2 id="doc-it_design--the-mk2-intro-lines-it39s-first-appearance"><a class="anchor" href="#doc-it_design--the-mk2-intro-lines-it39s-first-appearance" aria-label="Link to this section">#</a>The MK2 Intro Lines (IT&#39;s First Appearance)</h2>
 <p>The three auto-advancing lines from the MK2 build are IT introducing

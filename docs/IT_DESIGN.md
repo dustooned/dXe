@@ -201,9 +201,10 @@ The web equivalent should be its own CSS class with its own visual
 language.
 
 **IT has a real mark now** (`public/assets/shared/sprites/spr_it_icon.webp`
-— an eye-in-a-triangle, dark-on-transparent, 112×112 for a crisp 2x on the
-56px slot) in place of the empty placeholder box in `.dx-it-icon`
-(`scenes.css`). Wired in `ui/itPopup.js`.
+— an eye-in-a-triangle, dark-on-transparent) in place of the empty
+placeholder box in `.dx-it-icon` (`scenes.css`). Wired in `ui/itPopup.js`.
+Native 32×32 pixel-art source; `image-rendering: pixelated` on the icon
+keeps the upscale to the 56px slot crisp rather than smoothing it out.
 
 ---
 

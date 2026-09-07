@@ -232,9 +232,11 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 - `spr_QuoteBG/` — 5-frame quote-screen background. Used in `opening_quote` scene.
 
 **Shared sprites** (`public/assets/shared/sprites/`):
-- `spr_it_icon.webp` (3.4KB) — IT's mark, the portrait-slot art in every IT
-  popup (`ui/itPopup.js`, `.dx-it-icon` in `scenes.css`). 112×112 (2x for
-  the 56px slot), converted from a 128×128 source PNG.
+- `spr_it_icon.webp` (160B) — IT's mark, the portrait-slot art in every IT
+  popup (`ui/itPopup.js`, `.dx-it-icon` in `scenes.css`). Native 32×32
+  pixel-art source, lossless WebP, displayed with `image-rendering:
+  pixelated` for a crisp upscale to the 56px slot rather than a blurry
+  smooth scale — same treatment as the Bob Baiter sprites.
 - `spr_inkflo_logo.webm` (609KB) / `.mp4` (308KB) — inkflo Graphics logo animation, white-on-black. Played by the preloader screen.
   The white-on-black is **baked into the encode**, not a CSS filter. Source
   PNGs are RGBA with a transparent background and black ink, so the ffmpeg
