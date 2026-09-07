@@ -47,6 +47,11 @@ const TYPEWRITER_GAIN    = 0.28;
 const TITLE_MUSIC_GAIN   = 0.13;
 const START_JINGLE_GAIN  = 0.75;
 
+// Fifths-hop clamp for leitmotif mood — see nudgeLeitmotifMood. 6 hops is
+// the tritone, the most dissonant a bend can get; there's no reason to let
+// mood run further past that.
+const MOOD_CLAMP = 6;
+
 function clamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
 
 const NOTE_SEMITONES = {
@@ -60,6 +65,22 @@ export function noteToFrequency(note) {
   const [, name, octaveStr] = match;
   const semitoneFromA4 = NOTE_SEMITONES[name] + (Number(octaveStr) - 4) * 12;
   return 440 * Math.pow(2, semitoneFromA4 / 12);
+}
+
+// Semitone offset for N hops around the circle of fifths, folded within one
+// octave. Hop count — not the raw semitone jump — is the "how related"
+// axis: 0 hops is the tonic itself, 6 hops lands on the tritone, the least
+// related point on the circle (same distance either direction you walk).
+// The actual semitone jump per hop doesn't grow smoothly (1 hop is a fifth
+// away in pitch, 2 hops folds to a major second — chromatic closeness and
+// harmonic relatedness are different axes in real music theory), so hop
+// count is what should read as "more in tune / more clashing," not the
+// size of the jump.
+function fifthsSemitoneOffset(hops) {
+  const n = Math.min(6, Math.abs(hops));
+  const raw = (n * 7) % 12;
+  const folded = raw > 6 ? raw - 12 : raw;
+  return Math.sign(hops) * folded;
 }
 
 // NPC leitmotifs. A `url` entry plays a real audio file on loop; a `notes`
@@ -290,12 +311,21 @@ export async function startLeitmotif(npcKey) {
   let stopped = false;
   let timer = null;
 
+  // How this NPC currently feels about the player this encounter — starts
+  // neutral each time their leitmotif (re)starts, nudged by trust+stability
+  // deltas from resolved dialog choices (dialogScene.js's handleSwipe).
+  // Read live every time the loop is about to play its next note, so a
+  // choice's effect shows up on the very next beat of their theme rather
+  // than a separate sound layered on top of it.
+  let mood = 0;
+
   function playNote() {
     if (stopped) return;
     const { note, durationMs } = config.notes[index];
+    const bendSemitones = fifthsSemitoneOffset(mood);
     const osc = audioCtx.createOscillator();
     osc.type = config.type;
-    osc.frequency.value = noteToFrequency(note);
+    osc.frequency.value = noteToFrequency(note) * Math.pow(2, bendSemitones / 12);
     osc.connect(gain);
     osc.start();
     osc.stop(audioCtx.currentTime + durationMs / 1000);
@@ -312,7 +342,19 @@ export async function startLeitmotif(npcKey) {
       gain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05);
       setTimeout(() => gain.disconnect(), 200);
     },
+    nudgeMood(delta) {
+      mood = clamp(mood + delta, -MOOD_CLAMP, MOOD_CLAMP);
+    },
   };
+}
+
+// Bends the currently-playing NPC leitmotif toward or away from its own
+// tonic based on how a resolved dialog choice actually landed with them
+// (trust + stability delta — see dialogScene.js's handleSwipe). No-ops
+// quietly if there's no active phrase-loop leitmotif: nothing playing, or
+// a file-based one (THERAPIST) that has no notes to bend.
+export function nudgeLeitmotifMood(delta) {
+  activeLeitmotif?.nudgeMood?.(delta);
 }
 
 export function stopLeitmotif() {

@@ -211,8 +211,19 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
   function handleSwipe(swipeKey) {
-    const { edge, patch } = resolveCard(run.get(), currentNode(), swipeKey, activeEmotion);
+    const before = run.get();
+    const { edge, patch } = resolveCard(before, currentNode(), swipeKey, activeEmotion);
     run.set(patch);
+
+    // How this specific choice actually landed with the NPC — trust and
+    // stability are their rapport/comfort with you, not a right-or-wrong
+    // score (see docs/HANDOFF.md's stat meanings). Uses the post-clamp
+    // delta, not the raw authored effect, so a stat already maxed out
+    // doesn't overstate how much this choice moved anything. Bends their
+    // leitmotif live; a no-op if this NPC has no phrase-loop leitmotif.
+    const trustDelta = (patch.trust ?? before.trust) - before.trust;
+    const stabilityDelta = (patch.stability ?? before.stability) - before.stability;
+    audio.nudgeLeitmotifMood(trustDelta + stabilityDelta);
 
     // Tally every FEELZ pick for the whole run, not just this node — feeds
     // the dominant-emotion IT read at the end of the encounter (proceed()).

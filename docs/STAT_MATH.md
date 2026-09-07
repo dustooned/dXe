@@ -135,6 +135,66 @@ fetched — a request only `startLeitmotif('THERAPIST')` can produce on that
 route. Worth knowing that "documented as built" and "still reachable" are
 different claims.
 
+## Leitmotif mood-bending (built — `shell/audio.js` + `dialogScene.js`)
+
+Grew out of a sound-design conversation about making the FEELZ wheel and
+the per-NPC leitmotif feel connected rather than parallel. Landed on: the
+leitmotif already plays continuously through a whole encounter (see
+above) — instead of adding a separate reaction sound on top of it, bend
+the leitmotif itself, live, based on how each resolved choice actually
+landed with that NPC.
+
+**What drives it:** `trust` and `stability` specifically — not
+`integrity`/`lucidity`, and not Truth Debt. Those two are explicitly
+about the NPC's felt experience of the player ("the NPC's rapport with
+you", "emotional turbulence of the scene" — see "What the stats mean"
+above), not a right/wrong signal. A comforting lie that raises both reads
+as *consonant* here even though it's a lie; an uncomfortable truth that
+drops both reads as dissonant even though it's honest. Deliberately not a
+truth detector.
+
+**The math — circle of fifths, not chromatic steps.** Each NPC's
+leitmotif carries one running number, `mood`, starting at 0 when their
+scene mounts. `dialogScene.js`'s `handleSwipe` computes the *actual*
+post-clamp trust + stability delta (not the raw authored effect — a stat
+already maxed shouldn't overstate the swing) and feeds it into
+`audio.nudgeLeitmotifMood(delta)`, which clamps `mood` to ±6.
+`fifthsSemitoneOffset(mood)` in `audio.js` then converts that into a
+semitone bend by walking `mood` hops around the circle of fifths and
+folding the result within one octave — hop count is the "how related"
+axis (0 hops = the tonic itself, 6 hops = the tritone, the least related
+point on the circle either direction you walk), not the raw semitone
+distance, which is intentionally uneven (1 hop bends further in pitch
+than 2 hops does — that's real harmony: chromatic closeness and harmonic
+relatedness are different axes). `playNote()` reads `mood` fresh every
+time it's about to play the loop's next note, so a choice's effect shows
+up on the very next beat of that NPC's theme, not a separate layered
+sound.
+
+**Why trust+stability specifically feed the wheel too, for free:** FEELZ
+emotions each amplify one stat ×1.5 (`emotionAmplifies()`). Anger/Joy
+amplify stability; Anticipation/Trust/Surprise amplify trust — 5 of the 8
+feelings on the wheel already swing the same two stats this system reads,
+so picking a "loud" emotion for a given choice makes that choice bend the
+leitmotif further, with no new wiring between the wheel and the audio.
+Fear/Disgust/Sadness amplify integrity instead, which stays out of this
+system on purpose — those are introspective stats, not relational ones.
+
+File-based leitmotifs (Therapist's `heavens_waiting_room.mp3`) have no
+notes to bend — `nudgeLeitmotifMood()` no-ops quietly rather than
+throwing, same for no leitmotif active at all.
+
+Verified: `fifthsSemitoneOffset()` checked by hand for every hop -6..+6
+(confirms the tritone lands at exactly ±6 semitones and is its own
+mirror), then live in the browser via a monkey-patched
+`AudioContext.prototype.createOscillator` — confirmed Deborah's loop
+plays A3/G3/E3 unbent, then after nudging mood by -3 (her opening TRUTH's
+actual trust-1/stability-2), the next three notes in the *same* loop
+(D3/A3/G3) came out bent up exactly 3 semitones, matching the formula
+precisely. Confirmed `nudgeLeitmotifMood()` is a silent no-op against
+`THERAPIST`'s file-based leitmotif and against no active leitmotif at
+all.
+
 ## Meter-gated branching (built — `cardEngine.js` + `dialogScene.js`)
 
 The second thing reading the four meters back (after the epilogue), and

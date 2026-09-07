@@ -3388,7 +3388,7 @@ format supports a <code>SPRITE:</code> field) without any import statement.</p>
     </article>
 <article class="doc" id="doc-stat_math" data-title="Stat Math" data-file="STAT_MATH.md" hidden>
       <p class="doc-source">Authoring · <code>docs/STAT_MATH.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-stat_math--where-this-started">Where this started</a></li><li><a href="#doc-stat_math--emotional-lean-built-cardenginejs">Emotional Lean (built — cardEngine.js)</a></li><li><a href="#doc-stat_math--ending-epilogue-built-endingenginejs-endingscenejs-the-consu">Ending epilogue (built — endingEngine.js + endingScene.js) — the consumer</a></li><li><a href="#doc-stat_math--per-npc-leitmotif-built-shellaudiojs">Per-NPC leitmotif (built — shell/audio.js)</a></li><li><a href="#doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs">Meter-gated branching (built — cardEngine.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--build-order">Build order</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-stat_math--where-this-started">Where this started</a></li><li><a href="#doc-stat_math--emotional-lean-built-cardenginejs">Emotional Lean (built — cardEngine.js)</a></li><li><a href="#doc-stat_math--ending-epilogue-built-endingenginejs-endingscenejs-the-consu">Ending epilogue (built — endingEngine.js + endingScene.js) — the consumer</a></li><li><a href="#doc-stat_math--per-npc-leitmotif-built-shellaudiojs">Per-NPC leitmotif (built — shell/audio.js)</a></li><li><a href="#doc-stat_math--leitmotif-mood-bending-built-shellaudiojs-dialogscenejs">Leitmotif mood-bending (built — shell/audio.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs">Meter-gated branching (built — cardEngine.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--build-order">Build order</a></li></ul></nav>
       <h1 id="doc-stat_math--stat-amp-character-data-math"><a class="anchor" href="#doc-stat_math--stat-amp-character-data-math" aria-label="Link to this section">#</a>Stat &amp; Character Data Math</h1>
 <p>This doc is strictly the math/data layer on top of the stats — what each
 number means narratively is in <a class="doc-ref" href="#doc-content_schema" data-doc="doc-content_schema"><code>CONTENT_SCHEMA.md</code></a>&#39;s &quot;What the stats
@@ -3525,6 +3525,59 @@ which skips the questionnaire, and watching <code>heavens_waiting_room.mp3</code
 fetched — a request only <code>startLeitmotif(&#39;THERAPIST&#39;)</code> can produce on that
 route. Worth knowing that &quot;documented as built&quot; and &quot;still reachable&quot; are
 different claims.</p>
+<h2 id="doc-stat_math--leitmotif-mood-bending-built-shellaudiojs-dialogscenejs"><a class="anchor" href="#doc-stat_math--leitmotif-mood-bending-built-shellaudiojs-dialogscenejs" aria-label="Link to this section">#</a>Leitmotif mood-bending (built — <code>shell/audio.js</code> + <code>dialogScene.js</code>)</h2>
+<p>Grew out of a sound-design conversation about making the FEELZ wheel and
+the per-NPC leitmotif feel connected rather than parallel. Landed on: the
+leitmotif already plays continuously through a whole encounter (see
+above) — instead of adding a separate reaction sound on top of it, bend
+the leitmotif itself, live, based on how each resolved choice actually
+landed with that NPC.</p>
+<p><strong>What drives it:</strong> <code>trust</code> and <code>stability</code> specifically — not
+<code>integrity</code>/<code>lucidity</code>, and not Truth Debt. Those two are explicitly
+about the NPC&#39;s felt experience of the player (&quot;the NPC&#39;s rapport with
+you&quot;, &quot;emotional turbulence of the scene&quot; — see &quot;What the stats mean&quot;
+above), not a right/wrong signal. A comforting lie that raises both reads
+as <em>consonant</em> here even though it&#39;s a lie; an uncomfortable truth that
+drops both reads as dissonant even though it&#39;s honest. Deliberately not a
+truth detector.</p>
+<p><strong>The math — circle of fifths, not chromatic steps.</strong> Each NPC&#39;s
+leitmotif carries one running number, <code>mood</code>, starting at 0 when their
+scene mounts. <code>dialogScene.js</code>&#39;s <code>handleSwipe</code> computes the <em>actual</em>
+post-clamp trust + stability delta (not the raw authored effect — a stat
+already maxed shouldn&#39;t overstate the swing) and feeds it into
+<code>audio.nudgeLeitmotifMood(delta)</code>, which clamps <code>mood</code> to ±6.
+<code>fifthsSemitoneOffset(mood)</code> in <code>audio.js</code> then converts that into a
+semitone bend by walking <code>mood</code> hops around the circle of fifths and
+folding the result within one octave — hop count is the &quot;how related&quot;
+axis (0 hops = the tonic itself, 6 hops = the tritone, the least related
+point on the circle either direction you walk), not the raw semitone
+distance, which is intentionally uneven (1 hop bends further in pitch
+than 2 hops does — that&#39;s real harmony: chromatic closeness and harmonic
+relatedness are different axes). <code>playNote()</code> reads <code>mood</code> fresh every
+time it&#39;s about to play the loop&#39;s next note, so a choice&#39;s effect shows
+up on the very next beat of that NPC&#39;s theme, not a separate layered
+sound.</p>
+<p><strong>Why trust+stability specifically feed the wheel too, for free:</strong> FEELZ
+emotions each amplify one stat ×1.5 (<code>emotionAmplifies()</code>). Anger/Joy
+amplify stability; Anticipation/Trust/Surprise amplify trust — 5 of the 8
+feelings on the wheel already swing the same two stats this system reads,
+so picking a &quot;loud&quot; emotion for a given choice makes that choice bend the
+leitmotif further, with no new wiring between the wheel and the audio.
+Fear/Disgust/Sadness amplify integrity instead, which stays out of this
+system on purpose — those are introspective stats, not relational ones.</p>
+<p>File-based leitmotifs (Therapist&#39;s <code>heavens_waiting_room.mp3</code>) have no
+notes to bend — <code>nudgeLeitmotifMood()</code> no-ops quietly rather than
+throwing, same for no leitmotif active at all.</p>
+<p>Verified: <code>fifthsSemitoneOffset()</code> checked by hand for every hop -6..+6
+(confirms the tritone lands at exactly ±6 semitones and is its own
+mirror), then live in the browser via a monkey-patched
+<code>AudioContext.prototype.createOscillator</code> — confirmed Deborah&#39;s loop
+plays A3/G3/E3 unbent, then after nudging mood by -3 (her opening TRUTH&#39;s
+actual trust-1/stability-2), the next three notes in the <em>same</em> loop
+(D3/A3/G3) came out bent up exactly 3 semitones, matching the formula
+precisely. Confirmed <code>nudgeLeitmotifMood()</code> is a silent no-op against
+<code>THERAPIST</code>&#39;s file-based leitmotif and against no active leitmotif at
+all.</p>
 <h2 id="doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs"><a class="anchor" href="#doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs" aria-label="Link to this section">#</a>Meter-gated branching (built — <code>cardEngine.js</code> + <code>dialogScene.js</code>)</h2>
 <p>The second thing reading the four meters back (after the epilogue), and
 the first to actually change <em>what content shows</em>, not just what gets
