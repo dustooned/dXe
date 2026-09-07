@@ -1,12 +1,27 @@
 #!/usr/bin/env node
-// One-off recompression pass for the Bob Baiter cutscene's two frame
-// sequences (spr_bb, spr_lake_bg_001) — both were exported at full canvas
-// resolution with quality settings tuned for photographic detail this
-// 1-bit-styled game doesn't need, and spr_bb's transparency was lossless
-// (the single biggest cost per frame). Halves pixel dimensions and switches
-// to tuned lossy WebP (lossy alpha included) — smaller files and, paired
-// with `image-rendering: pixelated` in CSS, an intentionally chunkier look
-// that fits the game's stated aesthetic better than the smooth originals.
+// Recompression pass for the Bob Baiter cutscene's two frame sequences
+// (spr_bb, spr_lake_bg_001). Both are re-encoded as tuned lossy WebP at
+// their ORIGINAL pixel dimensions — no resize.
+//
+// A resize step was tried here originally (half resolution + CSS
+// image-rendering: pixelated to upscale it back) and reverted. Both
+// sequences are dense halftone/dither art (1-bit-style black/white dot
+// patterns, not flat-color pixel art) — downscaling that pattern and then
+// resampling it back up in the browser causes moire (the dot spacing
+// doesn't divide evenly into the upscale factor), which reads as "blurry"
+// even with a hard-edge nearest-neighbor kernel on both ends. Confirmed by
+// testing nearest vs lanczos3 downscale (byte-identical output at this
+// resize ratio — not a kernel problem) and by comparing the browser's
+// actual pixelated upscale of the halved source against the same upscale
+// from the original: the original reads as fine, crisp grain; the halved
+// version reads as a wavy, muddy moire wash. Native resolution avoids the
+// mismatch since there's no double resampling.
+//
+// The tradeoff: at native resolution, lossy quality tuning alone barely
+// shrinks spr_lake_bg_001 (dither noise doesn't compress well — there's no
+// smooth gradient for the codec to exploit), so that sequence ends up
+// close to its original size. spr_bb still saves real space, mostly from
+// lossy alpha (its transparency was stored lossless originally).
 //
 // Usage: node scripts/compress-cutscene-frames.mjs
 import sharp from 'sharp';
@@ -15,7 +30,7 @@ import { join } from 'node:path';
 
 const SEQUENCES = [
   { dir: 'public/assets/lake-ulysses/sprites/spr_bb', quality: 75, alphaQuality: 60 },
-  { dir: 'public/assets/lake-ulysses/sprites/spr_lake_bg_001', quality: 70, alphaQuality: 60 },
+  { dir: 'public/assets/lake-ulysses/sprites/spr_lake_bg_001', quality: 75, alphaQuality: 60 },
 ];
 
 async function compressSequence({ dir, quality, alphaQuality }) {
@@ -30,21 +45,8 @@ async function compressSequence({ dir, quality, alphaQuality }) {
 
     // Read into memory first — sharp holding a file handle open on `path`
     // while we later write back to that same path deadlocks on Windows.
-    // Reading via plain fs and handing sharp a buffer instead means it
-    // never touches the file at all until the final writeFileSync.
     const inputBuffer = readFileSync(path);
-    const image = sharp(inputBuffer);
-    const meta = await image.metadata();
-    const targetWidth = Math.round(meta.width / 2);
-    const targetHeight = Math.round(meta.height / 2);
-
-    // Default (lanczos3) kernel here on purpose — a clean, anti-aliased
-    // shrink. The chunky pixel look comes from the *display* side
-    // (image-rendering: pixelated upscaling the smaller source back up),
-    // not from a blocky nearest-neighbor downscale, which would just
-    // introduce aliasing/moire on detailed frames like the lake background.
-    const buffer = await image
-      .resize(targetWidth, targetHeight)
+    const buffer = await sharp(inputBuffer)
       .webp({ quality, alphaQuality, effort: 6 })
       .toBuffer();
 
@@ -52,8 +54,7 @@ async function compressSequence({ dir, quality, alphaQuality }) {
     afterTotal += buffer.length;
 
     console.log(
-      `  ${file}: ${(before / 1024).toFixed(0)}KB -> ${(buffer.length / 1024).toFixed(0)}KB ` +
-      `(${meta.width}x${meta.height} -> ${targetWidth}x${targetHeight})`
+      `  ${file}: ${(before / 1024).toFixed(0)}KB -> ${(buffer.length / 1024).toFixed(0)}KB`
     );
   }
 

@@ -851,15 +851,22 @@ been added, so the chapter now matches <a class="doc-ref" href="#doc-dx-bible" d
 <h2 id="doc-handoff--asset-inventory"><a class="anchor" href="#doc-handoff--asset-inventory" aria-label="Link to this section">#</a>Asset inventory</h2>
 <p><strong>Sprites</strong> (all in <code>public/assets/lake-ulysses/sprites/</code>):</p>
 <ul>
-<li><code>spr_lake_bg_001/</code> — 46-frame animated lake background, 195×422px WebP
-(half canvas res, upscaled with <code>image-rendering: pixelated</code>), ~1.5MB
-total. Used in <code>bob_baiter</code> scene. Was ~5MB at full-res, near-lossless
-quality — see <code>scripts/compress-cutscene-frames.mjs</code>.</li>
-<li><code>spr_bb/</code> — 10-frame bob_baiter character sprite, 300×300px WebP
-(same half-res + pixelated treatment), ~190KB total. Was ~1MB — the
-transparency was stored as a <strong>lossless</strong> alpha channel, the single
-biggest cost per frame; lossy alpha (<code>alphaQuality: 60</code>) fixed most of
-it even before the resize. Used in <code>bob_baiter</code> scene.</li>
+<li><code>spr_lake_bg_001/</code> — 46-frame animated lake background, 390×844px WebP,
+~5.1MB total. Used in <code>bob_baiter</code> scene. This is dense halftone/dither
+art (1-bit-style black/white dot pattern), not flat-color pixel art —
+<strong>full native resolution on purpose</strong>. A half-res + <code>image-rendering: pixelated</code> pass was tried first and reverted: shrinking the dither and
+upscaling it back in the browser caused moire (the dot spacing doesn&#39;t
+divide evenly into the upscale factor), which read as blurry regardless
+of resize kernel. At native res, lossy quality tuning alone barely
+shrinks it (dither noise doesn&#39;t compress well — no smooth gradient to
+exploit), so this sequence is close to its original size; the fix here
+is about correctness, not file size. See
+<code>scripts/compress-cutscene-frames.mjs</code>.</li>
+<li><code>spr_bb/</code> — 10-frame bob_baiter character sprite, 600×600px WebP (same
+native-res reasoning), ~720KB total. Was ~1MB — the transparency was
+stored as a <strong>lossless</strong> alpha channel, the single biggest cost per
+frame; lossy alpha (<code>alphaQuality: 60</code>) still saves real space here
+without touching resolution. Used in <code>bob_baiter</code> scene.</li>
 <li><code>spr_QuoteBG/</code> — 5-frame quote-screen background. Used in <code>opening_quote</code> scene.</li>
 </ul>
 <p><strong>Shared sprites</strong> (<code>public/assets/shared/sprites/</code>):</p>

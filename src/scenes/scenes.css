@@ -336,9 +336,14 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Frame sequences here are authored at half canvas resolution and
-     upscaled — crisp chunky pixels on purpose, not a blurry smooth
-     upscale, and it's what let those frames compress so much smaller. */
+  /* Frame sequences here are dense halftone/dither art (1-bit-style
+     black/white dot patterns), not flat-color pixel art — full native
+     resolution on purpose (scripts/compress-cutscene-frames.mjs).
+     Halving it and upscaling back, tried earlier, caused moire: the dot
+     spacing doesn't divide evenly into the upscale factor, which reads as
+     blurry no matter the resize kernel. Pixelated here still matters —
+     it's what keeps the browser's own upscale to the screen a hard-edged
+     nearest-neighbor sample instead of a smooth blur. */
   image-rendering: pixelated;
 }
 
