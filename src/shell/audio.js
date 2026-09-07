@@ -8,6 +8,12 @@
 // would otherwise have nothing to stop, and the track would then start *after*
 // the stop and loop forever with no handle left to kill it. Each stop bumps the
 // generation; each start re-checks it after its await and bails if it's stale.
+//
+// A known simplification: LEITMOTIFS below is hardcoded per-NPC-name rather
+// than loaded per-chapter, same as the rest of this file — there's only one
+// chapter so far. Revisit if a second chapter ever needs its own NPCs here.
+import leitmotifNotes from '../chapters/lake-ulysses/content/leitmotifs.json';
+
 let ctx = null;
 let masterGain = null;
 let stems = {};
@@ -85,11 +91,20 @@ function fifthsSemitoneOffset(hops) {
 
 // NPC leitmotifs. A `url` entry plays a real audio file on loop; a `notes`
 // entry plays the oscillator phrase on loop (existing behaviour).
+//
+// `notes` prefers whatever scripts/build-leitmotifs.mjs generated from a
+// composer's MIDI file (src/chapters/lake-ulysses/midi/<npc>.mid ->
+// content/leitmotifs.json — see docs/STAT_MATH.md's "Per-NPC leitmotif"
+// section) and falls back to the hand-authored placeholder phrase below
+// for any NPC that doesn't have one yet. A MIDI file only ever supplies
+// pitch + rhythm; `type` (the oscillator waveform) stays a hand-picked
+// creative choice here regardless of where the notes came from — MIDI
+// instruments don't map to our four waveforms.
 const LEITMOTIFS = {
   THERAPIST: { url: '/assets/lake-ulysses/audio/heavens_waiting_room.mp3', volume: 0.10 },
   DEBORAH: {
     type: 'sine',
-    notes: [
+    notes: leitmotifNotes.DEBORAH ?? [
       { note: 'A3', durationMs: 700 },
       { note: 'G3', durationMs: 700 },
       { note: 'E3', durationMs: 900 },
@@ -98,7 +113,7 @@ const LEITMOTIFS = {
   },
   RWANDA: {
     type: 'triangle',
-    notes: [
+    notes: leitmotifNotes.RWANDA ?? [
       { note: 'E4', durationMs: 220 },
       { note: 'G4', durationMs: 160 },
       { note: 'A4', durationMs: 220 },
@@ -108,7 +123,7 @@ const LEITMOTIFS = {
   },
   SAMUN: {
     type: 'square',
-    notes: [
+    notes: leitmotifNotes.SAMUN ?? [
       { note: 'C3', durationMs: 260 },
       { note: 'C3', durationMs: 260 },
       { note: 'Eb3', durationMs: 260 },
@@ -117,7 +132,7 @@ const LEITMOTIFS = {
   },
   RICK: {
     type: 'sawtooth',
-    notes: [
+    notes: leitmotifNotes.RICK ?? [
       { note: 'E2', durationMs: 500 },
       { note: 'A2', durationMs: 500 },
     ],

@@ -383,6 +383,13 @@ Roughly in order of how ready each one is to just start:
   (`spr_lake_bg_001`, `spr_bb`, `spr_QuoteBG`, `lk_01.mp3`, `heavens_waiting_room.mp3`);
   `ann_01.mp3` is sourced but destination scene TBD.
 - A second writer actually using the manuscript pipeline.
+- ~~A pipeline for composer-authored NPC leitmotifs~~ — done:
+  `src/chapters/lake-ulysses/midi/*.mid` -> `npm run build:leitmotifs` ->
+  `content/leitmotifs.json`, see `STAT_MATH.md`'s "Per-NPC leitmotif"
+  section. Deborah has a real composed phrase now (`midi/deborah.mid`,
+  17 notes). Rwanda, Samun, and Rick are still on their hand-typed
+  placeholder phrases (`audio.js`'s `LEITMOTIFS` fallback) until a `.mid`
+  exists for each.
 
 ## Deployment
 

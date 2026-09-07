@@ -124,6 +124,42 @@ sharp/flat enharmonic equivalence, standard reference pitches, bad-input
 error handling), then a full four-NPC browser playthrough confirming zero
 console errors across every leitmotif's oscillator scheduling.
 
+**MIDI import pipeline (built — `scripts/build-leitmotifs.mjs`).** The
+phrases above are currently hand-typed note arrays; a composer can now
+author a real melody (e.g. in FL Studio) and export it as a `.mid` file
+instead. Same shape as the manuscript pipeline:
+
+```
+src/chapters/<chapter-id>/midi/<npc-name>.mid       <- drop this in
+src/chapters/<chapter-id>/content/leitmotifs.json   <- generated, don't hand-edit
+```
+
+`npm run build:leitmotifs` (all chapters, or pass a chapter id) parses
+every `.mid` in `midi/` via `@tonejs/midi` and writes the aggregate JSON.
+`audio.js`'s `LEITMOTIFS` prefers an NPC's entry from that JSON and falls
+back to the hand-typed phrase above if one doesn't exist yet — nothing
+breaks for an NPC that hasn't had a MIDI dropped in.
+
+What doesn't come along for free from a MIDI file: `type` (the oscillator
+waveform) stays a hand-picked choice in `audio.js`, since MIDI
+instruments don't map to sine/square/saw/triangle. Playback is also
+strictly monophonic, so a chord in the source gets resolved automatically
+— the script keeps the top note of any chord and drops the rest, logging
+what it dropped. `durationMs` per note is computed as the gap to the
+*next* note's onset (what `playNote()`'s `setTimeout` chain actually
+schedules on), not the note's own MIDI sustain length — a staccato note
+followed by a long rest keeps that rest's length rather than firing the
+next note early. The last note in a phrase wraps to the track's total
+duration, closing the loop back to note 0.
+
+Verified: round-tripped synthetic MIDI files through the script
+(mirroring Deborah's existing phrase, a chord, and a note followed by a
+rest) and confirmed the JSON output matches the expected notes/gaps/drop
+behavior exactly; confirmed live in the browser that `startLeitmotif`
+picks up a MIDI-sourced entry over the hardcoded fallback the instant one
+exists in `leitmotifs.json`, and reverts to the fallback (unchanged from
+before this pipeline existed) when it doesn't.
+
 **Regression note (2026-08-04).** This section described the wiring
 accurately, but the wiring itself had gone missing — `startLeitmotif` was
 exported and never called from anywhere, so the whole system was silently

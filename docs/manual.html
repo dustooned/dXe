@@ -1028,6 +1028,13 @@ rather than on the title route — that distinction is load-bearing.</li>
 (<code>spr_lake_bg_001</code>, <code>spr_bb</code>, <code>spr_QuoteBG</code>, <code>lk_01.mp3</code>, <code>heavens_waiting_room.mp3</code>);
 <code>ann_01.mp3</code> is sourced but destination scene TBD.</li>
 <li>A second writer actually using the manuscript pipeline.</li>
+<li><del>A pipeline for composer-authored NPC leitmotifs</del> — done:
+<code>src/chapters/lake-ulysses/midi/*.mid</code> -&gt; <code>npm run build:leitmotifs</code> -&gt;
+<code>content/leitmotifs.json</code>, see <a class="doc-ref" href="#doc-stat_math" data-doc="doc-stat_math"><code>STAT_MATH.md</code></a>&#39;s &quot;Per-NPC leitmotif&quot;
+section. Deborah has a real composed phrase now (<code>midi/deborah.mid</code>,
+17 notes). Rwanda, Samun, and Rick are still on their hand-typed
+placeholder phrases (<code>audio.js</code>&#39;s <code>LEITMOTIFS</code> fallback) until a <code>.mid</code>
+exists for each.</li>
 </ul>
 <h2 id="doc-handoff--deployment"><a class="anchor" href="#doc-handoff--deployment" aria-label="Link to this section">#</a>Deployment</h2>
 <p>Live at <strong>dreamxtre.me</strong>, hosted on GitHub Pages from
@@ -3515,6 +3522,36 @@ thematically consistent with his violence.</p>
 sharp/flat enharmonic equivalence, standard reference pitches, bad-input
 error handling), then a full four-NPC browser playthrough confirming zero
 console errors across every leitmotif&#39;s oscillator scheduling.</p>
+<p><strong>MIDI import pipeline (built — <code>scripts/build-leitmotifs.mjs</code>).</strong> The
+phrases above are currently hand-typed note arrays; a composer can now
+author a real melody (e.g. in FL Studio) and export it as a <code>.mid</code> file
+instead. Same shape as the manuscript pipeline:</p>
+<pre><code>src/chapters/&lt;chapter-id&gt;/midi/&lt;npc-name&gt;.mid       &lt;- drop this in
+src/chapters/&lt;chapter-id&gt;/content/leitmotifs.json   &lt;- generated, don&#39;t hand-edit
+</code></pre>
+<p><code>npm run build:leitmotifs</code> (all chapters, or pass a chapter id) parses
+every <code>.mid</code> in <code>midi/</code> via <code>@tonejs/midi</code> and writes the aggregate JSON.
+<code>audio.js</code>&#39;s <code>LEITMOTIFS</code> prefers an NPC&#39;s entry from that JSON and falls
+back to the hand-typed phrase above if one doesn&#39;t exist yet — nothing
+breaks for an NPC that hasn&#39;t had a MIDI dropped in.</p>
+<p>What doesn&#39;t come along for free from a MIDI file: <code>type</code> (the oscillator
+waveform) stays a hand-picked choice in <code>audio.js</code>, since MIDI
+instruments don&#39;t map to sine/square/saw/triangle. Playback is also
+strictly monophonic, so a chord in the source gets resolved automatically
+— the script keeps the top note of any chord and drops the rest, logging
+what it dropped. <code>durationMs</code> per note is computed as the gap to the
+<em>next</em> note&#39;s onset (what <code>playNote()</code>&#39;s <code>setTimeout</code> chain actually
+schedules on), not the note&#39;s own MIDI sustain length — a staccato note
+followed by a long rest keeps that rest&#39;s length rather than firing the
+next note early. The last note in a phrase wraps to the track&#39;s total
+duration, closing the loop back to note 0.</p>
+<p>Verified: round-tripped synthetic MIDI files through the script
+(mirroring Deborah&#39;s existing phrase, a chord, and a note followed by a
+rest) and confirmed the JSON output matches the expected notes/gaps/drop
+behavior exactly; confirmed live in the browser that <code>startLeitmotif</code>
+picks up a MIDI-sourced entry over the hardcoded fallback the instant one
+exists in <code>leitmotifs.json</code>, and reverts to the fallback (unchanged from
+before this pipeline existed) when it doesn&#39;t.</p>
 <p><strong>Regression note (2026-08-04).</strong> This section described the wiring
 accurately, but the wiring itself had gone missing — <code>startLeitmotif</code> was
 exported and never called from anywhere, so the whole system was silently
