@@ -220,8 +220,15 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 ## Asset inventory
 
 **Sprites** (all in `public/assets/lake-ulysses/sprites/`):
-- `spr_lake_bg_001/` — 46-frame animated lake background, 390×844px WebP, ~5MB total. Used in `bob_baiter` scene.
-- `spr_bb/` — 10-frame bob_baiter character sprite. Used in `bob_baiter` scene.
+- `spr_lake_bg_001/` — 46-frame animated lake background, 195×422px WebP
+  (half canvas res, upscaled with `image-rendering: pixelated`), ~1.5MB
+  total. Used in `bob_baiter` scene. Was ~5MB at full-res, near-lossless
+  quality — see `scripts/compress-cutscene-frames.mjs`.
+- `spr_bb/` — 10-frame bob_baiter character sprite, 300×300px WebP
+  (same half-res + pixelated treatment), ~190KB total. Was ~1MB — the
+  transparency was stored as a **lossless** alpha channel, the single
+  biggest cost per frame; lossy alpha (`alphaQuality: 60`) fixed most of
+  it even before the resize. Used in `bob_baiter` scene.
 - `spr_QuoteBG/` — 5-frame quote-screen background. Used in `opening_quote` scene.
 
 **Shared sprites** (`public/assets/shared/sprites/`):
