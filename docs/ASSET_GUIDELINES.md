@@ -331,7 +331,8 @@ Everything in the repo now (sizes measured):
 | `lake-ulysses/ann_01.mp3` | 1.2MB | ⚠️ byte-identical duplicate of `lk_01.mp3` |
 | `lake-ulysses/heavens_waiting_room.mp3` | 501KB | Therapist leitmotif |
 | `shared/snd_inkflo_logo.mp3` | 158KB | logo sting |
-| `shared/tyagl.mp3` | 14KB | SFX |
+| `shared/tyagl.mp3` | 14KB | Therapist diagnosis-reveal sting |
+| `shared/it_sting.mp3` | 27KB | IT sting |
 | `shared/typewriter_tick.mp3` | 3KB | SFX (per-character tick) |
 | `shared/title/snd_titlemusic.mp3` | 261KB | title theme |
 | `shared/title/snd_lake_title.mp3` | 148KB | title pad |

@@ -42,6 +42,7 @@ const EMPHASIS_GAIN      = 0.16;
 const LEITMOTIF_GAIN     = 0.14;
 const AMBIENT_MUSIC_GAIN = 0.07;
 const TYAGL_GAIN         = 0.45;
+const IT_STING_GAIN      = 0.45;
 const TYPEWRITER_GAIN    = 0.28;
 const TITLE_MUSIC_GAIN   = 0.13;
 const START_JINGLE_GAIN  = 0.75;
@@ -178,6 +179,17 @@ export async function playTyagl() {
   source.buffer = buffer;
   const gain = audioCtx.createGain();
   gain.gain.value = TYAGL_GAIN;
+  source.connect(gain).connect(masterGain);
+  source.start();
+}
+
+export async function playItSting() {
+  const audioCtx = ensureContext();
+  const buffer = await loadAudio('/assets/shared/audio/it_sting.mp3');
+  const source = audioCtx.createBufferSource();
+  source.buffer = buffer;
+  const gain = audioCtx.createGain();
+  gain.gain.value = IT_STING_GAIN;
   source.connect(gain).connect(masterGain);
   source.start();
 }

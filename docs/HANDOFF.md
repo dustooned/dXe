@@ -250,7 +250,17 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 
 **Shared audio** (`public/assets/shared/audio/`):
 - `snd_inkflo_logo.mp3` (160KB) — logo sting, plays during preloader.
-- `tyagl.mp3`, `typewriter_tick.mp3` — SFX.
+- `tyagl.mp3` (14KB) — the Therapist's diagnosis-reveal sting
+  (`scenes/questionnaireScene.js`), the "thank you and good luck" line.
+  Was also standing in for IT's sting before `it_sting.mp3` existed —
+  no longer; see below.
+- `it_sting.mp3` (27KB) — IT's own sting, plays on every IT popup mount
+  (`ui/itPopup.js`). Sourced from `E:/2026/Music/dXe/SFX/IT/IT.wav`
+  (48kHz/32-bit-float, 658KB) and re-encoded at 128kbps stereo MP3 via
+  `scripts/compress-it-sting.mjs` — the delivered `IT.mp3` alongside it
+  was 320kbps CBR (68.5KB), full quality this ~1.7s UI sting doesn't
+  need. 128kbps matches this project's existing one-shot SFX convention.
+- `typewriter_tick.mp3` — SFX.
 - `title/snd_lake_title.mp3`, `snd_titlemusic.mp3`, `snd_start.mp3` — title screen music + jingle.
 
 **Mini-game room art** (`public/assets/lake-ulysses/sprites/`):

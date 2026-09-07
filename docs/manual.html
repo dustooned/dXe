@@ -884,7 +884,17 @@ if a second ambient track is wanted, it still needs to be sourced.</li>
 <p><strong>Shared audio</strong> (<code>public/assets/shared/audio/</code>):</p>
 <ul>
 <li><code>snd_inkflo_logo.mp3</code> (160KB) — logo sting, plays during preloader.</li>
-<li><code>tyagl.mp3</code>, <code>typewriter_tick.mp3</code> — SFX.</li>
+<li><code>tyagl.mp3</code> (14KB) — the Therapist&#39;s diagnosis-reveal sting
+(<code>scenes/questionnaireScene.js</code>), the &quot;thank you and good luck&quot; line.
+Was also standing in for IT&#39;s sting before <code>it_sting.mp3</code> existed —
+no longer; see below.</li>
+<li><code>it_sting.mp3</code> (27KB) — IT&#39;s own sting, plays on every IT popup mount
+(<code>ui/itPopup.js</code>). Sourced from <code>E:/2026/Music/dXe/SFX/IT/IT.wav</code>
+(48kHz/32-bit-float, 658KB) and re-encoded at 128kbps stereo MP3 via
+<code>scripts/compress-it-sting.mjs</code> — the delivered <code>IT.mp3</code> alongside it
+was 320kbps CBR (68.5KB), full quality this ~1.7s UI sting doesn&#39;t
+need. 128kbps matches this project&#39;s existing one-shot SFX convention.</li>
+<li><code>typewriter_tick.mp3</code> — SFX.</li>
 <li><code>title/snd_lake_title.mp3</code>, <code>snd_titlemusic.mp3</code>, <code>snd_start.mp3</code> — title screen music + jingle.</li>
 </ul>
 <p><strong>Mini-game room art</strong> (<code>public/assets/lake-ulysses/sprites/</code>):</p>
@@ -2128,7 +2138,12 @@ should justify not being a WebP sequence first.</p>
 <tr>
 <td align="left"><code>shared/tyagl.mp3</code></td>
 <td align="right">14KB</td>
-<td align="left">SFX</td>
+<td align="left">Therapist diagnosis-reveal sting</td>
+</tr>
+<tr>
+<td align="left"><code>shared/it_sting.mp3</code></td>
+<td align="right">27KB</td>
+<td align="left">IT sting</td>
 </tr>
 <tr>
 <td align="left"><code>shared/typewriter_tick.mp3</code></td>
