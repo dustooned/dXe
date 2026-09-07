@@ -8,7 +8,7 @@
       "id": "therapist_01",
       "npc": "THERAPIST",
       "location": 1,
-      "prompt": "The screen lights up. A voice, tired but warm, cuts through the ringing in your ears. \"You're still there? Okay. Good. What happened in the dream?\"",
+      "prompt": "The screen lights up. A voice, tired but warm, cuts through the ringing in your ears. \"You're still there? Okay. Good. What happened in the {color:Anticipation}dream{/color}?\"",
       "swipes": {
         "truth": {
           "playerText": "I don't know. Water. Something underneath it. I couldn't breathe.",

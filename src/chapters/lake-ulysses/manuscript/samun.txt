@@ -3,7 +3,7 @@ LOCATION: 4
 ACCENT: var(--color-samun)
 
 === samun_01
-PROMPT: Man, everyone's hooked on something. Mine's just more honest.
+PROMPT: Man, everyone's {color:Fear}hooked{/color} on something. Mine's just more honest.
 
 -- TRUTH
 SAY: Honest or not, you're still killing yourself slowly.
@@ -22,7 +22,7 @@ LEDGER: You cosigned Samun's denial about his addiction.
 NEXT: samun_02_enabled
 
 === samun_02_enabled
-PROMPT: See? You get it. Nobody else does. They all want me fixed.
+PROMPT: See? You get it. Nobody else does. They all want me {color:Disgust}fixed{/color}.
 
 -- TRUTH
 SAY: Maybe fixed is the wrong word. But not this — not this either.
@@ -41,7 +41,7 @@ LEDGER: You told Samun that people wanting him to get better were wrong.
 NEXT: samun_03
 
 === samun_02_confronted
-PROMPT: Easy for you to say. You're not the one hurting.
+PROMPT: Easy for you to say. You're not the one {color:Sadness}hurting{/color}.
 
 -- TRUTH
 SAY: You're right. I'm not. But you are. Every day.
@@ -60,7 +60,7 @@ LEDGER: You walked back the truth with Samun to avoid discomfort.
 NEXT: samun_03
 
 === samun_01_soft
-PROMPT: Business? Business is great, man. Look around. Everybody's real busy.
+PROMPT: Business? Business is {color:Disgust}great{/color}, man. Look around. Everybody's real busy.
 
 -- TRUTH
 SAY: There's nobody here, Samun.
@@ -79,7 +79,7 @@ LEDGER: You agreed with Samun that the shop was doing fine.
 NEXT: samun_02_enabled
 
 === samun_01_hard
-PROMPT: (He puts the rag down.) Ask it, then. Everybody who comes in here asks it eventually.
+PROMPT: (He puts the rag down.) Ask it, then. Everybody who comes in here asks it {color:Anticipation}eventually{/color}.
 
 -- TRUTH
 SAY: What are you on, Samun?
@@ -98,14 +98,14 @@ LEDGER: You backed off the question Samun had already braced himself to answer.
 NEXT: samun_02_enabled
 
 === samun_03
-PROMPT: (He sets two bottles on the counter, unopened, just to have something to look at instead of you.) Tried quitting once. Four days. Everybody around me got worse, not me.
+PROMPT: (He sets two bottles on the counter, unopened, just to have something to look at instead of you.) Tried quitting once. Four days. Everybody around me got {color:Disgust}worse{/color}, not me.
 
 -- TRUTH
 SAY: Everybody around you didn't change. You did, for four days. That's the part worth noticing.
 REACT: He looks at the bottles a long moment. Doesn't open either one. Doesn't say anything else either.
 EFFECTS: integrity+2 lucidity+2 stability-1
 DEBT: 0
-NEXT: (end)
+NEXT: samun_04
 
 -- LIE
 SAY: Then it's not really you that's the problem, is it.
@@ -114,4 +114,23 @@ EFFECTS: integrity-2 stability+2 trust+1
 DEBT: +3
 TAGS: Addiction, Denial
 LEDGER: You told Samun his addiction wasn't his own responsibility.
+NEXT: samun_04
+
+=== samun_04
+PROMPT: Fifth day, my {color:Sadness}brother{/color} called asking for money. That's the whole story. That's all it ever takes.
+
+-- TRUTH
+SAY: That's not a small thing to say out loud.
+REACT: He nods once, short. Doesn't dress it up, doesn't take it back either.
+EFFECTS: integrity+2 lucidity+2 trust+1
+DEBT: 0
+NEXT: (end)
+
+-- LIE
+SAY: Can't control what your brother does. Not on you.
+REACT: He agrees fast, too fast, and reaches for the second bottle.
+EFFECTS: integrity-2 stability+1 trust+2
+DEBT: +3
+TAGS: Addiction, Denial
+LEDGER: You told Samun his brother's call, not his own choice, was why he drank again.
 NEXT: (end)

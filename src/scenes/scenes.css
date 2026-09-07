@@ -46,6 +46,14 @@
   height: 100%;
 }
 
+/* Solid backing, not transparent — .dx-pattern-bg sits right behind this at
+   z-index 0 (dialogScene's live text, questionnaireScene's diagnosis reveal
+   with its color-coded emotion words) and the noise made small text hard to
+   read fast. The pattern still shows as an atmospheric frame in the 16px
+   margin around this box; it just never sits directly under text anymore.
+   endingScene deliberately doesn't use this wrapper for its pattern beat —
+   that beat has no text at all, then clears the pattern entirely before any
+   text renders — so this fix doesn't touch it. */
 .dx-game-content {
   position: relative;
   z-index: 1;
@@ -54,6 +62,7 @@
   gap: 12px;
   flex: 1;
   padding: 16px;
+  background: var(--color-black);
 }
 
 .dx-game-screen .dx-reaction {
@@ -422,17 +431,17 @@
   cursor: pointer;
 }
 
-/* Portrait placeholder — an empty bordered slot, the same idea as
-   ui/npcPortrait.js's placeholder box, sized and positioned like the
-   character portrait in an RPG textbox. No glyph inside on purpose: IT
-   has no real identity/mark yet, so this is just the shape and size real
-   art will eventually drop into. */
+/* IT's mark — sized and positioned like the character portrait in an RPG
+   textbox (ui/npcPortrait.js's placeholder box uses the same slot idea).
+   White background matches the box itself; the art (spr_it_icon.webp) is
+   dark-on-transparent, so it needs a light backing to read. */
 .dx-it-icon {
   flex-shrink: 0;
   width: 56px;
   height: 56px;
   border: 2px solid var(--color-black);
   background: var(--color-white);
+  object-fit: contain;
 }
 
 .dx-it-close {

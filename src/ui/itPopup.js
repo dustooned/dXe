@@ -49,8 +49,10 @@ export function createItPopup(stageEl, { text, loadout, flashClose = false, onCl
   box.className = 'dx-it-box';
   screen.appendChild(box);
 
-  const icon = document.createElement('div');
+  const icon = document.createElement('img');
   icon.className = 'dx-it-icon';
+  icon.src = '/assets/shared/sprites/spr_it_icon.webp';
+  icon.alt = '';
   box.appendChild(icon);
 
   const closeBtn = document.createElement('button');

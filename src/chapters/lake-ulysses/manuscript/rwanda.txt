@@ -3,7 +3,7 @@ LOCATION: 3
 ACCENT: var(--color-rwanda)
 
 === rwanda_01
-PROMPT: Why do I gotta sand myself down just to be digestible?
+PROMPT: Why do I gotta sand myself down just to be {color:Disgust}digestible{/color}?
 
 -- TRUTH
 SAY: Because people are scared of you being fully real.
@@ -22,7 +22,7 @@ LEDGER: You told Rwanda her experience wasn't that bad.
 NEXT: rwanda_02_closed
 
 === rwanda_02_closed
-PROMPT: Right. Sure. I'm doing fine. (She turns back to the window.)
+PROMPT: Right. Sure. I'm doing {color:Sadness}fine{/color}. (She turns back to the window.)
 
 -- TRUTH
 SAY: I was wrong. You don't have to minimize this for me.
@@ -41,7 +41,7 @@ LEDGER: You told Rwanda her erasure was a universal experience.
 NEXT: rwanda_03
 
 === rwanda_02_open
-PROMPT: You actually mean that? Most people just want me to perform.
+PROMPT: You actually mean that? Most people just want me to {color:Disgust}perform{/color}.
 
 -- TRUTH
 SAY: I know. And it's exhausting to watch, let alone live.
@@ -60,7 +60,7 @@ LEDGER: You told Rwanda to wait for the world to catch up to her.
 NEXT: rwanda_03
 
 === rwanda_01_soft
-PROMPT: (She doesn't turn around.) You see it too, right. Whatever's out there tonight.
+PROMPT: (She doesn't turn around.) You {color:Anticipation}see{/color} it too, right. Whatever's out there tonight.
 
 -- TRUTH
 SAY: I see something. I don't know what it is yet.
@@ -79,7 +79,7 @@ LEDGER: You told Rwanda that what she was seeing wasn't there.
 NEXT: rwanda_02_closed
 
 === rwanda_01_hard
-PROMPT: Word travels. You've been at three doors tonight already. What is it you're collecting?
+PROMPT: Word travels. You've been at three doors tonight already. What is it you're {color:Anticipation}collecting{/color}?
 
 -- TRUTH
 SAY: I don't know yet. That's the honest answer.
@@ -98,14 +98,14 @@ LEDGER: You lied to Rwanda about why you were at her door at all.
 NEXT: rwanda_02_closed
 
 === rwanda_03
-PROMPT: (She lights a cigarette she doesn't smoke, just holds.) You want to know the actual tiring part? It's not them. It's flinching before they even say anything.
+PROMPT: (She lights a cigarette she doesn't smoke, just holds.) You want to know the actual tiring part? It's not them. It's {color:Fear}flinching{/color} before they even say anything.
 
 -- TRUTH
 SAY: That's not a flaw in you. That's what being braced all the time does to a person.
 REACT: She looks at the cigarette like she forgot why she picked it up. Puts it down unlit.
 EFFECTS: integrity+2 lucidity+2 trust+2
 DEBT: 0
-NEXT: (end)
+NEXT: rwanda_04
 
 -- LIE
 SAY: Maybe if you flinched less, people would push less.
@@ -114,4 +114,23 @@ EFFECTS: integrity-2 stability+1 trust-2
 DEBT: +3
 TAGS: Identity
 LEDGER: You told Rwanda her self-protection was the problem.
+NEXT: rwanda_04
+
+=== rwanda_04
+PROMPT: (She sets the cigarette down for good this time.) You're the first person tonight I haven't had to {color:Fear}brace{/color} for. That's either good, or it means I'm not paying attention.
+
+-- TRUTH
+SAY: Maybe it's neither. Maybe you just get to have one conversation that doesn't cost you anything.
+REACT: She exhales like she's been holding it since you walked in. "Don't make it weird by being nice about it."
+EFFECTS: integrity+2 lucidity+1 trust+2
+DEBT: 0
+NEXT: (end)
+
+-- LIE
+SAY: You should probably stay on guard. Better safe.
+REACT: The window gets her attention again. Whatever just opened closes back up, careful and quiet.
+EFFECTS: integrity-2 stability+1 trust-2
+DEBT: +3
+TAGS: Identity
+LEDGER: You told Rwanda to stay braced even with you.
 NEXT: (end)

@@ -232,6 +232,9 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 - `spr_QuoteBG/` — 5-frame quote-screen background. Used in `opening_quote` scene.
 
 **Shared sprites** (`public/assets/shared/sprites/`):
+- `spr_it_icon.webp` (3.4KB) — IT's mark, the portrait-slot art in every IT
+  popup (`ui/itPopup.js`, `.dx-it-icon` in `scenes.css`). 112×112 (2x for
+  the 56px slot), converted from a 128×128 source PNG.
 - `spr_inkflo_logo.webm` (609KB) / `.mp4` (308KB) — inkflo Graphics logo animation, white-on-black. Played by the preloader screen.
   The white-on-black is **baked into the encode**, not a CSS filter. Source
   PNGs are RGBA with a transparent background and black ink, so the ffmpeg
@@ -338,10 +341,24 @@ Roughly in order of how ready each one is to just start:
   Placeholder prose, same bar as the rest of the content — written to be
   read, just not final. `rick_shut_down` (the trust-gated lockout) was
   left as a one-node dead end on purpose; it's supposed to be curt.
+- ~~A fourth node on all four confrontation NPCs~~ — done: `deborah_04`,
+  `rick_04`, `rwanda_04`, `samun_04`, continuing straight on from each
+  NPC's third node the same way node 3 continued from node 2.
 - **More depth in Lake Ulysses** — still open: Bible/Crystals-class-aware
-  FEELZ options on existing nodes, or a fourth node continuing any of the
-  four arcs above. Pure content through the manuscript pipeline, no
-  engine changes.
+  FEELZ options on existing nodes. Pure content through the manuscript
+  pipeline, no engine changes.
+- ~~IT hint-system word-tinting~~ — done for 2 of the 4 originally-scoped
+  placements; see `IT_DESIGN.md`'s "IT is the hint system". Entering a
+  room/exiting a scene are deferred — real new content across every mini-
+  game room, not a rendering change like the two that shipped.
+- ~~Solid backing behind dialog/questionnaire text~~ — done:
+  `.dx-game-content` (`scenes.css`) was transparent over the live
+  `.dx-pattern-bg` noise canvas, making small/colored text hard to read
+  fast (worst at the questionnaire diagnosis reveal, where the colored
+  words are the whole point). Now opaque black; the pattern still shows
+  as a frame in the 16px margin around it. `endingScene.js` was already
+  correct — its pattern-only judgment beat has no text at all, and clears
+  before any text renders — so it wasn't touched.
 
 - ~~Mini-games for Rwanda / Samun / Rick~~ — done, all four exist and play.
   Art and prose are placeholder; see `ASSET_GUIDELINES.md` for the hand-off
@@ -351,23 +368,16 @@ Roughly in order of how ready each one is to just start:
   the node the following dialog scene starts on (`SCENE_TYPES.md`). Adding
   more branches is authoring two things in step — a manuscript node and a
   matching option.
-- **Real prose for the placeholder beats** — the biggest content job now.
-  Four room intros ×3 classes, twelve hotspot captions ×3 classes, four
-  confrontations, and eight opener nodes are all written to exercise their
-  code path rather than to be read.
+- ~~Real prose for the placeholder beats~~ — turns out already done. The
+  file headers in `minigames/*.js` still say "PLACEHOLDER CONTENT," but
+  that's stale — all 4 room intros ×3 classes, all 12 hotspot captions ×3
+  classes, and all 4 confrontation openers read as finished prose, not
+  code-path filler. The placeholder part is genuinely just the *art*
+  (generated SVG vectors), not the writing.
 
 **Needs a dedicated design pass first:**
-- **IT / the hint system — now one item, not two.** These were tracked
-  separately; they're the same feature. IT is *how* the game hints: words
-  within IT's line are highlighted in color, and the coloring tells the
-  player how they're being read, without naming a stat or a number. Fires
-  at four moments — entering a room/section, exiting a scene, during
-  pre-battle dialog exchange, and immediately before an NPC battle choice.
-  Reuses the word-tinting trick `questionnaireScene.js` already uses for
-  the Therapist's diagnosis, which makes "colored word = the game is
-  reading you" a learnable language rather than a one-off. Full write-up
-  in `IT_DESIGN.md` ("IT *is* the hint system"). Deliberately not scoped
-  for build yet.
+- Nothing currently — the last item here (IT/the hint system) moved to
+  "ready to build" above once its scope got split in two.
 
 **Needs something from outside this repo:**
 - ~~inkflo Graphics preloader~~ — done, two-phase. Phase 1: spinner plus a

@@ -8,7 +8,7 @@
       "id": "samun_01",
       "npc": "SAMUN",
       "location": 4,
-      "prompt": "Man, everyone's hooked on something. Mine's just more honest.",
+      "prompt": "Man, everyone's {color:Fear}hooked{/color} on something. Mine's just more honest.",
       "swipes": {
         "truth": {
           "playerText": "Honest or not, you're still killing yourself slowly.",
@@ -47,7 +47,7 @@
       "id": "samun_02_enabled",
       "npc": "SAMUN",
       "location": 4,
-      "prompt": "See? You get it. Nobody else does. They all want me fixed.",
+      "prompt": "See? You get it. Nobody else does. They all want me {color:Disgust}fixed{/color}.",
       "swipes": {
         "truth": {
           "playerText": "Maybe fixed is the wrong word. But not this — not this either.",
@@ -84,7 +84,7 @@
       "id": "samun_02_confronted",
       "npc": "SAMUN",
       "location": 4,
-      "prompt": "Easy for you to say. You're not the one hurting.",
+      "prompt": "Easy for you to say. You're not the one {color:Sadness}hurting{/color}.",
       "swipes": {
         "truth": {
           "playerText": "You're right. I'm not. But you are. Every day.",
@@ -120,7 +120,7 @@
       "id": "samun_01_soft",
       "npc": "SAMUN",
       "location": 4,
-      "prompt": "Business? Business is great, man. Look around. Everybody's real busy.",
+      "prompt": "Business? Business is {color:Disgust}great{/color}, man. Look around. Everybody's real busy.",
       "swipes": {
         "truth": {
           "playerText": "There's nobody here, Samun.",
@@ -156,7 +156,7 @@
       "id": "samun_01_hard",
       "npc": "SAMUN",
       "location": 4,
-      "prompt": "(He puts the rag down.) Ask it, then. Everybody who comes in here asks it eventually.",
+      "prompt": "(He puts the rag down.) Ask it, then. Everybody who comes in here asks it {color:Anticipation}eventually{/color}.",
       "swipes": {
         "truth": {
           "playerText": "What are you on, Samun?",
@@ -193,7 +193,7 @@
       "id": "samun_03",
       "npc": "SAMUN",
       "location": 4,
-      "prompt": "(He sets two bottles on the counter, unopened, just to have something to look at instead of you.) Tried quitting once. Four days. Everybody around me got worse, not me.",
+      "prompt": "(He sets two bottles on the counter, unopened, just to have something to look at instead of you.) Tried quitting once. Four days. Everybody around me got {color:Disgust}worse{/color}, not me.",
       "swipes": {
         "truth": {
           "playerText": "Everybody around you didn't change. You did, for four days. That's the part worth noticing.",
@@ -206,7 +206,7 @@
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
-          "nextNodeId": null
+          "nextNodeId": "samun_04"
         },
         "lie": {
           "playerText": "Then it's not really you that's the problem, is it.",
@@ -222,6 +222,43 @@
             "Denial"
           ],
           "ledgerEntry": "You told Samun his addiction wasn't his own responsibility.",
+          "nextNodeId": "samun_04"
+        }
+      }
+    },
+    "samun_04": {
+      "id": "samun_04",
+      "npc": "SAMUN",
+      "location": 4,
+      "prompt": "Fifth day, my {color:Sadness}brother{/color} called asking for money. That's the whole story. That's all it ever takes.",
+      "swipes": {
+        "truth": {
+          "playerText": "That's not a small thing to say out loud.",
+          "npcReaction": "He nods once, short. Doesn't dress it up, doesn't take it back either.",
+          "effects": {
+            "integrity": 2,
+            "lucidity": 2,
+            "trust": 1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": null
+        },
+        "lie": {
+          "playerText": "Can't control what your brother does. Not on you.",
+          "npcReaction": "He agrees fast, too fast, and reaches for the second bottle.",
+          "effects": {
+            "integrity": -2,
+            "stability": 1,
+            "trust": 2
+          },
+          "debtDelta": 3,
+          "tags": [
+            "Addiction",
+            "Denial"
+          ],
+          "ledgerEntry": "You told Samun his brother's call, not his own choice, was why he drank again.",
           "nextNodeId": null
         }
       }

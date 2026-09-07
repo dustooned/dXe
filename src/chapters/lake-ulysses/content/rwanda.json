@@ -8,7 +8,7 @@
       "id": "rwanda_01",
       "npc": "RWANDA",
       "location": 3,
-      "prompt": "Why do I gotta sand myself down just to be digestible?",
+      "prompt": "Why do I gotta sand myself down just to be {color:Disgust}digestible{/color}?",
       "swipes": {
         "truth": {
           "playerText": "Because people are scared of you being fully real.",
@@ -46,7 +46,7 @@
       "id": "rwanda_02_closed",
       "npc": "RWANDA",
       "location": 3,
-      "prompt": "Right. Sure. I'm doing fine. (She turns back to the window.)",
+      "prompt": "Right. Sure. I'm doing {color:Sadness}fine{/color}. (She turns back to the window.)",
       "swipes": {
         "truth": {
           "playerText": "I was wrong. You don't have to minimize this for me.",
@@ -82,7 +82,7 @@
       "id": "rwanda_02_open",
       "npc": "RWANDA",
       "location": 3,
-      "prompt": "You actually mean that? Most people just want me to perform.",
+      "prompt": "You actually mean that? Most people just want me to {color:Disgust}perform{/color}.",
       "swipes": {
         "truth": {
           "playerText": "I know. And it's exhausting to watch, let alone live.",
@@ -119,7 +119,7 @@
       "id": "rwanda_01_soft",
       "npc": "RWANDA",
       "location": 3,
-      "prompt": "(She doesn't turn around.) You see it too, right. Whatever's out there tonight.",
+      "prompt": "(She doesn't turn around.) You {color:Anticipation}see{/color} it too, right. Whatever's out there tonight.",
       "swipes": {
         "truth": {
           "playerText": "I see something. I don't know what it is yet.",
@@ -155,7 +155,7 @@
       "id": "rwanda_01_hard",
       "npc": "RWANDA",
       "location": 3,
-      "prompt": "Word travels. You've been at three doors tonight already. What is it you're collecting?",
+      "prompt": "Word travels. You've been at three doors tonight already. What is it you're {color:Anticipation}collecting{/color}?",
       "swipes": {
         "truth": {
           "playerText": "I don't know yet. That's the honest answer.",
@@ -192,7 +192,7 @@
       "id": "rwanda_03",
       "npc": "RWANDA",
       "location": 3,
-      "prompt": "(She lights a cigarette she doesn't smoke, just holds.) You want to know the actual tiring part? It's not them. It's flinching before they even say anything.",
+      "prompt": "(She lights a cigarette she doesn't smoke, just holds.) You want to know the actual tiring part? It's not them. It's {color:Fear}flinching{/color} before they even say anything.",
       "swipes": {
         "truth": {
           "playerText": "That's not a flaw in you. That's what being braced all the time does to a person.",
@@ -205,7 +205,7 @@
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
-          "nextNodeId": null
+          "nextNodeId": "rwanda_04"
         },
         "lie": {
           "playerText": "Maybe if you flinched less, people would push less.",
@@ -220,6 +220,42 @@
             "Identity"
           ],
           "ledgerEntry": "You told Rwanda her self-protection was the problem.",
+          "nextNodeId": "rwanda_04"
+        }
+      }
+    },
+    "rwanda_04": {
+      "id": "rwanda_04",
+      "npc": "RWANDA",
+      "location": 3,
+      "prompt": "(She sets the cigarette down for good this time.) You're the first person tonight I haven't had to {color:Fear}brace{/color} for. That's either good, or it means I'm not paying attention.",
+      "swipes": {
+        "truth": {
+          "playerText": "Maybe it's neither. Maybe you just get to have one conversation that doesn't cost you anything.",
+          "npcReaction": "She exhales like she's been holding it since you walked in. \"Don't make it weird by being nice about it.\"",
+          "effects": {
+            "integrity": 2,
+            "lucidity": 1,
+            "trust": 2
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": null
+        },
+        "lie": {
+          "playerText": "You should probably stay on guard. Better safe.",
+          "npcReaction": "The window gets her attention again. Whatever just opened closes back up, careful and quiet.",
+          "effects": {
+            "integrity": -2,
+            "stability": 1,
+            "trust": -2
+          },
+          "debtDelta": 3,
+          "tags": [
+            "Identity"
+          ],
+          "ledgerEntry": "You told Rwanda to stay braced even with you.",
           "nextNodeId": null
         }
       }
