@@ -347,6 +347,13 @@
   image-rendering: pixelated;
 }
 
+/* Confrontations' background, in place of art that doesn't exist for
+   them (ui/oscilloscope.js). object-fit/image-rendering above are no-ops
+   on a <canvas> — this class only supplies the shared position/sizing. */
+.dx-cutscene-oscilloscope {
+  background: var(--color-black);
+}
+
 .dx-cutscene-sprite {
   position: absolute;
   z-index: 1;

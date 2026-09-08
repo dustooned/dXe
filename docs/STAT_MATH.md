@@ -275,6 +275,63 @@ stays black, with the crosshatch's own density naturally graduating how
 much color shows through; confirmed `updateMood()` doesn't throw against
 a portrait with no image.
 
+## Confrontation oscilloscope (built — `ui/oscilloscope.js` + `audio.js`)
+
+Confrontation cutscenes have no background art of their own (`beats` only
+ever set `sprite`, never `bgAnim`/`image`) — a lot of empty real estate
+behind the bust. Fills it with a real oscilloscope, not a decorative
+animation: `audio.js`'s `ensureContext()` now taps an `AnalyserNode` off
+`masterGain` in parallel (`masterGain.connect(analyser)`, alongside its
+existing connection to `ctx.destination` — a read-only tap, not part of
+the output chain), and `getAnalyser()` exposes it. `oscilloscope.js`
+reads `getByteTimeDomainData()` every animation frame and draws it as a
+line — whatever's actually in the master mix at that instant, the same
+technique any real hardware/software scope uses.
+
+`cutsceneScene.js`'s background branch gets a third case: `bgAnim` /
+`image` / else-if `scene.opensDialog` (confrontations are the only
+cutscenes with no art AND a meaningful thing to visualize — regular
+narrative beats don't set `opensDialog` and keep whatever background they
+already have).
+
+**The silence gap — resolved.** An NPC's leitmotif used to only start once
+`dialogScene.js` mounted, *after* their confrontation beat, so the scope
+had nothing to trace during the confrontation itself. Fixed by starting
+it a step earlier: `cutsceneScene.js` calls `startLeitmotif()` at mount
+whenever `scene.opensDialog` is set, right before its first `render()`.
+
+Two things had to be right for that to feel calm rather than jarring:
+
+- **Fade-in, not a pop.** A leitmotif now often starts the instant a
+  confrontation appears — more sudden than dialogScene's own quieter
+  entrance. Both branches of `startLeitmotif()` now ramp gain from 0 up to
+  target over `LEITMOTIF_FADE_IN_SEC` (1.4s,
+  `gain.gain.linearRampToValueAtTime()`) instead of snapping straight to
+  volume.
+- **No restart on the handoff.** A confrontation always leads straight
+  into that same NPC's dialog scene, which calls `startLeitmotif()` again
+  moments later with the same key. Without a guard that would stop and
+  restart the oscillator mid-note (audible glitch) and reset mood back to
+  0. `startLeitmotif()` now tracks `activeLeitmotifKey` and no-ops
+  immediately if the requested NPC is already the one playing — the
+  confrontation's fade-in just keeps running uninterrupted into the
+  dialog scene. A *different* NPC still restarts normally (mood has
+  nothing to do with which NPC is even playing, so there's no continuity
+  to preserve there).
+
+Verified: isolated test against a real canvas confirmed non-black pixels
+tracing an actual waveform while a leitmotif played (2196 px for
+Deborah's sine tone; visually confirmed Rick's sawtooth leitmotif
+produces a genuine sawtooth trace — sharp edge, linear ramp, not an
+approximation). Verified the fade-in and no-restart guard by sampling the
+analyser's peak amplitude directly: 0 at start, 5 mid-ramp, called
+`startLeitmotif('DEBORAH')` again mid-ramp and amplitude stayed at 5 (no
+reset), continued rising to 9 on the original ramp afterward; starting a
+*different* NPC (`'RICK'`) immediately dropped amplitude back near 0,
+confirming the no-op is correctly scoped to the same NPC only. Confirmed
+live in the actual confrontation → dialog transition that amplitude
+carries through non-zero rather than restarting silent.
+
 ## Meter-gated branching (built — `cardEngine.js` + `dialogScene.js`)
 
 The second thing reading the four meters back (after the epilogue), and

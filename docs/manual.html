@@ -3441,7 +3441,7 @@ format supports a <code>SPRITE:</code> field) without any import statement.</p>
     </article>
 <article class="doc" id="doc-stat_math" data-title="Stat Math" data-file="STAT_MATH.md" hidden>
       <p class="doc-source">Authoring · <code>docs/STAT_MATH.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-stat_math--where-this-started">Where this started</a></li><li><a href="#doc-stat_math--emotional-lean-built-cardenginejs">Emotional Lean (built — cardEngine.js)</a></li><li><a href="#doc-stat_math--ending-epilogue-built-endingenginejs-endingscenejs-the-consu">Ending epilogue (built — endingEngine.js + endingScene.js) — the consumer</a></li><li><a href="#doc-stat_math--per-npc-leitmotif-built-shellaudiojs">Per-NPC leitmotif (built — shell/audio.js)</a></li><li><a href="#doc-stat_math--leitmotif-mood-bending-built-shellaudiojs-dialogscenejs">Leitmotif mood-bending (built — shell/audio.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--dialog-portrait-mood-mask-built-uinpcportraitjs-audiojs">Dialog portrait mood-mask (built — ui/npcPortrait.js + audio.js)</a></li><li><a href="#doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs">Meter-gated branching (built — cardEngine.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--build-order">Build order</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-stat_math--where-this-started">Where this started</a></li><li><a href="#doc-stat_math--emotional-lean-built-cardenginejs">Emotional Lean (built — cardEngine.js)</a></li><li><a href="#doc-stat_math--ending-epilogue-built-endingenginejs-endingscenejs-the-consu">Ending epilogue (built — endingEngine.js + endingScene.js) — the consumer</a></li><li><a href="#doc-stat_math--per-npc-leitmotif-built-shellaudiojs">Per-NPC leitmotif (built — shell/audio.js)</a></li><li><a href="#doc-stat_math--leitmotif-mood-bending-built-shellaudiojs-dialogscenejs">Leitmotif mood-bending (built — shell/audio.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--dialog-portrait-mood-mask-built-uinpcportraitjs-audiojs">Dialog portrait mood-mask (built — ui/npcPortrait.js + audio.js)</a></li><li><a href="#doc-stat_math--confrontation-oscilloscope-built-uioscilloscopejs-audiojs">Confrontation oscilloscope (built — ui/oscilloscope.js + audio.js)</a></li><li><a href="#doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs">Meter-gated branching (built — cardEngine.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--build-order">Build order</a></li></ul></nav>
       <h1 id="doc-stat_math--stat-amp-character-data-math"><a class="anchor" href="#doc-stat_math--stat-amp-character-data-math" aria-label="Link to this section">#</a>Stat &amp; Character Data Math</h1>
 <p>This doc is strictly the math/data layer on top of the stats — what each
 number means narratively is in <a class="doc-ref" href="#doc-content_schema" data-doc="doc-content_schema"><code>CONTENT_SCHEMA.md</code></a>&#39;s &quot;What the stats
@@ -3699,6 +3699,60 @@ in a Bob Baiter frame) that the light areas tint and the black linework
 stays black, with the crosshatch&#39;s own density naturally graduating how
 much color shows through; confirmed <code>updateMood()</code> doesn&#39;t throw against
 a portrait with no image.</p>
+<h2 id="doc-stat_math--confrontation-oscilloscope-built-uioscilloscopejs-audiojs"><a class="anchor" href="#doc-stat_math--confrontation-oscilloscope-built-uioscilloscopejs-audiojs" aria-label="Link to this section">#</a>Confrontation oscilloscope (built — <code>ui/oscilloscope.js</code> + <code>audio.js</code>)</h2>
+<p>Confrontation cutscenes have no background art of their own (<code>beats</code> only
+ever set <code>sprite</code>, never <code>bgAnim</code>/<code>image</code>) — a lot of empty real estate
+behind the bust. Fills it with a real oscilloscope, not a decorative
+animation: <code>audio.js</code>&#39;s <code>ensureContext()</code> now taps an <code>AnalyserNode</code> off
+<code>masterGain</code> in parallel (<code>masterGain.connect(analyser)</code>, alongside its
+existing connection to <code>ctx.destination</code> — a read-only tap, not part of
+the output chain), and <code>getAnalyser()</code> exposes it. <code>oscilloscope.js</code>
+reads <code>getByteTimeDomainData()</code> every animation frame and draws it as a
+line — whatever&#39;s actually in the master mix at that instant, the same
+technique any real hardware/software scope uses.</p>
+<p><code>cutsceneScene.js</code>&#39;s background branch gets a third case: <code>bgAnim</code> /
+<code>image</code> / else-if <code>scene.opensDialog</code> (confrontations are the only
+cutscenes with no art AND a meaningful thing to visualize — regular
+narrative beats don&#39;t set <code>opensDialog</code> and keep whatever background they
+already have).</p>
+<p><strong>The silence gap — resolved.</strong> An NPC&#39;s leitmotif used to only start once
+<code>dialogScene.js</code> mounted, <em>after</em> their confrontation beat, so the scope
+had nothing to trace during the confrontation itself. Fixed by starting
+it a step earlier: <code>cutsceneScene.js</code> calls <code>startLeitmotif()</code> at mount
+whenever <code>scene.opensDialog</code> is set, right before its first <code>render()</code>.</p>
+<p>Two things had to be right for that to feel calm rather than jarring:</p>
+<ul>
+<li><strong>Fade-in, not a pop.</strong> A leitmotif now often starts the instant a
+confrontation appears — more sudden than dialogScene&#39;s own quieter
+entrance. Both branches of <code>startLeitmotif()</code> now ramp gain from 0 up to
+target over <code>LEITMOTIF_FADE_IN_SEC</code> (1.4s,
+<code>gain.gain.linearRampToValueAtTime()</code>) instead of snapping straight to
+volume.</li>
+<li><strong>No restart on the handoff.</strong> A confrontation always leads straight
+into that same NPC&#39;s dialog scene, which calls <code>startLeitmotif()</code> again
+moments later with the same key. Without a guard that would stop and
+restart the oscillator mid-note (audible glitch) and reset mood back to<ol start="0">
+<li><code>startLeitmotif()</code> now tracks <code>activeLeitmotifKey</code> and no-ops
+immediately if the requested NPC is already the one playing — the
+confrontation&#39;s fade-in just keeps running uninterrupted into the
+dialog scene. A <em>different</em> NPC still restarts normally (mood has
+nothing to do with which NPC is even playing, so there&#39;s no continuity
+to preserve there).</li>
+</ol>
+</li>
+</ul>
+<p>Verified: isolated test against a real canvas confirmed non-black pixels
+tracing an actual waveform while a leitmotif played (2196 px for
+Deborah&#39;s sine tone; visually confirmed Rick&#39;s sawtooth leitmotif
+produces a genuine sawtooth trace — sharp edge, linear ramp, not an
+approximation). Verified the fade-in and no-restart guard by sampling the
+analyser&#39;s peak amplitude directly: 0 at start, 5 mid-ramp, called
+<code>startLeitmotif(&#39;DEBORAH&#39;)</code> again mid-ramp and amplitude stayed at 5 (no
+reset), continued rising to 9 on the original ramp afterward; starting a
+<em>different</em> NPC (<code>&#39;RICK&#39;</code>) immediately dropped amplitude back near 0,
+confirming the no-op is correctly scoped to the same NPC only. Confirmed
+live in the actual confrontation → dialog transition that amplitude
+carries through non-zero rather than restarting silent.</p>
 <h2 id="doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs"><a class="anchor" href="#doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs" aria-label="Link to this section">#</a>Meter-gated branching (built — <code>cardEngine.js</code> + <code>dialogScene.js</code>)</h2>
 <p>The second thing reading the four meters back (after the epilogue), and
 the first to actually change <em>what content shows</em>, not just what gets

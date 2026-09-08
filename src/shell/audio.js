@@ -16,8 +16,10 @@ import leitmotifNotes from '../chapters/lake-ulysses/content/leitmotifs.json';
 
 let ctx = null;
 let masterGain = null;
+let analyser = null;
 let stems = {};
 let activeLeitmotif = null;
+let activeLeitmotifKey = null;
 let ambientSource = null;
 let ambientGain = null;
 let titleSources = [];
@@ -46,6 +48,11 @@ const STEM_CONFIG = {
 const AMBIENT_GAIN       = 0.06;
 const EMPHASIS_GAIN      = 0.16;
 const LEITMOTIF_GAIN     = 0.14;
+// A leitmotif now starts as early as an NPC's confrontation cutscene
+// (cutsceneScene.js, for the oscilloscope to have something to trace),
+// which is a more sudden entrance than dialogScene's — a linear ramp from
+// silence keeps that from popping in over a scene that was already quiet.
+const LEITMOTIF_FADE_IN_SEC = 1.4;
 const AMBIENT_MUSIC_GAIN = 0.07;
 const TYAGL_GAIN         = 0.45;
 const IT_STING_GAIN      = 0.45;
@@ -146,9 +153,26 @@ function ensureContext() {
     masterGain = ctx.createGain();
     masterGain.gain.value = 0.5;
     masterGain.connect(ctx.destination);
+    // A parallel tap, not part of the output chain — masterGain still goes
+    // straight to ctx.destination above regardless of whether anything
+    // ever reads from this. ui/oscilloscope.js reads it to draw whatever's
+    // actually playing (leitmotif, stings, ambient) — real audio, not a
+    // decorative animation guessing at it.
+    analyser = ctx.createAnalyser();
+    analyser.fftSize = 2048;
+    masterGain.connect(analyser);
   }
   if (ctx.state === 'suspended') ctx.resume();
   return ctx;
+}
+
+// Read-only handle onto the live master mix — see ensureContext's analyser
+// setup. Ensures the context exists first, so this is safe to call before
+// anything's played yet (e.g. mounting a confrontation's oscilloscope
+// before its leitmotif has started).
+export function getAnalyser() {
+  ensureContext();
+  return analyser;
 }
 
 async function loadAudio(url) {
@@ -290,6 +314,15 @@ export function stopEmotionStems() {
 // ─── NPC leitmotifs ───────────────────────────────────────────────────────────
 
 export async function startLeitmotif(npcKey) {
+  // Same NPC's leitmotif is already playing — e.g. their confrontation
+  // cutscene already started it, and dialogScene.js is calling this again
+  // moments later, expecting continuity. Restarting would both glitch
+  // (stop-then-restart an oscillator mid-note) and reset mood to 0,
+  // discarding a lean that, structurally, can't have moved yet anyway
+  // (nothing nudges mood before a dialog choice resolves) — but the audible
+  // restart alone is reason enough to skip it.
+  if (npcKey === activeLeitmotifKey && activeLeitmotif) return;
+
   stopLeitmotif();
   const generation = ++leitmotifGeneration;
   const config = LEITMOTIFS[npcKey];
@@ -301,7 +334,9 @@ export async function startLeitmotif(npcKey) {
     const buffer = await loadAudio(config.url);
     if (generation !== leitmotifGeneration) return; // stopped or replaced mid-load
     const gain = audioCtx.createGain();
-    gain.gain.value = config.volume ?? LEITMOTIF_GAIN;
+    const targetGain = config.volume ?? LEITMOTIF_GAIN;
+    gain.gain.value = 0;
+    gain.gain.linearRampToValueAtTime(targetGain, audioCtx.currentTime + LEITMOTIF_FADE_IN_SEC);
     gain.connect(masterGain);
     const source = audioCtx.createBufferSource();
     source.buffer = buffer;
@@ -314,12 +349,14 @@ export async function startLeitmotif(npcKey) {
         setTimeout(() => { try { source.stop(); } catch (_) {} gain.disconnect(); }, 400);
       },
     };
+    activeLeitmotifKey = npcKey;
     return;
   }
 
   // Oscillator phrase loop (existing NPCs)
   const gain = audioCtx.createGain();
-  gain.gain.value = LEITMOTIF_GAIN;
+  gain.gain.value = 0;
+  gain.gain.linearRampToValueAtTime(LEITMOTIF_GAIN, audioCtx.currentTime + LEITMOTIF_FADE_IN_SEC);
   gain.connect(masterGain);
 
   let index = 0;
@@ -364,6 +401,7 @@ export async function startLeitmotif(npcKey) {
       return mood;
     },
   };
+  activeLeitmotifKey = npcKey;
 }
 
 // Bends the currently-playing NPC leitmotif toward or away from its own
@@ -389,6 +427,7 @@ export function stopLeitmotif() {
   leitmotifGeneration++;
   activeLeitmotif?.stop();
   activeLeitmotif = null;
+  activeLeitmotifKey = null;
 }
 
 // ─── Preloader logo sting ─────────────────────────────────────────────────────

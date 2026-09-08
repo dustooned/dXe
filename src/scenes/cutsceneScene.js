@@ -19,9 +19,10 @@
 //                              as ui/walkRoom.js's per-class captions.
 // }
 import { createTypewriter } from '../ui/typewriterText.js';
-import { preloadTypewriterTick, playTypewriterTick, startAmbient, stopAmbient } from '../shell/audio.js';
+import { preloadTypewriterTick, playTypewriterTick, startAmbient, stopAmbient, startLeitmotif } from '../shell/audio.js';
 import { createSpriteAnimator } from '../ui/spriteAnimator.js';
 import { createItPopup } from '../ui/itPopup.js';
+import { createOscilloscope } from '../ui/oscilloscope.js';
 
 export function mount(stageEl, scene, { run, onComplete }) {
   preloadTypewriterTick();
@@ -30,6 +31,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let autoAdvanceTimer = null;
   let currentTextBox = null;
   let itPopup = null;
+  let oscilloscope = null;
 
   // Sprite animators persist frame position across beats for the same anim key
   // so animated backgrounds don't restart from 0 on every tap.
@@ -60,6 +62,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     clearTimeout(autoAdvanceTimer);
     itPopup?.destroy();
     itPopup = null;
+    oscilloscope?.destroy();
+    oscilloscope = null;
     stageEl.innerHTML = '';
     typewriter = null;
 
@@ -87,6 +91,14 @@ export function mount(stageEl, scene, { run, onComplete }) {
       img.src = beat.image;
       img.alt = '';
       screen.appendChild(img);
+    } else if (scene.opensDialog) {
+      // Confrontations have no background art of their own — real
+      // audio (this NPC's leitmotif, stings) drawn as a waveform, not a
+      // decorative loop, fills that space instead.
+      const scopeCanvas = document.createElement('canvas');
+      scopeCanvas.className = 'dx-cutscene-bg dx-cutscene-oscilloscope';
+      screen.appendChild(scopeCanvas);
+      oscilloscope = createOscilloscope(scopeCanvas);
     }
 
     // Character sprite — animated or static
@@ -222,6 +234,16 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
   if (scene.ambient) startAmbient(scene.ambient);
+  // Confrontations only — starts this NPC's leitmotif here rather than
+  // waiting for dialogScene.js, so the oscilloscope has something real to
+  // trace during the confrontation itself, not just silence. Deliberately
+  // not stopped in this scene's own unmount below: a confrontation always
+  // leads straight into that NPC's dialog scene, which calls
+  // startLeitmotif() with the same key and (per audio.js) just continues
+  // rather than restarting — stopping it here first would cause exactly
+  // the glitch that continuity check exists to avoid. dialogScene.js's own
+  // unmount is what actually stops it, once that encounter really ends.
+  if (scene.opensDialog) startLeitmotif(scene.opensDialog.toUpperCase());
   render();
 
   return function unmount() {
@@ -229,6 +251,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     clearTimeout(autoAdvanceTimer);
     typewriter?.destroy();
     itPopup?.destroy();
+    oscilloscope?.destroy();
     if (scene.ambient) stopAmbient();
     stageEl.innerHTML = '';
   };
