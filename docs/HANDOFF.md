@@ -422,6 +422,23 @@ Roughly in order of how ready each one is to just start:
   placeholder phrases (`audio.js`'s `LEITMOTIFS` fallback) until a `.mid`
   exists for each.
 
+## Build version stamp
+
+Bottom of the main menu (`CHAPTERS` screen), low-key: `BETA · v0.1.0 ·
+build 70 · fc2e270`. No manual bumping — `vite.config.js` injects three
+build-time constants (`__APP_VERSION__` from `package.json`,
+`__BUILD_NUMBER__` from `git rev-list --count HEAD`, `__COMMIT_HASH__`
+from `git rev-parse --short HEAD`), rendered in `main.js`'s
+`renderMenu()`. `BUILD_NUMBER` is the auto-incrementing part — every
+commit on the branch bumps it by one, nothing to remember to update.
+`APP_VERSION` stays the human-controlled major.minor.patch in
+`package.json`; bump that manually for an actual release milestone.
+
+Requires full git history at build time, which a GitHub Actions checkout
+doesn't have by default (shallow clone, depth 1 — `git rev-list --count`
+would always read back 1). `.github/workflows/deploy.yml`'s checkout step
+sets `fetch-depth: 0` for exactly this reason — don't remove it.
+
 ## Deployment
 
 Live at **dreamxtre.me**, hosted on GitHub Pages from

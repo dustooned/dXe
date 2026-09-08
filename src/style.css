@@ -87,6 +87,20 @@ body {
   margin: 0;
 }
 
+/* Low-key build stamp, main menu only. margin-top: auto pushes it to the
+   bottom of .dx-screen's flex column regardless of how many chapters are
+   in CHAPTERS — no fixed positioning needed. Opacity for de-emphasis
+   matches the rest of the game's "quiet" text (.dx-tap-hint etc.) rather
+   than introducing a separate gray color token. */
+.dx-build-info {
+  margin-top: auto;
+  margin-bottom: 0;
+  text-align: center;
+  font-size: 7px;
+  letter-spacing: 0.05em;
+  opacity: 0.35;
+}
+
 .dx-btn {
   font-family: inherit;
   font-size: 10px;

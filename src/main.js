@@ -316,6 +316,12 @@ function renderMenu() {
   menu.appendChild(aboutBtn);
 
   screen.appendChild(menu);
+
+  const buildInfo = document.createElement('p');
+  buildInfo.className = 'dx-build-info';
+  buildInfo.textContent = `BETA · v${__APP_VERSION__} · build ${__BUILD_NUMBER__} · ${__COMMIT_HASH__}`;
+  screen.appendChild(buildInfo);
+
   canvas.appendChild(screen);
 }
 

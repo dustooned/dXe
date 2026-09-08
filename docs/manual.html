@@ -637,7 +637,7 @@ after any doc edit).</li>
     </article>
 <article class="doc" id="doc-handoff" data-title="Handoff / Project Status" data-file="HANDOFF.md" hidden>
       <p class="doc-source">Start here · <code>docs/HANDOFF.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-handoff--what-dream-xtreme-is">What Dream Xtreme is</a></li><li><a href="#doc-handoff--what39s-actually-playable-right-now">What&amp;#39;s actually playable right now</a></li><li><a href="#doc-handoff--key-decisions-and-why">Key decisions and why</a></li><li><a href="#doc-handoff--stats-what39s-wired-up-and-what-isn39t">Stats — what&amp;#39;s wired up and what isn&amp;#39;t</a></li><li><a href="#doc-handoff--what-was-deliberately-cut-from-the-original-design-docs">What was deliberately cut from the original design docs</a></li><li><a href="#doc-handoff--asset-inventory">Asset inventory</a></li><li><a href="#doc-handoff--known-gaps-not-bugs-just-not-done">Known gaps (not bugs, just not done)</a></li><li><a href="#doc-handoff--what39s-next">What&amp;#39;s next</a></li><li><a href="#doc-handoff--deployment">Deployment</a></li><li><a href="#doc-handoff--running-it">Running it</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-handoff--what-dream-xtreme-is">What Dream Xtreme is</a></li><li><a href="#doc-handoff--what39s-actually-playable-right-now">What&amp;#39;s actually playable right now</a></li><li><a href="#doc-handoff--key-decisions-and-why">Key decisions and why</a></li><li><a href="#doc-handoff--stats-what39s-wired-up-and-what-isn39t">Stats — what&amp;#39;s wired up and what isn&amp;#39;t</a></li><li><a href="#doc-handoff--what-was-deliberately-cut-from-the-original-design-docs">What was deliberately cut from the original design docs</a></li><li><a href="#doc-handoff--asset-inventory">Asset inventory</a></li><li><a href="#doc-handoff--known-gaps-not-bugs-just-not-done">Known gaps (not bugs, just not done)</a></li><li><a href="#doc-handoff--what39s-next">What&amp;#39;s next</a></li><li><a href="#doc-handoff--build-version-stamp">Build version stamp</a></li><li><a href="#doc-handoff--deployment">Deployment</a></li><li><a href="#doc-handoff--running-it">Running it</a></li></ul></nav>
       <h1 id="doc-handoff--handoff-project-status"><a class="anchor" href="#doc-handoff--handoff-project-status" aria-label="Link to this section">#</a>Handoff / Project Status</h1>
 <p>Last updated: 2026-08-09. Read this first if you&#39;re picking this project
 up cold — it&#39;s the &quot;why,&quot; not the &quot;what&quot; (the code and the other docs in
@@ -1069,6 +1069,19 @@ section. Deborah has a real composed phrase now (<code>midi/deborah.mid</code>,
 placeholder phrases (<code>audio.js</code>&#39;s <code>LEITMOTIFS</code> fallback) until a <code>.mid</code>
 exists for each.</li>
 </ul>
+<h2 id="doc-handoff--build-version-stamp"><a class="anchor" href="#doc-handoff--build-version-stamp" aria-label="Link to this section">#</a>Build version stamp</h2>
+<p>Bottom of the main menu (<code>CHAPTERS</code> screen), low-key: <code>BETA · v0.1.0 · build 70 · fc2e270</code>. No manual bumping — <code>vite.config.js</code> injects three
+build-time constants (<code>__APP_VERSION__</code> from <code>package.json</code>,
+<code>__BUILD_NUMBER__</code> from <code>git rev-list --count HEAD</code>, <code>__COMMIT_HASH__</code>
+from <code>git rev-parse --short HEAD</code>), rendered in <code>main.js</code>&#39;s
+<code>renderMenu()</code>. <code>BUILD_NUMBER</code> is the auto-incrementing part — every
+commit on the branch bumps it by one, nothing to remember to update.
+<code>APP_VERSION</code> stays the human-controlled major.minor.patch in
+<code>package.json</code>; bump that manually for an actual release milestone.</p>
+<p>Requires full git history at build time, which a GitHub Actions checkout
+doesn&#39;t have by default (shallow clone, depth 1 — <code>git rev-list --count</code>
+would always read back 1). <code>.github/workflows/deploy.yml</code>&#39;s checkout step
+sets <code>fetch-depth: 0</code> for exactly this reason — don&#39;t remove it.</p>
 <h2 id="doc-handoff--deployment"><a class="anchor" href="#doc-handoff--deployment" aria-label="Link to this section">#</a>Deployment</h2>
 <p>Live at <strong>dreamxtre.me</strong>, hosted on GitHub Pages from
 <a href="https://github.com/dustooned/dXe">github.com/dustooned/dXe</a>, domain
