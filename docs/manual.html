@@ -3753,6 +3753,35 @@ reset), continued rising to 9 on the original ramp afterward; starting a
 confirming the no-op is correctly scoped to the same NPC only. Confirmed
 live in the actual confrontation → dialog transition that amplitude
 carries through non-zero rather than restarting silent.</p>
+<p><strong>Regression, found live: invisible on the deployed site.</strong> The isolated
+test above passed because it always attached the canvas to <code>document.body</code>
+<em>before</em> calling <code>createOscilloscope()</code>. The real caller,
+<code>cutsceneScene.js</code>, doesn&#39;t — it builds a beat&#39;s whole <code>screen</code> div
+off-DOM and appends it to <code>stageEl</code> in one shot afterward, so the canvas
+is still detached at the moment <code>createOscilloscope()</code> ran its original
+one-time <code>resize()</code>. <code>clientWidth</code>/<code>clientHeight</code> on a detached element
+are always 0, so <code>canvas.width</code>/<code>height</code> got set to 0 and stuck there —
+nothing ever called <code>resize()</code> again except an actual browser window
+resize event, which a normal play session never fires. The canvas was
+there, correctly positioned and z-indexed, just permanently empty.</p>
+<p>Fixed by checking size every frame instead of once at setup
+(<code>syncSize()</code>, first thing inside <code>draw()</code>) — self-correcting the moment
+the canvas is actually in a laid-out document, whichever frame that turns
+out to be, with no dependency on a resize event. Only writes
+<code>canvas.width</code>/<code>height</code> (which resets the bitmap) when the size actually
+changed, so it&#39;s not doing real work on the frames where nothing moved.</p>
+<p>Verified the fix&#39;s logic directly: read <code>canvas.width</code> on a live
+confrontation&#39;s oscilloscope and found it stuck at 300×150 (the browser&#39;s
+un-sized-canvas default) despite <code>clientWidth</code>/<code>clientHeight</code> correctly
+reporting the real 358×779 layout size — reproducing the bug exactly.
+Manually ran the same steps <code>syncSize()</code> + one <code>draw()</code> frame do and
+confirmed <code>canvas.width</code>/<code>height</code> corrected to 358×779 and the waveform
+drew (2462 non-black px). Couldn&#39;t get a live <code>requestAnimationFrame</code> to
+actually tick in this session&#39;s sandboxed browser tab to watch it
+self-heal automatically — that tab never reports <code>document.hasFocus()</code>
+as true no matter what&#39;s fronted, which is a property of this specific
+automation environment, not of a real player&#39;s browser (rAF ticks
+continuously and reliably in any tab that&#39;s actually being played in).</p>
 <h2 id="doc-stat_math--swipe-without-a-feeling-rejection-fix-dialogscenejs-fxjs-aud"><a class="anchor" href="#doc-stat_math--swipe-without-a-feeling-rejection-fix-dialogscenejs-fxjs-aud" aria-label="Link to this section">#</a>Swipe-without-a-feeling rejection (fix — <code>dialogScene.js</code> + <code>fx.js</code> + <code>audio.js</code> + <code>swipeCard.js</code>)</h2>
 <p><code>handleSwipe()</code> already refused to resolve a card without an <code>activeEmotion</code>
 set (<code>if (!activeEmotion) return</code>) — the swipe never <em>counted</em>. But

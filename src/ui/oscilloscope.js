@@ -13,14 +13,22 @@ export function createOscilloscope(canvas, { color = '#ffffff', lineWidth = 2 } 
   const ctx2d = canvas.getContext('2d');
   let rafId = null;
 
-  function resize() {
-    canvas.width = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
+  // Checked every frame rather than once at setup — the canvas is created
+  // and this is called before its parent is attached to the document
+  // (cutsceneScene.js builds the whole beat off-DOM, then appends it in
+  // one shot), so clientWidth/Height would read 0 at setup time and the
+  // canvas would keep a permanently-empty pixel buffer forever after
+  // (found live: it worked in every local test only because a window
+  // resize during testing happened to trigger a correction). Cheap layout
+  // read; only writes canvas.width/height (which resets the bitmap) when
+  // the size actually changed.
+  function syncSize() {
+    if (canvas.width !== canvas.clientWidth) canvas.width = canvas.clientWidth;
+    if (canvas.height !== canvas.clientHeight) canvas.height = canvas.clientHeight;
   }
-  resize();
-  window.addEventListener('resize', resize);
 
   function draw() {
+    syncSize();
     analyser.getByteTimeDomainData(data);
     const w = canvas.width;
     const h = canvas.height;
@@ -46,7 +54,6 @@ export function createOscilloscope(canvas, { color = '#ffffff', lineWidth = 2 } 
   return {
     destroy() {
       cancelAnimationFrame(rafId);
-      window.removeEventListener('resize', resize);
     },
   };
 }

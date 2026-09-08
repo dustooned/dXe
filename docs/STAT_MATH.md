@@ -332,6 +332,38 @@ confirming the no-op is correctly scoped to the same NPC only. Confirmed
 live in the actual confrontation → dialog transition that amplitude
 carries through non-zero rather than restarting silent.
 
+**Regression, found live: invisible on the deployed site.** The isolated
+test above passed because it always attached the canvas to `document.body`
+*before* calling `createOscilloscope()`. The real caller,
+`cutsceneScene.js`, doesn't — it builds a beat's whole `screen` div
+off-DOM and appends it to `stageEl` in one shot afterward, so the canvas
+is still detached at the moment `createOscilloscope()` ran its original
+one-time `resize()`. `clientWidth`/`clientHeight` on a detached element
+are always 0, so `canvas.width`/`height` got set to 0 and stuck there —
+nothing ever called `resize()` again except an actual browser window
+resize event, which a normal play session never fires. The canvas was
+there, correctly positioned and z-indexed, just permanently empty.
+
+Fixed by checking size every frame instead of once at setup
+(`syncSize()`, first thing inside `draw()`) — self-correcting the moment
+the canvas is actually in a laid-out document, whichever frame that turns
+out to be, with no dependency on a resize event. Only writes
+`canvas.width`/`height` (which resets the bitmap) when the size actually
+changed, so it's not doing real work on the frames where nothing moved.
+
+Verified the fix's logic directly: read `canvas.width` on a live
+confrontation's oscilloscope and found it stuck at 300×150 (the browser's
+un-sized-canvas default) despite `clientWidth`/`clientHeight` correctly
+reporting the real 358×779 layout size — reproducing the bug exactly.
+Manually ran the same steps `syncSize()` + one `draw()` frame do and
+confirmed `canvas.width`/`height` corrected to 358×779 and the waveform
+drew (2462 non-black px). Couldn't get a live `requestAnimationFrame` to
+actually tick in this session's sandboxed browser tab to watch it
+self-heal automatically — that tab never reports `document.hasFocus()`
+as true no matter what's fronted, which is a property of this specific
+automation environment, not of a real player's browser (rAF ticks
+continuously and reliably in any tab that's actually being played in).
+
 ## Swipe-without-a-feeling rejection (fix — `dialogScene.js` + `fx.js` + `audio.js` + `swipeCard.js`)
 
 `handleSwipe()` already refused to resolve a card without an `activeEmotion`
