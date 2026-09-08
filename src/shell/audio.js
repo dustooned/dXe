@@ -542,16 +542,26 @@ export function playStaticNoise(durationMs = 480) {
 
 // ─── Hit feedback ─────────────────────────────────────────────────────────────
 
+// 'subtle' pairs with fx.js's shake('subtle') — a swipe that didn't count
+// as a choice at all (no FEELZ emotion picked yet), not a smaller version
+// of a real one. Quieter and shorter than 'weak', and a touch brighter in
+// pitch so it reads as a light "that didn't register" tick rather than a
+// small impact.
+const HIT_CONFIG = {
+  subtle: { peak: 0.08, duration: 0.1, frequency: 330 },
+  weak:   { peak: 0.15, duration: 0.18, frequency: 220 },
+  strong: { peak: 0.3,  duration: 0.35, frequency: 90 },
+};
+
 export function playHit(intensity = 'weak') {
   const audioCtx = ensureContext();
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
   const now = audioCtx.currentTime;
-  const peak = intensity === 'strong' ? 0.3 : 0.15;
-  const duration = intensity === 'strong' ? 0.35 : 0.18;
+  const { peak, duration, frequency } = HIT_CONFIG[intensity] ?? HIT_CONFIG.weak;
 
   osc.type = 'square';
-  osc.frequency.value = intensity === 'strong' ? 90 : 220;
+  osc.frequency.value = frequency;
   gain.gain.setValueAtTime(peak, now);
   gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
 

@@ -163,7 +163,16 @@ export function mount(stageEl, scene, { run, onComplete }) {
       const card = createSwipeCard({
         promptText: activeEmotion ? 'Drag to respond.' : 'Pick a feeling first.',
         onSwipe: (key) => {
-          if (!activeEmotion) return;
+          if (!activeEmotion) {
+            // A completed swipe with no feeling picked yet doesn't count as
+            // a choice — snap the card back and give a clearly smaller jolt
+            // than any real choice gets, so it reads as "that didn't
+            // register," not as a lighter version of an actual answer.
+            card.reset();
+            fx.shake('subtle');
+            audio.playHit('subtle');
+            return;
+          }
           handleSwipe(key);
         },
       });

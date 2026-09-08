@@ -9,7 +9,11 @@ export function initFx(el) {
 
 const FLASH_OPACITY = { weak: 0.15, strong: 0.4 };
 const FLASH_DURATION_MS = { weak: 160, strong: 260 };
-const SHAKE_DISTANCE_PX = { weak: 4, strong: 10 };
+// 'subtle' is deliberately quieter than 'weak' — 'weak' already means "a
+// real choice landed, lightly"; this is for a swipe that didn't count as
+// a choice at all (dialogScene.js: swiping with no FEELZ emotion picked
+// yet), so it needs to read as clearly smaller than any real feedback.
+const SHAKE_DISTANCE_PX = { subtle: 2, weak: 4, strong: 10 };
 
 export function flash(intensity = 'weak') {
   if (!canvasEl) return;

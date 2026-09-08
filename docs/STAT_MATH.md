@@ -332,6 +332,40 @@ confirming the no-op is correctly scoped to the same NPC only. Confirmed
 live in the actual confrontation → dialog transition that amplitude
 carries through non-zero rather than restarting silent.
 
+## Swipe-without-a-feeling rejection (fix — `dialogScene.js` + `fx.js` + `audio.js` + `swipeCard.js`)
+
+`handleSwipe()` already refused to resolve a card without an `activeEmotion`
+set (`if (!activeEmotion) return`) — the swipe never *counted*. But
+`swipeCard.js`'s drag gesture didn't know that: a completed left/right
+drag always called `onSwipe`, and only the "let go without committing to
+either side" case reset the card's position. So a player could drag a
+card fully to TRUTH or LIE with no feeling picked, watch it stay flung to
+that side, and nothing would happen — reading as broken, not as blocked.
+
+Fixed on both ends:
+- `swipeCard.js` now exposes `reset()` (the same snap-back the
+  "no direction" case already did internally), so a caller can trigger it
+  from outside after the fact.
+- `dialogScene.js`'s `onSwipe` calls `card.reset()` plus a rejection jolt
+  when `activeEmotion` is unset, instead of a bare `return`.
+
+The jolt needed to read as clearly *smaller* than real choice feedback,
+not a quieter version of it — so `fx.js` gained a `'subtle'` shake tier
+(2px, vs. `'weak'`'s existing 4px) and `audio.js`'s `playHit()` gained a
+matching `'subtle'` tier (quieter, shorter, a touch brighter in pitch —
+reads as "didn't register" rather than a small impact). Both were flat
+`intensity === 'strong' ? … : …` ternaries before, which would have
+silently folded a new `'subtle'` value into the `'weak'` branch;
+`audio.js`'s went through a `HIT_CONFIG` lookup table instead so a third
+tier is an explicit entry, not a ternary rewrite.
+
+Verified: simulated a completed drag with no emotion selected — card's
+`transform` cleared and position snapped back to within 1px of its
+pre-drag position, `DEBT` and the prompt text both unchanged (the swipe
+genuinely didn't count, not just visually recovered). The `handleSwipe(key)`
+call for the real, emotion-selected path is byte-for-byte unchanged by
+this fix — no regression surface there.
+
 ## Meter-gated branching (built — `cardEngine.js` + `dialogScene.js`)
 
 The second thing reading the four meters back (after the epilogue), and

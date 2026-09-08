@@ -3441,7 +3441,7 @@ format supports a <code>SPRITE:</code> field) without any import statement.</p>
     </article>
 <article class="doc" id="doc-stat_math" data-title="Stat Math" data-file="STAT_MATH.md" hidden>
       <p class="doc-source">Authoring · <code>docs/STAT_MATH.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-stat_math--where-this-started">Where this started</a></li><li><a href="#doc-stat_math--emotional-lean-built-cardenginejs">Emotional Lean (built — cardEngine.js)</a></li><li><a href="#doc-stat_math--ending-epilogue-built-endingenginejs-endingscenejs-the-consu">Ending epilogue (built — endingEngine.js + endingScene.js) — the consumer</a></li><li><a href="#doc-stat_math--per-npc-leitmotif-built-shellaudiojs">Per-NPC leitmotif (built — shell/audio.js)</a></li><li><a href="#doc-stat_math--leitmotif-mood-bending-built-shellaudiojs-dialogscenejs">Leitmotif mood-bending (built — shell/audio.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--dialog-portrait-mood-mask-built-uinpcportraitjs-audiojs">Dialog portrait mood-mask (built — ui/npcPortrait.js + audio.js)</a></li><li><a href="#doc-stat_math--confrontation-oscilloscope-built-uioscilloscopejs-audiojs">Confrontation oscilloscope (built — ui/oscilloscope.js + audio.js)</a></li><li><a href="#doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs">Meter-gated branching (built — cardEngine.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--build-order">Build order</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-stat_math--where-this-started">Where this started</a></li><li><a href="#doc-stat_math--emotional-lean-built-cardenginejs">Emotional Lean (built — cardEngine.js)</a></li><li><a href="#doc-stat_math--ending-epilogue-built-endingenginejs-endingscenejs-the-consu">Ending epilogue (built — endingEngine.js + endingScene.js) — the consumer</a></li><li><a href="#doc-stat_math--per-npc-leitmotif-built-shellaudiojs">Per-NPC leitmotif (built — shell/audio.js)</a></li><li><a href="#doc-stat_math--leitmotif-mood-bending-built-shellaudiojs-dialogscenejs">Leitmotif mood-bending (built — shell/audio.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--dialog-portrait-mood-mask-built-uinpcportraitjs-audiojs">Dialog portrait mood-mask (built — ui/npcPortrait.js + audio.js)</a></li><li><a href="#doc-stat_math--confrontation-oscilloscope-built-uioscilloscopejs-audiojs">Confrontation oscilloscope (built — ui/oscilloscope.js + audio.js)</a></li><li><a href="#doc-stat_math--swipe-without-a-feeling-rejection-fix-dialogscenejs-fxjs-aud">Swipe-without-a-feeling rejection (fix — dialogScene.js + fx.js + audio.js + swipeCard.js)</a></li><li><a href="#doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs">Meter-gated branching (built — cardEngine.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--build-order">Build order</a></li></ul></nav>
       <h1 id="doc-stat_math--stat-amp-character-data-math"><a class="anchor" href="#doc-stat_math--stat-amp-character-data-math" aria-label="Link to this section">#</a>Stat &amp; Character Data Math</h1>
 <p>This doc is strictly the math/data layer on top of the stats — what each
 number means narratively is in <a class="doc-ref" href="#doc-content_schema" data-doc="doc-content_schema"><code>CONTENT_SCHEMA.md</code></a>&#39;s &quot;What the stats
@@ -3753,6 +3753,37 @@ reset), continued rising to 9 on the original ramp afterward; starting a
 confirming the no-op is correctly scoped to the same NPC only. Confirmed
 live in the actual confrontation → dialog transition that amplitude
 carries through non-zero rather than restarting silent.</p>
+<h2 id="doc-stat_math--swipe-without-a-feeling-rejection-fix-dialogscenejs-fxjs-aud"><a class="anchor" href="#doc-stat_math--swipe-without-a-feeling-rejection-fix-dialogscenejs-fxjs-aud" aria-label="Link to this section">#</a>Swipe-without-a-feeling rejection (fix — <code>dialogScene.js</code> + <code>fx.js</code> + <code>audio.js</code> + <code>swipeCard.js</code>)</h2>
+<p><code>handleSwipe()</code> already refused to resolve a card without an <code>activeEmotion</code>
+set (<code>if (!activeEmotion) return</code>) — the swipe never <em>counted</em>. But
+<code>swipeCard.js</code>&#39;s drag gesture didn&#39;t know that: a completed left/right
+drag always called <code>onSwipe</code>, and only the &quot;let go without committing to
+either side&quot; case reset the card&#39;s position. So a player could drag a
+card fully to TRUTH or LIE with no feeling picked, watch it stay flung to
+that side, and nothing would happen — reading as broken, not as blocked.</p>
+<p>Fixed on both ends:</p>
+<ul>
+<li><code>swipeCard.js</code> now exposes <code>reset()</code> (the same snap-back the
+&quot;no direction&quot; case already did internally), so a caller can trigger it
+from outside after the fact.</li>
+<li><code>dialogScene.js</code>&#39;s <code>onSwipe</code> calls <code>card.reset()</code> plus a rejection jolt
+when <code>activeEmotion</code> is unset, instead of a bare <code>return</code>.</li>
+</ul>
+<p>The jolt needed to read as clearly <em>smaller</em> than real choice feedback,
+not a quieter version of it — so <code>fx.js</code> gained a <code>&#39;subtle&#39;</code> shake tier
+(2px, vs. <code>&#39;weak&#39;</code>&#39;s existing 4px) and <code>audio.js</code>&#39;s <code>playHit()</code> gained a
+matching <code>&#39;subtle&#39;</code> tier (quieter, shorter, a touch brighter in pitch —
+reads as &quot;didn&#39;t register&quot; rather than a small impact). Both were flat
+<code>intensity === &#39;strong&#39; ? … : …</code> ternaries before, which would have
+silently folded a new <code>&#39;subtle&#39;</code> value into the <code>&#39;weak&#39;</code> branch;
+<code>audio.js</code>&#39;s went through a <code>HIT_CONFIG</code> lookup table instead so a third
+tier is an explicit entry, not a ternary rewrite.</p>
+<p>Verified: simulated a completed drag with no emotion selected — card&#39;s
+<code>transform</code> cleared and position snapped back to within 1px of its
+pre-drag position, <code>DEBT</code> and the prompt text both unchanged (the swipe
+genuinely didn&#39;t count, not just visually recovered). The <code>handleSwipe(key)</code>
+call for the real, emotion-selected path is byte-for-byte unchanged by
+this fix — no regression surface there.</p>
 <h2 id="doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs"><a class="anchor" href="#doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs" aria-label="Link to this section">#</a>Meter-gated branching (built — <code>cardEngine.js</code> + <code>dialogScene.js</code>)</h2>
 <p>The second thing reading the four meters back (after the epilogue), and
 the first to actually change <em>what content shows</em>, not just what gets

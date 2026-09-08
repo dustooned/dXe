@@ -55,5 +55,16 @@ export function createSwipeCard({ promptText, onSwipe, hints }) {
     }
   }
 
-  return { el, destroy: detach, setPreviewColor, setSelectedColor };
+  // Snaps the card back to center — the same recovery the "let go without
+  // committing to a direction" case already does internally, exposed so a
+  // caller can trigger it too (dialogScene.js: rejecting a completed swipe
+  // because no FEELZ emotion is picked yet; onSwipe still fires in that
+  // case, so without this the card would stay flung to whichever side the
+  // player dragged, per the truth/lie branches above never resetting it).
+  function reset() {
+    el.style.transform = '';
+    el.classList.remove('is-truth', 'is-lie');
+  }
+
+  return { el, destroy: detach, setPreviewColor, setSelectedColor, reset };
 }
