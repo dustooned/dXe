@@ -98,7 +98,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
       const scopeCanvas = document.createElement('canvas');
       scopeCanvas.className = 'dx-cutscene-bg dx-cutscene-oscilloscope';
       screen.appendChild(scopeCanvas);
-      oscilloscope = createOscilloscope(scopeCanvas);
+      oscilloscope = createOscilloscope(scopeCanvas, {
+        getPlayerStats: () => run.get(),
+      });
     }
 
     // Character sprite — animated or static

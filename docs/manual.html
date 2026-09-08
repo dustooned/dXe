@@ -3702,14 +3702,36 @@ a portrait with no image.</p>
 <h2 id="doc-stat_math--confrontation-oscilloscope-built-uioscilloscopejs-audiojs"><a class="anchor" href="#doc-stat_math--confrontation-oscilloscope-built-uioscilloscopejs-audiojs" aria-label="Link to this section">#</a>Confrontation oscilloscope (built — <code>ui/oscilloscope.js</code> + <code>audio.js</code>)</h2>
 <p>Confrontation cutscenes have no background art of their own (<code>beats</code> only
 ever set <code>sprite</code>, never <code>bgAnim</code>/<code>image</code>) — a lot of empty real estate
-behind the bust. Fills it with a real oscilloscope, not a decorative
-animation: <code>audio.js</code>&#39;s <code>ensureContext()</code> now taps an <code>AnalyserNode</code> off
-<code>masterGain</code> in parallel (<code>masterGain.connect(analyser)</code>, alongside its
-existing connection to <code>ctx.destination</code> — a read-only tap, not part of
-the output chain), and <code>getAnalyser()</code> exposes it. <code>oscilloscope.js</code>
-reads <code>getByteTimeDomainData()</code> every animation frame and draws it as a
-line — whatever&#39;s actually in the master mix at that instant, the same
-technique any real hardware/software scope uses.</p>
+behind the bust. The goal, stated directly: a live reactive indicator of
+both sides of the encounter — NPC and player alike, EarthBound/Mother
+battle-background territory, but functional rather than purely
+atmospheric. Two overlaid traces, not one:</p>
+<ul>
+<li><strong>NPC trace</strong> — <code>audio.js</code>&#39;s <code>ensureContext()</code> taps an <code>AnalyserNode</code>
+off <code>masterGain</code> in parallel (<code>masterGain.connect(analyser)</code>, alongside
+its existing connection to <code>ctx.destination</code> — a read-only tap, not part
+of the output chain), and <code>getAnalyser()</code> exposes it. Real audio: this
+NPC&#39;s leitmotif (already reactive to trust+stability via its fifths
+bend), stings, whatever&#39;s actually playing.</li>
+<li><strong>Player trace</strong> — not audio. Synthesized from <code>integrity</code> + <code>lucidity</code>
+(the two meters about the player&#39;s own honesty, not the NPC&#39;s feelings —
+deliberately the <em>other</em> two, so this doesn&#39;t just repeat what the NPC
+trace already shows via mood). Combined into a 0–1 &quot;clarity&quot; score
+(<code>(integrity + lucidity) / 20</code>) that drives how clean the drawn wave is:
+full clarity draws a smooth sine, low clarity adds visible per-sample
+noise and irregular amplitude — a real oscilloscope idiom (a noisy
+signal reads as &quot;something&#39;s wrong&quot;) doing actual narrative work rather
+than inventing a new visual language. Deliberately not Truth Debt —
+that already has its own readout (the DEBT counter), and folding it in
+here would blur two clean axes into three fighting for the same line.</li>
+</ul>
+<p>Both traces share the same canvas and midline rather than splitting the
+screen — a real dual-trace scope overlays channels. The player trace gets
+a narrower amplitude band (<code>PLAYER_AMPLITUDE_RATIO</code>, 18% of height) so it
+reads as a second, distinct signal instead of competing with the NPC
+trace for the same space. <code>cutsceneScene.js</code> passes
+<code>getPlayerStats: () =&gt; run.get()</code> into <code>createOscilloscope()</code>, read live
+every frame the same way the NPC trace reads the analyser live.</p>
 <p><code>cutsceneScene.js</code>&#39;s background branch gets a third case: <code>bgAnim</code> /
 <code>image</code> / else-if <code>scene.opensDialog</code> (confrontations are the only
 cutscenes with no art AND a meaningful thing to visualize — regular
@@ -3782,6 +3804,17 @@ self-heal automatically — that tab never reports <code>document.hasFocus()</co
 as true no matter what&#39;s fronted, which is a property of this specific
 automation environment, not of a real player&#39;s browser (rAF ticks
 continuously and reliably in any tab that&#39;s actually being played in).</p>
+<p><strong>Player trace verified</strong> with the same manual-frame technique (this
+environment&#39;s rAF unreliability above applies here too): computed
+<code>clarity</code> and drew the player wave at <code>{integrity: 10, lucidity: 10}</code> vs.
+<code>{integrity: 0, lucidity: 0}</code> and measured second-derivative jaggedness
+of the resulting points — 263 at full clarity vs. 10,126 at zero, a ~38×
+difference, confirming the noise term actually scales with clarity rather
+than being a fixed wobble. Visually confirmed both traces overlaid
+correctly against a real leitmotif (Deborah&#39;s clean sine trace alongside
+a visibly jagged low-clarity player trace; separately, alongside a
+completely smooth player trace at full clarity) — legible as two distinct
+signals sharing one canvas, not one drowning out the other.</p>
 <h2 id="doc-stat_math--swipe-without-a-feeling-rejection-fix-dialogscenejs-fxjs-aud"><a class="anchor" href="#doc-stat_math--swipe-without-a-feeling-rejection-fix-dialogscenejs-fxjs-aud" aria-label="Link to this section">#</a>Swipe-without-a-feeling rejection (fix — <code>dialogScene.js</code> + <code>fx.js</code> + <code>audio.js</code> + <code>swipeCard.js</code>)</h2>
 <p><code>handleSwipe()</code> already refused to resolve a card without an <code>activeEmotion</code>
 set (<code>if (!activeEmotion) return</code>) — the swipe never <em>counted</em>. But
