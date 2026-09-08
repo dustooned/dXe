@@ -231,6 +231,50 @@ precisely. Confirmed `nudgeLeitmotifMood()` is a silent no-op against
 `THERAPIST`'s file-based leitmotif and against no active leitmotif at
 all.
 
+## Dialog portrait mood-mask (built — `ui/npcPortrait.js` + `audio.js`)
+
+Visual sibling to the leitmotif mood-bend above — same underlying number,
+a second output. `audio.js` exports `getLeitmotifMood()`, a read-only
+accessor onto the exact mood value the leitmotif already tracks (0 if
+nothing's active). No second mood calculation anywhere; audio's pitch
+bend and the portrait's color both read the one number, so they can't
+drift apart from each other.
+
+**The technique — CSS `mask-image`, not a second image per state.** The
+portrait's own art becomes a luminance mask over a solid color layer
+(`.dx-portrait__mood`, `ui/ui.css`): light areas of the art let the color
+through, dark areas don't. `moodToColor()` in `npcPortrait.js` maps mood
+(-6..+6) to an RGB interpolation — neutral white at 0, toward red at the
+tense end, toward teal-green at the resonant end — and
+`createNpcPortrait()` returns an `updateMood(mood)` method that just sets
+one CSS custom property (`--mood-color`). Prototyped first against real
+production art (a Bob Baiter frame, in an interactive artifact) before
+being wired into the actual portrait component, to confirm the mechanic
+before committing to it.
+
+`dialogScene.js`'s `render()` — which already rebuilds the portrait from
+scratch on every call — calls `portrait.updateMood(audio.getLeitmotifMood())`
+right after creating it, so every render (the opening prompt, the SAY
+beat, the REACT beat) stays in sync with zero extra bookkeeping; no need
+to hold a portrait reference across renders. `handleSwipe()` already
+calls `render()` right after nudging the mood, so the color updates land
+on the very next beat after a choice resolves — same timing as the
+leitmotif's pitch bend.
+
+No-ops safely with no portrait image: `maskLayer` is only created when
+`portraitUrl` is set, so `updateMood()` is a harmless no-op against
+today's colored-letter placeholder (all four NPCs, until real portrait
+art exists — see `HANDOFF.md`'s asset inventory).
+
+Verified: `getLeitmotifMood()` returns 0 with nothing active, 0 the
+instant a leitmotif (re)starts, and the exact nudged value afterward;
+`moodToColor(-4)` computed `rgb(251,120,119)`, matching the interpolation
+formula by hand; confirmed live against a real image (crosshatch shading
+in a Bob Baiter frame) that the light areas tint and the black linework
+stays black, with the crosshatch's own density naturally graduating how
+much color shows through; confirmed `updateMood()` doesn't throw against
+a portrait with no image.
+
 ## Meter-gated branching (built — `cardEngine.js` + `dialogScene.js`)
 
 The second thing reading the four meters back (after the epilogue), and

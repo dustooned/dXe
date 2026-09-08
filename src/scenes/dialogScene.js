@@ -84,6 +84,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const portrait = createNpcPortrait(npc.npc, npc.accentColor, npc.portrait);
     content.appendChild(portrait.el);
     content.appendChild(portrait.nameplate);
+    // render() rebuilds the portrait from scratch every call, so syncing here
+    // (rather than only right after a swipe) covers every case for free —
+    // including the very first render, where mood is still neutral (0).
+    portrait.updateMood(audio.getLeitmotifMood());
 
     if (stage === 'say') {
       // Its own bordered box, in the same screen slot the swipe card and

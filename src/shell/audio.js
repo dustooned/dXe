@@ -360,6 +360,9 @@ export async function startLeitmotif(npcKey) {
     nudgeMood(delta) {
       mood = clamp(mood + delta, -MOOD_CLAMP, MOOD_CLAMP);
     },
+    getMood() {
+      return mood;
+    },
   };
 }
 
@@ -370,6 +373,16 @@ export async function startLeitmotif(npcKey) {
 // a file-based one (THERAPIST) that has no notes to bend.
 export function nudgeLeitmotifMood(delta) {
   activeLeitmotif?.nudgeMood?.(delta);
+}
+
+// The single source of truth for "how is this NPC feeling about the
+// player right now" — read by the leitmotif's own pitch-bend and, live,
+// by the dialog portrait's mood-mask color (ui/npcPortrait.js). Same
+// number driving both, not two mood calculations that could drift apart.
+// 0 (neutral) if nothing's active — a file-based leitmotif (THERAPIST)
+// has no mood to report either.
+export function getLeitmotifMood() {
+  return activeLeitmotif?.getMood?.() ?? 0;
 }
 
 export function stopLeitmotif() {

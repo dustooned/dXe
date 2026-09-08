@@ -32,6 +32,7 @@
 }
 
 .dx-portrait {
+  position: relative;
   width: 96px;
   height: 96px;
   margin: 0 auto;
@@ -48,6 +49,28 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+  filter: grayscale(1) contrast(1.05);
+}
+
+/* Colorizes just the light/dark values of the portrait's own art — see
+   npcPortrait.js's moodToColor(). Starts unset (no tint) until the first
+   swipe resolves and updateMood() sets --mood-color. mix-blend-mode:
+   color preserves the art's own luminance (shading, linework) instead of
+   flattening it to a solid color block. */
+.dx-portrait__mood {
+  position: absolute;
+  inset: 0;
+  background: var(--mood-color, transparent);
+  -webkit-mask-image: var(--mask-url);
+  mask-image: var(--mask-url);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  mix-blend-mode: color;
+  pointer-events: none;
 }
 
 .dx-nameplate {

@@ -849,6 +849,12 @@ spec originally scoped the build down to 3 NPCs and 2–3 endings; Rick
 been added, so the chapter now matches <a class="doc-ref" href="#doc-dx-bible" data-doc="doc-dx-bible"><code>DX Bible.md</code></a>&#39;s full 4-NPC,
 4-ending set.</p>
 <h2 id="doc-handoff--asset-inventory"><a class="anchor" href="#doc-handoff--asset-inventory" aria-label="Link to this section">#</a>Asset inventory</h2>
+<p><strong>Site</strong> (repo root <code>public/</code>, referenced from <code>index.html</code>):</p>
+<ul>
+<li><code>favicon.png</code> (32×32) / <code>apple-touch-icon.png</code> (180×180) — Bob Baiter&#39;s
+face over the &quot;dXe&quot; wordmark, both downsized from a 1200×1200 source
+PNG. First real favicon; the site had none before.</li>
+</ul>
 <p><strong>Sprites</strong> (all in <code>public/assets/lake-ulysses/sprites/</code>):</p>
 <ul>
 <li><code>spr_lake_bg_001/</code> — 46-frame animated lake background, 390×844px WebP,
@@ -1047,7 +1053,13 @@ See ARCHITECTURE.md &quot;Boot sequence vs. routing&quot; for why this runs at b
 rather than on the title route — that distinction is load-bearing.</li>
 <li>More real art/audio assets — sprite and audio folders populated for Lake Ulysses
 (<code>spr_lake_bg_001</code>, <code>spr_bb</code>, <code>spr_QuoteBG</code>, <code>lk_01.mp3</code>, <code>heavens_waiting_room.mp3</code>);
-<code>ann_01.mp3</code> is sourced but destination scene TBD.</li>
+<code>ann_01.mp3</code> is sourced but destination scene TBD. Dialog portraits
+specifically: the mood-mask that recolors a portrait live by trust/
+stability (<a class="doc-ref" href="#doc-stat_math" data-doc="doc-stat_math"><code>STAT_MATH.md</code></a>&#39;s &quot;Dialog portrait mood-mask&quot;) is already
+built and confirmed against real art — it just has no real portrait
+image to run on yet. Needs real light/dark value contrast to read well
+(a flat silhouette won&#39;t show the effect); a manuscript&#39;s <code>PORTRAIT:</code>
+header wires a new image in with no other code changes.</li>
 <li>A second writer actually using the manuscript pipeline.</li>
 <li><del>A pipeline for composer-authored NPC leitmotifs</del> — done:
 <code>src/chapters/lake-ulysses/midi/*.mid</code> -&gt; <code>npm run build:leitmotifs</code> -&gt;
@@ -3416,7 +3428,7 @@ format supports a <code>SPRITE:</code> field) without any import statement.</p>
     </article>
 <article class="doc" id="doc-stat_math" data-title="Stat Math" data-file="STAT_MATH.md" hidden>
       <p class="doc-source">Authoring · <code>docs/STAT_MATH.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-stat_math--where-this-started">Where this started</a></li><li><a href="#doc-stat_math--emotional-lean-built-cardenginejs">Emotional Lean (built — cardEngine.js)</a></li><li><a href="#doc-stat_math--ending-epilogue-built-endingenginejs-endingscenejs-the-consu">Ending epilogue (built — endingEngine.js + endingScene.js) — the consumer</a></li><li><a href="#doc-stat_math--per-npc-leitmotif-built-shellaudiojs">Per-NPC leitmotif (built — shell/audio.js)</a></li><li><a href="#doc-stat_math--leitmotif-mood-bending-built-shellaudiojs-dialogscenejs">Leitmotif mood-bending (built — shell/audio.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs">Meter-gated branching (built — cardEngine.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--build-order">Build order</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-stat_math--where-this-started">Where this started</a></li><li><a href="#doc-stat_math--emotional-lean-built-cardenginejs">Emotional Lean (built — cardEngine.js)</a></li><li><a href="#doc-stat_math--ending-epilogue-built-endingenginejs-endingscenejs-the-consu">Ending epilogue (built — endingEngine.js + endingScene.js) — the consumer</a></li><li><a href="#doc-stat_math--per-npc-leitmotif-built-shellaudiojs">Per-NPC leitmotif (built — shell/audio.js)</a></li><li><a href="#doc-stat_math--leitmotif-mood-bending-built-shellaudiojs-dialogscenejs">Leitmotif mood-bending (built — shell/audio.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--dialog-portrait-mood-mask-built-uinpcportraitjs-audiojs">Dialog portrait mood-mask (built — ui/npcPortrait.js + audio.js)</a></li><li><a href="#doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs">Meter-gated branching (built — cardEngine.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--build-order">Build order</a></li></ul></nav>
       <h1 id="doc-stat_math--stat-amp-character-data-math"><a class="anchor" href="#doc-stat_math--stat-amp-character-data-math" aria-label="Link to this section">#</a>Stat &amp; Character Data Math</h1>
 <p>This doc is strictly the math/data layer on top of the stats — what each
 number means narratively is in <a class="doc-ref" href="#doc-content_schema" data-doc="doc-content_schema"><code>CONTENT_SCHEMA.md</code></a>&#39;s &quot;What the stats
@@ -3636,6 +3648,44 @@ actual trust-1/stability-2), the next three notes in the <em>same</em> loop
 precisely. Confirmed <code>nudgeLeitmotifMood()</code> is a silent no-op against
 <code>THERAPIST</code>&#39;s file-based leitmotif and against no active leitmotif at
 all.</p>
+<h2 id="doc-stat_math--dialog-portrait-mood-mask-built-uinpcportraitjs-audiojs"><a class="anchor" href="#doc-stat_math--dialog-portrait-mood-mask-built-uinpcportraitjs-audiojs" aria-label="Link to this section">#</a>Dialog portrait mood-mask (built — <code>ui/npcPortrait.js</code> + <code>audio.js</code>)</h2>
+<p>Visual sibling to the leitmotif mood-bend above — same underlying number,
+a second output. <code>audio.js</code> exports <code>getLeitmotifMood()</code>, a read-only
+accessor onto the exact mood value the leitmotif already tracks (0 if
+nothing&#39;s active). No second mood calculation anywhere; audio&#39;s pitch
+bend and the portrait&#39;s color both read the one number, so they can&#39;t
+drift apart from each other.</p>
+<p><strong>The technique — CSS <code>mask-image</code>, not a second image per state.</strong> The
+portrait&#39;s own art becomes a luminance mask over a solid color layer
+(<code>.dx-portrait__mood</code>, <code>ui/ui.css</code>): light areas of the art let the color
+through, dark areas don&#39;t. <code>moodToColor()</code> in <code>npcPortrait.js</code> maps mood
+(-6..+6) to an RGB interpolation — neutral white at 0, toward red at the
+tense end, toward teal-green at the resonant end — and
+<code>createNpcPortrait()</code> returns an <code>updateMood(mood)</code> method that just sets
+one CSS custom property (<code>--mood-color</code>). Prototyped first against real
+production art (a Bob Baiter frame, in an interactive artifact) before
+being wired into the actual portrait component, to confirm the mechanic
+before committing to it.</p>
+<p><code>dialogScene.js</code>&#39;s <code>render()</code> — which already rebuilds the portrait from
+scratch on every call — calls <code>portrait.updateMood(audio.getLeitmotifMood())</code>
+right after creating it, so every render (the opening prompt, the SAY
+beat, the REACT beat) stays in sync with zero extra bookkeeping; no need
+to hold a portrait reference across renders. <code>handleSwipe()</code> already
+calls <code>render()</code> right after nudging the mood, so the color updates land
+on the very next beat after a choice resolves — same timing as the
+leitmotif&#39;s pitch bend.</p>
+<p>No-ops safely with no portrait image: <code>maskLayer</code> is only created when
+<code>portraitUrl</code> is set, so <code>updateMood()</code> is a harmless no-op against
+today&#39;s colored-letter placeholder (all four NPCs, until real portrait
+art exists — see <a class="doc-ref" href="#doc-handoff" data-doc="doc-handoff"><code>HANDOFF.md</code></a>&#39;s asset inventory).</p>
+<p>Verified: <code>getLeitmotifMood()</code> returns 0 with nothing active, 0 the
+instant a leitmotif (re)starts, and the exact nudged value afterward;
+<code>moodToColor(-4)</code> computed <code>rgb(251,120,119)</code>, matching the interpolation
+formula by hand; confirmed live against a real image (crosshatch shading
+in a Bob Baiter frame) that the light areas tint and the black linework
+stays black, with the crosshatch&#39;s own density naturally graduating how
+much color shows through; confirmed <code>updateMood()</code> doesn&#39;t throw against
+a portrait with no image.</p>
 <h2 id="doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs"><a class="anchor" href="#doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs" aria-label="Link to this section">#</a>Meter-gated branching (built — <code>cardEngine.js</code> + <code>dialogScene.js</code>)</h2>
 <p>The second thing reading the four meters back (after the epilogue), and
 the first to actually change <em>what content shows</em>, not just what gets

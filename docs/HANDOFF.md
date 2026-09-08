@@ -219,6 +219,11 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 
 ## Asset inventory
 
+**Site** (repo root `public/`, referenced from `index.html`):
+- `favicon.png` (32×32) / `apple-touch-icon.png` (180×180) — Bob Baiter's
+  face over the "dXe" wordmark, both downsized from a 1200×1200 source
+  PNG. First real favicon; the site had none before.
+
 **Sprites** (all in `public/assets/lake-ulysses/sprites/`):
 - `spr_lake_bg_001/` — 46-frame animated lake background, 390×844px WebP,
   ~5.1MB total. Used in `bob_baiter` scene. This is dense halftone/dither
@@ -401,7 +406,13 @@ Roughly in order of how ready each one is to just start:
   rather than on the title route — that distinction is load-bearing.
 - More real art/audio assets — sprite and audio folders populated for Lake Ulysses
   (`spr_lake_bg_001`, `spr_bb`, `spr_QuoteBG`, `lk_01.mp3`, `heavens_waiting_room.mp3`);
-  `ann_01.mp3` is sourced but destination scene TBD.
+  `ann_01.mp3` is sourced but destination scene TBD. Dialog portraits
+  specifically: the mood-mask that recolors a portrait live by trust/
+  stability (`STAT_MATH.md`'s "Dialog portrait mood-mask") is already
+  built and confirmed against real art — it just has no real portrait
+  image to run on yet. Needs real light/dark value contrast to read well
+  (a flat silhouette won't show the effect); a manuscript's `PORTRAIT:`
+  header wires a new image in with no other code changes.
 - A second writer actually using the manuscript pipeline.
 - ~~A pipeline for composer-authored NPC leitmotifs~~ — done:
   `src/chapters/lake-ulysses/midi/*.mid` -> `npm run build:leitmotifs` ->
