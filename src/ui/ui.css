@@ -90,6 +90,7 @@
   cursor: grab;
   user-select: none;
   transition: transform 0.15s ease, border-color 0.15s ease;
+  background: var(--color-black);
 }
 
 .dx-swipe-card.has-selected {
@@ -171,6 +172,7 @@
   color: var(--color-white);
   border: 1px solid var(--color-white);
   padding: 4px 8px;
+  background: var(--color-black);
 }
 
 .dx-debt-sigil.is-elevated {

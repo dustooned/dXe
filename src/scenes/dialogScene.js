@@ -16,7 +16,7 @@ import { createFeelzDartboard } from '../ui/feelzDartboard.js';
 import { emotionColor, emotionsForClass, getDominantEmotion } from '../engine/loadout.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
 import { createDebtSigil } from '../ui/debtSigil.js';
-import { drawEmotionPattern } from '../ui/emotionPattern.js';
+import { createOscilloscope } from '../ui/oscilloscope.js';
 import * as fx from '../shell/fx.js';
 import * as audio from '../shell/audio.js';
 
@@ -46,6 +46,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let reactionSwipeKey = null;
   let typewriter = null;
   let itPopup = null;
+  let oscilloscope = null;
 
   function currentNode() {
     return npc.nodes[currentNodeId];
@@ -66,17 +67,31 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const runState = run.get();
     typewriter?.destroy();
     typewriter = null;
+    oscilloscope?.destroy();
+    oscilloscope = null;
     stageEl.innerHTML = '';
 
     const screen = document.createElement('div');
     screen.className = 'dx-screen dx-game-screen';
 
-    const patternCanvas = document.createElement('canvas');
-    patternCanvas.className = 'dx-pattern-bg';
-    screen.appendChild(patternCanvas);
+    // The battle background, not a decorative pattern — a live dual-trace
+    // read on both sides of the encounter (docs/STAT_MATH.md's
+    // "Confrontation oscilloscope"), present through every stage of the
+    // fight, same as the leitmotif it's partly drawing from. Recreated
+    // each render() (this whole screen is rebuilt from scratch every
+    // stage change) rather than held across renders, matching how the
+    // portrait below already does this — the underlying signals
+    // (analyser, run state) are read live regardless of when the canvas
+    // itself was created, so there's no continuity to lose.
+    const scopeCanvas = document.createElement('canvas');
+    scopeCanvas.className = 'dx-pattern-bg';
+    screen.appendChild(scopeCanvas);
+    oscilloscope = createOscilloscope(scopeCanvas, {
+      getPlayerStats: () => run.get(),
+    });
 
     const content = document.createElement('div');
-    content.className = 'dx-game-content';
+    content.className = 'dx-game-content dx-game-content--live-bg';
     screen.appendChild(content);
 
     content.appendChild(createMeterGroup(runState).el);
@@ -150,7 +165,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       });
     } else {
       const prompt = document.createElement('p');
-      prompt.className = 'dx-text';
+      prompt.className = 'dx-text dx-prompt';
       content.appendChild(prompt);
 
       // Card + dartboard build up front but stay hidden until the prompt
@@ -214,13 +229,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
     content.appendChild(createDebtSigil(runState.truthDebt).el);
     stageEl.appendChild(screen);
-
-    if (stage === 'say' || stage === 'reaction') {
-      drawEmotionPattern(patternCanvas, {
-        seedStr: `${npc.npc}:${currentNodeId}:${reactionEmotion}`,
-        key: reactionEmotion,
-      });
-    }
   }
 
   function handleSwipe(swipeKey) {
@@ -350,6 +358,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   return function unmount() {
     typewriter?.destroy();
     itPopup?.destroy();
+    oscilloscope?.destroy();
     audio.stopEmotionStems();
     audio.stopLeitmotif();
     stageEl.innerHTML = '';

@@ -3737,6 +3737,43 @@ every frame the same way the NPC trace reads the analyser live.</p>
 cutscenes with no art AND a meaningful thing to visualize — regular
 narrative beats don&#39;t set <code>opensDialog</code> and keep whatever background they
 already have).</p>
+<p><strong>Extended into the actual battle, not just its intro.</strong> The
+confrontation cutscene is a brief beat before the real fight — the
+follow-up ask was direct: without persisting into <code>dialogScene.js</code>&#39;s
+node graph (the swipes themselves), it&#39;s not watchable as an indicator.
+<code>dialogScene.js</code>&#39;s <code>render()</code> now creates its own <code>createOscilloscope()</code>
+instance (recreated each <code>render()</code> call, same as the portrait below it —
+the whole screen is rebuilt from scratch on every stage change, so
+there&#39;s no continuity to hold onto across renders; the underlying
+signals are read live regardless of when the canvas was created). This
+<em>replaces</em> the old <code>drawEmotionPattern()</code> call that used to fire on the
+SAY/REACT beats — that call had been silently drawing onto a canvas
+fully hidden behind <code>.dx-game-content</code>&#39;s opaque background ever since the
+readability fix below, so nothing actually still using it was removed.</p>
+<p>Making the background genuinely visible during dialog (not just a 16px
+margin) meant revisiting that same readability fix, without reopening the
+bug it closed:</p>
+<ul>
+<li><code>.dx-game-content--live-bg</code> — a modifier, <code>dialogScene.js</code>-only, that
+overrides the base <code>.dx-game-content</code> rule&#39;s opaque background back to
+transparent. <code>questionnaireScene.js</code>&#39;s diagnosis reveal (the case that
+motivated the original fix) never applies this class, so it&#39;s
+unaffected — confirmed live, its <code>.dx-game-content</code> is still solid
+black.</li>
+<li>Solid backing moved onto the individual text surfaces instead of one
+blanket wrapper: <code>.dx-prompt</code> (new class on the opening line — the
+same text carrying the IT color-tag words), <code>.dx-reaction</code>,
+<code>.dx-say-box</code>, <code>.dx-swipe-card</code>, <code>.dx-debt-sigil</code>. Each was already
+either borderless or relying on the parent&#39;s opacity; each now sets its
+own <code>background: var(--color-black)</code>, a no-op everywhere else since
+there was already solid black behind them regardless.</li>
+</ul>
+<p>Confirmed live: <code>.dx-prompt</code> and <code>.dx-swipe-card</code> both read solid black
+(<code>rgb(0,0,0)</code>) via <code>getComputedStyle</code> while <code>.dx-game-content</code> itself
+reads fully transparent (<code>rgba(0,0,0,0)</code>) — text protected, wrapper
+genuinely see-through. Screenshot confirms the scope fills the real
+empty space (behind the FEELZ dartboard especially) while every line of
+text, including the color-tagged hint word, stays fully legible.</p>
 <p><strong>The silence gap — resolved.</strong> An NPC&#39;s leitmotif used to only start once
 <code>dialogScene.js</code> mounted, <em>after</em> their confrontation beat, so the scope
 had nothing to trace during the confrontation itself. Fixed by starting

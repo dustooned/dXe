@@ -316,6 +316,45 @@ cutscenes with no art AND a meaningful thing to visualize — regular
 narrative beats don't set `opensDialog` and keep whatever background they
 already have).
 
+**Extended into the actual battle, not just its intro.** The
+confrontation cutscene is a brief beat before the real fight — the
+follow-up ask was direct: without persisting into `dialogScene.js`'s
+node graph (the swipes themselves), it's not watchable as an indicator.
+`dialogScene.js`'s `render()` now creates its own `createOscilloscope()`
+instance (recreated each `render()` call, same as the portrait below it —
+the whole screen is rebuilt from scratch on every stage change, so
+there's no continuity to hold onto across renders; the underlying
+signals are read live regardless of when the canvas was created). This
+*replaces* the old `drawEmotionPattern()` call that used to fire on the
+SAY/REACT beats — that call had been silently drawing onto a canvas
+fully hidden behind `.dx-game-content`'s opaque background ever since the
+readability fix below, so nothing actually still using it was removed.
+
+Making the background genuinely visible during dialog (not just a 16px
+margin) meant revisiting that same readability fix, without reopening the
+bug it closed:
+
+- `.dx-game-content--live-bg` — a modifier, `dialogScene.js`-only, that
+  overrides the base `.dx-game-content` rule's opaque background back to
+  transparent. `questionnaireScene.js`'s diagnosis reveal (the case that
+  motivated the original fix) never applies this class, so it's
+  unaffected — confirmed live, its `.dx-game-content` is still solid
+  black.
+- Solid backing moved onto the individual text surfaces instead of one
+  blanket wrapper: `.dx-prompt` (new class on the opening line — the
+  same text carrying the IT color-tag words), `.dx-reaction`,
+  `.dx-say-box`, `.dx-swipe-card`, `.dx-debt-sigil`. Each was already
+  either borderless or relying on the parent's opacity; each now sets its
+  own `background: var(--color-black)`, a no-op everywhere else since
+  there was already solid black behind them regardless.
+
+Confirmed live: `.dx-prompt` and `.dx-swipe-card` both read solid black
+(`rgb(0,0,0)`) via `getComputedStyle` while `.dx-game-content` itself
+reads fully transparent (`rgba(0,0,0,0)`) — text protected, wrapper
+genuinely see-through. Screenshot confirms the scope fills the real
+empty space (behind the FEELZ dartboard especially) while every line of
+text, including the color-tagged hint word, stays fully legible.
+
 **The silence gap — resolved.** An NPC's leitmotif used to only start once
 `dialogScene.js` mounted, *after* their confrontation beat, so the scope
 had nothing to trace during the confrontation itself. Fixed by starting
