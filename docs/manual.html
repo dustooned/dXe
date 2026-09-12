@@ -1037,8 +1037,29 @@ code-path filler. The placeholder part is genuinely just the <em>art</em>
 </ul>
 <p><strong>Needs a dedicated design pass first:</strong></p>
 <ul>
-<li>Nothing currently — the last item here (IT/the hint system) moved to
-&quot;ready to build&quot; above once its scope got split in two.</li>
+<li><strong>Make the oscilloscope&#39;s two traces actually interact.</strong> Right now
+the NPC trace (real audio, <code>getAnalyser()</code>) and player trace
+(synthesized from integrity+lucidity, <code>ui/oscilloscope.js</code>) share a
+canvas and midline but never affect each other — two independent
+lines, not a mix. Reads as static because nothing about <em>how</em> either
+is drawn responds to the relationship between them, only to its own
+separate input. Directions worth exploring:<ul>
+<li><strong>Visual mixing</strong> — phase-lock or share color when the encounter&#39;s
+going well (player honest, NPC trust rising); visually interfere/beat
+against each other, the way two close-but-not-quite frequencies do on
+a real scope, when it&#39;s going badly.</li>
+<li><strong>Actual signal mixing</strong> — player clarity modulating the NPC trace
+directly (a filter/distortion on the real audio-derived line) instead
+of drawing a second, independent line beside it.</li>
+<li><strong>Something reactive to the moment</strong>, not just the current stat
+snapshot — both traces currently only change when a swipe resolves;
+nothing happens between choices.
+Open question for whoever picks this up: purely visual (canvas-level
+blend/phase tricks), or real signal processing (player state actually
+shaping the audio-derived waveform)? See <a class="doc-ref" href="#doc-stat_math" data-doc="doc-stat_math"><code>STAT_MATH.md</code></a>&#39;s &quot;Confrontation
+oscilloscope&quot; for the full build history this extends.</li>
+</ul>
+</li>
 </ul>
 <p><strong>Needs something from outside this repo:</strong></p>
 <ul>
