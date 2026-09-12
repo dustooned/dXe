@@ -33,10 +33,10 @@ let activeLeitmotif = null;
 let activeLeitmotifKey = null;
 
 // How this NPC currently feels about the player this encounter. Lives at
-// module scope rather than inside startLeitmotif's closure so the chord can
-// read it for NPCs whose leitmotif is a file and has no note loop at all
-// (THERAPIST). Reset only when a *different* NPC starts — see
-// startLeitmotif's continuity guard.
+// module scope rather than inside startLeitmotif's closure so the chord
+// can read it even for an NPC with no leitmotif at all, or a file-based
+// one with no note loop to carry it. Reset only when a *different* NPC
+// starts — see startLeitmotif's continuity guard.
 let encounterMood = 0;
 // Last struck chord's dissonance, 0..1. Read every frame by
 // ui/oscilloscope.js; kept here so the visual reports the chord that's
@@ -112,7 +112,15 @@ function clamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
 // creative choice here regardless of where the notes came from — MIDI
 // instruments don't map to our four waveforms.
 const LEITMOTIFS = {
-  THERAPIST: { url: '/assets/lake-ulysses/audio/heavens_waiting_room.mp3', volume: 0.10 },
+  // No entry for THERAPIST on purpose. heavens_waiting_room.mp3 used to
+  // double as their leitmotif too, so it kept playing straight through
+  // the encounter on top of the confrontation chord, hit sounds and
+  // typewriter ticks — too much stacked at once for what's meant to be a
+  // short, focused tutorial beat. It's still the ambient bed for the
+  // questionnaire right before this (questionnaireScene.js's own
+  // startAmbient/stopAmbient), just not carried into the dialog scene
+  // that follows. Missing entries fall back to `sine` + a neutral tonic —
+  // see strikeChord's `?? 'sine'` and harmony.js's tonicFromPhrase.
   DEBORAH: {
     type: 'sine',
     notes: leitmotifNotes.DEBORAH ?? [
@@ -353,8 +361,8 @@ export function strikeChord(activeEmotions = Object.keys(EMOTION_WAVEFORMS), fn 
   currentDissonance = dissonance;
 
   // The root is the NPC — voiced in their leitmotif's own waveform, or a
-  // sine for NPCs whose leitmotif is an audio file and has no waveform of
-  // its own (THERAPIST).
+  // sine when there's no leitmotif entry (or a file-based one with no
+  // waveform of its own) to take it from.
   strikeVoiceAt(rootFrequency, LEITMOTIFS[activeLeitmotifKey]?.type ?? 'sine', CHORD_ROOT_GAIN);
 
   activeEmotions.forEach((emotion, i) => {
@@ -590,8 +598,9 @@ export async function startLeitmotif(npcKey) {
 // moves the confrontation chord, and colors the portrait, all off this one
 // number.
 //
-// Applies even for a file-based leitmotif (THERAPIST), which has no notes
-// to bend — it still has a chord and a portrait that should respond.
+// Applies even with no phrase-loop leitmotif active (no entry at all, or
+// a file-based one with no notes to bend) — there's still a chord and a
+// portrait that should respond.
 export function nudgeLeitmotifMood(delta) {
   encounterMood = clamp(encounterMood + delta, -MOOD_CLAMP, MOOD_CLAMP);
 }

@@ -264,7 +264,11 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 
 **Audio** (`public/assets/lake-ulysses/audio/`):
 - `lk_01.mp3` (1.2MB) — lake ambient loop. Used in `bob_baiter` scene.
-- `heavens_waiting_room.mp3` (501KB) — Therapist leitmotif/ambient. Used in questionnaire scene.
+- `heavens_waiting_room.mp3` (501KB) — questionnaire scene's ambient bed.
+  Used to double as the Therapist's dialog-scene leitmotif too, stacking
+  on top of the confrontation chord for a short tutorial beat that didn't
+  need it — removed from `LEITMOTIFS` (`shell/audio.js`) so it only plays
+  during the questionnaire now. See `STAT_MATH.md`'s "Per-NPC leitmotif".
 - `ann_01.mp3` (1.2MB) — **not a distinct asset**: byte-identical to
   `lk_01.mp3` (same MD5). It's an accidental duplicate, not sourced
   content awaiting a scene. Deleting it is a free 1.2MB off the deploy;

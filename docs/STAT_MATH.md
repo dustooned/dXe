@@ -216,13 +216,28 @@ leitmotif further, with no new wiring between the wheel and the audio.
 Fear/Disgust/Sadness amplify integrity instead, which stays out of this
 system on purpose — those are introspective stats, not relational ones.
 
-File-based leitmotifs (Therapist's `heavens_waiting_room.mp3`) have no
-notes to bend, so nothing bends for them — but `encounterMood` still
-moves, because it now lives at module scope in `audio.js` rather than
-inside the note loop's closure. Their chord and portrait respond
-normally; only the melodic bend has nothing to act on. (It used to be a
-closure variable, which meant `nudgeLeitmotifMood()` silently no-opped
-for the Therapist entirely — the chord needed it hoisted.)
+File-based leitmotifs have no notes to bend, so nothing bends for them —
+but `encounterMood` still moves, because it now lives at module scope in
+`audio.js` rather than inside the note loop's closure. Their chord and
+portrait respond normally; only the melodic bend has nothing to act on.
+(It used to be a closure variable, which meant `nudgeLeitmotifMood()`
+silently no-opped for a file-based NPC entirely — the chord needed it
+hoisted.)
+
+**Update: Therapist no longer has a leitmotif entry at all** (removed
+from `LEITMOTIFS` — see "Per-NPC leitmotif" above). `heavens_waiting_room.mp3`
+used to double as both the questionnaire's ambient bed and the
+Therapist's leitmotif, so it kept playing straight through their
+encounter on top of the confrontation chord, hit sounds and typewriter
+ticks — too much stacked for a short tutorial beat. It still plays
+during the questionnaire (`questionnaireScene.js`'s own
+`startAmbient`/`stopAmbient`, untouched); it's just no longer carried
+into the dialog scene after it. The Therapist's chord and portrait
+degrade the same way they already did for a file-based leitmotif with no
+notes: `encounterMood` still moves and both still respond, just with no
+melodic line and a plain sine root/neutral tonic instead of a
+composer-derived one (same fallback path as an NPC that hasn't had a
+leitmotif authored yet at all).
 
 Verified: `fifthsSemitoneOffset()` checked by hand for every hop -6..+6
 (confirms the tritone lands at exactly ±6 semitones and is its own
