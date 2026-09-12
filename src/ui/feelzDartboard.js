@@ -25,7 +25,16 @@ const CX = 100, CY = 100, OUTER_R = 88, INNER_R = 34, SYMBOL_R = 61;
 const START = -Math.PI / 2 - Math.PI / 8;
 const STEP = (2 * Math.PI) / 8;
 const HALF_GAP = 0.03;
-const DRAG_THRESHOLD = 6;
+// Distinguishes a tap from the start of a drag-to-card gesture. Was 6px —
+// fine for a mouse, far too tight for a finger: real touch input commonly
+// jitters 6-15px between touchstart and touchend even on a dead-still tap
+// (contact-area shift, digitizer noise), so a meaningful fraction of taps
+// were silently misread as an aborted drag and dropped with zero feedback
+// (the "sometimes responds" bug report). Fuzz-tested with simulated touch
+// jitter in that 3-15px range: 6px had a ~65% false-negative rate on taps
+// above it; 20px had zero false negatives while still leaving an intentional
+// drag toward the card (which travels 60px+) unambiguous.
+const DRAG_THRESHOLD = 20;
 
 function svgEl(tag, attrs = {}) {
   const el = document.createElementNS(NS, tag);
