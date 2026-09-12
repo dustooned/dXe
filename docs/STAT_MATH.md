@@ -432,6 +432,75 @@ atmospheric. Two overlaid traces, not one:
   that already has its own readout (the DEBT counter), and folding it in
   here would blur two clean axes into three fighting for the same line.
 
+**Trace interaction — coherence (built).** The two traces used to just
+share a canvas without affecting each other — flagged as the next
+design-pass item once the confrontation chord shipped. Fixed without
+collapsing the two axes back into one: the player trace's own two
+drawing parameters (its color, its frequency) are driven by a *third*,
+derived value —
+
+```
+consonance = 1 - getDissonance()               // the NPC axis (chord)
+clarity    = (integrity + lucidity) / 20       // the player's own axis
+coherence  = min(consonance, clarity)
+```
+
+`min`, not an average — one side genuinely falling apart (the NPC's
+trust curdling, or the player lying to themselves) should be able to
+break the picture even while the other axis still looks fine. A real
+example from testing: a comforting lie on Deborah's opening node raises
+trust+stability a lot (dissonance falls, consonance rises toward 0.78)
+but costs 2 integrity (clarity falls to 0.4) — coherence still reads
+0.4, following the newly-worse axis, not an optimistic average of the
+two.
+
+`coherence` drives two things, both pure drawing parameters — no new
+Web Audio nodes, nothing added to the real output chain:
+
+- **Beat-interference.** The player trace's cycle count is
+  `PLAYER_CYCLES + (1 - coherence) * BEAT_DETUNE_CYCLES` (3 to 3.6).
+  `PLAYER_CYCLES` is a whole number, so at full coherence the wave
+  repeats identically frame to frame — visually locked. Detuning it away
+  from that integer means the spatial pattern no longer closes up the
+  same way each frame, so it drifts against the NPC trace's own shape
+  instead of holding a fixed relationship to it — the same broad
+  impression a real beat gives (two rates sliding in and out of
+  alignment). This is evocative, not literal: the NPC trace is real
+  analyser data at whatever frequency is actually playing, the player
+  trace is a synthesized sine on a completely different sampling and
+  timescale, so there's no meaningful "frequency" to match between them
+  exactly — the detune is the honest way to gesture at the same idea.
+- **Color blend.** The player trace's own blue shifts up to 40% toward
+  the NPC's color above coherence 0.5, and up to 40% toward the same red
+  the NPC trace itself clashes into when dissonant (see above) below
+  0.5. Capped at 40% either direction on purpose — the player trace has
+  to stay legible as a second, distinct signal even at the extremes,
+  never literally becoming the NPC's color or pure alarm-red.
+
+Deliberately not real signal mixing (player clarity as an actual filter
+on the NPC's live audio) — that was the doc's other floated direction,
+rejected because it would make an audibly-real change to the master mix
+just to represent something that's supposed to be a visual response, and
+because the player trace being "not audio" is a standing architectural
+choice (see above), not an oversight to fix.
+
+Verified in Node across the full `coherence` grid before touching the
+browser: both endpoints exact (coherence 1 → cycles 3, zero blend;
+coherence 0 → cycles 3.6, full 40% blend toward red), no discontinuity
+at the 0.5 color-target switch (largest single-step RGB channel jump
+across a full sweep: 2), and `min` confirmed order-independent (a great
+NPC relationship with a terrible player, and a terrible NPC relationship
+with an honest player, produce the identical worst-case visual). Then
+live: sampled the actual canvas pixels at a fresh encounter's neutral
+open (stats 5/5, mood 0) and got `(81,215,255)` against a predicted
+zero-blend base of `(79,214,255)` — confirming the neutral starting
+stats and the neutral chord independently land on the same coherence
+midpoint (0.5) by construction, not by coincidence, since resolution 0
+and clarity 0.5 are each this system's own definition of "undecided."
+After a real truth swipe on Deborah's opening node the sampled color
+shifted to `(123,175,231)`, moving clearly toward the predicted red
+target in both direction and rough magnitude.
+
 Both traces share the same canvas and midline rather than splitting the
 screen — a real dual-trace scope overlays channels. The player trace gets
 a narrower amplitude band (`PLAYER_AMPLITUDE_RATIO`, 18% of height) so it

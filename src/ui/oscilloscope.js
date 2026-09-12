@@ -19,6 +19,16 @@
 //    oscilloscope already works — this borrows that meaning rather than
 //    inventing a new visual metaphor.
 //
+// The two traces actually interact rather than just sharing a canvas (see
+// `coherence` in drawPlayerTrace): real beat-interference between their
+// frequencies, and a partial color blend, both driven by the *worse* of
+// the NPC's consonance and the player's own clarity — one side falling
+// apart is enough to break the picture even if the other looks fine. This
+// stays a drawing-parameter effect, not real signal mixing — the player
+// trace is deliberately not audio, and staying that way means a purely
+// visual response never has to justify an actually-audible change to the
+// real mix just to represent it.
+//
 // Deliberately NOT Truth Debt — that already has its own readout (the
 // DEBT counter); folding it in here would blur two clean axes into three
 // competing for the same line. First use: confrontation cutscenes'
@@ -28,6 +38,24 @@ import { getAnalyser, getDissonance } from '../shell/audio.js';
 function clamp(v, min, max) {
   return Math.min(max, Math.max(min, v));
 }
+
+function hexToRgb(hex) {
+  const n = parseInt(hex.replace('#', ''), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+function lerpRgb(a, b, t) {
+  return a.map((v, i) => Math.round(v + (b[i] - v) * t));
+}
+
+// Same red the NPC trace itself clashes into when dissonant (see
+// drawNpcTrace) — a bad moment reads as one consistent color language
+// across both traces rather than two separate effects.
+const CLASH_RGB = [255, 64, 64];
+// How far the player trace's own color can drift toward either pole.
+// Capped well under 1 so it stays a distinct second signal even at the
+// extremes, never literally becoming the NPC's color or pure alarm-red.
+const MAX_COLOR_BLEND = 0.4;
 
 export function createOscilloscope(
   canvas,
@@ -75,9 +103,9 @@ export function createOscilloscope(
     ctx2d.stroke();
   }
 
-  function drawNpcTrace(w, h) {
+  function drawNpcTrace(w, h, rawDissonance) {
     analyser.getByteTimeDomainData(data);
-    const dissonance = clamp(getDissonance(), 0, 1);
+    const dissonance = clamp(rawDissonance, 0, 1);
 
     ctx2d.lineWidth = lineWidth;
     ctx2d.filter = dissonance > 0 ? `blur(${dissonance * MAX_BLUR_PX}px)` : 'none';
@@ -107,24 +135,48 @@ export function createOscilloscope(
   const PLAYER_AMPLITUDE_RATIO = 0.18;
   const PLAYER_STEPS = 120;
   const PLAYER_CYCLES = 3;
+  // How many extra cycles the player trace detunes by at zero coherence.
+  // PLAYER_CYCLES is a whole number, so at full coherence the wave repeats
+  // identically every frame — visually locked. Detuning it away from that
+  // integer means the spatial pattern no longer closes up the same way
+  // frame to frame, so it appears to drift past the NPC trace's own shape
+  // rather than holding a fixed relationship to it — the same broad
+  // impression a real beat gives (two rates sliding in and out of
+  // alignment), reached here by drawing-parameter drift rather than by
+  // literally matching frequencies with the NPC's audio-derived line,
+  // which runs on its own incommensurate sampling and timescale.
+  const BEAT_DETUNE_CYCLES = 0.6;
 
-  function drawPlayerTrace(w, h, timeMs) {
+  function drawPlayerTrace(w, h, timeMs, dissonance) {
     if (!getPlayerStats) return;
     const stats = getPlayerStats() ?? {};
     const integrity = stats.integrity ?? 0;
     const lucidity = stats.lucidity ?? 0;
     const clarity = clamp((integrity + lucidity) / 20, 0, 1); // 10+10 max
 
+    // The NPC axis (trust+stability, via dissonance) and the player's own
+    // axis (integrity+lucidity) are deliberately kept separate elsewhere —
+    // this is the one place they're allowed to meet, and only as their
+    // *worse* reading: one side genuinely falling apart should be able to
+    // break the picture even while the other still looks fine.
+    const consonance = 1 - clamp(dissonance, 0, 1);
+    const coherence = Math.min(consonance, clarity);
+
     const amplitude = h * PLAYER_AMPLITUDE_RATIO;
     const noiseAmount = (1 - clarity) * amplitude; // 0 at full clarity
     const wobble = 0.4 + clarity * 0.6; // steadier sine as clarity rises
+    const cycles = PLAYER_CYCLES + (1 - coherence) * BEAT_DETUNE_CYCLES;
+
+    const target = coherence >= 0.5 ? hexToRgb(npcColor) : CLASH_RGB;
+    const blendT = Math.abs(coherence - 0.5) * 2 * MAX_COLOR_BLEND; // 0..MAX_COLOR_BLEND
+    const [r, g, b] = lerpRgb(hexToRgb(playerColor), target, blendT);
 
     ctx2d.lineWidth = lineWidth;
-    ctx2d.strokeStyle = playerColor;
+    ctx2d.strokeStyle = `rgb(${r},${g},${b})`;
     ctx2d.beginPath();
     for (let i = 0; i <= PLAYER_STEPS; i++) {
       const x = (i / PLAYER_STEPS) * w;
-      const phase = (i / PLAYER_STEPS) * Math.PI * 2 * PLAYER_CYCLES + timeMs * 0.002;
+      const phase = (i / PLAYER_STEPS) * Math.PI * 2 * cycles + timeMs * 0.002;
       const noise = (Math.random() - 0.5) * noiseAmount;
       const y = h / 2 + Math.sin(phase) * amplitude * wobble + noise;
       if (i === 0) ctx2d.moveTo(x, y);
@@ -138,8 +190,9 @@ export function createOscilloscope(
     const w = canvas.width;
     const h = canvas.height;
     ctx2d.clearRect(0, 0, w, h);
-    drawNpcTrace(w, h);
-    drawPlayerTrace(w, h, timeMs);
+    const dissonance = getDissonance();
+    drawNpcTrace(w, h, dissonance);
+    drawPlayerTrace(w, h, timeMs, dissonance);
     rafId = requestAnimationFrame(draw);
   }
   rafId = requestAnimationFrame(draw);

@@ -394,28 +394,12 @@ Roughly in order of how ready each one is to just start:
   code-path filler. The placeholder part is genuinely just the *art*
   (generated SVG vectors), not the writing.
 
-**Needs a dedicated design pass first:**
-- **Make the oscilloscope's two traces actually interact.** Right now
-  the NPC trace (real audio, `getAnalyser()`) and player trace
-  (synthesized from integrity+lucidity, `ui/oscilloscope.js`) share a
-  canvas and midline but never affect each other — two independent
-  lines, not a mix. Reads as static because nothing about *how* either
-  is drawn responds to the relationship between them, only to its own
-  separate input. Directions worth exploring:
-  - **Visual mixing** — phase-lock or share color when the encounter's
-    going well (player honest, NPC trust rising); visually interfere/beat
-    against each other, the way two close-but-not-quite frequencies do on
-    a real scope, when it's going badly.
-  - **Actual signal mixing** — player clarity modulating the NPC trace
-    directly (a filter/distortion on the real audio-derived line) instead
-    of drawing a second, independent line beside it.
-  - **Something reactive to the moment**, not just the current stat
-    snapshot — both traces currently only change when a swipe resolves;
-    nothing happens between choices.
-  Open question for whoever picks this up: purely visual (canvas-level
-  blend/phase tricks), or real signal processing (player state actually
-  shaping the audio-derived waveform)? See `STAT_MATH.md`'s "Confrontation
-  oscilloscope" for the full build history this extends.
+- ~~Make the oscilloscope's two traces actually interact~~ — done: a
+  `coherence` value (the *worse* of the NPC chord's consonance and the
+  player's own clarity, not an average) drives real beat-interference
+  between the two traces' frequencies plus a partial color blend, kept as
+  a pure drawing-parameter effect rather than real audio signal mixing.
+  See `STAT_MATH.md`'s "Trace interaction — coherence".
 
 **Needs something from outside this repo:**
 - ~~inkflo Graphics preloader~~ — done, two-phase. Phase 1: spinner plus a
