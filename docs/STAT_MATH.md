@@ -100,16 +100,16 @@ dependencies. Each note is its own oscillator (Web Audio oscillators are
 one-shot, can't be reused) connected to one persistent gain node, chained
 via `setTimeout` the same way `ui/typewriterText.js` sequences characters.
 
-The three FEELZ emotion stems stay exactly as they were (shared,
-hardcoded, universal) — the leitmotif is an added layer, not a
-replacement. Lifecycle is coarser than the emotion stems: started once
-when an NPC's dialog scene mounts (`dialogScene.js`, alongside
-`startEmotionStems()`), not restarted per node — it's meant to be that
-character's continuous underscore for the whole encounter. Stopped only
-on scene unmount, including through the swipe-commit moment where the
-emotion stems *do* stop (`stopEmotionStems()` in `handleSwipe`) — the
-leitmotif deliberately keeps playing through reactions, since it's the
-character's signature, not tied to the FEELZ selection phase.
+The leitmotif is an added layer, not a replacement — it plays over the
+confrontation chord (see "Confrontation polychord" below, which replaced
+the fixed-frequency emotion stems this paragraph used to describe).
+Lifecycle is coarser than the chord's: started once when an NPC's dialog
+scene mounts (`dialogScene.js`, before the first `enterNode()`, which
+needs to know whose tonic to build on), not restarted per node — it's
+meant to be that character's continuous underscore for the whole
+encounter. Stopped only on scene unmount, so it deliberately keeps
+playing through reactions: it's the character's signature, not tied to
+the FEELZ selection phase.
 
 Current phrases, chosen to match each NPC's established tone: Deborah —
 slow descending sine, hymn-like (A3-G3-E3-D3, 700-1100ms notes). Rwanda —
@@ -189,9 +189,9 @@ as *consonant* here even though it's a lie; an uncomfortable truth that
 drops both reads as dissonant even though it's honest. Deliberately not a
 truth detector.
 
-**The math — circle of fifths, not chromatic steps.** Each NPC's
-leitmotif carries one running number, `mood`, starting at 0 when their
-scene mounts. `dialogScene.js`'s `handleSwipe` computes the *actual*
+**The math — circle of fifths, not chromatic steps.** Each encounter
+carries one running number, `encounterMood`, starting at 0 when a new
+NPC's leitmotif starts. `dialogScene.js`'s `handleSwipe` computes the *actual*
 post-clamp trust + stability delta (not the raw authored effect — a stat
 already maxed shouldn't overstate the swing) and feeds it into
 `audio.nudgeLeitmotifMood(delta)`, which clamps `mood` to ±6.
@@ -217,8 +217,12 @@ Fear/Disgust/Sadness amplify integrity instead, which stays out of this
 system on purpose — those are introspective stats, not relational ones.
 
 File-based leitmotifs (Therapist's `heavens_waiting_room.mp3`) have no
-notes to bend — `nudgeLeitmotifMood()` no-ops quietly rather than
-throwing, same for no leitmotif active at all.
+notes to bend, so nothing bends for them — but `encounterMood` still
+moves, because it now lives at module scope in `audio.js` rather than
+inside the note loop's closure. Their chord and portrait respond
+normally; only the melodic bend has nothing to act on. (It used to be a
+closure variable, which meant `nudgeLeitmotifMood()` silently no-opped
+for the Therapist entirely — the chord needed it hoisted.)
 
 Verified: `fifthsSemitoneOffset()` checked by hand for every hop -6..+6
 (confirms the tritone lands at exactly ±6 semitones and is its own
@@ -229,7 +233,121 @@ actual trust-1/stability-2), the next three notes in the *same* loop
 (D3/A3/G3) came out bent up exactly 3 semitones, matching the formula
 precisely. Confirmed `nudgeLeitmotifMood()` is a silent no-op against
 `THERAPIST`'s file-based leitmotif and against no active leitmotif at
-all.
+all. (That last no-op no longer holds — see the hoist note above.)
+
+## Confrontation polychord (built — `shell/harmony.js` + `audio.js`)
+
+Replaced the emotion stems, which were eight hardcoded frequencies
+(`Anger: 110`, `Joy: 330`, `Surprise: 250`) droning continuously with no
+shared key centre — timbre-coded mood pads wearing pitch as a costume.
+Now the feelings actually harmonize.
+
+**The chord.** The NPC sounds their own tonic as a fixed root voice; each
+feeling the player has loaded sounds as another voice above it, placed by
+how many circle-of-fifths hops it sits from that root. `voiceHop()` moves
+every feeling voice off one number, `resolution` = `encounterMood / 6`,
+so it's the same accumulator that bends the leitmotif and colors the
+portrait — a third output, not a third calculation.
+
+| `resolution` | Voices | Sounds like |
+|---|---|---|
+| **+1** full alignment | all hop 0 | **unison** — every voice on the NPC's own pitch |
+| **0** neutral | hops 1, 2, 3 | stacked perfect fifths — no third, so neither major nor minor: quartal/quintal harmony, deliberately tonally ambiguous |
+| **−1** complete detachment | all hop 6 | **tritone** against a root still sounding — the circle's exact antipode, equidistant either way round |
+
+Both extremes are exact positions, which is what makes "maximum
+dissonance" calculable rather than a vibe.
+
+**Why hops get rounded.** `voiceSemitones()` folds with `% 24`, and a
+fractional hop would put voices between semitones — every chord slightly
+out of tune and the tritone endpoint no longer landing on the tritone.
+Rounding means the chord moves in discrete, exactly-tuned steps, which is
+also how harmony actually moves. Smoothness isn't wanted here: because
+the chord is *struck* rather than glided, a revoicing between strikes
+reads as a new chord, not as a bent note.
+
+**Voicing math is deliberately not `fifthsSemitoneOffset()`.** That
+function minimizes chromatic distance, which is right for bending a
+single melodic line (a melody shouldn't leap an octave) and wrong for a
+chord, which wants its voices spread. `voiceSemitones()` walks real
+ascending fifths (7 semitones a hop) instead. Both live in
+`shell/harmony.js`; the root's own modulation *does* use the minimizing
+one, since the key centre shouldn't jump an octave just because the
+cadence advanced.
+
+**The cadence.** An encounter is shaped as one: `dialogScene.js`'s
+`harmonicFunction()` returns `predominant` on the first node, `dominant`
+through the body, `tonic` on any node with nowhere left to go. Each is
+one fourth/fifth of root motion (`FUNCTION_HOPS`) — for Deborah's A
+tonic that's D → E → A, a textbook authentic cadence resolving by
+ascending fourth. A node with no outgoing edges is the resolution however
+early it arrives, so the Therapist's single-node tutorial is its own
+whole cadence. Position decides *when* the resolution lands; `resolution`
+decides whether it lands as unison or as the tritone.
+
+**Struck, not sustained.** Each voice is its own oscillator with a 30ms
+attack and a 3.5s exponential ring to silence — no drone anywhere.
+Deliberate: with melodies, ambient beds and stings already running, a
+permanent pad becomes wallpaper, and a state readout must not. It also
+leaves the oscilloscope quiet between strikes so a change reads as a
+visible event rather than a slow morph. Struck on node entry, on each
+resolved swipe (*after* the mood nudge, so you hear where the choice just
+left things), and one voice alone when a FEELZ emotion is picked — which
+lets the player hear where that feeling sits against this NPC before
+committing to it.
+
+A ring outlasts a scene exit, so `stopLeitmotif()` also calls `stopChord()`
+(a 50ms fade, not a hard stop — a chord clipped mid-ring clicks). Without
+that the encounter's harmony trails several seconds into whatever scene
+follows it. Live voices are tracked in `chordVoices` and drop themselves
+via `osc.onended`.
+
+**Tonics come from the melodies that already exist.**
+`tonicFromPhrase()` takes the pitch class a leitmotif spends the most
+total time on. Deborah's MIDI phrase computes to **A** (3435ms against
+858ms for the next), which matches the A-rooted phrase hand-authored
+before the MIDI pipeline existed — the derivation agrees with the
+original authorial intent, which is a good sign it's reading real
+structure and not noise. So a composer dropping in a `.mid` sets that
+character's harmonic centre for free; there's no second thing to author
+or keep in sync. File-based NPCs (Therapist) have no notes and fall back
+to A.
+
+Two ways the heuristic picks wrong, both confirmed by running it:
+
+- **A melody that dwells on its own fifth** derives the fifth as tonic —
+  a theme written in A that hovers on E returns `E`, and the whole
+  encounter builds a fifth off. Normal writing, so this will happen. The
+  fix when it does is an explicit per-NPC tonic in `LEITMOTIFS` that wins
+  over the derivation; not built yet, deliberately, since nothing has
+  needed it.
+- **Mixed enharmonic spelling splits the vote.** `Bb3` and `A#3` are the
+  same sounding pitch but hash to different keys, so a phrase using both
+  can lose to a third note that sounds less. Low risk from MIDI
+  (`@tonejs/midi` emits sharps consistently — Deborah's JSON is all
+  `F#/A#/C#`), real for the hand-authored fallbacks, one of which uses
+  `Eb3`. Normalizing to pitch-class number would fix it.
+
+Also inherent, not a bug: `build-leitmotifs.mjs` sets each note's
+duration to *time until the next note*, so a rest is folded into the
+preceding note. Sparse, rest-heavy writing weights toward whatever note
+precedes the longest gap.
+
+Verified in Node across the full grid: every voice lands on exactly 0 at
+`+1` and exactly 6 at `−1`; the neutral voicing contains no third at all;
+dissonance falls monotonically and hits exactly 0 and exactly 1 at the
+endpoints; no single step of a `resolution` sweep moves a voice more than
+one hop (the rounding removes the `% 24` fold discontinuity). Then live
+in the browser with a monkey-patched
+`AudioContext.prototype.createOscillator`: Deborah's opening struck
+D4-A4-E5-B5 — a stack of fifths on a predominant root, matching the Node
+prediction exactly — and the endpoints struck 220/220/220/220 (true
+unison) and 220 + three voices on 622.25 (Eb5, a precise tritone over a
+root still sounding). A real UI swipe moved mood 0→4 and dissonance
+0.333→0.111, collapsing the chord from D-A-E-B to D-D-A-A. Confirmed the
+chord decays to an analyser peak of exactly 0 by 3.6s with the leitmotif
+stopped, proving nothing drones; and that Deborah's melody still plays
+its own phrase bent by the same mood (B2 came out as D#3, +4 semitones).
 
 ## Dialog portrait mood-mask (built — `ui/npcPortrait.js` + `audio.js`)
 
@@ -289,7 +407,19 @@ atmospheric. Two overlaid traces, not one:
   its existing connection to `ctx.destination` — a read-only tap, not part
   of the output chain), and `getAnalyser()` exposes it. Real audio: this
   NPC's leitmotif (already reactive to trust+stability via its fifths
-  bend), stings, whatever's actually playing.
+  bend), the confrontation chord, stings, whatever's actually playing.
+
+  **How legible it's drawn is the chord's own dissonance** (`getDissonance()`,
+  0–1): a `blur()` up to 4px scaling with it, plus red/blue channel
+  separation once past 0.5, so a harmonized chord draws a clean line and an
+  unresolved one smears into something you can't parse. The filter is reset
+  before the player trace, which stays sharp — it's a different axis.
+
+  Worth knowing the visual isn't only a filter: as voices converge on
+  unison there are genuinely fewer beating frequencies in the mix, so the
+  waveform itself simplifies. The trace resolves because the sound
+  resolved. Nothing here is a score — the room just gets clearer or murkier
+  in response to choices.
 - **Player trace** — not audio. Synthesized from `integrity` + `lucidity`
   (the two meters about the player's own honesty, not the NPC's feelings —
   deliberately the *other* two, so this doesn't just repeat what the NPC

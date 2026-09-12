@@ -35,6 +35,9 @@ function openingNodeId(scene, npc, state) {
 export function mount(stageEl, scene, { run, onComplete }) {
   const { npc } = scene;
   let currentNodeId = resolveGatedNode(openingNodeId(scene, npc, run.get()), npc, run.get());
+  // Which beat of the encounter we're on — drives the cadence, see
+  // harmonicFunction(). Starts at -1 so the first enterNode() lands on 0.
+  let beatIndex = -1;
   let activeEmotion = null;
   let activeEmotionColor = null;
   // 'prompt' (NPC's opening line, FEELZ + swipe card) -> 'say' (the player's
@@ -52,14 +55,28 @@ export function mount(stageEl, scene, { run, onComplete }) {
     return npc.nodes[currentNodeId];
   }
 
+  // The encounter is shaped as a cadence: it opens in the predominant area,
+  // sits in dominant tension through the body, and resolves on its last
+  // beat — each step one fourth/fifth of root motion. Whether that
+  // resolution lands as unison or as a tritone is decided by how the
+  // choices went, not by where you are (see shell/harmony.js).
+  //
+  // A node with nowhere left to go is the resolution however early it
+  // arrives: the Therapist's single-node tutorial is its own whole cadence.
+  function harmonicFunction() {
+    const swipes = currentNode()?.swipes ?? {};
+    const terminal = Object.values(swipes).every((swipe) => !swipe.nextNodeId);
+    if (terminal) return 'tonic';
+    return beatIndex === 0 ? 'predominant' : 'dominant';
+  }
+
   function enterNode() {
+    beatIndex++;
     activeEmotion = null;
     activeEmotionColor = null;
     stage = 'prompt';
     promptRevealed = false;
-    const loadedEmotions = emotionsForClass(run.get().loadout);
-    audio.startEmotionStems(loadedEmotions);
-    audio.ambientMix(loadedEmotions);
+    audio.strikeChord(emotionsForClass(run.get().loadout), harmonicFunction());
     render();
   }
 
@@ -208,7 +225,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
         onSelect: (emotion, _source) => {
           activeEmotion = emotion;
           activeEmotionColor = emotionColor(emotion);
-          audio.emphasizeEmotion(emotion, emotionsForClass(run.get().loadout));
+          audio.strikeEmotionVoice(emotion, emotionsForClass(run.get().loadout), harmonicFunction());
           render();
         },
       });
@@ -241,7 +258,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // score (see docs/HANDOFF.md's stat meanings). Uses the post-clamp
     // delta, not the raw authored effect, so a stat already maxed out
     // doesn't overstate how much this choice moved anything. Bends their
-    // leitmotif live; a no-op if this NPC has no phrase-loop leitmotif.
+    // leitmotif live and moves the confrontation chord's voicing.
     const trustDelta = (patch.trust ?? before.trust) - before.trust;
     const stabilityDelta = (patch.stability ?? before.stability) - before.stability;
     audio.nudgeLeitmotifMood(trustDelta + stabilityDelta);
@@ -264,7 +281,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
     fx.flash(intensity);
     fx.shake(intensity);
     audio.playHit(intensity);
-    audio.stopEmotionStems();
+    // Struck *after* the mood nudge above, so what you hear is the chord as
+    // this choice just left it — the answer to the swipe, not a repeat of
+    // where things stood before it.
+    audio.strikeChord(emotionsForClass(run.get().loadout), harmonicFunction());
 
     render();
   }
@@ -349,8 +369,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   // The NPC's leitmotif is this character's continuous underscore for the
   // whole encounter — started once here, not in enterNode(), so it doesn't
-  // restart on every node. It deliberately keeps playing through reactions,
-  // where the emotion stems stop. See STAT_MATH.md "Per-NPC leitmotif".
+  // restart on every node. Must run before the first enterNode() below,
+  // which strikes a chord built on this NPC's tonic and needs to know who's
+  // playing. See STAT_MATH.md "Per-NPC leitmotif".
   audio.startLeitmotif(npc.npc);
   audio.preloadTypewriterTick();
   enterNode();
@@ -359,7 +380,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     typewriter?.destroy();
     itPopup?.destroy();
     oscilloscope?.destroy();
-    audio.stopEmotionStems();
+    // Also cuts any chord still ringing — a strike outlasts a scene exit,
+    // so without this the encounter's harmony bleeds into the next scene.
     audio.stopLeitmotif();
     stageEl.innerHTML = '';
   };

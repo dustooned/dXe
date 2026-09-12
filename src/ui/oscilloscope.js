@@ -5,7 +5,12 @@
 //  - NPC trace: shell/audio.js's shared AnalyserNode (tapped off
 //    masterGain) via getByteTimeDomainData() — whatever's actually
 //    playing (this NPC's leitmotif, already reactive to trust+stability
-//    via its fifths bend) at that instant.
+//    via its fifths bend; the confrontation chord when it's struck) at
+//    that instant. How legible it's drawn is the chord's own dissonance:
+//    a harmonized chord is clean, an unresolved one blurs and splits. The
+//    waveform also genuinely simplifies as voices converge on unison —
+//    fewer beating frequencies — so the visual resolves because the sound
+//    did, not because it's told to.
 //  - Player trace: not audio — integrity + lucidity (the two meters about
 //    the player's own honesty, not the NPC's feelings) synthesized into a
 //    wave using the same instrument's language: high clarity draws a
@@ -18,7 +23,7 @@
 // DEBT counter); folding it in here would blur two clean axes into three
 // competing for the same line. First use: confrontation cutscenes'
 // otherwise-empty background (scenes/cutsceneScene.js).
-import { getAnalyser } from '../shell/audio.js';
+import { getAnalyser, getDissonance } from '../shell/audio.js';
 
 function clamp(v, min, max) {
   return Math.min(max, Math.max(min, v));
@@ -48,14 +53,18 @@ export function createOscilloscope(
     if (canvas.height !== canvas.clientHeight) canvas.height = canvas.clientHeight;
   }
 
-  function drawNpcTrace(w, h) {
-    analyser.getByteTimeDomainData(data);
-    ctx2d.lineWidth = lineWidth;
-    ctx2d.strokeStyle = npcColor;
-    ctx2d.beginPath();
+  // How far out of tune the confrontation chord currently is decides how
+  // readable this trace is: a harmonized chord draws a clean line, a
+  // dissonant one smears and splits until you can't parse it. Not a score —
+  // the signal is just harder to see through, the way a detuned radio is.
+  const MAX_BLUR_PX = 4;
+  const MAX_SPLIT_PX = 6;
+  const SPLIT_THRESHOLD = 0.5;
 
+  function traceNpcPath(w, h, xOffset) {
+    ctx2d.beginPath();
     const sliceWidth = w / bufferLength;
-    let x = 0;
+    let x = xOffset;
     for (let i = 0; i < bufferLength; i++) {
       const v = data[i] / 128; // 0..2, 1.0 = silence (midline)
       const y = (v * h) / 2;
@@ -64,6 +73,30 @@ export function createOscilloscope(
       x += sliceWidth;
     }
     ctx2d.stroke();
+  }
+
+  function drawNpcTrace(w, h) {
+    analyser.getByteTimeDomainData(data);
+    const dissonance = clamp(getDissonance(), 0, 1);
+
+    ctx2d.lineWidth = lineWidth;
+    ctx2d.filter = dissonance > 0 ? `blur(${dissonance * MAX_BLUR_PX}px)` : 'none';
+
+    // Channels pull apart only once the chord is genuinely unresolved, so
+    // the neutral opening still reads as a single clean signal.
+    if (dissonance > SPLIT_THRESHOLD) {
+      const split = ((dissonance - SPLIT_THRESHOLD) / (1 - SPLIT_THRESHOLD)) * MAX_SPLIT_PX;
+      ctx2d.globalCompositeOperation = 'lighter';
+      ctx2d.strokeStyle = 'rgba(255,64,64,0.55)';
+      traceNpcPath(w, h, -split);
+      ctx2d.strokeStyle = 'rgba(64,128,255,0.55)';
+      traceNpcPath(w, h, split);
+      ctx2d.globalCompositeOperation = 'source-over';
+    }
+
+    ctx2d.strokeStyle = npcColor;
+    traceNpcPath(w, h, 0);
+    ctx2d.filter = 'none';
   }
 
   // Narrower amplitude band than the NPC trace on purpose — both traces

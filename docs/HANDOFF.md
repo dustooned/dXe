@@ -10,6 +10,10 @@ split, boot sequence), `SCENE_TYPES.md` (how to add a scene),
 `CONTENT_SCHEMA.md` (writing dialog), `STAT_MATH.md` (the numbers),
 `ATTIC.md` (removed code, kept for reference).
 
+Two collaborator packs live outside `docs/`, written for people who don't
+touch code: `writer-handoff/` (dialog and prose) and `sound-handoff/`
+(music, MIDI leitmotifs, audio assets). Send those rather than this file.
+
 ## What Dream Xtreme is
 
 An episodic interactive zine hosted as a static site on GitHub Pages.
@@ -299,16 +303,16 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
   a `portrait` path, authored via a manuscript's `PORTRAIT:` line) — the
   placeholder is only a fallback for when that's unset, so real art can
   drop in with no further code changes. No art exists yet.
-- Placeholder audio — emotion stems and hit sounds are oscillator tones in
-  `shell/audio.js`; no real instrumental stems yet. `STEM_CONFIG` now
-  covers all 8 Plutchik emotions (was 3, matching only the Guns loadout —
-  a real bug where Bible and Crystals players got no stem audio at all on
-  their own class's emotions), so this is placeholder-quality but no
-  longer broken for two of the three classes. Only the player's *loaded*
-  3 actually get oscillators — `dialogScene` passes `emotionsForClass()`
-  into `startEmotionStems`/`ambientMix`/`emphasizeEmotion`. Running all 8
-  drones the 5 the class can't even select and makes the bed ~2.7× louder
-  than the gain constants were tuned for.
+- Placeholder audio — the confrontation chord and hit sounds are oscillator
+  tones in `shell/audio.js`; no real instrumental stems yet. The emotion
+  *drones* are gone: each loaded feeling is now a voice in a struck
+  polychord built on the NPC's own tonic, moving toward unison or the
+  tritone as the encounter resolves (`shell/harmony.js`, and STAT_MATH.md's
+  "Confrontation polychord"). `EMOTION_WAVEFORMS` covers all 8 Plutchik
+  emotions; only the player's *loaded* 3 get voices, since `dialogScene`
+  passes `emotionsForClass()` into `strikeChord`/`strikeEmotionVoice`.
+  Still placeholder timbre — four bare oscillator waveforms — but it's a
+  real harmonic system now rather than eight unrelated fixed pitches.
 - `public/assets/lake-ulysses/audio/ann_01.mp3` — byte-identical duplicate
   of `lk_01.mp3`, 1.2MB shipped for nothing. Kept deliberately for now.
 - `loadoutScene.js` and the unread `firstPlayScene` registry field were

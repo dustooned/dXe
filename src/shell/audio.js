@@ -1,5 +1,5 @@
-// Audio system. Oscillator-based emotion stems and NPC leitmotifs coexist
-// with real audio file playback — both share the same masterGain chain.
+// Audio system. The oscillator-based confrontation chord and NPC leitmotifs
+// coexist with real audio file playback — all share the same masterGain chain.
 // All public functions that load files are async; callers fire-and-forget
 // (no await needed unless they care about the exact start time).
 //
@@ -13,13 +13,35 @@
 // than loaded per-chapter, same as the rest of this file — there's only one
 // chapter so far. Revisit if a second chapter ever needs its own NPCs here.
 import leitmotifNotes from '../chapters/lake-ulysses/content/leitmotifs.json';
+import {
+  MAX_HOPS,
+  chordFor,
+  fifthsSemitoneOffset,
+  noteToFrequency,
+  tonicFromPhrase,
+} from './harmony.js';
+
+// Kept exported from here because docs/STAT_MATH.md documents it living in
+// this module; the implementation moved to harmony.js with everything else
+// that's pure theory and Node-testable.
+export { noteToFrequency };
 
 let ctx = null;
 let masterGain = null;
 let analyser = null;
-let stems = {};
 let activeLeitmotif = null;
 let activeLeitmotifKey = null;
+
+// How this NPC currently feels about the player this encounter. Lives at
+// module scope rather than inside startLeitmotif's closure so the chord can
+// read it for NPCs whose leitmotif is a file and has no note loop at all
+// (THERAPIST). Reset only when a *different* NPC starts — see
+// startLeitmotif's continuity guard.
+let encounterMood = 0;
+// Last struck chord's dissonance, 0..1. Read every frame by
+// ui/oscilloscope.js; kept here so the visual reports the chord that's
+// actually sounding rather than recomputing the theory a second time.
+let currentDissonance = 0;
 let ambientSource = null;
 let ambientGain = null;
 let titleSources = [];
@@ -30,23 +52,34 @@ let titleMusicGeneration = 0;
 
 const audioCache = new Map();
 
-// One oscillator config per Plutchik emotion (engine/loadout.js's EMOTIONS) —
-// every class's 3 loaded emotions need a stem here or picking one plays
-// nothing (see docs/HANDOFF.md's "known gaps": Bible/Crystals had no audio
-// until Trust/Disgust/Joy/Sadness/Surprise were added below).
-const STEM_CONFIG = {
-  Anger:        { type: 'sawtooth', freq: 110 },
-  Fear:         { type: 'sine',     freq: 220 },
-  Anticipation: { type: 'triangle', freq: 165 },
-  Trust:        { type: 'sine',     freq: 196 },
-  Disgust:      { type: 'sawtooth', freq: 130 },
-  Joy:          { type: 'triangle', freq: 330 },
-  Sadness:      { type: 'sine',     freq: 147 },
-  Surprise:     { type: 'square',   freq: 250 },
+// One waveform per Plutchik emotion (engine/loadout.js's EMOTIONS) — every
+// class's 3 loaded emotions need an entry here or that voice is silent
+// (see docs/HANDOFF.md's "known gaps": Bible/Crystals had no audio until
+// Trust/Disgust/Joy/Sadness/Surprise were added below).
+//
+// Waveform only — these used to carry a hardcoded frequency each, eight
+// unrelated pitches droning with no shared key centre. Pitch now comes from
+// the chord (see strikeChord), so a feeling's identity is carried entirely
+// by its timbre, which is the part that was doing real work anyway.
+const EMOTION_WAVEFORMS = {
+  Anger:        'sawtooth',
+  Fear:         'sine',
+  Anticipation: 'triangle',
+  Trust:        'sine',
+  Disgust:      'sawtooth',
+  Joy:          'triangle',
+  Sadness:      'sine',
+  Surprise:     'square',
 };
 
-const AMBIENT_GAIN       = 0.06;
-const EMPHASIS_GAIN      = 0.16;
+// The confrontation chord is struck, not sustained — it attacks and rings
+// out rather than droning, so it reads as an answer to a choice instead of
+// becoming wallpaper, and leaves the oscilloscope quiet enough between
+// strikes for a change to register as a visible event.
+const CHORD_ROOT_GAIN    = 0.11;
+const CHORD_VOICE_GAIN   = 0.08;
+const CHORD_ATTACK_SEC   = 0.03;
+const CHORD_RING_SEC     = 3.5;
 const LEITMOTIF_GAIN     = 0.14;
 // A leitmotif now starts as early as an NPC's confrontation cutscene
 // (cutsceneScene.js, for the oscilloscope to have something to trace),
@@ -66,35 +99,6 @@ const START_JINGLE_GAIN  = 0.75;
 const MOOD_CLAMP = 6;
 
 function clamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
-
-const NOTE_SEMITONES = {
-  C: -9, 'C#': -8, Db: -8, D: -7, 'D#': -6, Eb: -6, E: -5, F: -4,
-  'F#': -3, Gb: -3, G: -2, 'G#': -1, Ab: -1, A: 0, 'A#': 1, Bb: 1, B: 2,
-};
-
-export function noteToFrequency(note) {
-  const match = note.match(/^([A-G][#b]?)(-?\d+)$/);
-  if (!match) throw new Error(`Bad note name: "${note}"`);
-  const [, name, octaveStr] = match;
-  const semitoneFromA4 = NOTE_SEMITONES[name] + (Number(octaveStr) - 4) * 12;
-  return 440 * Math.pow(2, semitoneFromA4 / 12);
-}
-
-// Semitone offset for N hops around the circle of fifths, folded within one
-// octave. Hop count — not the raw semitone jump — is the "how related"
-// axis: 0 hops is the tonic itself, 6 hops lands on the tritone, the least
-// related point on the circle (same distance either direction you walk).
-// The actual semitone jump per hop doesn't grow smoothly (1 hop is a fifth
-// away in pitch, 2 hops folds to a major second — chromatic closeness and
-// harmonic relatedness are different axes in real music theory), so hop
-// count is what should read as "more in tune / more clashing," not the
-// size of the jump.
-function fifthsSemitoneOffset(hops) {
-  const n = Math.min(6, Math.abs(hops));
-  const raw = (n * 7) % 12;
-  const folded = raw > 6 ? raw - 12 : raw;
-  return Math.sign(hops) * folded;
-}
 
 // NPC leitmotifs. A `url` entry plays a real audio file on loop; a `notes`
 // entry plays the oscillator phrase on loop (existing behaviour).
@@ -254,61 +258,130 @@ export async function playItSting() {
   source.start();
 }
 
-// ─── Emotion stems ────────────────────────────────────────────────────────────
+// ─── Confrontation chord ──────────────────────────────────────────────────────
+// The NPC sounds their own tonic as a root voice; each feeling the player
+// has loaded sounds as another voice above it. How far those voices sit
+// from the root is one number — the same `encounterMood` that already bends
+// the leitmotif and colors the portrait, normalized to -1..+1. Full
+// alignment collapses every voice onto the root (unison); complete
+// detachment puts every voice on the tritone against it. See
+// shell/harmony.js for the theory and docs/STAT_MATH.md for why.
+
+// Which pitch this NPC is centred on, taken from the melody a composer
+// already wrote for them rather than authored a second time. Cached because
+// it's a scan of the whole phrase and never changes for a given NPC.
+const tonicCache = new Map();
+
+function tonicForNpc(npcKey) {
+  if (!tonicCache.has(npcKey)) {
+    const notes = LEITMOTIFS[npcKey]?.notes;
+    // Root register sits below the feeling voices, which stack up to two
+    // octaves above it.
+    tonicCache.set(npcKey, `${tonicFromPhrase(notes)}3`);
+  }
+  return tonicCache.get(npcKey);
+}
+
+function currentResolution() {
+  return clamp(encounterMood / MAX_HOPS, -1, 1);
+}
+
+// Voices still ringing. A strike lasts CHORD_RING_SEC, which is longer than
+// it takes to leave a scene — without this the chord would bleed several
+// seconds into whatever comes next.
+let chordVoices = [];
+
+// One oscillator per voice with its own envelope. Web Audio oscillators are
+// one-shot, so a struck chord is genuinely a new set of nodes each time —
+// same pattern the leitmotif's per-note oscillators already use.
+function strikeVoiceAt(frequency, waveform, peak) {
+  const audioCtx = ensureContext();
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  osc.type = waveform;
+  osc.frequency.value = frequency;
+  const gain = audioCtx.createGain();
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(peak, now + CHORD_ATTACK_SEC);
+  // Exponential decay can't reach zero, so ring to near-silence and stop.
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + CHORD_RING_SEC);
+  osc.connect(gain).connect(masterGain);
+  osc.start(now);
+  osc.stop(now + CHORD_RING_SEC + 0.05);
+
+  const voice = { osc, gain };
+  chordVoices.push(voice);
+  osc.onended = () => {
+    gain.disconnect();
+    chordVoices = chordVoices.filter((v) => v !== voice);
+  };
+}
+
+// Cuts any ringing voices short. Called when an encounter ends or hands off
+// to a different NPC — a quick fade rather than a hard stop, since a chord
+// clipped mid-ring clicks.
+function stopChord() {
+  if (!ctx) return;
+  for (const { osc, gain } of chordVoices) {
+    gain.gain.cancelScheduledValues(ctx.currentTime);
+    gain.gain.setTargetAtTime(0, ctx.currentTime, 0.05);
+    try { osc.stop(ctx.currentTime + 0.3); } catch (_) { /* already stopped */ }
+  }
+  currentDissonance = 0;
+}
 
 // `activeEmotions` is the player's loaded class emotions (engine/loadout.js's
-// emotionsForClass). Only those get an oscillator: the other 5 aren't
-// selectable for this run, so droning them just muddies the bed — and with all
-// 8 running the ambient mix is ~2.7x louder than it was designed at.
-export function startEmotionStems(activeEmotions = Object.keys(STEM_CONFIG)) {
-  const audioCtx = ensureContext();
-  for (const key of activeEmotions) {
-    const cfg = STEM_CONFIG[key];
-    if (!cfg || stems[key]) continue;
-    const osc = audioCtx.createOscillator();
-    osc.type = cfg.type;
-    osc.frequency.value = cfg.freq;
-    const gain = audioCtx.createGain();
-    gain.gain.value = 0;
-    osc.connect(gain).connect(masterGain);
-    osc.start();
-    stems[key] = { osc, gain };
-  }
+// emotionsForClass) — only those get a voice, since the other 5 aren't
+// selectable this run and would only thicken the chord with feelings the
+// player can't act on.
+//
+// `fn` is the harmonic function of this beat: 'predominant' opening,
+// 'dominant' through the body, 'tonic' at the resolution. Each is one
+// fourth/fifth of root motion from the last.
+export function strikeChord(activeEmotions = Object.keys(EMOTION_WAVEFORMS), fn = 'tonic') {
+  ensureContext();
+  const { rootFrequency, voices, dissonance } = chordFor({
+    tonicNote: tonicForNpc(activeLeitmotifKey),
+    fn,
+    resolution: currentResolution(),
+    voiceCount: activeEmotions.length,
+  });
+  currentDissonance = dissonance;
+
+  // The root is the NPC — voiced in their leitmotif's own waveform, or a
+  // sine for NPCs whose leitmotif is an audio file and has no waveform of
+  // its own (THERAPIST).
+  strikeVoiceAt(rootFrequency, LEITMOTIFS[activeLeitmotifKey]?.type ?? 'sine', CHORD_ROOT_GAIN);
+
+  activeEmotions.forEach((emotion, i) => {
+    const waveform = EMOTION_WAVEFORMS[emotion];
+    if (!waveform) return;
+    strikeVoiceAt(voices[i], waveform, CHORD_VOICE_GAIN);
+  });
 }
 
-export function setEmotionMix(mix) {
-  if (!ctx) return;
-  const now = ctx.currentTime;
-  for (const [key, value] of Object.entries(mix)) {
-    const stem = stems[key];
-    if (!stem) continue;
-    stem.gain.gain.linearRampToValueAtTime(clamp(value, 0, 1), now + 0.15);
-  }
+// Sounds one feeling on its own, at the pitch it currently occupies in the
+// chord — so picking a FEELZ emotion lets the player hear where that
+// feeling sits against this NPC before committing to it.
+export function strikeEmotionVoice(emotion, activeEmotions = Object.keys(EMOTION_WAVEFORMS), fn = 'tonic') {
+  const index = activeEmotions.indexOf(emotion);
+  const waveform = EMOTION_WAVEFORMS[emotion];
+  if (index === -1 || !waveform) return;
+  ensureContext();
+  const { voices } = chordFor({
+    tonicNote: tonicForNpc(activeLeitmotifKey),
+    fn,
+    resolution: currentResolution(),
+    voiceCount: activeEmotions.length,
+  });
+  strikeVoiceAt(voices[index], waveform, CHORD_VOICE_GAIN);
 }
 
-export function emphasizeEmotion(emotion, activeEmotions = Object.keys(STEM_CONFIG)) {
-  const mix = {};
-  for (const key of activeEmotions) {
-    mix[key] = key === emotion ? EMPHASIS_GAIN : AMBIENT_GAIN * 0.5;
-  }
-  setEmotionMix(mix);
-}
-
-export function ambientMix(activeEmotions = Object.keys(STEM_CONFIG)) {
-  const mix = {};
-  for (const key of activeEmotions) mix[key] = AMBIENT_GAIN;
-  setEmotionMix(mix);
-}
-
-export function stopEmotionStems() {
-  if (!ctx) return;
-  const now = ctx.currentTime;
-  for (const key of Object.keys(stems)) {
-    const { osc, gain } = stems[key];
-    gain.gain.linearRampToValueAtTime(0, now + 0.2);
-    osc.stop(now + 0.25);
-  }
-  stems = {};
+// How far the chord currently sits from consonance, 0 (unison) to 1 (every
+// voice on the tritone). Read by ui/oscilloscope.js to decide how legible
+// the trace should be.
+export function getDissonance() {
+  return currentDissonance;
 }
 
 // ─── NPC leitmotifs ───────────────────────────────────────────────────────────
@@ -324,6 +397,11 @@ export async function startLeitmotif(npcKey) {
   if (npcKey === activeLeitmotifKey && activeLeitmotif) return;
 
   stopLeitmotif();
+  // A new encounter starts neutral. Same-NPC continuity returned above, so
+  // this only fires when the NPC actually changes — mood has nothing to
+  // carry over between characters.
+  encounterMood = 0;
+  currentDissonance = 0;
   const generation = ++leitmotifGeneration;
   const config = LEITMOTIFS[npcKey];
   if (!config) return;
@@ -363,18 +441,14 @@ export async function startLeitmotif(npcKey) {
   let stopped = false;
   let timer = null;
 
-  // How this NPC currently feels about the player this encounter — starts
-  // neutral each time their leitmotif (re)starts, nudged by trust+stability
-  // deltas from resolved dialog choices (dialogScene.js's handleSwipe).
-  // Read live every time the loop is about to play its next note, so a
-  // choice's effect shows up on the very next beat of their theme rather
-  // than a separate sound layered on top of it.
-  let mood = 0;
-
   function playNote() {
     if (stopped) return;
     const { note, durationMs } = config.notes[index];
-    const bendSemitones = fifthsSemitoneOffset(mood);
+    // Module-level `encounterMood` is read live every time the loop is
+    // about to play its next note, so a choice's effect shows up on the
+    // very next beat of their theme rather than as a separate sound
+    // layered on top of it.
+    const bendSemitones = fifthsSemitoneOffset(encounterMood);
     const osc = audioCtx.createOscillator();
     osc.type = config.type;
     osc.frequency.value = noteToFrequency(note) * Math.pow(2, bendSemitones / 12);
@@ -394,37 +468,37 @@ export async function startLeitmotif(npcKey) {
       gain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05);
       setTimeout(() => gain.disconnect(), 200);
     },
-    nudgeMood(delta) {
-      mood = clamp(mood + delta, -MOOD_CLAMP, MOOD_CLAMP);
-    },
-    getMood() {
-      return mood;
-    },
   };
   activeLeitmotifKey = npcKey;
 }
 
-// Bends the currently-playing NPC leitmotif toward or away from its own
-// tonic based on how a resolved dialog choice actually landed with them
-// (trust + stability delta — see dialogScene.js's handleSwipe). No-ops
-// quietly if there's no active phrase-loop leitmotif: nothing playing, or
-// a file-based one (THERAPIST) that has no notes to bend.
+// Moves the encounter toward or away from this NPC based on how a resolved
+// dialog choice actually landed with them (trust + stability delta — see
+// dialogScene.js's handleSwipe). Bends a phrase-loop leitmotif's pitch,
+// moves the confrontation chord, and colors the portrait, all off this one
+// number.
+//
+// Applies even for a file-based leitmotif (THERAPIST), which has no notes
+// to bend — it still has a chord and a portrait that should respond.
 export function nudgeLeitmotifMood(delta) {
-  activeLeitmotif?.nudgeMood?.(delta);
+  encounterMood = clamp(encounterMood + delta, -MOOD_CLAMP, MOOD_CLAMP);
 }
 
 // The single source of truth for "how is this NPC feeling about the
-// player right now" — read by the leitmotif's own pitch-bend and, live,
-// by the dialog portrait's mood-mask color (ui/npcPortrait.js). Same
-// number driving both, not two mood calculations that could drift apart.
-// 0 (neutral) if nothing's active — a file-based leitmotif (THERAPIST)
-// has no mood to report either.
+// player right now" — read by the leitmotif's own pitch-bend, by the
+// confrontation chord's voicing, and by the dialog portrait's mood-mask
+// color (ui/npcPortrait.js). One number driving all three, not three mood
+// calculations that could drift apart.
 export function getLeitmotifMood() {
-  return activeLeitmotif?.getMood?.() ?? 0;
+  return encounterMood;
 }
 
+// Ends the encounter's audio: the character's melody and any chord still
+// ringing. Both belong to the same encounter, so they end together rather
+// than letting the chord trail into the next scene.
 export function stopLeitmotif() {
   leitmotifGeneration++;
+  stopChord();
   activeLeitmotif?.stop();
   activeLeitmotif = null;
   activeLeitmotifKey = null;
