@@ -294,7 +294,11 @@ let chordVoices = [];
 // One oscillator per voice with its own envelope. Web Audio oscillators are
 // one-shot, so a struck chord is genuinely a new set of nodes each time —
 // same pattern the leitmotif's per-note oscillators already use.
-function strikeVoiceAt(frequency, waveform, peak) {
+//
+// attackSec/ringSec default to the chord's own timing; the FEELZ select
+// tone (below) reuses this same envelope+cleanup shape with a shorter ring
+// — a quick confirm, not a 3.5s chord — rather than duplicating it.
+function strikeVoiceAt(frequency, waveform, peak, attackSec = CHORD_ATTACK_SEC, ringSec = CHORD_RING_SEC) {
   const audioCtx = ensureContext();
   const now = audioCtx.currentTime;
   const osc = audioCtx.createOscillator();
@@ -302,12 +306,12 @@ function strikeVoiceAt(frequency, waveform, peak) {
   osc.frequency.value = frequency;
   const gain = audioCtx.createGain();
   gain.gain.setValueAtTime(0, now);
-  gain.gain.linearRampToValueAtTime(peak, now + CHORD_ATTACK_SEC);
+  gain.gain.linearRampToValueAtTime(peak, now + attackSec);
   // Exponential decay can't reach zero, so ring to near-silence and stop.
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + CHORD_RING_SEC);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + ringSec);
   osc.connect(gain).connect(masterGain);
   osc.start(now);
-  osc.stop(now + CHORD_RING_SEC + 0.05);
+  osc.stop(now + ringSec + 0.05);
 
   const voice = { osc, gain };
   chordVoices.push(voice);
@@ -360,21 +364,33 @@ export function strikeChord(activeEmotions = Object.keys(EMOTION_WAVEFORMS), fn 
   });
 }
 
-// Sounds one feeling on its own, at the pitch it currently occupies in the
-// chord — so picking a FEELZ emotion lets the player hear where that
-// feeling sits against this NPC before committing to it.
-export function strikeEmotionVoice(emotion, activeEmotions = Object.keys(EMOTION_WAVEFORMS), fn = 'tonic') {
+// The pitch+waveform one feeling currently occupies in the chord — the
+// single source both the select preview below and the FEELZ wheel's
+// hover/click tones (ui/feelzDartboard.js) read from, so hovering an
+// emotion always previews exactly what selecting it would actually sound
+// like right now, not an approximation of it.
+function emotionTone(emotion, activeEmotions, fn) {
   const index = activeEmotions.indexOf(emotion);
   const waveform = EMOTION_WAVEFORMS[emotion];
-  if (index === -1 || !waveform) return;
-  ensureContext();
+  if (index === -1 || !waveform) return null;
   const { voices } = chordFor({
     tonicNote: tonicForNpc(activeLeitmotifKey),
     fn,
     resolution: currentResolution(),
     voiceCount: activeEmotions.length,
   });
-  strikeVoiceAt(voices[index], waveform, CHORD_VOICE_GAIN);
+  if (voices[index] === undefined) return null;
+  return { frequency: voices[index], waveform };
+}
+
+// Sounds one feeling on its own, at the pitch it currently occupies in the
+// chord — so picking a FEELZ emotion lets the player hear where that
+// feeling sits against this NPC before committing to it.
+export function strikeEmotionVoice(emotion, activeEmotions = Object.keys(EMOTION_WAVEFORMS), fn = 'tonic') {
+  const tone = emotionTone(emotion, activeEmotions, fn);
+  if (!tone) return;
+  ensureContext();
+  strikeVoiceAt(tone.frequency, tone.waveform, CHORD_VOICE_GAIN);
 }
 
 // How far the chord currently sits from consonance, 0 (unison) to 1 (every
@@ -382,6 +398,102 @@ export function strikeEmotionVoice(emotion, activeEmotions = Object.keys(EMOTION
 // the trace should be.
 export function getDissonance() {
   return currentDissonance;
+}
+
+// ─── FEELZ wheel hover/select tones ───────────────────────────────────────
+// A very faint preview while hovering a wedge (ui/feelzDartboard.js),
+// gone the instant the pointer leaves; a loud confirm the instant one's
+// picked, settling into a quiet low hum for as long as that pick stands.
+// Same pitch+waveform as the chord voice that emotion already occupies
+// (emotionTone above) — three intensities of the same signal, not a
+// parallel sound design.
+
+const HOVER_GAIN = 0.025;
+const HOVER_FADE_SEC = 0.12;
+
+let hoverVoice = null;
+
+export function startFeelzHover(emotion, activeEmotions, fn = 'tonic') {
+  stopFeelzHover();
+  const tone = emotionTone(emotion, activeEmotions, fn);
+  if (!tone) return;
+  const audioCtx = ensureContext();
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  osc.type = tone.waveform;
+  osc.frequency.value = tone.frequency;
+  const gain = audioCtx.createGain();
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(HOVER_GAIN, now + HOVER_FADE_SEC);
+  osc.connect(gain).connect(masterGain);
+  osc.start(now);
+  hoverVoice = { osc, gain };
+}
+
+// Called on pointer-leave, and as a safety net when the wheel itself is
+// torn down (a re-render mid-hover, or the scene unmounting) so a hover
+// tone never outlives the wedge that started it.
+export function stopFeelzHover() {
+  if (!hoverVoice || !ctx) { hoverVoice = null; return; }
+  const { osc, gain } = hoverVoice;
+  const now = ctx.currentTime;
+  gain.gain.cancelScheduledValues(now);
+  gain.gain.setTargetAtTime(0, now, 0.06);
+  try { osc.stop(now + 0.3); } catch (_) { /* already stopped */ }
+  hoverVoice = null;
+}
+
+const SELECT_GAIN = 0.35;
+const SELECT_ATTACK_SEC = 0.015;
+const SELECT_RING_SEC = 0.5;
+const DRONE_GAIN = 0.04;
+// Two octaves down — "low frequency," not just "quiet." Keeps the drone
+// out of the way of the chord and leitmotif still sounding above it.
+const DRONE_OCTAVES_DOWN = 2;
+const DRONE_FADE_IN_SEC = 0.4;
+
+let selectDrone = null;
+
+function startFeelzDrone(tone) {
+  stopFeelzDrone();
+  const audioCtx = ensureContext();
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  osc.type = tone.waveform;
+  osc.frequency.value = tone.frequency / Math.pow(2, DRONE_OCTAVES_DOWN);
+  const gain = audioCtx.createGain();
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(DRONE_GAIN, now + DRONE_FADE_IN_SEC);
+  osc.connect(gain).connect(masterGain);
+  osc.start(now);
+  selectDrone = { osc, gain };
+}
+
+// Ends the current pick's background hum. Picking a *different* emotion
+// replaces it automatically (playFeelzSelectTone below always starts a
+// fresh one); this is for the points where no pick should keep sounding
+// at all — the swipe committing, or the scene ending.
+export function stopFeelzDrone() {
+  if (!selectDrone || !ctx) { selectDrone = null; return; }
+  const { osc, gain } = selectDrone;
+  const now = ctx.currentTime;
+  gain.gain.cancelScheduledValues(now);
+  gain.gain.setTargetAtTime(0, now, 0.15);
+  try { osc.stop(now + 0.5); } catch (_) { /* already stopped */ }
+  selectDrone = null;
+}
+
+// The click moment: hover tone cuts (this IS the commitment, not a
+// preview of one anymore), the same pitch rings out loud once, then
+// drops into a quiet low drone that stands for "this is currently
+// picked" until something above ends it.
+export function playFeelzSelectTone(emotion, activeEmotions, fn = 'tonic') {
+  stopFeelzHover();
+  const tone = emotionTone(emotion, activeEmotions, fn);
+  if (!tone) return;
+  ensureContext();
+  strikeVoiceAt(tone.frequency, tone.waveform, SELECT_GAIN, SELECT_ATTACK_SEC, SELECT_RING_SEC);
+  startFeelzDrone(tone);
 }
 
 // ─── NPC leitmotifs ───────────────────────────────────────────────────────────
@@ -493,12 +605,14 @@ export function getLeitmotifMood() {
   return encounterMood;
 }
 
-// Ends the encounter's audio: the character's melody and any chord still
-// ringing. Both belong to the same encounter, so they end together rather
-// than letting the chord trail into the next scene.
+// Ends the encounter's audio: the character's melody, any chord still
+// ringing, and any FEELZ hover/select tone. All belong to the same
+// encounter, so they end together rather than trailing into the next scene.
 export function stopLeitmotif() {
   leitmotifGeneration++;
   stopChord();
+  stopFeelzHover();
+  stopFeelzDrone();
   activeLeitmotif?.stop();
   activeLeitmotif = null;
   activeLeitmotifKey = null;

@@ -50,6 +50,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let typewriter = null;
   let itPopup = null;
   let oscilloscope = null;
+  let dartboard = null;
 
   function currentNode() {
     return npc.nodes[currentNodeId];
@@ -86,6 +87,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
     typewriter = null;
     oscilloscope?.destroy();
     oscilloscope = null;
+    // Only stops a lingering hover preview, not the select drone — see
+    // feelzDartboard.js's destroy(). This whole screen gets rebuilt from
+    // scratch below, same as typewriter/oscilloscope above.
+    dartboard?.destroy();
+    dartboard = null;
     stageEl.innerHTML = '';
 
     const screen = document.createElement('div');
@@ -214,10 +220,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
         card.setSelectedColor(activeEmotionColor);
       }
 
-      const dartboard = createFeelzDartboard({
+      dartboard = createFeelzDartboard({
         loadout: run.get().loadout,
         dropTarget: card,
         selected: activeEmotion,
+        harmonicFunction: harmonicFunction(),
         // Both tap and drag color the card now — a tap that changes nothing
         // visible reads as broken, not as restraint. (`source` is kept in
         // the callback signature in case a future pass wants to bring back
@@ -225,7 +232,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
         onSelect: (emotion, _source) => {
           activeEmotion = emotion;
           activeEmotionColor = emotionColor(emotion);
-          audio.strikeEmotionVoice(emotion, emotionsForClass(run.get().loadout), harmonicFunction());
           render();
         },
       });
@@ -249,6 +255,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
   function handleSwipe(swipeKey) {
+    // The choice just locked in and the wheel is about to disappear (SAY/
+    // REACT replaces it below) — the picked feeling's background hum has
+    // nothing left to represent once it's no longer "the current pick."
+    audio.stopFeelzDrone();
+
     const before = run.get();
     const { edge, patch } = resolveCard(before, currentNode(), swipeKey, activeEmotion);
     run.set(patch);
@@ -380,8 +391,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
     typewriter?.destroy();
     itPopup?.destroy();
     oscilloscope?.destroy();
-    // Also cuts any chord still ringing — a strike outlasts a scene exit,
-    // so without this the encounter's harmony bleeds into the next scene.
+    dartboard?.destroy();
+    // Also cuts any chord, FEELZ drone, or hover tone still sounding — a
+    // strike/drone outlasts a scene exit, so without this the encounter's
+    // audio bleeds into the next scene.
     audio.stopLeitmotif();
     stageEl.innerHTML = '';
   };

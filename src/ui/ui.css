@@ -142,6 +142,21 @@
   display: block;
 }
 
+/* Origin at (100,100) — the dartboard's own center, the shared point every
+   sector's arc is drawn from (see feelzDartboard.js's sectorPath) — so a
+   hovered wedge grows outward from the hub it's rooted to instead of
+   sliding off toward its own bounding-box center. Only active (selectable)
+   segments get the pointer listener that adds this class in the first
+   place; dimmed/locked segments never receive it. */
+.dx-dartboard g {
+  transform-origin: 100px 100px;
+  transition: transform 0.12s ease;
+}
+
+.dx-dartboard g.is-hovering {
+  transform: scale(1.06);
+}
+
 /* The drag ghost that follows the pointer when a dartboard segment is
    dragged onto the swipe card. The old 3-button FEELZ row this belonged to
    was replaced by ui/feelzDartboard.js; only the ghost survived. */

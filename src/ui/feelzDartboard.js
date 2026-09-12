@@ -12,12 +12,23 @@
 // both. `source` is still passed through for whatever distinction, if any,
 // turns out to be worth keeping.
 //
-// API: createFeelzDartboard({ loadout, dropTarget, onSelect, selected })
+// API: createFeelzDartboard({ loadout, dropTarget, onSelect, selected, harmonicFunction })
 //   loadout   — class key ('Guns' | 'Bible' | 'Crystals')
 //   dropTarget — { el, setPreviewColor } — the swipe card
 //   onSelect  — (emotion, source) callback
 //   selected  — currently active emotion (re-applied on re-render)
+//   harmonicFunction — the encounter's current cadence stage ('predominant'
+//                      /'dominant'/'tonic'), passed straight through to the
+//                      hover/select tones below so a wedge previews exactly
+//                      the pitch it would strike right now, not a guess.
+//
+// Wheel-interaction audio lives here, not in the caller: hovering a wedge
+// sounds a very faint preview of its current chord pitch, gone the instant
+// the pointer leaves; picking one rings that same pitch out loud and settles
+// into a quiet low drone marking "this is the current pick" until the choice
+// commits (see shell/audio.js's "FEELZ wheel hover/select tones").
 import { EMOTIONS, EMOTION_ORDER, CLASSES } from '../engine/loadout.js';
+import * as audio from '../shell/audio.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 const CX = 100, CY = 100, OUTER_R = 88, INNER_R = 34, SYMBOL_R = 61;
@@ -63,8 +74,13 @@ function isOverEl(el, x, y) {
   return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
 }
 
-export function createFeelzDartboard({ loadout, dropTarget, onSelect, selected }) {
+export function createFeelzDartboard({ loadout, dropTarget, onSelect, selected, harmonicFunction = 'tonic' }) {
   const activeEmotions = new Set(CLASSES[loadout]?.emotions ?? []);
+  // Same order engine/loadout.js's emotionsForClass() returns (Set preserves
+  // insertion order) — has to match dialogScene.js's own ordering exactly,
+  // since it's this order that decides which chord voice index each emotion
+  // maps to (shell/harmony.js's chordFor).
+  const activeEmotionsOrder = [...activeEmotions];
 
   const wrapper = document.createElement('div');
   wrapper.className = 'dx-dartboard';
@@ -139,6 +155,16 @@ export function createFeelzDartboard({ loadout, dropTarget, onSelect, selected }
 
     let dragging = false, startX, startY, ghost;
 
+    g.addEventListener('pointerenter', () => {
+      g.classList.add('is-hovering');
+      audio.startFeelzHover(emotion, activeEmotionsOrder, harmonicFunction);
+    });
+
+    g.addEventListener('pointerleave', () => {
+      g.classList.remove('is-hovering');
+      audio.stopFeelzHover();
+    });
+
     g.addEventListener('pointerdown', (e) => {
       dragging = true;
       startX = e.clientX;
@@ -171,6 +197,11 @@ export function createFeelzDartboard({ loadout, dropTarget, onSelect, selected }
       dragging = false;
       if (ghost) { ghost.remove(); ghost = null; }
       dropTarget?.setPreviewColor(null);
+      // Pointer capture during a drag can suppress the boundary events
+      // pointerleave relies on, depending on where the gesture actually
+      // ends — stop the preview here too rather than trust leave alone.
+      g.classList.remove('is-hovering');
+      audio.stopFeelzHover();
 
       const onCard = dropTarget && isOverEl(dropTarget.el, e.clientX, e.clientY);
       const wasTap = Math.hypot(e.clientX - startX, e.clientY - startY) < DRAG_THRESHOLD;
@@ -200,6 +231,7 @@ export function createFeelzDartboard({ loadout, dropTarget, onSelect, selected }
     path.setAttribute('stroke-width', '3');
     label.setAttribute('fill', em.color);
 
+    audio.playFeelzSelectTone(emotion, activeEmotionsOrder, harmonicFunction);
     onSelect?.(emotion, source);
   }
 
@@ -209,5 +241,19 @@ export function createFeelzDartboard({ loadout, dropTarget, onSelect, selected }
     });
   }
 
-  return { el: wrapper, reset };
+  return {
+    el: wrapper,
+    reset,
+    // Safety net for an orphaned hover tone — the wheel getting torn down
+    // (a re-render, the scene unmounting) mid-hover, before pointerleave
+    // ever fires. Deliberately does NOT stop the select drone: a re-render
+    // triggered by this same selectEmotion() call (dialogScene.js's
+    // onSelect handler re-renders synchronously) would otherwise kill the
+    // drone the instant it started. The drone's own lifetime is owned by
+    // shell/audio.js (replaced on the next pick, stopped when the swipe
+    // commits or the scene ends) — see docs/STAT_MATH.md.
+    destroy() {
+      audio.stopFeelzHover();
+    },
+  };
 }

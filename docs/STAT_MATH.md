@@ -302,6 +302,46 @@ that the encounter's harmony trails several seconds into whatever scene
 follows it. Live voices are tracked in `chordVoices` and drop themselves
 via `osc.onended`.
 
+**FEELZ wheel hover/select tones (built — `ui/feelzDartboard.js` +
+`shell/audio.js`).** Three intensities of the same signal `emotionTone()`
+already computes for the chord — not a separate sound design for the
+wheel itself:
+
+- **Hover** — a very faint tone (gain 0.025) at whatever pitch that
+  emotion currently occupies in the chord, fading in while the pointer's
+  over the wedge and cut the instant it leaves (`startFeelzHover` /
+  `stopFeelzHover`). The wedge also scales up 6% (`transform-origin:
+  100px 100px` — the dartboard's own shared center every sector's arc
+  is drawn from, so it grows outward from the hub rather than sliding
+  off toward its own bounding-box center).
+- **Select** — the same pitch rings out loud once (gain 0.35, a short
+  0.5s ring reusing `strikeVoiceAt` with shorter timing than the chord's
+  own 3.5s), then drops into a quiet low drone (gain 0.04, two octaves
+  down — "low frequency," not just "quiet") marking "this is the current
+  pick" until something ends it: picking a *different* emotion replaces
+  it automatically, the swipe committing or the scene ending stops it
+  outright (`handleSwipe` and `stopLeitmotif` both call
+  `stopFeelzDrone()`).
+
+Deliberately the one exception to "struck, not sustained" above — asked
+for directly, and narrow enough not to reopen the wallpaper problem the
+rest of this system was built to avoid: only one drone can ever sound at
+once (a new pick always replaces the last), and it never outlives the
+choice it represents.
+
+Verified via a single dispatched `pointerdown`/`pointerup` pair (isolating
+the code from an unrelated harness artifact — the `computer` tool's own
+click synthesis intermittently re-fired an extra hover event afterward,
+confirmed by testing the exact same interaction as raw `PointerEvent`s
+instead, which produced exactly one `rampTo(0.35)` + one `rampTo(0.04)`,
+never doubled): hovering Fear before selecting it read 659.26Hz at gain
+0.025 — the wedge's real current chord voice, matching a hand-computed
+prediction from the encounter's actual root and resolution at that
+moment. Selecting it produced 0.35 then 0.04 at the same 659.26Hz, then
+164.81Hz (exactly ÷4) for the drone. A live oscillator-tracking check
+confirmed the drone was genuinely sounding before a swipe and gone
+immediately after, tied to the real swipe commit rather than a timer.
+
 **Tonics come from the melodies that already exist.**
 `tonicFromPhrase()` takes the pitch class a leitmotif spends the most
 total time on. Deborah's MIDI phrase computes to **A** (3435ms against
