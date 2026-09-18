@@ -17,6 +17,15 @@
 //                              (IT is class-dependent everywhere else it
 //                              fires — docs/IT_DESIGN.md), same convention
 //                              as ui/walkRoom.js's per-class captions.
+//   voice?,                 ← 'it' (default) or 'so' — which of the two
+//                              counterpart voices this beat is. Lets a
+//                              manuscript script a one-off exchange between
+//                              them (content/it_intro.json's opening) even
+//                              though SO's *systematic* trigger (answering
+//                              every bloom/dominant-emotion line) is owned
+//                              by dialogScene.js, not this generic beat
+//                              sequencer — see IT_DESIGN.md's "SO — the
+//                              doubt rebuttal".
 // }
 import { createTypewriter } from '../ui/typewriterText.js';
 import { preloadTypewriterTick, playTypewriterTick, startAmbient, stopAmbient, startLeitmotif } from '../shell/audio.js';
@@ -152,6 +161,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       text: beat.text,
       loadout: run.get().loadout,
       flashClose: !isLastBeat,
+      voice: beat.voice ?? 'it',
       onClose: advance,
     });
   }

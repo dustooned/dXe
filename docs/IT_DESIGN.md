@@ -67,15 +67,29 @@ anything (*"so?"*, *"or so"*) — the pairing itself is meant to read as
 reads a moment, one of the two voices is right there undercutting it.
 
 **Where it fires — narrower than "every IT appearance," deliberately.**
-SO answers only `dialogScene.js`'s two pattern-reading triggers: bloom
-events and the dominant-emotion read (`engine/soRebuttals.js`'s
-`SO_BLOOM_TEXT` and `soEmotionLeanText()`, chained onto IT's own popup via
-`showItThenSo()`). It does **not** answer the intro,
-the pre-confrontation line, the Reckoning, or the ending — the ending's
-IT line is documented above as *"the actual last word of the chapter,"*
-deliberately unanswered, and extending SO there would directly undo that.
-The two pattern-reading triggers were the ones actually causing the
-repetition complaint; the others are one-off narrative beats, not a
+SO's *systematic* trigger only answers `dialogScene.js`'s two
+pattern-reading moments: bloom events and the dominant-emotion read
+(`engine/soRebuttals.js`'s `SO_BLOOM_TEXT` and `soEmotionLeanText()`,
+chained onto IT's own popup via `showItThenSo()`). Those two were the
+ones actually causing the repetition complaint that motivated SO in the
+first place — a running read that keeps re-firing, not a one-off line.
+
+The one exception is hand-authored, not systemic: the chapter's opening
+(`content/it_intro.json`) now ends with a scripted three-beat exchange —
+IT: *"Either way, you're stuck with me."* / SO: *"Stuck? Big talk, for
+something that just got here same as I did."* / IT: *"Fuck off. This
+one's mine."* This is the one place a manuscript beat can set
+`voice: 'so'` directly (`cutsceneScene.js`'s generic `it` beat sequencer,
+not dialogScene.js's own trigger plumbing) — it exists to *teach* the
+player these two voices argue before either one shows up quietly later,
+and to establish that IT is territorial about the player's head, not just
+detached and clinical. It is not a rule that the intro always gets a SO
+beat; it's one specific authored moment, same as any other cutscene beat.
+
+SO otherwise stays out of the pre-confrontation line, the Reckoning, and
+the ending — the ending's IT line is documented above as *"the actual
+last word of the chapter,"* deliberately unanswered, and extending SO
+there would directly undo that. Those remain one-off narrative beats, not a
 running read SO has anything to argue with.
 
 **How it fires.** `showItThenSo(itText, soText, onClose)` shows IT first
