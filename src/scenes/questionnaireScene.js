@@ -39,42 +39,93 @@ const CLASS_ANCHOR = { Guns: 'Anger', Bible: 'Trust', Crystals: 'Joy' };
 // Diagnosis text: each segment is either plain text or a colored word.
 // Colored words use one of the class's three emotion colors — the player
 // won't know why those words glow, but they'll remember them.
+//
+// Two variants per class, keyed by how the three questions actually landed
+// (tallyClass below) rather than picked at random — the same "read the
+// choices back, don't just roll a die" rule the per-NPC reaction codas
+// (engine/reactions.js) and IT/SO follow elsewhere. Only two variants
+// because only two outcomes are reachable: each class is offered on exactly
+// 2 of the 3 questions (see QUESTIONS above), so "all 3 agree" can't happen
+// — a run either lands a clean 2-of-3 (majority) or all three answers land
+// on three different classes, a genuine tie broken by first instinct (split).
+//   majority   2 of 3 — the plainer diagnosis
+//   split      a real 3-way tie — the read acknowledges the player wasn't
+//              sure either, instead of pretending the read was clean
 const DIAGNOSES = {
-  Guns: [
-    { text: 'You ' },
-    { text: 'already know', emotion: 'Anger' },
-    { text: ' what you’re going to do. You’re just ' },
-    { text: 'waiting', emotion: 'Fear' },
-    { text: ' to see if I’ll ' },
-    { text: 'tell you not to', emotion: 'Anticipation' },
-    { text: '.' },
-  ],
-  Bible: [
-    { text: 'You ' },
-    { text: 'hold', emotion: 'Trust' },
-    { text: ' to things most people let go. That’s either ' },
-    { text: 'faith', emotion: 'Anticipation' },
-    { text: ' or a ' },
-    { text: 'fist', emotion: 'Disgust' },
-    { text: ' — I’m not sure yet.' },
-  ],
-  Crystals: [
-    { text: 'You ' },
-    { text: 'carry', emotion: 'Sadness' },
-    { text: ' a lot for someone who doesn’t ' },
-    { text: 'say so', emotion: 'Joy' },
-    { text: '. Most of it probably ' },
-    { text: 'isn’t even yours', emotion: 'Surprise' },
-    { text: '.' },
-  ],
+  Guns: {
+    majority: [
+      { text: 'You ' },
+      { text: 'already know', emotion: 'Anger' },
+      { text: ' what you’re going to do. You’re just ' },
+      { text: 'waiting', emotion: 'Fear' },
+      { text: ' to see if I’ll ' },
+      { text: 'tell you not to', emotion: 'Anticipation' },
+      { text: '.' },
+    ],
+    split: [
+      { text: 'Some of you ' },
+      { text: 'already knows', emotion: 'Anger' },
+      { text: ' what you’re going to do. The rest of you is still ' },
+      { text: 'waiting', emotion: 'Fear' },
+      { text: ' to be told not to.' },
+    ],
+  },
+  Bible: {
+    majority: [
+      { text: 'You ' },
+      { text: 'hold', emotion: 'Trust' },
+      { text: ' to things most people let go. That’s either ' },
+      { text: 'faith', emotion: 'Anticipation' },
+      { text: ' or a ' },
+      { text: 'fist', emotion: 'Disgust' },
+      { text: ' — I’m not sure yet.' },
+    ],
+    split: [
+      { text: 'You ' },
+      { text: 'hold on', emotion: 'Trust' },
+      { text: ' when it’s ' },
+      { text: 'faith', emotion: 'Anticipation' },
+      { text: ', and let go when it’s a ' },
+      { text: 'fist', emotion: 'Disgust' },
+      { text: '. Convenient, that you always know which is which.' },
+    ],
+  },
+  Crystals: {
+    majority: [
+      { text: 'You ' },
+      { text: 'carry', emotion: 'Sadness' },
+      { text: ' a lot for someone who doesn’t ' },
+      { text: 'say so', emotion: 'Joy' },
+      { text: '. Most of it probably ' },
+      { text: 'isn’t even yours', emotion: 'Surprise' },
+      { text: '.' },
+    ],
+    split: [
+      { text: 'You ' },
+      { text: 'carry', emotion: 'Sadness' },
+      { text: ' a lot for someone who doesn’t ' },
+      { text: 'say so', emotion: 'Joy' },
+      { text: ' — though for a second there, you almost ' },
+      { text: 'put some of it down', emotion: 'Surprise' },
+      { text: '.' },
+    ],
+  },
 };
 
+// Returns both the winning class and how the vote landed, so the diagnosis
+// can be picked by whether the player's three answers actually agreed
+// instead of always showing the same line for a given class.
 function tallyClass(answers) {
   const scores = { Guns: 0, Bible: 0, Crystals: 0 };
   answers.forEach((cls) => { scores[cls]++; });
   const max = Math.max(...Object.values(scores));
   const winners = Object.keys(scores).filter((k) => scores[k] === max);
-  return winners.length === 1 ? winners[0] : answers[0];
+  if (winners.length === 1) {
+    return { cls: winners[0], variant: 'majority' };
+  }
+  // A genuine 3-way tie — resolved by "first instinct wins," so the
+  // diagnosis reads that same tie back to the player.
+  return { cls: answers[0], variant: 'split' };
 }
 
 export function mount(stageEl, _scene, { run, onComplete }) {
@@ -115,9 +166,9 @@ export function mount(stageEl, _scene, { run, onComplete }) {
         if (questionIndex < QUESTIONS.length) {
           renderQuestion();
         } else {
-          const cls = tallyClass(answers);
+          const { cls, variant } = tallyClass(answers);
           run.set({ loadout: cls });
-          renderDiagnosis(cls);
+          renderDiagnosis(cls, variant);
         }
       },
     });
@@ -126,7 +177,7 @@ export function mount(stageEl, _scene, { run, onComplete }) {
     stageEl.appendChild(screen);
   }
 
-  function renderDiagnosis(cls) {
+  function renderDiagnosis(cls, variant) {
     activeCard?.destroy();
     activeCard = null;
     stageEl.innerHTML = '';
@@ -148,7 +199,7 @@ export function mount(stageEl, _scene, { run, onComplete }) {
 
     const diagnosisEl = document.createElement('p');
     diagnosisEl.className = 'dx-text dx-questionnaire-diagnosis-text';
-    DIAGNOSES[cls].forEach((seg) => {
+    DIAGNOSES[cls][variant].forEach((seg) => {
       if (seg.emotion) {
         const span = document.createElement('span');
         span.textContent = seg.text;

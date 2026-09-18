@@ -4,6 +4,7 @@ import './scenes/scenes.css';
 import { onRouteChange, navigate, getCurrentRoute } from './shell/router.js';
 import { loadSave } from './shell/save.js';
 import { initFx, fadeToBlack } from './shell/fx.js';
+import { initHud, setVisible as setHudVisible } from './shell/hud.js';
 import { startTitleMusic, stopTitleMusic, playStartJingle, playLogoSting, unlockAudio } from './shell/audio.js';
 
 // Chapter registry — adding a new chapter later is one entry here.
@@ -20,12 +21,22 @@ canvas.className = 'dx-canvas';
 app.appendChild(canvas);
 initFx(canvas);
 
+// Every screen renders into this inner layer, which gets wiped wholesale on
+// every teardown() and every scene's own re-render (cutsceneScene.render()
+// etc. call stageEl.innerHTML = ''). The HUD (settings gear, fast-forward)
+// is mounted straight onto dx-canvas instead, one level up, specifically so
+// it survives all of that instead of needing to be rebuilt by every screen.
+const stage = document.createElement('div');
+stage.className = 'dx-stage';
+canvas.appendChild(stage);
+initHud(canvas);
+
 let currentUnmount = null;
 
 function teardown() {
   currentUnmount?.();
   currentUnmount = null;
-  canvas.innerHTML = '';
+  stage.innerHTML = '';
 }
 
 // ─── Preloader ────────────────────────────────────────────────────────────────
@@ -77,6 +88,7 @@ let bootRoute = null;
 
 function afterLogo() {
   booted = true;
+  setHudVisible(true);
   const route = bootRoute;
   bootRoute = null;
 
@@ -141,7 +153,7 @@ function renderPreloader() {
 
   screen.appendChild(loadingPhase);
   screen.appendChild(logoPhase);
-  canvas.appendChild(screen);
+  stage.appendChild(screen);
 
   let audioUnlocked = false;
 
@@ -208,7 +220,7 @@ function renderTitle() {
 }
 
 function renderTitleMenu() {
-  canvas.innerHTML = '';
+  stage.innerHTML = '';
 
   const save = loadSave();
   const hasPlayed = save.chaptersCompleted.length > 0;
@@ -235,7 +247,7 @@ function renderTitleMenu() {
   });
   menu.appendChild(enterBtn);
   screen.appendChild(menu);
-  canvas.appendChild(screen);
+  stage.appendChild(screen);
 
   currentUnmount = stopTitleMusic;
 }
@@ -322,7 +334,7 @@ function renderMenu() {
   buildInfo.textContent = `BETA · v${__APP_VERSION__} · build ${__BUILD_NUMBER__} · ${__COMMIT_HASH__}`;
   screen.appendChild(buildInfo);
 
-  canvas.appendChild(screen);
+  stage.appendChild(screen);
 }
 
 // ─── About ────────────────────────────────────────────────────────────────────
@@ -343,7 +355,7 @@ function renderAbout() {
   backBtn.textContent = 'BACK';
   backBtn.addEventListener('click', () => navigate('menu'));
   screen.appendChild(backBtn);
-  canvas.appendChild(screen);
+  stage.appendChild(screen);
 }
 
 // ─── Chapter ──────────────────────────────────────────────────────────────────
@@ -353,8 +365,12 @@ async function renderChapter(chapterId, startAt) {
   const chapter = CHAPTERS[chapterId];
   if (!chapter) { navigate('menu'); return; }
   const mod = await chapter.load();
-  currentUnmount = mod.mount(canvas, {
+  currentUnmount = mod.mount(stage, {
     exit: () => navigate('menu'),
+    // Settings panel's "Restart Chapter" (shell/hud.js) — re-enters the same
+    // chapter fresh. Re-navigating via the hash wouldn't fire hashchange
+    // since it's already there, so this calls back in directly instead.
+    restart: () => renderChapter(chapterId, null),
     startSceneId: startAt || null,
   });
 }

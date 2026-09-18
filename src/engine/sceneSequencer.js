@@ -8,7 +8,20 @@
 //   - onComplete({ jumpTo: 'someId' }) -> jump to the scene with that id
 //     (used for early exits, e.g. Truth Debt maxing out mid-NPC and forcing
 //     the Reckoning regardless of which dialog scene is active)
-export function createSceneSequencer({ scenes, handlers, context, transitionFn, startSceneId }) {
+//
+// Fast-forward (shell/hud.js's icon) is deliberately the same exit a scene
+// would use on its own — skip() just calls handleComplete() early, the exact
+// function the scene's own onComplete would have called. Only scene types
+// with no real choice in them are skippable: a cutscene has none (any
+// confrontation's opener choice is decorative in the sense that not making
+// it just means the encounter opens on its default node), and a mini-game
+// walk-room's own contract (docs/SCENE_TYPES.md) is already "reaching the
+// end means nothing but that" — no stat effect exists to skip past. Dialog
+// (the actual FEELZ/swipe encounter), questionnaire, reckoning and ending
+// are excluded on purpose: those are the game.
+const SKIPPABLE_TYPES = new Set(['cutscene', 'minigame']);
+
+export function createSceneSequencer({ scenes, handlers, context, transitionFn, startSceneId, onSceneChange }) {
   let index = 0;
   if (startSceneId) {
     const i = scenes.findIndex((s) => s.id === startSceneId);
@@ -27,6 +40,7 @@ export function createSceneSequencer({ scenes, handlers, context, transitionFn, 
 
     const scene = scenes[index];
     if (!scene) return;
+    onSceneChange?.(scene);
 
     const handler = handlers[scene.type];
     if (!handler) {
@@ -53,6 +67,10 @@ export function createSceneSequencer({ scenes, handlers, context, transitionFn, 
     }
   }
 
+  function isSkippable() {
+    return SKIPPABLE_TYPES.has(scenes[index]?.type);
+  }
+
   return {
     mount(el) {
       stageEl = el;
@@ -61,6 +79,10 @@ export function createSceneSequencer({ scenes, handlers, context, transitionFn, 
     unmount() {
       unmountCurrent?.();
       unmountCurrent = null;
+    },
+    isSkippable,
+    skip() {
+      if (isSkippable()) handleComplete();
     },
   };
 }

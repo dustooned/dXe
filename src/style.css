@@ -72,6 +72,18 @@ body {
   flex-direction: column;
 }
 
+/* Everything a screen/scene renders lives in here — main.js wipes this
+   wholesale on every teardown, and scene handlers wipe it on their own
+   re-renders. dx-canvas itself is never cleared that way, which is what
+   lets the HUD (settings gear, fast-forward — shell/hud.js) sit above it
+   and survive every one of those wipes untouched. */
+.dx-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
 .dx-screen {
   flex: 1;
   display: flex;

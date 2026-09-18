@@ -1,6 +1,7 @@
 import { createStore } from '../../shell/state.js';
 import { createSceneSequencer } from '../../engine/sceneSequencer.js';
 import { recordEnding } from '../../shell/save.js';
+import * as hud from '../../shell/hud.js';
 import * as questionnaireScene from '../../scenes/questionnaireScene.js';
 import * as cutsceneScene from '../../scenes/cutsceneScene.js';
 import * as dialogScene from '../../scenes/dialogScene.js';
@@ -110,7 +111,7 @@ const initialRunState = {
   emotionCounts: {},
 };
 
-export function mount(stageEl, { exit, startSceneId }) {
+export function mount(stageEl, { exit, restart, startSceneId }) {
   const run = createStore(initialRunState);
   const sequencer = createSceneSequencer({
     scenes: SCENES,
@@ -118,11 +119,18 @@ export function mount(stageEl, { exit, startSceneId }) {
     context: { run, exit, recordEnding, chapterId: id },
     transitionFn: playStaticTransition,
     startSceneId,
+    // Keeps the HUD's fast-forward icon (shell/hud.js) in sync with whether
+    // the *current* scene has anything safe to skip — see sceneSequencer.js's
+    // isSkippable() for which scene types that is.
+    onSceneChange: () => hud.setSkip(sequencer.isSkippable() ? sequencer.skip : null),
   });
 
+  hud.setChapterActive({ onRestart: restart });
   sequencer.mount(stageEl);
 
   return function unmount() {
+    hud.setChapterActive(null);
+    hud.setSkip(null);
     sequencer.unmount();
   };
 }

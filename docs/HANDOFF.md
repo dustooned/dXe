@@ -177,6 +177,38 @@ full vision — see "What was deliberately cut" below.
   with a percentage height. Use percentages or viewport-relative units for
   scene art.
 
+- **Persistent HUD layer (`shell/hud.js`), added because scenes wipe their
+  own container on every render.** `main.js`'s `.dx-canvas` used to be the
+  same element every scene rendered into and wiped via `innerHTML = ''` —
+  fine for full-screen content, but nowhere for chrome that should survive
+  a scene's own re-renders. `.dx-canvas` now holds a `.dx-stage` child (what
+  scenes actually render into and wipe) plus the HUD, mounted once as a
+  sibling. Two buttons: a settings gear (volume/mute, Restart Chapter,
+  Chapter Select — the latter two confirm first, since there's no
+  mid-chapter save; `save.js` only ever records *completed* chapters) and a
+  fast-forward icon. Fast-forward is deliberately the same exit a scene
+  would use on its own — `sceneSequencer.js`'s `skip()` just calls the same
+  `handleComplete()` a normal finish would, early. Only `cutscene` and
+  `minigame` scenes are skippable (`SKIPPABLE_TYPES`) — `dialog`,
+  `questionnaire`, `reckoning`, and `ending` have a real choice or a real
+  ending in them, so skip is hidden rather than skipping content that
+  matters. One known side effect: fast-forwarding a confrontation cutscene
+  bypasses that cutscene's opener choice, so the dialog scene that follows
+  starts on its default node instead of the one the choice would have
+  picked — acceptable given how rarely that'll get used, but worth knowing.
+- **Questionnaire diagnosis now has two variants per class, not one.**
+  `scenes/questionnaireScene.js`'s `tallyClass()` used to only return the
+  winning class; the exact same diagnosis text played every time a player
+  landed on that class, regardless of how they actually answered. Each
+  class is offered as an option on only 2 of the 3 questions (see
+  `QUESTIONS`), so a true 3-of-3 unanimous result is mathematically
+  unreachable — enumerated all 8 answer combinations to confirm before
+  writing variants, so nothing shipped as dead content. The two real
+  outcomes are a clean 2-of-3 (`majority` — the original text) and a
+  genuine three-way tie resolved by first instinct (`split` — a new line
+  that reads the tie back to the player instead of pretending it was
+  clean). `DIAGNOSES[cls]` is keyed by variant accordingly.
+
 ## Stats — what's wired up and what isn't
 
 Four meters (Integrity, Trust, Stability, Lucidity, 0–10) plus Truth Debt

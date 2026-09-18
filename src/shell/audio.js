@@ -29,6 +29,10 @@ export { noteToFrequency };
 let ctx = null;
 let masterGain = null;
 let analyser = null;
+// The user's volume choice, independent of whether an AudioContext exists
+// yet (settings can be opened, and the game force-unmutes on first real
+// gesture per browser autoplay policy, before anything has ever played).
+let masterVolume = 0.5;
 let activeLeitmotif = null;
 let activeLeitmotifKey = null;
 
@@ -163,7 +167,7 @@ function ensureContext() {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     ctx = new AudioCtx();
     masterGain = ctx.createGain();
-    masterGain.gain.value = 0.5;
+    masterGain.gain.value = masterVolume;
     masterGain.connect(ctx.destination);
     // A parallel tap, not part of the output chain — masterGain still goes
     // straight to ctx.destination above regardless of whether anything
@@ -185,6 +189,14 @@ function ensureContext() {
 export function getAnalyser() {
   ensureContext();
   return analyser;
+}
+
+// Settings menu's volume slider/mute. Safe to call before any AudioContext
+// exists — it just records the level for ensureContext() to pick up once
+// something actually creates one.
+export function setMasterVolume(volume) {
+  masterVolume = Math.min(1, Math.max(0, volume));
+  if (masterGain) masterGain.gain.setTargetAtTime(masterVolume, ctx.currentTime, 0.01);
 }
 
 async function loadAudio(url) {
