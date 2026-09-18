@@ -15,23 +15,71 @@ const THERAPIST_AMBIENT = '/assets/lake-ulysses/audio/heavens_waiting_room.mp3';
 // left = truth swipe (drag left), right = lie swipe (drag right).
 // Each answer scores one point toward a class; after 3 questions the
 // highest total wins. Ties go to the first answer (first instinct).
-const QUESTIONS = [
-  {
-    prompt: 'Something breaks open right in front of you.',
-    left:  { label: '← feel it',   scores: 'Crystals' },
-    right: { label: 'handle it →', scores: 'Guns'     },
-  },
-  {
-    prompt: 'What holds you together—',
-    left:  { label: '← love',    scores: 'Crystals' },
-    right: { label: 'belief →',  scores: 'Bible'    },
-  },
-  {
-    prompt: 'Your worst call—',
-    left:  { label: '← carrying it',  scores: 'Bible' },
-    right: { label: 'own it →',       scores: 'Guns'  },
-  },
+//
+// Three slots, one per class pair (Crystals/Guns, Crystals/Bible,
+// Bible/Guns) — tallyClass's math (see below) depends on exactly this
+// shape: each class offered on exactly 2 of 3 questions, so every run
+// lands on a clean majority or a genuine 3-way tie, nothing else. A run
+// draws one random question per slot rather than always the same three, so
+// replays don't open with an identical questionnaire — the class-scoring
+// math doesn't care which question fills a slot, only which pair it tests.
+const QUESTION_SLOTS = [
+  [ // Crystals vs Guns
+    {
+      prompt: 'Something breaks open right in front of you.',
+      left:  { label: '← feel it',   scores: 'Crystals' },
+      right: { label: 'handle it →', scores: 'Guns'     },
+    },
+    {
+      prompt: 'Someone lies straight to your face.',
+      left:  { label: '← let it go',    scores: 'Crystals' },
+      right: { label: 'call it out →',  scores: 'Guns'     },
+    },
+    {
+      prompt: 'You’re handed the worst news with no warning at all.',
+      left:  { label: '← sit with it',   scores: 'Crystals' },
+      right: { label: 'do something →',  scores: 'Guns'     },
+    },
+  ],
+  [ // Crystals vs Bible
+    {
+      prompt: 'What holds you together—',
+      left:  { label: '← love',    scores: 'Crystals' },
+      right: { label: 'belief →',  scores: 'Bible'    },
+    },
+    {
+      prompt: 'When the floor actually drops out—',
+      left:  { label: '← who you love',     scores: 'Crystals' },
+      right: { label: 'what you believe →', scores: 'Bible'    },
+    },
+    {
+      prompt: 'The thing you can’t explain, you call it—',
+      left:  { label: '← a feeling', scores: 'Crystals' },
+      right: { label: 'a sign →',    scores: 'Bible'    },
+    },
+  ],
+  [ // Bible vs Guns
+    {
+      prompt: 'Your worst call—',
+      left:  { label: '← carrying it',  scores: 'Bible' },
+      right: { label: 'own it →',       scores: 'Guns'  },
+    },
+    {
+      prompt: 'When you’re wrong about something—',
+      left:  { label: '← you carry it quietly', scores: 'Bible' },
+      right: { label: 'you say it out loud →',  scores: 'Guns'  },
+    },
+    {
+      prompt: 'The line you won’t cross—',
+      left:  { label: '← it’s wrong',        scores: 'Bible' },
+      right: { label: 'it costs too much →', scores: 'Guns'  },
+    },
+  ],
 ];
+
+function pickQuestions() {
+  return QUESTION_SLOTS.map((slot) => slot[Math.floor(Math.random() * slot.length)]);
+}
 
 // Dominant emotion per class drives the background pattern on the diagnosis.
 const CLASS_ANCHOR = { Guns: 'Anger', Bible: 'Trust', Crystals: 'Joy' };
@@ -45,7 +93,7 @@ const CLASS_ANCHOR = { Guns: 'Anger', Bible: 'Trust', Crystals: 'Joy' };
 // choices back, don't just roll a die" rule the per-NPC reaction codas
 // (engine/reactions.js) and IT/SO follow elsewhere. Only two variants
 // because only two outcomes are reachable: each class is offered on exactly
-// 2 of the 3 questions (see QUESTIONS above), so "all 3 agree" can't happen
+// 2 of the 3 questions (see QUESTION_SLOTS above), so "all 3 agree" can't happen
 // — a run either lands a clean 2-of-3 (majority) or all three answers land
 // on three different classes, a genuine tie broken by first instinct (split).
 //   majority   2 of 3 — the plainer diagnosis
@@ -129,6 +177,7 @@ function tallyClass(answers) {
 }
 
 export function mount(stageEl, _scene, { run, onComplete }) {
+  const questions = pickQuestions();
   const answers = [];
   let questionIndex = 0;
   let activeCard = null;
@@ -137,7 +186,7 @@ export function mount(stageEl, _scene, { run, onComplete }) {
     activeCard?.destroy();
     stageEl.innerHTML = '';
 
-    const q = QUESTIONS[questionIndex];
+    const q = questions[questionIndex];
     const screen = document.createElement('div');
     screen.className = 'dx-screen dx-questionnaire-screen';
 
@@ -151,7 +200,7 @@ export function mount(stageEl, _scene, { run, onComplete }) {
 
     const counter = document.createElement('p');
     counter.className = 'dx-text dx-questionnaire-counter';
-    counter.textContent = `${questionIndex + 1} / ${QUESTIONS.length}`;
+    counter.textContent = `${questionIndex + 1} / ${questions.length}`;
     header.appendChild(counter);
 
     screen.appendChild(header);
@@ -163,7 +212,7 @@ export function mount(stageEl, _scene, { run, onComplete }) {
         const answer = direction === 'truth' ? q.left.scores : q.right.scores;
         answers.push(answer);
         questionIndex++;
-        if (questionIndex < QUESTIONS.length) {
+        if (questionIndex < questions.length) {
           renderQuestion();
         } else {
           const { cls, variant } = tallyClass(answers);

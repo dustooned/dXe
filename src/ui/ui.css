@@ -78,6 +78,45 @@
   font-size: 10px;
 }
 
+.dx-swipe-card-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* A static legend row above the card — not inside it, so it never shares
+   space with the centered prompt text and doesn't move or rotate with the
+   card during a drag. Each side gets a real half-width column to wrap
+   into, which is what corner-overlaid hints didn't have room for once
+   the questionnaire's question pool made labels run longer. */
+.dx-swipe-card__hints {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.dx-swipe-card__hint {
+  flex: 1;
+  font-size: 10px;
+  line-height: 1.3;
+  opacity: 0.3;
+  /* No transition — the active side should snap to full opacity the
+     instant a drag crosses the threshold, not fade in. */
+}
+
+.dx-swipe-card__hint--truth {
+  text-align: left;
+}
+
+.dx-swipe-card__hint--lie {
+  text-align: right;
+}
+
+.dx-swipe-card-wrap.is-truth .dx-swipe-card__hint--truth,
+.dx-swipe-card-wrap.is-lie .dx-swipe-card__hint--lie {
+  opacity: 1;
+}
+
 .dx-swipe-card {
   position: relative;
   border: 2px solid var(--color-white);
@@ -106,27 +145,6 @@
   line-height: 1.8;
   text-align: center;
   margin: 0;
-}
-
-.dx-swipe-card__hint {
-  position: absolute;
-  top: 6px;
-  font-size: 10px;
-  opacity: 0.3;
-  transition: opacity 0.15s ease;
-}
-
-.dx-swipe-card__hint--truth {
-  left: 6px;
-}
-
-.dx-swipe-card__hint--lie {
-  right: 6px;
-}
-
-.dx-swipe-card.is-truth .dx-swipe-card__hint--truth,
-.dx-swipe-card.is-lie .dx-swipe-card__hint--lie {
-  opacity: 1;
 }
 
 .dx-dartboard {

@@ -1,23 +1,40 @@
 import { attachSwipe } from '../shell/input.js';
 
+// Hints live in their own row above the card, not overlaid inside it.
+// They used to sit in the card's corners, but the questionnaire's bigger
+// question pool (scenes/questionnaireScene.js's QUESTION_SLOTS) means hint
+// labels run longer than the original fixed 3 — cramming them into corners
+// crowded the centered prompt text and orphaned arrow glyphs onto their own
+// wrapped line. A dedicated full-width row gives either side real space to
+// wrap into, and — since it's outside the card — doesn't move or rotate
+// with it during a drag, reading as a static direction legend rather than
+// part of the thing being dragged.
 export function createSwipeCard({ promptText, onSwipe, hints }) {
   const leftLabel  = hints?.left  ?? '← TRUTH';
   const rightLabel = hints?.right ?? 'LIE →';
 
   const el = document.createElement('div');
-  el.className = 'dx-swipe-card';
+  el.className = 'dx-swipe-card-wrap';
   el.innerHTML = `
-    <span class="dx-swipe-card__hint dx-swipe-card__hint--truth"></span>
-    <p class="dx-swipe-card__text"></p>
-    <span class="dx-swipe-card__hint dx-swipe-card__hint--lie"></span>
+    <div class="dx-swipe-card__hints">
+      <span class="dx-swipe-card__hint dx-swipe-card__hint--truth"></span>
+      <span class="dx-swipe-card__hint dx-swipe-card__hint--lie"></span>
+    </div>
+    <div class="dx-swipe-card">
+      <p class="dx-swipe-card__text"></p>
+    </div>
   `;
   el.querySelector('.dx-swipe-card__hint--truth').textContent = leftLabel;
   el.querySelector('.dx-swipe-card__hint--lie').textContent   = rightLabel;
   el.querySelector('.dx-swipe-card__text').textContent = promptText;
 
-  const detach = attachSwipe(el, {
+  // The card itself — what actually drags/rotates and carries the border.
+  // `el` (the wrap) is what callers insert into the DOM and read state off.
+  const card = el.querySelector('.dx-swipe-card');
+
+  const detach = attachSwipe(card, {
     onDrag(dx) {
-      el.style.transform = `translateX(${dx}px) rotate(${dx / 20}deg)`;
+      card.style.transform = `translateX(${dx}px) rotate(${dx / 20}deg)`;
       el.classList.toggle('is-truth', dx <= -40);
       el.classList.toggle('is-lie', dx >= 40);
     },
@@ -25,7 +42,7 @@ export function createSwipeCard({ promptText, onSwipe, hints }) {
       if (direction === 'left') onSwipe?.('truth');
       else if (direction === 'right') onSwipe?.('lie');
       else {
-        el.style.transform = '';
+        card.style.transform = '';
         el.classList.remove('is-truth', 'is-lie');
       }
     },
@@ -35,11 +52,11 @@ export function createSwipeCard({ promptText, onSwipe, hints }) {
   // this card. Cleared on drag end regardless of outcome.
   function setPreviewColor(color) {
     if (color) {
-      el.style.setProperty('--preview-color', color);
-      el.classList.add('has-preview');
+      card.style.setProperty('--preview-color', color);
+      card.classList.add('has-preview');
     } else {
-      el.classList.remove('has-preview');
-      el.style.removeProperty('--preview-color');
+      card.classList.remove('has-preview');
+      card.style.removeProperty('--preview-color');
     }
   }
 
@@ -47,11 +64,11 @@ export function createSwipeCard({ promptText, onSwipe, hints }) {
   // the preview — clearing the preview doesn't clear this.
   function setSelectedColor(color) {
     if (color) {
-      el.style.setProperty('--selected-color', color);
-      el.classList.add('has-selected');
+      card.style.setProperty('--selected-color', color);
+      card.classList.add('has-selected');
     } else {
-      el.classList.remove('has-selected');
-      el.style.removeProperty('--selected-color');
+      card.classList.remove('has-selected');
+      card.style.removeProperty('--selected-color');
     }
   }
 
@@ -62,7 +79,7 @@ export function createSwipeCard({ promptText, onSwipe, hints }) {
   // case, so without this the card would stay flung to whichever side the
   // player dragged, per the truth/lie branches above never resetting it).
   function reset() {
-    el.style.transform = '';
+    card.style.transform = '';
     el.classList.remove('is-truth', 'is-lie');
   }
 

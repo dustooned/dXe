@@ -5,6 +5,7 @@
 // scene shape: { type: 'dialog', id: string, npc: <NPC content JSON> }
 import { resolveCard, resolveGatedNode } from '../engine/cardEngine.js';
 import { composeReaction } from '../engine/reactions.js';
+import { composeSay } from '../engine/sayTone.js';
 import { checkBloomTriggers } from '../engine/debtEngine.js';
 import { BLOOM_IT_TEXT } from '../engine/itBlooms.js';
 import { emotionLeanText } from '../engine/itEmotionLean.js';
@@ -152,7 +153,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       tapHint.hidden = true;
       content.appendChild(tapHint);
 
-      typewriter = createTypewriter(say, pendingEdge.playerText, {
+      typewriter = createTypewriter(say, composeSay(pendingEdge.playerText, reactionEmotion, reactionSwipeKey), {
         onChar: audio.playTypewriterTick,
         onDone: () => { tapHint.hidden = false; },
       });

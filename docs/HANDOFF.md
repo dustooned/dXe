@@ -201,13 +201,41 @@ full vision — see "What was deliberately cut" below.
   winning class; the exact same diagnosis text played every time a player
   landed on that class, regardless of how they actually answered. Each
   class is offered as an option on only 2 of the 3 questions (see
-  `QUESTIONS`), so a true 3-of-3 unanimous result is mathematically
+  `QUESTION_SLOTS`), so a true 3-of-3 unanimous result is mathematically
   unreachable — enumerated all 8 answer combinations to confirm before
   writing variants, so nothing shipped as dead content. The two real
   outcomes are a clean 2-of-3 (`majority` — the original text) and a
   genuine three-way tie resolved by first instinct (`split` — a new line
   that reads the tie back to the player instead of pretending it was
   clean). `DIAGNOSES[cls]` is keyed by variant accordingly.
+- **Questionnaire questions now come from a pool, not 3 fixed prompts.**
+  `QUESTION_SLOTS` holds 3 questions per class-pair (Crystals/Guns,
+  Crystals/Bible, Bible/Guns — the same pairing structure the diagnosis
+  math above depends on); `pickQuestions()` draws one at random per slot
+  each run, so replays don't open with an identical questionnaire. The
+  class-scoring math is unaffected either way — every question in a slot
+  scores the exact same pair, only the wording differs.
+- **The player's own SAY: line now has an emotion-driven tail
+  (`engine/sayTone.js`).** Previously identical no matter which FEELZ
+  emotion was active when you swiped. `composeSay()` appends one of 16
+  short codas (8 emotions × truth/lie) to whatever the manuscript already
+  authored — same trick as the per-NPC REACT codas (`engine/reactions.js`),
+  just universal instead of per-NPC, since it's the player's tone, not an
+  NPC's personality. Wired into `dialogScene.js`'s `stage === 'say'`
+  render, so it covers Deborah/Rwanda/Samun/Rick/Therapist for free — all
+  five run the same code path. No manuscript changes needed; `SAY:` stays
+  one line same as always.
+- **Swipe-card hints moved out of the card, into their own row above
+  it.** `ui/swipeCard.js` used to overlay the TRUTH/LIE-style hint labels
+  in the card's corners; once the questionnaire's question pool (above)
+  introduced longer labels, corner-overlaid text crowded the centered
+  prompt and orphaned arrow glyphs onto their own wrapped line. `el`
+  returned by `createSwipeCard` is now a `.dx-swipe-card-wrap` containing a
+  static `.dx-swipe-card__hints` row (doesn't move with the card) above the
+  actual draggable `.dx-swipe-card`. Every caller only ever used the
+  returned methods (`setSelectedColor` etc.), not the DOM shape directly,
+  so this needed no changes in `dialogScene.js`, `questionnaireScene.js`,
+  or `feelzDartboard.js`'s drop-target hit test.
 
 ## Stats — what's wired up and what isn't
 
