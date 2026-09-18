@@ -357,6 +357,20 @@ Roughly in order of how ready each one is to just start:
   dominant-emotion read at the end of each NPC encounter, the Reckoning,
   and the ending. ~40 placeholder lines total. What's left is real prose
   in place of them, and the separate hint-system merge below.
+- ~~SO — a second voice answering IT~~ — done: bloom events and the
+  dominant-emotion read now get a rebuttal chained right after IT's own
+  line, grounded in doubt rather than reassurance (`IT_DESIGN.md`'s
+  "SO — the doubt rebuttal"). Also fixed the actual repetition complaint
+  that motivated it — the dominant-emotion line reading off a cumulative
+  tally that rarely changes, so the same sentence could fire after every
+  NPC in one sitting.
+- ~~Reaction codas were one shared 16-line table for all 5 NPCs~~ — done:
+  `engine/reactions.js` now has a dedicated table per NPC, voiced in that
+  character's own imagery (Deborah's kitchen/bible, Rick's bar/patch,
+  Rwanda's window/cigarette, Samun's rag/bottles, the Therapist's phone
+  line) instead of one line landing identically on a grieving mother and
+  a biker gang enforcer. `DEFAULT` keeps the original shared table as a
+  fallback for any NPC that doesn't have one yet.
 - ~~A third node on all four confrontation NPCs~~ — done: `deborah_03`,
   `rick_03`, `rwanda_03`, `samun_03`. Both existing second-node branches
   (confronted/enabled, open/closed, etc.) now funnel into one shared

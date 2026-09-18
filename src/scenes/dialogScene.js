@@ -8,6 +8,7 @@ import { composeReaction } from '../engine/reactions.js';
 import { checkBloomTriggers } from '../engine/debtEngine.js';
 import { BLOOM_IT_TEXT } from '../engine/itBlooms.js';
 import { emotionLeanText } from '../engine/itEmotionLean.js';
+import { SO_BLOOM_TEXT, soEmotionLeanText } from '../engine/soRebuttals.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createItPopup } from '../ui/itPopup.js';
 import { createMeterGroup } from '../ui/meterBar.js';
@@ -178,7 +179,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
       typewriter = createTypewriter(
         reaction,
-        composeReaction(pendingEdge.npcReaction, reactionEmotion, reactionSwipeKey),
+        composeReaction(npc.npc, pendingEdge.npcReaction, reactionEmotion, reactionSwipeKey),
         { onChar: audio.playTypewriterTick, onDone: () => { tapHint.hidden = false; } },
       );
 
@@ -325,17 +326,41 @@ export function mount(stageEl, scene, { run, onComplete }) {
     proceed(edge);
   }
 
-  function showBloomIt(threshold, onClose) {
+  // SO answers both of this scene's own IT moments — the pattern-reading
+  // ones (a bloom, or the end-of-encounter emotion lean), not IT generally.
+  // The generic authored `it` beat in cutsceneScene.js and the ending's
+  // closing line (endingScene.js — "IT gets the actual last word of the
+  // chapter," deliberately) stay single-voice on purpose; see
+  // docs/IT_DESIGN.md's "SO — the doubt rebuttal" for why the two are
+  // scoped differently. `flashClose: true` on IT's own popup signals
+  // "there's another one coming," same convention a multi-beat IT sequence
+  // already used before SO existed. `onClose` only fires once SO's own
+  // popup is dismissed, so callers don't need to know a second popup is
+  // involved at all.
+  function showItThenSo(itText, soText, onClose) {
     itPopup = createItPopup(stageEl, {
-      text: BLOOM_IT_TEXT[threshold],
+      text: itText,
       loadout: run.get().loadout,
-      flashClose: false, // one-off interrupt — nothing follows it
+      flashClose: true,
       onClose: () => {
         itPopup?.destroy();
-        itPopup = null;
-        onClose();
+        itPopup = createItPopup(stageEl, {
+          text: soText,
+          loadout: run.get().loadout,
+          flashClose: false, // last one in the sequence
+          voice: 'so',
+          onClose: () => {
+            itPopup?.destroy();
+            itPopup = null;
+            onClose();
+          },
+        });
       },
     });
+  }
+
+  function showBloomIt(threshold, onClose) {
+    showItThenSo(BLOOM_IT_TEXT[threshold], SO_BLOOM_TEXT[threshold], onClose);
   }
 
   function proceed(edge) {
@@ -366,16 +391,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
   function showEmotionLeanIt(dominant, onClose) {
-    itPopup = createItPopup(stageEl, {
-      text: emotionLeanText(run.get().loadout, dominant),
-      loadout: run.get().loadout,
-      flashClose: false, // one-off interrupt — nothing follows it
-      onClose: () => {
-        itPopup?.destroy();
-        itPopup = null;
-        onClose();
-      },
-    });
+    const loadout = run.get().loadout;
+    showItThenSo(emotionLeanText(loadout, dominant), soEmotionLeanText(loadout, dominant), onClose);
   }
 
   // The NPC's leitmotif is this character's continuous underscore for the

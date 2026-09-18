@@ -28,7 +28,15 @@ export function resolveItText(text, loadout) {
 // that isn't the last one. `onClose` fires once, when the player taps X;
 // this popup does not call destroy() on itself afterward — the caller does,
 // same as it owns deciding what happens next.
-export function createItPopup(stageEl, { text, loadout, flashClose = false, onClose } = {}) {
+//
+// `voice` picks which of the two counterpart voices this is (see
+// docs/IT_DESIGN.md's "SO — the doubt rebuttal") — 'it' (default) or 'so'.
+// Same box, same font, same dismiss gesture; 'so' just inverts the color
+// scheme (scenes.css's `.dx-it-box--so`) rather than getting new art —
+// SO doesn't need its own visual language, it needs to read as IT's own
+// box turned inside out, since that's literally what it's doing to
+// whatever IT just said.
+export function createItPopup(stageEl, { text, loadout, flashClose = false, onClose, voice = 'it' } = {}) {
   let typewriter = null;
 
   // IT's own sting — distinct from tyagl.mp3, which stays under the
@@ -46,7 +54,7 @@ export function createItPopup(stageEl, { text, loadout, flashClose = false, onCl
   screen.appendChild(scrim);
 
   const box = document.createElement('div');
-  box.className = 'dx-it-box';
+  box.className = voice === 'so' ? 'dx-it-box dx-it-box--so' : 'dx-it-box';
   screen.appendChild(box);
 
   const icon = document.createElement('img');

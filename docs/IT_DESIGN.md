@@ -38,6 +38,67 @@ also become the hint system (see below — separately still unbuilt).
 
 ---
 
+## SO — the doubt rebuttal (built)
+
+Grew out of noticing that two of IT's triggers — bloom events and the
+post-swipe dominant-emotion read — read as repetitive over a real
+playthrough, in a way more placeholder prose wouldn't actually fix: the
+dominant-emotion line especially reads off a *cumulative* tally that
+rarely flips once established, so the exact same sentence can fire
+verbatim after two, three, even four different NPCs in one sitting.
+
+The fix wasn't more IT lines. It's a second voice.
+
+**What SO is, psychologically.** Not a comforting counterpart — a comforting
+voice still takes a side (it's fine, don't worry), which is a different
+failure mode than the one this fixes. SO is grounded in **doubt** as it
+actually shows up clinically: historically OCD was called *"folie du
+doute,"* the doubting disease — the hallmark isn't a specific belief, it's
+that nothing gets to resolve, in either direction. You can't trust your
+own read of what just happened, whichever way that read was leaning. SO's
+job is to make sure IT's claim never gets to stand unquestioned — not by
+arguing the opposite conclusion, but by undermining the very confidence
+IT just asserted.
+
+Named as a pair with IT on purpose: two words with no fixed referent, one
+stating with dread-certainty, one that trails off without committing to
+anything (*"so?"*, *"or so"*) — the pairing itself is meant to read as
+"is, or so," never a clean verdict either way. Whichever way the player
+reads a moment, one of the two voices is right there undercutting it.
+
+**Where it fires — narrower than "every IT appearance," deliberately.**
+SO answers only `dialogScene.js`'s two pattern-reading triggers: bloom
+events and the dominant-emotion read (`engine/soRebuttals.js`'s
+`SO_BLOOM_TEXT` and `soEmotionLeanText()`, chained onto IT's own popup via
+`showItThenSo()`). It does **not** answer the intro,
+the pre-confrontation line, the Reckoning, or the ending — the ending's
+IT line is documented above as *"the actual last word of the chapter,"*
+deliberately unanswered, and extending SO there would directly undo that.
+The two pattern-reading triggers were the ones actually causing the
+repetition complaint; the others are one-off narrative beats, not a
+running read SO has anything to argue with.
+
+**How it fires.** `showItThenSo(itText, soText, onClose)` shows IT first
+(`flashClose: true`, signaling one more is coming — the same convention a
+multi-beat IT sequence already used), and only shows SO once IT is
+dismissed. SO never fires on its own schedule; it's a reaction, not an
+announcement, which matches the real thing better anyway — doubt follows
+a thought, it doesn't arrive first.
+
+**Visual treatment.** SO doesn't get new art — `createItPopup`'s new
+`voice: 'so'` option applies `.dx-it-box--so` (`scenes.css`), which
+inverts the box's own colors (white-on-black becomes black-on-white) and
+runs the existing icon through `filter: invert(1)`. SO is IT's own box
+turned inside out, not a second character with a second visual language —
+which is also the cheapest way to make two voices read as distinct
+without a second art asset.
+
+**Content.** `engine/soRebuttals.js` — one rebuttal per existing IT line
+(12 bloom lines, 12 dominant-emotion lines), same placeholder-prose bar as
+the tables it answers.
+
+---
+
 ## What IT Is
 
 IT is not a character. IT is the player's inner dialog — invasive thoughts,

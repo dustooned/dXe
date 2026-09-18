@@ -501,6 +501,34 @@
   color: var(--color-white);
 }
 
+/* SO's box is IT's own box turned inside out — the same shape, every
+   color swapped, rather than new art. SO doesn't have its own visual
+   language; it's what happens to IT's line the instant someone starts
+   doubting it. The icon just inherits this same inversion via filter, so
+   swapping voice never means shipping a second icon asset. */
+.dx-it-box--so {
+  background: var(--color-black);
+  color: var(--color-white);
+  border-color: var(--color-white);
+}
+
+.dx-it-box--so .dx-it-icon {
+  background: var(--color-black);
+  border-color: var(--color-white);
+  filter: invert(1);
+}
+
+.dx-it-box--so .dx-it-close {
+  background: var(--color-black);
+  color: var(--color-white);
+  border-color: var(--color-white);
+}
+
+.dx-it-box--so .dx-it-close:active {
+  background: var(--color-white);
+  color: var(--color-black);
+}
+
 /* Signals "there's another one of these after this" once the line finishes
    drawing — reuses the same dx-pulse keyframes the critical debt sigil uses
    (ui/ui.css), for the same "notice me" urgency. Never applied on the last
