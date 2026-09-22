@@ -42,6 +42,14 @@ export function fadeToBlack(durationMs, onComplete) {
     if (done) return;
     done = true;
     onComplete?.();
+    // canvasEl is a permanent shell now (hud.js lives alongside dx-stage),
+    // not wiped on scene teardown like it used to be -- this overlay has to
+    // clean up after itself or it sits at opacity:1 over every scene from
+    // here on. onComplete() typically navigates via location.hash, which
+    // re-renders dx-stage on the (async) hashchange event rather than
+    // synchronously -- wait a couple of frames so that's already painted
+    // before this lifts, instead of flashing the old scene underneath.
+    requestAnimationFrame(() => requestAnimationFrame(() => overlay.remove()));
   };
 
   const anim = overlay.animate([{ opacity: 0 }, { opacity: 1 }], {

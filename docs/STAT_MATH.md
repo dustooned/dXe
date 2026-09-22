@@ -777,6 +777,46 @@ before Rick (confirmed `rick_shut_down`'s exact prompt rendered), one
 keeping trust at a healthy 7 (confirmed `rick_01`'s normal prompt
 rendered) — both matching the Node predictions exactly.
 
+## Regression, found live: whole game black after ENTER
+
+**Reported:** "game fails to load on browsers and goes black." Not a load
+failure — every playthrough was hitting it, right after the title
+screen's ENTER transition, on every browser.
+
+**Root cause:** `shell/fx.js`'s `fadeToBlack()` (used once, by
+`main.js`'s `beginTransition()` — the fade-out-jingle-then-navigate that
+runs on every ENTER/SKIP/REPLAY) appends a full-screen black overlay
+(`opacity: 0 → 1`, `z-index: 998`) directly onto `canvasEl` and never
+removes it. That was harmless under the old architecture, where
+`canvasEl` was wiped wholesale by every scene's teardown. The HUD commit
+(`c4241ec`, `docs/HANDOFF.md`'s "settings menu + fast-forward") split
+`main.js`'s `dx-canvas` into a **permanent** outer shell (hosting the
+settings gear/fast-forward buttons) plus an inner `dx-stage` that scenes
+still wipe on their own re-renders — but `fadeToBlack()`'s overlay is a
+sibling of `dx-stage`, appended to the now-permanent shell, so nothing
+ever cleaned it up again. First ENTER of any session left it parked at
+opacity 1, on top of everything, forever. The scenes underneath kept
+rendering correctly the whole time — confirmed via `dx-stage.innerHTML`
+still holding real content (the IT intro popup's actual text) while the
+screen showed solid black.
+
+**Fix:** `complete()` inside `fadeToBlack()` now removes the overlay
+after calling `onComplete()`. Since `onComplete` navigates via
+`location.hash =`, which re-renders `dx-stage` on the async `hashchange`
+event rather than synchronously, the removal is deferred two
+`requestAnimationFrame`s so the new scene is already painted before the
+overlay lifts — otherwise the old scene would flash underneath for a
+frame first.
+
+**Verified:** reproduced live on the deployed site (`dx-canvas`'s
+children included a bare `<div>` at `opacity: 1`, confirmed via
+`getComputedStyle`, sitting above `dx-stage` — which itself still had
+the IT popup's full markup and text). Rebuilt locally, cleared
+`localStorage`, played ENTER → title fade → chapter start end to end:
+`dx-canvas`'s children after navigation no longer include the overlay
+div at all (fully removed, not just hidden), and the IT popup rendered
+on screen exactly as its DOM already said it should.
+
 ## Build order
 
 1. ~~Emotional Lean + ending epilogue~~ — done.

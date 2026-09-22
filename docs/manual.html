@@ -647,6 +647,9 @@ split, boot sequence), <a class="doc-ref" href="#doc-scene_types" data-doc="doc-
 <a class="doc-ref" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><code>ASSET_GUIDELINES.md</code></a> (preparing art and audio), <a class="doc-ref" href="#doc-script_format" data-doc="doc-script_format"><code>SCRIPT_FORMAT.md</code></a> +
 <a class="doc-ref" href="#doc-content_schema" data-doc="doc-content_schema"><code>CONTENT_SCHEMA.md</code></a> (writing dialog), <a class="doc-ref" href="#doc-stat_math" data-doc="doc-stat_math"><code>STAT_MATH.md</code></a> (the numbers),
 <a class="doc-ref" href="#doc-attic" data-doc="doc-attic"><code>ATTIC.md</code></a> (removed code, kept for reference).</p>
+<p>Two collaborator packs live outside <code>docs/</code>, written for people who don&#39;t
+touch code: <code>writer-handoff/</code> (dialog and prose) and <code>sound-handoff/</code>
+(music, MIDI leitmotifs, audio assets). Send those rather than this file.</p>
 <h2 id="doc-handoff--what-dream-xtreme-is"><a class="anchor" href="#doc-handoff--what-dream-xtreme-is" aria-label="Link to this section">#</a>What Dream Xtreme is</h2>
 <p>An episodic interactive zine hosted as a static site on GitHub Pages.
 Each chapter is a self-contained short story/game played with a swipe,
@@ -809,6 +812,70 @@ had scaled below 844px tall). Cutscene sprites are now bottom-anchored
 with a percentage height. Use percentages or viewport-relative units for
 scene art.</p>
 </li>
+<li><p><strong>Persistent HUD layer (<code>shell/hud.js</code>), added because scenes wipe their
+own container on every render.</strong> <code>main.js</code>&#39;s <code>.dx-canvas</code> used to be the
+same element every scene rendered into and wiped via <code>innerHTML = &#39;&#39;</code> —
+fine for full-screen content, but nowhere for chrome that should survive
+a scene&#39;s own re-renders. <code>.dx-canvas</code> now holds a <code>.dx-stage</code> child (what
+scenes actually render into and wipe) plus the HUD, mounted once as a
+sibling. Two buttons: a settings gear (volume/mute, Restart Chapter,
+Chapter Select — the latter two confirm first, since there&#39;s no
+mid-chapter save; <code>save.js</code> only ever records <em>completed</em> chapters) and a
+fast-forward icon. Fast-forward is deliberately the same exit a scene
+would use on its own — <code>sceneSequencer.js</code>&#39;s <code>skip()</code> just calls the same
+<code>handleComplete()</code> a normal finish would, early. Only <code>cutscene</code> and
+<code>minigame</code> scenes are skippable (<code>SKIPPABLE_TYPES</code>) — <code>dialog</code>,
+<code>questionnaire</code>, <code>reckoning</code>, and <code>ending</code> have a real choice or a real
+ending in them, so skip is hidden rather than skipping content that
+matters. One known side effect: fast-forwarding a confrontation cutscene
+bypasses that cutscene&#39;s opener choice, so the dialog scene that follows
+starts on its default node instead of the one the choice would have
+picked — acceptable given how rarely that&#39;ll get used, but worth knowing.</p>
+</li>
+<li><p><strong>Questionnaire diagnosis now has two variants per class, not one.</strong>
+<code>scenes/questionnaireScene.js</code>&#39;s <code>tallyClass()</code> used to only return the
+winning class; the exact same diagnosis text played every time a player
+landed on that class, regardless of how they actually answered. Each
+class is offered as an option on only 2 of the 3 questions (see
+<code>QUESTION_SLOTS</code>), so a true 3-of-3 unanimous result is mathematically
+unreachable — enumerated all 8 answer combinations to confirm before
+writing variants, so nothing shipped as dead content. The two real
+outcomes are a clean 2-of-3 (<code>majority</code> — the original text) and a
+genuine three-way tie resolved by first instinct (<code>split</code> — a new line
+that reads the tie back to the player instead of pretending it was
+clean). <code>DIAGNOSES[cls]</code> is keyed by variant accordingly.</p>
+</li>
+<li><p><strong>Questionnaire questions now come from a pool, not 3 fixed prompts.</strong>
+<code>QUESTION_SLOTS</code> holds 3 questions per class-pair (Crystals/Guns,
+Crystals/Bible, Bible/Guns — the same pairing structure the diagnosis
+math above depends on); <code>pickQuestions()</code> draws one at random per slot
+each run, so replays don&#39;t open with an identical questionnaire. The
+class-scoring math is unaffected either way — every question in a slot
+scores the exact same pair, only the wording differs.</p>
+</li>
+<li><p><strong>The player&#39;s own SAY: line now has an emotion-driven tail
+(<code>engine/sayTone.js</code>).</strong> Previously identical no matter which FEELZ
+emotion was active when you swiped. <code>composeSay()</code> appends one of 16
+short codas (8 emotions × truth/lie) to whatever the manuscript already
+authored — same trick as the per-NPC REACT codas (<code>engine/reactions.js</code>),
+just universal instead of per-NPC, since it&#39;s the player&#39;s tone, not an
+NPC&#39;s personality. Wired into <code>dialogScene.js</code>&#39;s <code>stage === &#39;say&#39;</code>
+render, so it covers Deborah/Rwanda/Samun/Rick/Therapist for free — all
+five run the same code path. No manuscript changes needed; <code>SAY:</code> stays
+one line same as always.</p>
+</li>
+<li><p><strong>Swipe-card hints moved out of the card, into their own row above
+it.</strong> <code>ui/swipeCard.js</code> used to overlay the TRUTH/LIE-style hint labels
+in the card&#39;s corners; once the questionnaire&#39;s question pool (above)
+introduced longer labels, corner-overlaid text crowded the centered
+prompt and orphaned arrow glyphs onto their own wrapped line. <code>el</code>
+returned by <code>createSwipeCard</code> is now a <code>.dx-swipe-card-wrap</code> containing a
+static <code>.dx-swipe-card__hints</code> row (doesn&#39;t move with the card) above the
+actual draggable <code>.dx-swipe-card</code>. Every caller only ever used the
+returned methods (<code>setSelectedColor</code> etc.), not the DOM shape directly,
+so this needed no changes in <code>dialogScene.js</code>, <code>questionnaireScene.js</code>,
+or <code>feelzDartboard.js</code>&#39;s drop-target hit test.</p>
+</li>
 </ul>
 <h2 id="doc-handoff--stats-what39s-wired-up-and-what-isn39t"><a class="anchor" href="#doc-handoff--stats-what39s-wired-up-and-what-isn39t" aria-label="Link to this section">#</a>Stats — what&#39;s wired up and what isn&#39;t</h2>
 <p>Four meters (Integrity, Trust, Stability, Lucidity, 0–10) plus Truth Debt
@@ -892,7 +959,11 @@ and yields an all-white video.</li>
 <p><strong>Audio</strong> (<code>public/assets/lake-ulysses/audio/</code>):</p>
 <ul>
 <li><code>lk_01.mp3</code> (1.2MB) — lake ambient loop. Used in <code>bob_baiter</code> scene.</li>
-<li><code>heavens_waiting_room.mp3</code> (501KB) — Therapist leitmotif/ambient. Used in questionnaire scene.</li>
+<li><code>heavens_waiting_room.mp3</code> (501KB) — questionnaire scene&#39;s ambient bed.
+Used to double as the Therapist&#39;s dialog-scene leitmotif too, stacking
+on top of the confrontation chord for a short tutorial beat that didn&#39;t
+need it — removed from <code>LEITMOTIFS</code> (<code>shell/audio.js</code>) so it only plays
+during the questionnaire now. See <a class="doc-ref" href="#doc-stat_math" data-doc="doc-stat_math"><code>STAT_MATH.md</code></a>&#39;s &quot;Per-NPC leitmotif&quot;.</li>
 <li><code>ann_01.mp3</code> (1.2MB) — <strong>not a distinct asset</strong>: byte-identical to
 <code>lk_01.mp3</code> (same MD5). It&#39;s an accidental duplicate, not sourced
 content awaiting a scene. Deleting it is a free 1.2MB off the deploy;
@@ -932,16 +1003,16 @@ the script when real art lands.</li>
 a <code>portrait</code> path, authored via a manuscript&#39;s <code>PORTRAIT:</code> line) — the
 placeholder is only a fallback for when that&#39;s unset, so real art can
 drop in with no further code changes. No art exists yet.</li>
-<li>Placeholder audio — emotion stems and hit sounds are oscillator tones in
-<code>shell/audio.js</code>; no real instrumental stems yet. <code>STEM_CONFIG</code> now
-covers all 8 Plutchik emotions (was 3, matching only the Guns loadout —
-a real bug where Bible and Crystals players got no stem audio at all on
-their own class&#39;s emotions), so this is placeholder-quality but no
-longer broken for two of the three classes. Only the player&#39;s <em>loaded</em>
-3 actually get oscillators — <code>dialogScene</code> passes <code>emotionsForClass()</code>
-into <code>startEmotionStems</code>/<code>ambientMix</code>/<code>emphasizeEmotion</code>. Running all 8
-drones the 5 the class can&#39;t even select and makes the bed ~2.7× louder
-than the gain constants were tuned for.</li>
+<li>Placeholder audio — the confrontation chord and hit sounds are oscillator
+tones in <code>shell/audio.js</code>; no real instrumental stems yet. The emotion
+<em>drones</em> are gone: each loaded feeling is now a voice in a struck
+polychord built on the NPC&#39;s own tonic, moving toward unison or the
+tritone as the encounter resolves (<code>shell/harmony.js</code>, and STAT_MATH.md&#39;s
+&quot;Confrontation polychord&quot;). <code>EMOTION_WAVEFORMS</code> covers all 8 Plutchik
+emotions; only the player&#39;s <em>loaded</em> 3 get voices, since <code>dialogScene</code>
+passes <code>emotionsForClass()</code> into <code>strikeChord</code>/<code>strikeEmotionVoice</code>.
+Still placeholder timbre — four bare oscillator waveforms — but it&#39;s a
+real harmonic system now rather than eight unrelated fixed pitches.</li>
 <li><code>public/assets/lake-ulysses/audio/ann_01.mp3</code> — byte-identical duplicate
 of <code>lk_01.mp3</code>, 1.2MB shipped for nothing. Kept deliberately for now.</li>
 <li><code>loadoutScene.js</code> and the unread <code>firstPlayScene</code> registry field were
@@ -986,6 +1057,22 @@ the pre-questionnaire intro, each confrontation, bloom events, a
 dominant-emotion read at the end of each NPC encounter, the Reckoning,
 and the ending. ~40 placeholder lines total. What&#39;s left is real prose
 in place of them, and the separate hint-system merge below.</p>
+</li>
+<li><p><del>SO — a second voice answering IT</del> — done: bloom events and the
+dominant-emotion read now get a rebuttal chained right after IT&#39;s own
+line, grounded in doubt rather than reassurance (<a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a>&#39;s
+&quot;SO — the doubt rebuttal&quot;). Also fixed the actual repetition complaint
+that motivated it — the dominant-emotion line reading off a cumulative
+tally that rarely changes, so the same sentence could fire after every
+NPC in one sitting.</p>
+</li>
+<li><p><del>Reaction codas were one shared 16-line table for all 5 NPCs</del> — done:
+<code>engine/reactions.js</code> now has a dedicated table per NPC, voiced in that
+character&#39;s own imagery (Deborah&#39;s kitchen/bible, Rick&#39;s bar/patch,
+Rwanda&#39;s window/cigarette, Samun&#39;s rag/bottles, the Therapist&#39;s phone
+line) instead of one line landing identically on a grieving mother and
+a biker gang enforcer. <code>DEFAULT</code> keeps the original shared table as a
+fallback for any NPC that doesn&#39;t have one yet.</p>
 </li>
 <li><p><del>A third node on all four confrontation NPCs</del> — done: <code>deborah_03</code>,
 <code>rick_03</code>, <code>rwanda_03</code>, <code>samun_03</code>. Both existing second-node branches
@@ -1034,31 +1121,12 @@ classes, and all 4 confrontation openers read as finished prose, not
 code-path filler. The placeholder part is genuinely just the <em>art</em>
 (generated SVG vectors), not the writing.</p>
 </li>
-</ul>
-<p><strong>Needs a dedicated design pass first:</strong></p>
-<ul>
-<li><strong>Make the oscilloscope&#39;s two traces actually interact.</strong> Right now
-the NPC trace (real audio, <code>getAnalyser()</code>) and player trace
-(synthesized from integrity+lucidity, <code>ui/oscilloscope.js</code>) share a
-canvas and midline but never affect each other — two independent
-lines, not a mix. Reads as static because nothing about <em>how</em> either
-is drawn responds to the relationship between them, only to its own
-separate input. Directions worth exploring:<ul>
-<li><strong>Visual mixing</strong> — phase-lock or share color when the encounter&#39;s
-going well (player honest, NPC trust rising); visually interfere/beat
-against each other, the way two close-but-not-quite frequencies do on
-a real scope, when it&#39;s going badly.</li>
-<li><strong>Actual signal mixing</strong> — player clarity modulating the NPC trace
-directly (a filter/distortion on the real audio-derived line) instead
-of drawing a second, independent line beside it.</li>
-<li><strong>Something reactive to the moment</strong>, not just the current stat
-snapshot — both traces currently only change when a swipe resolves;
-nothing happens between choices.
-Open question for whoever picks this up: purely visual (canvas-level
-blend/phase tricks), or real signal processing (player state actually
-shaping the audio-derived waveform)? See <a class="doc-ref" href="#doc-stat_math" data-doc="doc-stat_math"><code>STAT_MATH.md</code></a>&#39;s &quot;Confrontation
-oscilloscope&quot; for the full build history this extends.</li>
-</ul>
+<li><p><del>Make the oscilloscope&#39;s two traces actually interact</del> — done: a
+<code>coherence</code> value (the <em>worse</em> of the NPC chord&#39;s consonance and the
+player&#39;s own clarity, not an average) drives real beat-interference
+between the two traces&#39; frequencies plus a partial color blend, kept as
+a pure drawing-parameter effect rather than real audio signal mixing.
+See <a class="doc-ref" href="#doc-stat_math" data-doc="doc-stat_math"><code>STAT_MATH.md</code></a>&#39;s &quot;Trace interaction — coherence&quot;.</p>
 </li>
 </ul>
 <p><strong>Needs something from outside this repo:</strong></p>
@@ -3462,7 +3530,7 @@ format supports a <code>SPRITE:</code> field) without any import statement.</p>
     </article>
 <article class="doc" id="doc-stat_math" data-title="Stat Math" data-file="STAT_MATH.md" hidden>
       <p class="doc-source">Authoring · <code>docs/STAT_MATH.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-stat_math--where-this-started">Where this started</a></li><li><a href="#doc-stat_math--emotional-lean-built-cardenginejs">Emotional Lean (built — cardEngine.js)</a></li><li><a href="#doc-stat_math--ending-epilogue-built-endingenginejs-endingscenejs-the-consu">Ending epilogue (built — endingEngine.js + endingScene.js) — the consumer</a></li><li><a href="#doc-stat_math--per-npc-leitmotif-built-shellaudiojs">Per-NPC leitmotif (built — shell/audio.js)</a></li><li><a href="#doc-stat_math--leitmotif-mood-bending-built-shellaudiojs-dialogscenejs">Leitmotif mood-bending (built — shell/audio.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--dialog-portrait-mood-mask-built-uinpcportraitjs-audiojs">Dialog portrait mood-mask (built — ui/npcPortrait.js + audio.js)</a></li><li><a href="#doc-stat_math--confrontation-oscilloscope-built-uioscilloscopejs-audiojs">Confrontation oscilloscope (built — ui/oscilloscope.js + audio.js)</a></li><li><a href="#doc-stat_math--swipe-without-a-feeling-rejection-fix-dialogscenejs-fxjs-aud">Swipe-without-a-feeling rejection (fix — dialogScene.js + fx.js + audio.js + swipeCard.js)</a></li><li><a href="#doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs">Meter-gated branching (built — cardEngine.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--build-order">Build order</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-stat_math--where-this-started">Where this started</a></li><li><a href="#doc-stat_math--emotional-lean-built-cardenginejs">Emotional Lean (built — cardEngine.js)</a></li><li><a href="#doc-stat_math--ending-epilogue-built-endingenginejs-endingscenejs-the-consu">Ending epilogue (built — endingEngine.js + endingScene.js) — the consumer</a></li><li><a href="#doc-stat_math--per-npc-leitmotif-built-shellaudiojs">Per-NPC leitmotif (built — shell/audio.js)</a></li><li><a href="#doc-stat_math--leitmotif-mood-bending-built-shellaudiojs-dialogscenejs">Leitmotif mood-bending (built — shell/audio.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--confrontation-polychord-built-shellharmonyjs-audiojs">Confrontation polychord (built — shell/harmony.js + audio.js)</a></li><li><a href="#doc-stat_math--dialog-portrait-mood-mask-built-uinpcportraitjs-audiojs">Dialog portrait mood-mask (built — ui/npcPortrait.js + audio.js)</a></li><li><a href="#doc-stat_math--confrontation-oscilloscope-built-uioscilloscopejs-audiojs">Confrontation oscilloscope (built — ui/oscilloscope.js + audio.js)</a></li><li><a href="#doc-stat_math--swipe-without-a-feeling-rejection-fix-dialogscenejs-fxjs-aud">Swipe-without-a-feeling rejection (fix — dialogScene.js + fx.js + audio.js + swipeCard.js)</a></li><li><a href="#doc-stat_math--meter-gated-branching-built-cardenginejs-dialogscenejs">Meter-gated branching (built — cardEngine.js + dialogScene.js)</a></li><li><a href="#doc-stat_math--regression-found-live-whole-game-black-after-enter">Regression, found live: whole game black after ENTER</a></li><li><a href="#doc-stat_math--build-order">Build order</a></li></ul></nav>
       <h1 id="doc-stat_math--stat-amp-character-data-math"><a class="anchor" href="#doc-stat_math--stat-amp-character-data-math" aria-label="Link to this section">#</a>Stat &amp; Character Data Math</h1>
 <p>This doc is strictly the math/data layer on top of the stats — what each
 number means narratively is in <a class="doc-ref" href="#doc-content_schema" data-doc="doc-content_schema"><code>CONTENT_SCHEMA.md</code></a>&#39;s &quot;What the stats
@@ -3568,16 +3636,16 @@ temperament math (A4 = 440Hz, ×2^(semitones/12)) — no MIDI files, no
 dependencies. Each note is its own oscillator (Web Audio oscillators are
 one-shot, can&#39;t be reused) connected to one persistent gain node, chained
 via <code>setTimeout</code> the same way <code>ui/typewriterText.js</code> sequences characters.</p>
-<p>The three FEELZ emotion stems stay exactly as they were (shared,
-hardcoded, universal) — the leitmotif is an added layer, not a
-replacement. Lifecycle is coarser than the emotion stems: started once
-when an NPC&#39;s dialog scene mounts (<code>dialogScene.js</code>, alongside
-<code>startEmotionStems()</code>), not restarted per node — it&#39;s meant to be that
-character&#39;s continuous underscore for the whole encounter. Stopped only
-on scene unmount, including through the swipe-commit moment where the
-emotion stems <em>do</em> stop (<code>stopEmotionStems()</code> in <code>handleSwipe</code>) — the
-leitmotif deliberately keeps playing through reactions, since it&#39;s the
-character&#39;s signature, not tied to the FEELZ selection phase.</p>
+<p>The leitmotif is an added layer, not a replacement — it plays over the
+confrontation chord (see &quot;Confrontation polychord&quot; below, which replaced
+the fixed-frequency emotion stems this paragraph used to describe).
+Lifecycle is coarser than the chord&#39;s: started once when an NPC&#39;s dialog
+scene mounts (<code>dialogScene.js</code>, before the first <code>enterNode()</code>, which
+needs to know whose tonic to build on), not restarted per node — it&#39;s
+meant to be that character&#39;s continuous underscore for the whole
+encounter. Stopped only on scene unmount, so it deliberately keeps
+playing through reactions: it&#39;s the character&#39;s signature, not tied to
+the FEELZ selection phase.</p>
 <p>Current phrases, chosen to match each NPC&#39;s established tone: Deborah —
 slow descending sine, hymn-like (A3-G3-E3-D3, 700-1100ms notes). Rwanda —
 quicker triangle-wave riff, more rhythmically alive
@@ -3644,9 +3712,9 @@ above), not a right/wrong signal. A comforting lie that raises both reads
 as <em>consonant</em> here even though it&#39;s a lie; an uncomfortable truth that
 drops both reads as dissonant even though it&#39;s honest. Deliberately not a
 truth detector.</p>
-<p><strong>The math — circle of fifths, not chromatic steps.</strong> Each NPC&#39;s
-leitmotif carries one running number, <code>mood</code>, starting at 0 when their
-scene mounts. <code>dialogScene.js</code>&#39;s <code>handleSwipe</code> computes the <em>actual</em>
+<p><strong>The math — circle of fifths, not chromatic steps.</strong> Each encounter
+carries one running number, <code>encounterMood</code>, starting at 0 when a new
+NPC&#39;s leitmotif starts. <code>dialogScene.js</code>&#39;s <code>handleSwipe</code> computes the <em>actual</em>
 post-clamp trust + stability delta (not the raw authored effect — a stat
 already maxed shouldn&#39;t overstate the swing) and feeds it into
 <code>audio.nudgeLeitmotifMood(delta)</code>, which clamps <code>mood</code> to ±6.
@@ -3669,9 +3737,27 @@ so picking a &quot;loud&quot; emotion for a given choice makes that choice bend 
 leitmotif further, with no new wiring between the wheel and the audio.
 Fear/Disgust/Sadness amplify integrity instead, which stays out of this
 system on purpose — those are introspective stats, not relational ones.</p>
-<p>File-based leitmotifs (Therapist&#39;s <code>heavens_waiting_room.mp3</code>) have no
-notes to bend — <code>nudgeLeitmotifMood()</code> no-ops quietly rather than
-throwing, same for no leitmotif active at all.</p>
+<p>File-based leitmotifs have no notes to bend, so nothing bends for them —
+but <code>encounterMood</code> still moves, because it now lives at module scope in
+<code>audio.js</code> rather than inside the note loop&#39;s closure. Their chord and
+portrait respond normally; only the melodic bend has nothing to act on.
+(It used to be a closure variable, which meant <code>nudgeLeitmotifMood()</code>
+silently no-opped for a file-based NPC entirely — the chord needed it
+hoisted.)</p>
+<p><strong>Update: Therapist no longer has a leitmotif entry at all</strong> (removed
+from <code>LEITMOTIFS</code> — see &quot;Per-NPC leitmotif&quot; above). <code>heavens_waiting_room.mp3</code>
+used to double as both the questionnaire&#39;s ambient bed and the
+Therapist&#39;s leitmotif, so it kept playing straight through their
+encounter on top of the confrontation chord, hit sounds and typewriter
+ticks — too much stacked for a short tutorial beat. It still plays
+during the questionnaire (<code>questionnaireScene.js</code>&#39;s own
+<code>startAmbient</code>/<code>stopAmbient</code>, untouched); it&#39;s just no longer carried
+into the dialog scene after it. The Therapist&#39;s chord and portrait
+degrade the same way they already did for a file-based leitmotif with no
+notes: <code>encounterMood</code> still moves and both still respond, just with no
+melodic line and a plain sine root/neutral tonic instead of a
+composer-derived one (same fallback path as an NPC that hasn&#39;t had a
+leitmotif authored yet at all).</p>
 <p>Verified: <code>fifthsSemitoneOffset()</code> checked by hand for every hop -6..+6
 (confirms the tritone lands at exactly ±6 semitones and is its own
 mirror), then live in the browser via a monkey-patched
@@ -3681,7 +3767,164 @@ actual trust-1/stability-2), the next three notes in the <em>same</em> loop
 (D3/A3/G3) came out bent up exactly 3 semitones, matching the formula
 precisely. Confirmed <code>nudgeLeitmotifMood()</code> is a silent no-op against
 <code>THERAPIST</code>&#39;s file-based leitmotif and against no active leitmotif at
-all.</p>
+all. (That last no-op no longer holds — see the hoist note above.)</p>
+<h2 id="doc-stat_math--confrontation-polychord-built-shellharmonyjs-audiojs"><a class="anchor" href="#doc-stat_math--confrontation-polychord-built-shellharmonyjs-audiojs" aria-label="Link to this section">#</a>Confrontation polychord (built — <code>shell/harmony.js</code> + <code>audio.js</code>)</h2>
+<p>Replaced the emotion stems, which were eight hardcoded frequencies
+(<code>Anger: 110</code>, <code>Joy: 330</code>, <code>Surprise: 250</code>) droning continuously with no
+shared key centre — timbre-coded mood pads wearing pitch as a costume.
+Now the feelings actually harmonize.</p>
+<p><strong>The chord.</strong> The NPC sounds their own tonic as a fixed root voice; each
+feeling the player has loaded sounds as another voice above it, placed by
+how many circle-of-fifths hops it sits from that root. <code>voiceHop()</code> moves
+every feeling voice off one number, <code>resolution</code> = <code>encounterMood / 6</code>,
+so it&#39;s the same accumulator that bends the leitmotif and colors the
+portrait — a third output, not a third calculation.</p>
+<table>
+<thead>
+<tr>
+<th><code>resolution</code></th>
+<th>Voices</th>
+<th>Sounds like</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>+1</strong> full alignment</td>
+<td>all hop 0</td>
+<td><strong>unison</strong> — every voice on the NPC&#39;s own pitch</td>
+</tr>
+<tr>
+<td><strong>0</strong> neutral</td>
+<td>hops 1, 2, 3</td>
+<td>stacked perfect fifths — no third, so neither major nor minor: quartal/quintal harmony, deliberately tonally ambiguous</td>
+</tr>
+<tr>
+<td><strong>−1</strong> complete detachment</td>
+<td>all hop 6</td>
+<td><strong>tritone</strong> against a root still sounding — the circle&#39;s exact antipode, equidistant either way round</td>
+</tr>
+</tbody></table>
+<p>Both extremes are exact positions, which is what makes &quot;maximum
+dissonance&quot; calculable rather than a vibe.</p>
+<p><strong>Why hops get rounded.</strong> <code>voiceSemitones()</code> folds with <code>% 24</code>, and a
+fractional hop would put voices between semitones — every chord slightly
+out of tune and the tritone endpoint no longer landing on the tritone.
+Rounding means the chord moves in discrete, exactly-tuned steps, which is
+also how harmony actually moves. Smoothness isn&#39;t wanted here: because
+the chord is <em>struck</em> rather than glided, a revoicing between strikes
+reads as a new chord, not as a bent note.</p>
+<p><strong>Voicing math is deliberately not <code>fifthsSemitoneOffset()</code>.</strong> That
+function minimizes chromatic distance, which is right for bending a
+single melodic line (a melody shouldn&#39;t leap an octave) and wrong for a
+chord, which wants its voices spread. <code>voiceSemitones()</code> walks real
+ascending fifths (7 semitones a hop) instead. Both live in
+<code>shell/harmony.js</code>; the root&#39;s own modulation <em>does</em> use the minimizing
+one, since the key centre shouldn&#39;t jump an octave just because the
+cadence advanced.</p>
+<p><strong>The cadence.</strong> An encounter is shaped as one: <code>dialogScene.js</code>&#39;s
+<code>harmonicFunction()</code> returns <code>predominant</code> on the first node, <code>dominant</code>
+through the body, <code>tonic</code> on any node with nowhere left to go. Each is
+one fourth/fifth of root motion (<code>FUNCTION_HOPS</code>) — for Deborah&#39;s A
+tonic that&#39;s D → E → A, a textbook authentic cadence resolving by
+ascending fourth. A node with no outgoing edges is the resolution however
+early it arrives, so the Therapist&#39;s single-node tutorial is its own
+whole cadence. Position decides <em>when</em> the resolution lands; <code>resolution</code>
+decides whether it lands as unison or as the tritone.</p>
+<p><strong>Struck, not sustained.</strong> Each voice is its own oscillator with a 30ms
+attack and a 3.5s exponential ring to silence — no drone anywhere.
+Deliberate: with melodies, ambient beds and stings already running, a
+permanent pad becomes wallpaper, and a state readout must not. It also
+leaves the oscilloscope quiet between strikes so a change reads as a
+visible event rather than a slow morph. Struck on node entry, on each
+resolved swipe (<em>after</em> the mood nudge, so you hear where the choice just
+left things), and one voice alone when a FEELZ emotion is picked — which
+lets the player hear where that feeling sits against this NPC before
+committing to it.</p>
+<p>A ring outlasts a scene exit, so <code>stopLeitmotif()</code> also calls <code>stopChord()</code>
+(a 50ms fade, not a hard stop — a chord clipped mid-ring clicks). Without
+that the encounter&#39;s harmony trails several seconds into whatever scene
+follows it. Live voices are tracked in <code>chordVoices</code> and drop themselves
+via <code>osc.onended</code>.</p>
+<p><strong>FEELZ wheel hover/select tones (built — <code>ui/feelzDartboard.js</code> +
+<code>shell/audio.js</code>).</strong> Three intensities of the same signal <code>emotionTone()</code>
+already computes for the chord — not a separate sound design for the
+wheel itself:</p>
+<ul>
+<li><strong>Hover</strong> — a very faint tone (gain 0.025) at whatever pitch that
+emotion currently occupies in the chord, fading in while the pointer&#39;s
+over the wedge and cut the instant it leaves (<code>startFeelzHover</code> /
+<code>stopFeelzHover</code>). The wedge also scales up 6% (<code>transform-origin: 100px 100px</code> — the dartboard&#39;s own shared center every sector&#39;s arc
+is drawn from, so it grows outward from the hub rather than sliding
+off toward its own bounding-box center).</li>
+<li><strong>Select</strong> — the same pitch rings out loud once (gain 0.35, a short
+0.5s ring reusing <code>strikeVoiceAt</code> with shorter timing than the chord&#39;s
+own 3.5s), then drops into a quiet low drone (gain 0.04, two octaves
+down — &quot;low frequency,&quot; not just &quot;quiet&quot;) marking &quot;this is the current
+pick&quot; until something ends it: picking a <em>different</em> emotion replaces
+it automatically, the swipe committing or the scene ending stops it
+outright (<code>handleSwipe</code> and <code>stopLeitmotif</code> both call
+<code>stopFeelzDrone()</code>).</li>
+</ul>
+<p>Deliberately the one exception to &quot;struck, not sustained&quot; above — asked
+for directly, and narrow enough not to reopen the wallpaper problem the
+rest of this system was built to avoid: only one drone can ever sound at
+once (a new pick always replaces the last), and it never outlives the
+choice it represents.</p>
+<p>Verified via a single dispatched <code>pointerdown</code>/<code>pointerup</code> pair (isolating
+the code from an unrelated harness artifact — the <code>computer</code> tool&#39;s own
+click synthesis intermittently re-fired an extra hover event afterward,
+confirmed by testing the exact same interaction as raw <code>PointerEvent</code>s
+instead, which produced exactly one <code>rampTo(0.35)</code> + one <code>rampTo(0.04)</code>,
+never doubled): hovering Fear before selecting it read 659.26Hz at gain
+0.025 — the wedge&#39;s real current chord voice, matching a hand-computed
+prediction from the encounter&#39;s actual root and resolution at that
+moment. Selecting it produced 0.35 then 0.04 at the same 659.26Hz, then
+164.81Hz (exactly ÷4) for the drone. A live oscillator-tracking check
+confirmed the drone was genuinely sounding before a swipe and gone
+immediately after, tied to the real swipe commit rather than a timer.</p>
+<p><strong>Tonics come from the melodies that already exist.</strong>
+<code>tonicFromPhrase()</code> takes the pitch class a leitmotif spends the most
+total time on. Deborah&#39;s MIDI phrase computes to <strong>A</strong> (3435ms against
+858ms for the next), which matches the A-rooted phrase hand-authored
+before the MIDI pipeline existed — the derivation agrees with the
+original authorial intent, which is a good sign it&#39;s reading real
+structure and not noise. So a composer dropping in a <code>.mid</code> sets that
+character&#39;s harmonic centre for free; there&#39;s no second thing to author
+or keep in sync. File-based NPCs (Therapist) have no notes and fall back
+to A.</p>
+<p>Two ways the heuristic picks wrong, both confirmed by running it:</p>
+<ul>
+<li><strong>A melody that dwells on its own fifth</strong> derives the fifth as tonic —
+a theme written in A that hovers on E returns <code>E</code>, and the whole
+encounter builds a fifth off. Normal writing, so this will happen. The
+fix when it does is an explicit per-NPC tonic in <code>LEITMOTIFS</code> that wins
+over the derivation; not built yet, deliberately, since nothing has
+needed it.</li>
+<li><strong>Mixed enharmonic spelling splits the vote.</strong> <code>Bb3</code> and <code>A#3</code> are the
+same sounding pitch but hash to different keys, so a phrase using both
+can lose to a third note that sounds less. Low risk from MIDI
+(<code>@tonejs/midi</code> emits sharps consistently — Deborah&#39;s JSON is all
+<code>F#/A#/C#</code>), real for the hand-authored fallbacks, one of which uses
+<code>Eb3</code>. Normalizing to pitch-class number would fix it.</li>
+</ul>
+<p>Also inherent, not a bug: <code>build-leitmotifs.mjs</code> sets each note&#39;s
+duration to <em>time until the next note</em>, so a rest is folded into the
+preceding note. Sparse, rest-heavy writing weights toward whatever note
+precedes the longest gap.</p>
+<p>Verified in Node across the full grid: every voice lands on exactly 0 at
+<code>+1</code> and exactly 6 at <code>−1</code>; the neutral voicing contains no third at all;
+dissonance falls monotonically and hits exactly 0 and exactly 1 at the
+endpoints; no single step of a <code>resolution</code> sweep moves a voice more than
+one hop (the rounding removes the <code>% 24</code> fold discontinuity). Then live
+in the browser with a monkey-patched
+<code>AudioContext.prototype.createOscillator</code>: Deborah&#39;s opening struck
+D4-A4-E5-B5 — a stack of fifths on a predominant root, matching the Node
+prediction exactly — and the endpoints struck 220/220/220/220 (true
+unison) and 220 + three voices on 622.25 (Eb5, a precise tritone over a
+root still sounding). A real UI swipe moved mood 0→4 and dissonance
+0.333→0.111, collapsing the chord from D-A-E-B to D-D-A-A. Confirmed the
+chord decays to an analyser peak of exactly 0 by 3.6s with the leitmotif
+stopped, proving nothing drones; and that Deborah&#39;s melody still plays
+its own phrase bent by the same mood (B2 came out as D#3, +4 semitones).</p>
 <h2 id="doc-stat_math--dialog-portrait-mood-mask-built-uinpcportraitjs-audiojs"><a class="anchor" href="#doc-stat_math--dialog-portrait-mood-mask-built-uinpcportraitjs-audiojs" aria-label="Link to this section">#</a>Dialog portrait mood-mask (built — <code>ui/npcPortrait.js</code> + <code>audio.js</code>)</h2>
 <p>Visual sibling to the leitmotif mood-bend above — same underlying number,
 a second output. <code>audio.js</code> exports <code>getLeitmotifMood()</code>, a read-only
@@ -3728,13 +3971,24 @@ both sides of the encounter — NPC and player alike, EarthBound/Mother
 battle-background territory, but functional rather than purely
 atmospheric. Two overlaid traces, not one:</p>
 <ul>
-<li><strong>NPC trace</strong> — <code>audio.js</code>&#39;s <code>ensureContext()</code> taps an <code>AnalyserNode</code>
+<li><p><strong>NPC trace</strong> — <code>audio.js</code>&#39;s <code>ensureContext()</code> taps an <code>AnalyserNode</code>
 off <code>masterGain</code> in parallel (<code>masterGain.connect(analyser)</code>, alongside
 its existing connection to <code>ctx.destination</code> — a read-only tap, not part
 of the output chain), and <code>getAnalyser()</code> exposes it. Real audio: this
 NPC&#39;s leitmotif (already reactive to trust+stability via its fifths
-bend), stings, whatever&#39;s actually playing.</li>
-<li><strong>Player trace</strong> — not audio. Synthesized from <code>integrity</code> + <code>lucidity</code>
+bend), the confrontation chord, stings, whatever&#39;s actually playing.</p>
+<p><strong>How legible it&#39;s drawn is the chord&#39;s own dissonance</strong> (<code>getDissonance()</code>,
+0–1): a <code>blur()</code> up to 4px scaling with it, plus red/blue channel
+separation once past 0.5, so a harmonized chord draws a clean line and an
+unresolved one smears into something you can&#39;t parse. The filter is reset
+before the player trace, which stays sharp — it&#39;s a different axis.</p>
+<p>Worth knowing the visual isn&#39;t only a filter: as voices converge on
+unison there are genuinely fewer beating frequencies in the mix, so the
+waveform itself simplifies. The trace resolves because the sound
+resolved. Nothing here is a score — the room just gets clearer or murkier
+in response to choices.</p>
+</li>
+<li><p><strong>Player trace</strong> — not audio. Synthesized from <code>integrity</code> + <code>lucidity</code>
 (the two meters about the player&#39;s own honesty, not the NPC&#39;s feelings —
 deliberately the <em>other</em> two, so this doesn&#39;t just repeat what the NPC
 trace already shows via mood). Combined into a 0–1 &quot;clarity&quot; score
@@ -3744,8 +3998,72 @@ noise and irregular amplitude — a real oscilloscope idiom (a noisy
 signal reads as &quot;something&#39;s wrong&quot;) doing actual narrative work rather
 than inventing a new visual language. Deliberately not Truth Debt —
 that already has its own readout (the DEBT counter), and folding it in
-here would blur two clean axes into three fighting for the same line.</li>
+here would blur two clean axes into three fighting for the same line.</p>
+</li>
 </ul>
+<p><strong>Trace interaction — coherence (built).</strong> The two traces used to just
+share a canvas without affecting each other — flagged as the next
+design-pass item once the confrontation chord shipped. Fixed without
+collapsing the two axes back into one: the player trace&#39;s own two
+drawing parameters (its color, its frequency) are driven by a <em>third</em>,
+derived value —</p>
+<pre><code>consonance = 1 - getDissonance()               // the NPC axis (chord)
+clarity    = (integrity + lucidity) / 20       // the player&#39;s own axis
+coherence  = min(consonance, clarity)
+</code></pre>
+<p><code>min</code>, not an average — one side genuinely falling apart (the NPC&#39;s
+trust curdling, or the player lying to themselves) should be able to
+break the picture even while the other axis still looks fine. A real
+example from testing: a comforting lie on Deborah&#39;s opening node raises
+trust+stability a lot (dissonance falls, consonance rises toward 0.78)
+but costs 2 integrity (clarity falls to 0.4) — coherence still reads
+0.4, following the newly-worse axis, not an optimistic average of the
+two.</p>
+<p><code>coherence</code> drives two things, both pure drawing parameters — no new
+Web Audio nodes, nothing added to the real output chain:</p>
+<ul>
+<li><strong>Beat-interference.</strong> The player trace&#39;s cycle count is
+<code>PLAYER_CYCLES + (1 - coherence) * BEAT_DETUNE_CYCLES</code> (3 to 3.6).
+<code>PLAYER_CYCLES</code> is a whole number, so at full coherence the wave
+repeats identically frame to frame — visually locked. Detuning it away
+from that integer means the spatial pattern no longer closes up the
+same way each frame, so it drifts against the NPC trace&#39;s own shape
+instead of holding a fixed relationship to it — the same broad
+impression a real beat gives (two rates sliding in and out of
+alignment). This is evocative, not literal: the NPC trace is real
+analyser data at whatever frequency is actually playing, the player
+trace is a synthesized sine on a completely different sampling and
+timescale, so there&#39;s no meaningful &quot;frequency&quot; to match between them
+exactly — the detune is the honest way to gesture at the same idea.</li>
+<li><strong>Color blend.</strong> The player trace&#39;s own blue shifts up to 40% toward
+the NPC&#39;s color above coherence 0.5, and up to 40% toward the same red
+the NPC trace itself clashes into when dissonant (see above) below
+0.5. Capped at 40% either direction on purpose — the player trace has
+to stay legible as a second, distinct signal even at the extremes,
+never literally becoming the NPC&#39;s color or pure alarm-red.</li>
+</ul>
+<p>Deliberately not real signal mixing (player clarity as an actual filter
+on the NPC&#39;s live audio) — that was the doc&#39;s other floated direction,
+rejected because it would make an audibly-real change to the master mix
+just to represent something that&#39;s supposed to be a visual response, and
+because the player trace being &quot;not audio&quot; is a standing architectural
+choice (see above), not an oversight to fix.</p>
+<p>Verified in Node across the full <code>coherence</code> grid before touching the
+browser: both endpoints exact (coherence 1 → cycles 3, zero blend;
+coherence 0 → cycles 3.6, full 40% blend toward red), no discontinuity
+at the 0.5 color-target switch (largest single-step RGB channel jump
+across a full sweep: 2), and <code>min</code> confirmed order-independent (a great
+NPC relationship with a terrible player, and a terrible NPC relationship
+with an honest player, produce the identical worst-case visual). Then
+live: sampled the actual canvas pixels at a fresh encounter&#39;s neutral
+open (stats 5/5, mood 0) and got <code>(81,215,255)</code> against a predicted
+zero-blend base of <code>(79,214,255)</code> — confirming the neutral starting
+stats and the neutral chord independently land on the same coherence
+midpoint (0.5) by construction, not by coincidence, since resolution 0
+and clarity 0.5 are each this system&#39;s own definition of &quot;undecided.&quot;
+After a real truth swipe on Deborah&#39;s opening node the sampled color
+shifted to <code>(123,175,231)</code>, moving clearly toward the predicted red
+target in both direction and rough magnitude.</p>
 <p>Both traces share the same canvas and midline rather than splitting the
 screen — a real dual-trace scope overlays channels. The player trace gets
 a narrower amplitude band (<code>PLAYER_AMPLITUDE_RATIO</code>, 18% of height) so it
@@ -3946,6 +4264,41 @@ playthroughs with hand-computed stat paths — one driving trust down to 1
 before Rick (confirmed <code>rick_shut_down</code>&#39;s exact prompt rendered), one
 keeping trust at a healthy 7 (confirmed <code>rick_01</code>&#39;s normal prompt
 rendered) — both matching the Node predictions exactly.</p>
+<h2 id="doc-stat_math--regression-found-live-whole-game-black-after-enter"><a class="anchor" href="#doc-stat_math--regression-found-live-whole-game-black-after-enter" aria-label="Link to this section">#</a>Regression, found live: whole game black after ENTER</h2>
+<p><strong>Reported:</strong> &quot;game fails to load on browsers and goes black.&quot; Not a load
+failure — every playthrough was hitting it, right after the title
+screen&#39;s ENTER transition, on every browser.</p>
+<p><strong>Root cause:</strong> <code>shell/fx.js</code>&#39;s <code>fadeToBlack()</code> (used once, by
+<code>main.js</code>&#39;s <code>beginTransition()</code> — the fade-out-jingle-then-navigate that
+runs on every ENTER/SKIP/REPLAY) appends a full-screen black overlay
+(<code>opacity: 0 → 1</code>, <code>z-index: 998</code>) directly onto <code>canvasEl</code> and never
+removes it. That was harmless under the old architecture, where
+<code>canvasEl</code> was wiped wholesale by every scene&#39;s teardown. The HUD commit
+(<code>c4241ec</code>, <code>docs/HANDOFF.md</code>&#39;s &quot;settings menu + fast-forward&quot;) split
+<code>main.js</code>&#39;s <code>dx-canvas</code> into a <strong>permanent</strong> outer shell (hosting the
+settings gear/fast-forward buttons) plus an inner <code>dx-stage</code> that scenes
+still wipe on their own re-renders — but <code>fadeToBlack()</code>&#39;s overlay is a
+sibling of <code>dx-stage</code>, appended to the now-permanent shell, so nothing
+ever cleaned it up again. First ENTER of any session left it parked at
+opacity 1, on top of everything, forever. The scenes underneath kept
+rendering correctly the whole time — confirmed via <code>dx-stage.innerHTML</code>
+still holding real content (the IT intro popup&#39;s actual text) while the
+screen showed solid black.</p>
+<p><strong>Fix:</strong> <code>complete()</code> inside <code>fadeToBlack()</code> now removes the overlay
+after calling <code>onComplete()</code>. Since <code>onComplete</code> navigates via
+<code>location.hash =</code>, which re-renders <code>dx-stage</code> on the async <code>hashchange</code>
+event rather than synchronously, the removal is deferred two
+<code>requestAnimationFrame</code>s so the new scene is already painted before the
+overlay lifts — otherwise the old scene would flash underneath for a
+frame first.</p>
+<p><strong>Verified:</strong> reproduced live on the deployed site (<code>dx-canvas</code>&#39;s
+children included a bare <code>&lt;div&gt;</code> at <code>opacity: 1</code>, confirmed via
+<code>getComputedStyle</code>, sitting above <code>dx-stage</code> — which itself still had
+the IT popup&#39;s full markup and text). Rebuilt locally, cleared
+<code>localStorage</code>, played ENTER → title fade → chapter start end to end:
+<code>dx-canvas</code>&#39;s children after navigation no longer include the overlay
+div at all (fully removed, not just hidden), and the IT popup rendered
+on screen exactly as its DOM already said it should.</p>
 <h2 id="doc-stat_math--build-order"><a class="anchor" href="#doc-stat_math--build-order" aria-label="Link to this section">#</a>Build order</h2>
 <ol>
 <li><del>Emotional Lean + ending epilogue</del> — done.</li>
@@ -4209,7 +4562,7 @@ End) need the same mapping decision before they can be assigned to scenes.</p>
     </article>
 <article class="doc" id="doc-it_design" data-title="IT — Design Document" data-file="IT_DESIGN.md" hidden>
       <p class="doc-source">Planning · <code>docs/IT_DESIGN.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-it_design--what-it-is">What IT Is</a></li><li><a href="#doc-it_design--how-it-works">How IT Works</a></li><li><a href="#doc-it_design--voice-profile-by-class">Voice Profile by Class</a></li><li><a href="#doc-it_design--where-it-appears">Where IT Appears</a></li><li><a href="#doc-it_design--it-is-the-hint-system">IT is the hint system</a></li><li><a href="#doc-it_design--visual-identity">Visual Identity</a></li><li><a href="#doc-it_design--the-mk2-intro-lines-it39s-first-appearance">The MK2 Intro Lines (IT&amp;#39;s First Appearance)</a></li><li><a href="#doc-it_design--what-was-built">What Was Built</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-it_design--so-the-doubt-rebuttal-built">SO — the doubt rebuttal (built)</a></li><li><a href="#doc-it_design--what-it-is">What IT Is</a></li><li><a href="#doc-it_design--how-it-works">How IT Works</a></li><li><a href="#doc-it_design--voice-profile-by-class">Voice Profile by Class</a></li><li><a href="#doc-it_design--where-it-appears">Where IT Appears</a></li><li><a href="#doc-it_design--it-is-the-hint-system">IT is the hint system</a></li><li><a href="#doc-it_design--visual-identity">Visual Identity</a></li><li><a href="#doc-it_design--the-mk2-intro-lines-it39s-first-appearance">The MK2 Intro Lines (IT&amp;#39;s First Appearance)</a></li><li><a href="#doc-it_design--what-was-built">What Was Built</a></li></ul></nav>
       <h1 id="doc-it_design--it-design-document"><a class="anchor" href="#doc-it_design--it-design-document" aria-label="Link to this section">#</a>IT — Design Document</h1>
 <p>Last updated: 2026-08-04.</p>
 <p><strong>Status (2026-09-06): every trigger this doc originally listed is built.</strong>
@@ -4245,6 +4598,69 @@ exercise the class/emotion/threshold splits, not final writing. What&#39;s
 left, and it&#39;s a content job now, not an engineering one: writing real
 prose in place of every placeholder line, and deciding whether IT should
 also become the hint system (see below — separately still unbuilt).</p>
+<hr>
+<h2 id="doc-it_design--so-the-doubt-rebuttal-built"><a class="anchor" href="#doc-it_design--so-the-doubt-rebuttal-built" aria-label="Link to this section">#</a>SO — the doubt rebuttal (built)</h2>
+<p>Grew out of noticing that two of IT&#39;s triggers — bloom events and the
+post-swipe dominant-emotion read — read as repetitive over a real
+playthrough, in a way more placeholder prose wouldn&#39;t actually fix: the
+dominant-emotion line especially reads off a <em>cumulative</em> tally that
+rarely flips once established, so the exact same sentence can fire
+verbatim after two, three, even four different NPCs in one sitting.</p>
+<p>The fix wasn&#39;t more IT lines. It&#39;s a second voice.</p>
+<p><strong>What SO is, psychologically.</strong> Not a comforting counterpart — a comforting
+voice still takes a side (it&#39;s fine, don&#39;t worry), which is a different
+failure mode than the one this fixes. SO is grounded in <strong>doubt</strong> as it
+actually shows up clinically: historically OCD was called <em>&quot;folie du
+doute,&quot;</em> the doubting disease — the hallmark isn&#39;t a specific belief, it&#39;s
+that nothing gets to resolve, in either direction. You can&#39;t trust your
+own read of what just happened, whichever way that read was leaning. SO&#39;s
+job is to make sure IT&#39;s claim never gets to stand unquestioned — not by
+arguing the opposite conclusion, but by undermining the very confidence
+IT just asserted.</p>
+<p>Named as a pair with IT on purpose: two words with no fixed referent, one
+stating with dread-certainty, one that trails off without committing to
+anything (<em>&quot;so?&quot;</em>, <em>&quot;or so&quot;</em>) — the pairing itself is meant to read as
+&quot;is, or so,&quot; never a clean verdict either way. Whichever way the player
+reads a moment, one of the two voices is right there undercutting it.</p>
+<p><strong>Where it fires — narrower than &quot;every IT appearance,&quot; deliberately.</strong>
+SO&#39;s <em>systematic</em> trigger only answers <code>dialogScene.js</code>&#39;s two
+pattern-reading moments: bloom events and the dominant-emotion read
+(<code>engine/soRebuttals.js</code>&#39;s <code>SO_BLOOM_TEXT</code> and <code>soEmotionLeanText()</code>,
+chained onto IT&#39;s own popup via <code>showItThenSo()</code>). Those two were the
+ones actually causing the repetition complaint that motivated SO in the
+first place — a running read that keeps re-firing, not a one-off line.</p>
+<p>The one exception is hand-authored, not systemic: the chapter&#39;s opening
+(<code>content/it_intro.json</code>) now ends with a scripted three-beat exchange —
+IT: <em>&quot;Either way, you&#39;re stuck with me.&quot;</em> / SO: <em>&quot;Stuck? Big talk, for
+something that just got here same as I did.&quot;</em> / IT: <em>&quot;Fuck off. This
+one&#39;s mine.&quot;</em> This is the one place a manuscript beat can set
+<code>voice: &#39;so&#39;</code> directly (<code>cutsceneScene.js</code>&#39;s generic <code>it</code> beat sequencer,
+not dialogScene.js&#39;s own trigger plumbing) — it exists to <em>teach</em> the
+player these two voices argue before either one shows up quietly later,
+and to establish that IT is territorial about the player&#39;s head, not just
+detached and clinical. It is not a rule that the intro always gets a SO
+beat; it&#39;s one specific authored moment, same as any other cutscene beat.</p>
+<p>SO otherwise stays out of the pre-confrontation line, the Reckoning, and
+the ending — the ending&#39;s IT line is documented above as <em>&quot;the actual
+last word of the chapter,&quot;</em> deliberately unanswered, and extending SO
+there would directly undo that. Those remain one-off narrative beats, not a
+running read SO has anything to argue with.</p>
+<p><strong>How it fires.</strong> <code>showItThenSo(itText, soText, onClose)</code> shows IT first
+(<code>flashClose: true</code>, signaling one more is coming — the same convention a
+multi-beat IT sequence already used), and only shows SO once IT is
+dismissed. SO never fires on its own schedule; it&#39;s a reaction, not an
+announcement, which matches the real thing better anyway — doubt follows
+a thought, it doesn&#39;t arrive first.</p>
+<p><strong>Visual treatment.</strong> SO doesn&#39;t get new art — <code>createItPopup</code>&#39;s new
+<code>voice: &#39;so&#39;</code> option applies <code>.dx-it-box--so</code> (<code>scenes.css</code>), which
+inverts the box&#39;s own colors (white-on-black becomes black-on-white) and
+runs the existing icon through <code>filter: invert(1)</code>. SO is IT&#39;s own box
+turned inside out, not a second character with a second visual language —
+which is also the cheapest way to make two voices read as distinct
+without a second art asset.</p>
+<p><strong>Content.</strong> <code>engine/soRebuttals.js</code> — one rebuttal per existing IT line
+(12 bloom lines, 12 dominant-emotion lines), same placeholder-prose bar as
+the tables it answers.</p>
 <hr>
 <h2 id="doc-it_design--what-it-is"><a class="anchor" href="#doc-it_design--what-it-is" aria-label="Link to this section">#</a>What IT Is</h2>
 <p>IT is not a character. IT is the player&#39;s inner dialog — invasive thoughts,
