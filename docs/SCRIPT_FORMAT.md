@@ -142,7 +142,12 @@ changes.
 - `REVEAL: meters after node_id` / `REVEAL: debt after node_id` — in the
   file header. Keeps the four meters (or the debt box) off screen until
   that node has been answered, so the NPC can introduce them. Debt also
-  shows early the moment it goes above 0.
+  shows early the moment it goes above 0. When it appears, it's
+  spotlit (everything else dims) along with the NPC's reaction line, so
+  write that reaction to be the line that introduces it.
+- `SPOTLIGHT: wheel, card` — inside a node. Before a feeling is picked,
+  the screen dims except the wheel and the prompt. After a pick, it dims
+  except the card and the `PICK` line. Use either one or both.
 - `=== OUTRO` — a section after the last node, played once the NPC's
   last reaction is done. Each line is one beat:
   - `LINE: text` — the NPC speaks (tap to continue)

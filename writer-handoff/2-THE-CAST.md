@@ -16,9 +16,13 @@ it's the fastest shorthand for who you're writing.
 
 ## 🟣 THERAPIST — the tutorial
 
-**Never seen.** A voice through the app on your phone. Tired but warm,
-overworked, genuinely listening. You can hear a chart open on her end and
-another call already waiting.
+**Never seen.** A voice through the app on your phone. She's an LCSW
+(licensed clinical social worker) at a community clinic: 40+ clients,
+back-to-back calls, typing her notes while you talk. She's also somehow
+a guru. She speaks in small aphorisms, like something off a meditation
+retreat ("Weather, not a verdict"), then her actual day pulls her back
+("then I have to take my two o'clock"). Tired but warm, never cruel. The
+wisdom is real, and so is the caseload.
 
 She teaches the whole game without explaining any of it — you learn what
 swiping left does by feeling how she takes it. **Never let her explain a

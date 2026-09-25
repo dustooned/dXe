@@ -34,6 +34,10 @@ One JSON file per NPC, e.g. `content/deborah.json`:
   Replaces the end-of-encounter emotion-lean IT read. From `=== OUTRO`.
 - A node can also carry `picks` — `{ [emotion]: text }`, shown under the
   prompt when that feeling is picked. From `PICK Emotion:` lines.
+- A node can also carry `spotlight` — `['wheel', 'card']` (either or
+  both): the tutorial vignette (`ui/spotlight.js`) over the wheel before
+  a pick, over the card after one. From a `SPOTLIGHT:` line. A `reveal`'d
+  HUD piece is spotlit automatically on its first appearance.
 
 ## Node
 

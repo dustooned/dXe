@@ -19,6 +19,7 @@ import { emotionColor, emotionsForClass, getDominantEmotion } from '../engine/lo
 import { createSwipeCard } from '../ui/swipeCard.js';
 import { createDebtSigil } from '../ui/debtSigil.js';
 import { createOscilloscope } from '../ui/oscilloscope.js';
+import { createSpotlight } from '../ui/spotlight.js';
 import * as fx from '../shell/fx.js';
 import * as audio from '../shell/audio.js';
 
@@ -59,6 +60,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // Set by a wedge pick, consumed by the next render — makes the swipe card
   // wiggle once, pointing at it as the next thing to touch.
   let justPicked = false;
+  // The tutorial vignette currently darkening everything but what she's
+  // talking about (ui/spotlight.js). Rebuilt per render like everything else.
+  let spotlight = null;
   // Nodes answered in *this* encounter — drives npc.reveal (a HUD piece
   // stays hidden until its node is answered) — and which HUD pieces have
   // already played their one-time reveal animation.
@@ -108,16 +112,29 @@ export function mount(stageEl, scene, { run, onComplete }) {
   function isRevealed(kind) {
     const gateNode = npc.reveal?.[kind];
     if (!gateNode || answered.has(gateNode)) return true;
-    return kind === 'debt' && run.get().truthDebt > 0;
+    // Not during SAY: the reveal belongs to her reaction, where she's the
+    // one pointing at it.
+    return kind === 'debt' && run.get().truthDebt > 0 && stage !== 'say';
   }
 
+  // Returns true when this render is the piece's first appearance — the
+  // caller spotlights it for exactly that one beat.
   function applyReveal(el, kind) {
     if (!isRevealed(kind)) {
       el.classList.add('is-concealed');
     } else if (npc.reveal?.[kind] && !revealAnimated.has(kind)) {
       revealAnimated.add(kind);
       el.classList.add('is-revealing');
+      return true;
     }
+    return false;
+  }
+
+  // The node was answered and her reaction is starting — the point where
+  // REVEAL'd HUD pieces tied to this node come in.
+  function enterReaction() {
+    answered.add(currentNodeId);
+    stage = 'reaction';
   }
 
   function render() {
@@ -126,6 +143,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
     typewriter = null;
     pickTypewriter?.destroy();
     pickTypewriter = null;
+    spotlight?.destroy();
+    spotlight = null;
+    // HUD pieces making their first appearance this render (see applyReveal).
+    const spotlitHud = [];
     oscilloscope?.destroy();
     oscilloscope = null;
     // Only stops a lingering hover preview, not the select drone — see
@@ -159,7 +180,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     screen.appendChild(content);
 
     const meters = createMeterGroup(runState).el;
-    applyReveal(meters, 'meters');
+    if (applyReveal(meters, 'meters')) spotlitHud.push(meters);
     content.appendChild(meters);
 
     const portrait = createNpcPortrait(npc.npc, npc.accentColor, npc.portrait);
@@ -224,7 +245,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       screen.addEventListener('click', () => {
         if (typewriter && !typewriter.isDone()) typewriter.finish();
         else {
-          stage = 'reaction';
+          enterReaction();
           render();
         }
       });
@@ -329,7 +350,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
           interactive.hidden = false;
           // Wheel and card fade in the first time they appear on a node,
           // not on every re-render a pick triggers.
-          if (!wasRevealed) interactive.classList.add('is-entering');
+          if (!wasRevealed) {
+            interactive.classList.add('is-entering');
+            spotlightInteractive();
+          }
         },
         startRevealed: promptRevealed,
       });
@@ -341,9 +365,39 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
 
     const sigil = createDebtSigil(runState.truthDebt).el;
-    applyReveal(sigil, 'debt');
+    if (applyReveal(sigil, 'debt')) spotlitHud.push(sigil);
     content.appendChild(sigil);
     stageEl.appendChild(screen);
+
+    // A HUD piece's first appearance is spotlit together with the line
+    // introducing it (her reaction), for as long as that beat lasts.
+    if (spotlitHud.length) {
+      const words = content.querySelector('.dx-reaction');
+      spotlight = createSpotlight(screen, [...spotlitHud, words]);
+    }
+    if (stage === 'prompt' && promptRevealed) spotlightInteractive();
+  }
+
+  // SPOTLIGHT: on a node — before a pick, the wheel (plus her prompt, so
+  // "see the three lighting up?" stays readable); after one, the card (plus
+  // her read of the pick). Once the node is answered this never runs again,
+  // so it's a first-time-only teaching beat, not permanent chrome.
+  function spotlightInteractive() {
+    const wants = currentNode()?.spotlight ?? [];
+    const screen = stageEl.querySelector('.dx-game-screen');
+    if (!screen) return;
+    let targets = null;
+    if (!activeEmotion && wants.includes('wheel')) {
+      targets = [dartboard?.el, screen.querySelector('.dx-prompt')];
+    } else if (activeEmotion && wants.includes('card')) {
+      targets = [
+        screen.querySelector('.dx-swipe-card-wrap'),
+        screen.querySelector('.dx-pick-line') ?? screen.querySelector('.dx-prompt'),
+      ];
+    }
+    if (!targets) return;
+    spotlight?.destroy();
+    spotlight = createSpotlight(screen, targets);
   }
 
   function handleSwipe(swipeKey) {
@@ -358,7 +412,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // Which way each node went, for anything later that reads it back —
     // today an outro beat's [node=truth|lie] condition.
     run.set({ choices: { ...before.choices, [currentNodeId]: swipeKey } });
-    answered.add(currentNodeId);
 
     // How this specific choice actually landed with the NPC — trust and
     // stability are their rapport/comfort with you, not a right-or-wrong
@@ -378,7 +431,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     pendingEdge = edge;
     reactionEmotion = activeEmotion;
     reactionSwipeKey = swipeKey;
-    stage = edge.playerText ? 'say' : 'reaction';
+    if (edge.playerText) stage = 'say';
+    else enterReaction();
 
     const magnitude =
       Object.values(edge.effects || {}).reduce((sum, v) => sum + Math.abs(v), 0) +
@@ -557,6 +611,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   return function unmount() {
     typewriter?.destroy();
     pickTypewriter?.destroy();
+    spotlight?.destroy();
     itPopup?.destroy();
     oscilloscope?.destroy();
     dartboard?.destroy();

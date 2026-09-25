@@ -78,7 +78,20 @@ first time:
    dream answer, HANGUP (screen dims, her music stops), then IT → SO,
    also by dream answer.
 
-Engine pieces, all generic and opt-in per NPC: `PICK`/`REVEAL`/`=== OUTRO`
+Each piece is **spotlit** as it's introduced: a black vignette mask
+(`ui/spotlight.js`, a blurred SVG mask with holes) dims everything except
+the thing she's talking about plus her line about it. The order is wheel,
+then card, then meters, then debt. It's visual only
+(`pointer-events: none`), so it never blocks input.
+
+**Who she is:** an LCSW (licensed clinical social worker) at a community
+clinic: a 40+ caseload, back-to-back telehealth, typing notes while you
+talk. She's also somehow a guru who speaks in small aphorisms ("Weather,
+not a verdict"), then gets pulled back by her actual day ("then I have to
+take my two o'clock"). The wisdom is real, and so is the caseload. The
+voice notes are at the top of `manuscript/therapist.txt`.
+
+Engine pieces, all generic and opt-in per NPC: `PICK`/`REVEAL`/`SPOTLIGHT`/`=== OUTRO`
 manuscript lines (`SCRIPT_FORMAT.md`), `run.choices` (nodeId → truth/lie),
 IT popups dismiss on any tap, and touch-and-hold on a wheel wedge to hear
 its tone without picking it (`feelzDartboard.js`'s `HOLD_MS`).

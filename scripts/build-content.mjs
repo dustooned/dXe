@@ -142,6 +142,12 @@ function parseManuscript(text, fileName) {
         throw new Error(`${fileName}:${lineNumber}: bad PICK line "${raw}"`);
       }
       currentNode.picks = { ...currentNode.picks, [match[1]]: parseText(match[2]) };
+    } else if (line.startsWith('SPOTLIGHT:')) {
+      const parts = line.slice(10).split(',').map((s) => s.trim()).filter(Boolean);
+      if (!parts.length || parts.some((p) => p !== 'wheel' && p !== 'card')) {
+        throw new Error(`${fileName}:${lineNumber}: bad SPOTLIGHT line "${raw}" (expected wheel and/or card)`);
+      }
+      currentNode.spotlight = parts;
     } else if (line.startsWith('PROMPT:')) {
       currentNode.prompt = parseText(line.slice(7));
     } else if (line.startsWith('GATE:')) {

@@ -8,11 +8,11 @@
       "id": "therapist_01",
       "npc": "THERAPIST",
       "location": 1,
-      "prompt": "The screen lights up. A voice, tired but warm, cuts through the ringing in your ears. \"You're still there? Okay. Good.\"\n\"See the three lighting up? Those are the ones you reach for. The rest are still there. You just don't pick them up much.\"\n\"So. How are you walking in today? Don't think about it. Just point.\"",
+      "prompt": "The screen lights up. A voice, tired but warm, cuts through the ringing in your ears. Keys clacking somewhere behind it. \"You're still there? Okay. Good. I've got you until the top of the hour.\"\n\"See the three lighting up? Those are the ones you reach for. The rest are still there. You just don't pick them up much.\"\n\"So. How are you walking in today? Don't think about it. Just point.\"",
       "swipes": {
         "truth": {
           "playerText": "Not great. I woke up on the side of the road.",
-          "npcReaction": "\"Okay. Thank you.\" Somewhere on her end, a pen starts moving. \"I keep four little lines on you. You'll see them move. They're not a grade. Just how today is sitting on you.\"",
+          "npcReaction": "\"Okay. Thank you.\" The keys keep going; she types while you talk, the way you learn to with forty people on your caseload. \"I keep four little lines on you. You'll see them move. They're not a grade. Weather, not a verdict.\"",
           "effects": {
             "trust": 1,
             "lucidity": 1,
@@ -25,7 +25,7 @@
         },
         "lie": {
           "playerText": "Fine. I'm fine.",
-          "npcReaction": "\"Fine.\" The pen moves anyway. \"I keep four little lines on you. They move whether you tell me the truth or not.\" A pause. \"And that little box in the corner? That one's yours, not mine.\"",
+          "npcReaction": "\"Fine.\" The keys don't stop. \"Everyone's fine. My whole caseload is fine.\" A tired almost-laugh. \"I keep four little lines on you. They move whether you tell me the truth or not. And that little box? That one's yours, not mine.\"",
           "effects": {
             "stability": 1,
             "trust": -1
@@ -38,26 +38,30 @@
           "nextNodeId": "therapist_02"
         }
       },
+      "spotlight": [
+        "wheel",
+        "card"
+      ],
       "picks": {
-        "Joy": "\"Bright. Maybe brighter than the morning's earned. Okay.\"",
-        "Trust": "\"Open hands. I'll try to deserve that.\"",
-        "Fear": "\"Small and quick. Like something under a porch. Okay.\"",
-        "Surprise": "\"Caught mid-step. That's allowed.\"",
-        "Sadness": "\"Low tide. I see it.\"",
-        "Disgust": "\"Something you'd rather spit out. Noted.\"",
+        "Joy": "\"Bright. The sun doesn't ask permission either. Okay.\"",
+        "Trust": "\"Open hands. Hard to hold anything that way. Hard to drop anything, too.\"",
+        "Fear": "\"Small and quick. Like something under a porch. It can stay there a while.\"",
+        "Surprise": "\"Caught mid-step. Most of life is. Okay.\"",
+        "Sadness": "\"Low tide. It always comes back in.\"",
+        "Disgust": "\"Something you'd rather spit out. Your body's smarter than your mouth. Noted.\"",
         "Anger": "\"That one runs hot. Hold it a second before you use it.\"",
-        "Anticipation": "\"Leaning forward already. Okay.\""
+        "Anticipation": "\"Leaning forward already. The lake isn't going anywhere.\""
       }
     },
     "therapist_02": {
       "id": "therapist_02",
       "npc": "THERAPIST",
       "location": 1,
-      "prompt": "\"One more, then I'll let you go.\" A beat. \"What happened in the {color:Anticipation}dream{/color}?\"",
+      "prompt": "\"One more, then I have to take my two o'clock.\" A beat. \"What happened in the {color:Anticipation}dream{/color}?\"",
       "swipes": {
         "truth": {
           "playerText": "I don't know. Water. Something underneath it. I couldn't breathe.",
-          "npcReaction": "A pause. Then, quieter: \"Thank you for telling me that. Most people give me the short version.\" A soft click, a chart opening on her end. \"See the box in the corner? It stays light when you don't have to remember what you told people.\"",
+          "npcReaction": "A pause. Then, quieter: \"Thank you. Most people give me the short version.\" A soft click, a chart opening. \"See that box? It stays light when you don't have to remember what you told people. Nothing weighs less than the truth. Nothing costs more up front, either.\"",
           "effects": {
             "integrity": 2,
             "lucidity": 2,
@@ -71,7 +75,7 @@
         },
         "lie": {
           "playerText": "Nothing, really. I don't remember.",
-          "npcReaction": "\"Mm-hm.\" A pause just a beat too long. \"We can leave it there for today.\" Another soft click. \"You'll notice the box in the corner keeps count. It's fine. Everyone carries some.\"",
+          "npcReaction": "\"Mm-hm.\" A pause just a beat too long. \"We can leave it there. I'll write 'client deferred.' I write that a lot.\" Another soft click. \"That box keeps count. It's fine. Everyone carries some. The trick is noticing the weight.\"",
           "effects": {
             "integrity": -1,
             "stability": 1,
@@ -94,21 +98,25 @@
   "outro": [
     {
       "kind": "line",
-      "text": "\"Homework. Four people live around the lake. Each of them is holding something that belongs to you. Don't take it back. Just find out what it is.\"",
+      "text": "\"I give everyone homework. Almost nobody does it. Here's yours anyway.\""
+    },
+    {
+      "kind": "line",
+      "text": "\"Four people live around the lake. Each of them is holding something that belongs to you. Don't take it back. Just find out what it is.\"",
       "when": {
         "class": "Guns"
       }
     },
     {
       "kind": "line",
-      "text": "\"Homework. The lake remembers every word said near it. By tonight it'll know you. Decide what you want it to know.\"",
+      "text": "\"The lake remembers every word said near it. By tonight it'll know you. Decide what you want it to know.\"",
       "when": {
         "class": "Bible"
       }
     },
     {
       "kind": "line",
-      "text": "\"Homework. Go talk to the water. It'll answer in four voices. Write down which ones sound like you.\"",
+      "text": "\"Go talk to the water. It'll answer in four voices. Write down which ones sound like you.\"",
       "when": {
         "class": "Crystals"
       }
@@ -135,7 +143,7 @@
     },
     {
       "kind": "hangup",
-      "text": "The call ends. FEELZ goes dark in your hand, and the lake is very quiet."
+      "text": "The call ends mid-sentence, the way her calls do. FEELZ goes dark in your hand, and the lake is very quiet."
     },
     {
       "kind": "it",

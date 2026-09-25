@@ -427,3 +427,23 @@
     animation: none;
   }
 }
+
+/* Tutorial spotlight (ui/spotlight.js): sits over the dialog content,
+   under IT popups (.dx-it-screen is z-index 500), never takes input. */
+.dx-spotlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  pointer-events: none;
+  animation: dx-spotlight-in 0.5s ease-out;
+}
+
+@keyframes dx-spotlight-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-spotlight { animation: none; }
+}
