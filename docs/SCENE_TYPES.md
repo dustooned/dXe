@@ -76,10 +76,10 @@ player most needs to actually read. It used to advance itself after 2.2s,
 which cut off longer reactions mid-read.
 
 **Reactions answer the FEELZ wheel.** The authored `npcReaction` is joined
-with a coda from `engine/reactions.js`, a shared table keyed by
-`[emotion][truth|lie]` — 8 emotions × 2 sides, one table for the whole
-game. This is why an NPC needs no extra authoring to respond to all 8
-emotions, and why adding an NPC doesn't mean writing 16 more variants.
+with a coda from `engine/reactions.js`, a per-NPC table keyed by
+`[emotion][truth|lie]` — 8 emotions × 2 sides, voiced in that character's
+own imagery. A new NPC falls back to the `DEFAULT` table until it has
+its own, so it needs no extra authoring to respond to all 8 emotions.
 
 Codas describe **delivery** — how the line left you — never whether the
 choice was right. That's the same rule the fx intensity follows: weight,
@@ -97,20 +97,31 @@ it resumes exactly what `advance()` would otherwise have done immediately:
 the force-to-Reckoning jump at debt 10 still happens, just after the
 popup's been dismissed rather than instead of it.
 
-**The end of each NPC's encounter fires a second, independent IT
-interrupt** — the player's FEELZ pattern, not their debt. `handleSwipe()`
-tallies every pick into `run.emotionCounts` (never reset — a run-wide
-lean, not a per-NPC one); when an NPC's node graph ends (`edge.nextNodeId`
-is `null`), `proceed()` calls `engine/loadout.js`'s `getDominantEmotion()`
-and shows the matching line from `engine/itEmotionLean.js`, skipping
-entirely below 2 total picks (a single data point isn't a lean — this is
-also what excludes the Therapist without naming her specifically). A
-genuine tie resolves to a `neutral` line per class, written calmer and
-more detached than the emotion-specific ones on purpose, not a coin flip
-between two equally-true reads. This and the bloom interrupt above can
-both fire on the same closing swipe — bloom shows first (it's tied to
-*that* swipe), the emotion read shows after (it's about the whole
-encounter), each closed independently before the scene actually advances.
+**The end of each NPC's encounter can fire an IT/SO "finding"** — but only
+when something new was noticed (`showFindingIfAny()`, `engine/itFindings.js`):
+this encounter leaned the other way on truth vs. lie than the last
+leaning one (`run.itLastSide`), or the run-wide dominant FEELZ emotion
+(`run.emotionCounts`, never reset) changed since IT last read it
+(`run.itLastLean`; lines in `engine/itEmotionLean.js`). At most one per
+encounter, none if a bloom already interrupted it, none below 2 total
+picks. An NPC with an `outro` skips this entirely; the outro is its
+closing IT moment.
+
+**The lake gauge.** Truth Debt shows as `ui/lakeGauge.js` at the bottom of
+the screen (water-quality chart + fish tank, `engine/lake.js`). Once it's
+on screen, each reaction also plays `audio.playLakeSplash(debt)`, pitched
+by the water's quality.
+
+**Tutorial extras (opt-in per NPC; only the Therapist uses them).**
+From manuscript lines (`SCRIPT_FORMAT.md`): `picks` (a line under the
+prompt when a feeling is picked), `reveal` (meters/lake hidden until a
+named node is answered, then faded in at that node's reaction),
+`spotlight` (`ui/spotlight.js`: a black vignette over everything but the
+wheel, then the card, then any HUD piece making its first appearance,
+plus the line introducing it), and `outro` (LINE/HANGUP/IT/SO beats after
+the last node, filtered by class and `run.choices`). Every swipe records
+`run.choices[nodeId] = 'truth'|'lie'`, and picking a feeling wiggles the
+card (`swipeCard.nudge()`) for every NPC.
 
 ### `questionnaire` (`src/scenes/questionnaireScene.js`)
 
@@ -171,7 +182,12 @@ anywhere skips ahead immediately. The dramatic flash/shake/sting
 (`ENDING_INTENSITY`) fires at mount, i.e. right as this phase appears.
 
 **Phase 2 — typewriter text.** Title renders instantly (a banner, not
-part of the draw); the ending's body text plus the epilogue line (see
+part of the draw). Under it, the payoff for the lake: "FINAL READING" and
+the large lake gauge (`createLakeGauge(debt, { large: true })`, with a
+splash at that pitch), then the check-in record: the player's FEELZ
+check-in answers (`run.checkIn`) set flat against what was recorded
+(lies told from `run.choices`, to how many people, and the final
+reading). Then the ending's body text plus the epilogue line (see
 `STAT_MATH.md`) are joined into one block and typewriter-drawn together
 (`ui/typewriterText.js`). A tap while drawing finishes it instantly. Once
 the text is fully drawn, one IT popup appears — the actual last word of
@@ -223,6 +239,15 @@ Inline speed markup, usable in any beat's `text` for dramatic pacing:
 | `{slow}...{/slow}` | that stretch reveals slower than normal |
 | `{fast}...{/fast}` | that stretch reveals faster than normal |
 | `{pause:250}` | a dramatic beat — no character revealed, just a 250ms gap |
+
+**Built-in art, sound and recorded choices.** A beat can name `art` (a
+key into `cutsceneScene.js`'s `ART` registry, shown above the text box;
+today `feelzSilhouette`, the glowing rainbow FEELZ wheel) and `sound` (a
+key into `SOUNDS`, played as the beat opens; today `feelzBoot`). An
+`interactive` option can carry `record: 'key'`: the chosen label is
+saved to `run.checkIn[key]`. That's how the FEELZ check-in answers reach
+the ending screen and Pastor Gabriel. Style `feelz` / `feelz-logo`
+gives the centered app-screen look. First use: `content/feelz_launch.json`.
 
 **Background beat (`image`).** A beat can carry an `image` (a path
 string, e.g. `/assets/lake-ulysses/backgrounds/prologue-lake.svg`),
@@ -358,7 +383,7 @@ notice and actively close it like an intrusive ad, but playtest feedback
 (2026-09-24) read the one screen that ignored taps as clunky, not
 intrusive. The X stays as the visible "close this" signal. Once the line
 finishes drawing, the X itself flashes (`.is-flashing`,
-reusing the debt sigil's `dx-pulse` keyframes) to signal there's another
+reusing the shared `dx-pulse` keyframes) to signal there's another
 one of these coming — except on the last beat in the sequence, where
 nothing follows it and the X stays still.
 

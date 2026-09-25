@@ -110,35 +110,43 @@ Framework-agnostic game logic:
 
 - `sceneSequencer.js` — runs a chapter's scene list (see above)
 - `cardEngine.js` — `resolveCard(state, node, swipeKey)`: applies stat
-  deltas, debt, and ledger entries for a dialog choice
-- `debtEngine.js` — Truth Debt thresholds, bloom-event triggers, lake
-  health calculation. `newlyFired` now drives an IT popup interrupt
-  (`dialogScene.js`'s `advance()`, text in `engine/itBlooms.js`) — see
-  `IT_DESIGN.md`. `lakeHealth` is still computed and stored but unread;
-  visualizing it needs art this project doesn't have yet. The
+  deltas, debt, and ledger entries for a dialog choice. Truths authored
+  `DEBT: 0` apply `TRUTH_CLEANSE` (−1) unless pinned with `0!`.
+- `debtEngine.js` — Truth Debt thresholds and bloom-event triggers.
+  `newlyFired` drives an IT popup interrupt (`dialogScene.js`'s
+  `advance()`, text in `engine/itBlooms.js`) — see `IT_DESIGN.md`. The
   Reckoning-at-10 cutoff lives in `dialogScene.js`, not here.
+- `lake.js` — Truth Debt as water quality: ppm, status, fish stage,
+  color, and `{ppm}`/`{status}` text tokens. Drives `ui/lakeGauge.js`,
+  the splash pitch, IT/SO findings and the Pastor's line choices.
 - `endingEngine.js` — ending selection from final debt
 - `reckoning.js` — builds the end-of-run "confess vs. double down" deck
   from the ledger
+- `pastor.js` — picks Pastor Gabriel's Reckoning lines from
+  `content/pastor.json` by lake status, FEELZ check-in answers and lies told
+- `itFindings.js` — IT/SO's end-of-encounter "findings" (pattern flips);
+  they only speak when something new is noticed
 
-The last four are specific to the Truth Debt gameplay pattern. A chapter
+Everything but the sequencer is specific to the Truth Debt gameplay pattern. A chapter
 that doesn't use Truth Debt (a pure mini-game, say) just doesn't import
 them — nothing forces it into this shape. `sceneSequencer.js` itself has
 no idea Truth Debt exists.
 
 ## Scene types (`src/scenes/`)
 
-The reusable scene handlers for the Truth Debt pattern: `dialogScene.js`,
-`reckoningScene.js`, `endingScene.js`. Each implements
-`mount(stageEl, scene, context) -> unmount`. Full contract, plus the
-planned `cutscene`/`minigame` shapes, in `SCENE_TYPES.md`.
+The reusable scene handlers: `cutsceneScene.js`, `questionnaireScene.js`,
+`dialogScene.js`, `minigameScene.js`, `reckoningScene.js` (Pastor
+Gabriel's baptism), `endingScene.js`. Each implements
+`mount(stageEl, scene, context) -> unmount`. Full contract in
+`SCENE_TYPES.md`.
 
 ## UI components (`src/ui/`)
 
-Small DOM-factory functions (`createSwipeCard`, `createFeelzWheel`,
-`createMeterGroup`, `createNpcPortrait`, `createDebtSigil`). Each one
-returns `{ el, ...helpers }`. Reusable across chapters and scene types;
-not required.
+Small DOM-factory functions (`createSwipeCard`, `createFeelzDartboard`,
+`createMeterGroup`, `createNpcPortrait`, `createLakeGauge`,
+`createSpotlight`, `createFeelzSilhouette`, `createItPopup`, and more).
+Each one returns `{ el, ...helpers }`. Reusable across chapters and scene
+types; not required.
 
 ## Adding a new chapter
 

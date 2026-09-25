@@ -206,41 +206,46 @@ tone; rewrite it to describe what the choice cost or bought instead.</p>
 <p><strong>Lake Ulysses</strong> is the in-fiction rebrand of a real toxic-algae lake:
 &quot;3,000 acres. A jewel,&quot; according to every sign and civic ad — and every
 few months, closed again, &quot;under control,&quot; reopened, closed again. The
-lake is a character. Its health is tracked the same way the player&#39;s
-lies are (<code>lakeHealth</code>, driven by Truth Debt), but the lake itself doesn&#39;t
-visibly change during play — that still needs art this project doesn&#39;t
-have. What Truth Debt&#39;s bloom thresholds (3/6/8/10) <em>do</em> trigger now is an
-IT interrupt: an uninvited popup, over whatever&#39;s already on screen,
-one line per class per threshold, placeholder prose exercising the class
-voice split rather than final writing (<a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a>, <code>engine/itBlooms.js</code>).
-The civic myth (&quot;the water&#39;s fine&quot;) is the game&#39;s
+lake is a character, and <strong>it&#39;s how the player sees their Truth Debt</strong>:
+a water-quality gauge at the bottom of every dialog screen, modeled on a
+real TDS (total dissolved solids) chart. It runs from clean blue (20 ppm,
+IDEAL) to swamp green (520 ppm, OVER LIMIT), with a tamagotchi fish tank
+in the corner that goes from three thriving fish to one belly-up. It&#39;s
+indifferent on purpose: a sensor readout, not a judgment. A square-wave
+water splash, pitched by the water&#39;s quality, plays after each reaction.
+Crossing a bloom threshold (3/6/8/10) also brings in an IT interrupt
+(<a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a>). The civic myth (&quot;the water&#39;s fine&quot;) is the game&#39;s
 first lie, told to the player before they&#39;ve made a single choice — the
 opening cutscene (Bob Baiter, the town&#39;s booster-councilman) is an
 <em>unchosen</em> lie, establishing the whole town&#39;s relationship to honesty
 before any NPC does.</p>
 <h3 id="doc-game_manual--feelz"><a class="anchor" href="#doc-game_manual--feelz" aria-label="Link to this section">#</a>FEELZ</h3>
-<p>FEELZ is the diegetic device for every mechanic: a phone app with a mood
-wheel, ostensibly there to help the player process what happened at the
-lake. In practice it&#39;s how the player picks an emotional lean before
-every choice (see §3). It&#39;s deliberately a little broken — &quot;janky&quot; is
-the operative word, not &quot;clean UI.&quot; The Therapist (§5) is the human voice
-behind it.</p>
+<p>FEELZ is the diegetic device for every mechanic: a therapy app on the
+player&#39;s phone, and <strong>the game&#39;s whole interface is that app</strong>. It boots
+when the phone buzzes at the end of the Prologue: a glowing rainbow
+silhouette of the FEELZ wheel and a synth chime, then a real-app-style
+check-in (two &quot;over the last 2 weeks, how often…&quot; questions, modeled on
+the PHQ-2 screening questionnaire), then &quot;matching you with care.&quot; The
+check-in answers come back at the very end, set against what actually
+happened (§3, &quot;The ending&quot;). The Therapist (§5) is the human voice behind
+the app.</p>
 <h3 id="doc-game_manual--the-loop-at-chapter-scale"><a class="anchor" href="#doc-game_manual--the-loop-at-chapter-scale" aria-label="Link to this section">#</a>The loop, at chapter scale</h3>
 <p>Chapter 1 has one fixed shape, and every future chapter is expected to
 reuse it:</p>
 <pre><code>Opening call (one continuous scene, order is load-bearing)
-  Prologue  →  Questionnaire  →  Therapist
+  Prologue  →  FEELZ boot + check-in  →  Questionnaire (intake)  →  Therapist (tutorial)
 
 Then, once per NPC (Deborah → Rwanda → Samun → Rick):
   Explore (mini-game walk)  →  Confront (pick your opener)  →  Encounter (dialog)
 
 Then:
-  Reckoning (confess or double down on your loudest lies)
-  →  Ending (one of four, picked by how much you lied)
+  Reckoning: Pastor Gabriel&#39;s baptism (confess or double down, then under the water)
+  →  Ending (one of four, picked by how dirty the lake is)
 </code></pre>
-<p><strong>Why the opening call is one unit, not three scenes.</strong> The Prologue
-ends on the player&#39;s phone buzzing. The Questionnaire&#39;s last beat hands
-off to the Therapist picking up mid-ring. Splitting or reordering these
+<p><strong>Why the opening call is one unit, not four scenes.</strong> The Prologue
+ends on the player&#39;s phone buzzing. FEELZ opens, runs its check-in, and
+matches the player with a provider. The Questionnaire is that provider&#39;s
+intake, and its last beat hands off to the Therapist picking up. Splitting or reordering these
 breaks a line that already answers a line — see
 <a href="#doc-handoff" data-doc="doc-handoff"><a class="doc-ref" href="#doc-handoff" data-doc="doc-handoff"><code>HANDOFF.md</code></a></a> if you&#39;re ever tempted to move one.</p>
 <p><strong>Why every NPC is explore → confront → encounter.</strong> The walk builds
@@ -262,11 +267,14 @@ drawing — see &quot;Reading text,&quot; below.</p>
 <h3 id="doc-game_manual--feelz-pick-a-feeling-before-you-answer"><a class="anchor" href="#doc-game_manual--feelz-pick-a-feeling-before-you-answer" aria-label="Link to this section">#</a>FEELZ: pick a feeling before you answer</h3>
 <p>Before most swipes, the player taps or drags an emotion off an 8-slice
 wheel (Joy, Trust, Fear, Surprise, Sadness, Disgust, Anger, Anticipation
-— Plutchik&#39;s wheel). Only 3 of the 8 are ever lit up and selectable in a
-given playthrough — which 3 depends on an invisible &quot;class&quot; set by the
-opening Questionnaire (see below). Dragging the emotion onto the swipe
-card (instead of just tapping it) tints the card in that emotion&#39;s
-color — a small, optional flourish with no separate mechanical effect.</p>
+— Plutchik&#39;s wheel). <strong>The player only ever sees symbols</strong> (★ ◆ ◉ ⊕ ▼ ✕
+▲ ▶), never the names, and no character names a feeling out loud either.
+Only 3 of the 8 are ever lit up and selectable in a given playthrough —
+which 3 depends on an invisible &quot;class&quot; set by the opening Questionnaire
+(see below). Picking one tints the swipe card in its color and gives the
+card a small wiggle, pointing at it as the next thing to touch. On a
+phone, holding a slice plays its tone louder without picking it: a way
+to listen before choosing.</p>
 <p>Picking an emotion does two things:</p>
 <ul>
 <li>It&#39;s on record for that response.</li>
@@ -289,12 +297,23 @@ opening line is gated on Trust, and any future NPC can be authored the
 same way. Full narrative meaning of each meter is in
 <a href="#doc-content_schema" data-doc="doc-content_schema"><a class="doc-ref" href="#doc-content_schema" data-doc="doc-content_schema"><code>CONTENT_SCHEMA.md</code></a></a>.</p>
 <p><strong>Truth Debt</strong> is separate, 0–10, and it&#39;s the one number with teeth.
-Nearly every lie adds to it (truths almost never do). It&#39;s shown to the
-player as a small pulsing sigil that reads more urgent as debt climbs
-(&quot;elevated&quot; at 3–7, &quot;critical&quot; at 8+). Hit 10 anywhere, mid-NPC or not,
-and the game cuts straight to the Reckoning — no more encounters, no
-matter who&#39;s left. Every lie big enough to matter is also logged, quietly,
-to a running <strong>Truth Ledger</strong> the player never sees until it comes due.</p>
+Nearly every lie adds to it (+2 to +4), and <strong>every truth clears it by
+1</strong> unless the script says otherwise, so the lake can recover during
+play. The player sees it as the lake gauge (§2): its five statuses
+(IDEAL / MARGINAL / HIGH / CONTAMINATED / OVER LIMIT) line up exactly with
+the four endings, so a status change means the ending they&#39;re heading
+toward just changed. Hit 10 anywhere, mid-NPC or not, and the game cuts
+straight to the Reckoning — no more encounters, no matter who&#39;s left.
+Every lie big enough to matter is also logged, quietly, to a running
+<strong>Truth Ledger</strong> the player never sees until it comes due.</p>
+<h3 id="doc-game_manual--it-and-so"><a class="anchor" href="#doc-game_manual--it-and-so" aria-label="Link to this section">#</a>IT and SO</h3>
+<p>Two intrusive-thought voices that pop up like ads. <strong>IT</strong> states things
+with dread and certainty. <strong>SO</strong> answers IT with doubt. They&#39;re
+observers who keep score and never admit they&#39;re against you. They don&#39;t
+comment after every conversation. They speak up only when they notice
+something new: the player&#39;s truth/lie pattern flipped, their go-to
+feeling changed, or the lake crossed into a new status. A tap anywhere
+closes them. Full design: <a href="#doc-it_design" data-doc="doc-it_design"><a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a></a>.</p>
 <h3 id="doc-game_manual--reading-text"><a class="anchor" href="#doc-game_manual--reading-text" aria-label="Link to this section">#</a>Reading text</h3>
 <p>Every line the player reads (NPC reactions, cutscene narration) draws
 character-by-character, old-JRPG style. <strong>Tap once to finish a line
@@ -315,14 +334,22 @@ including doing nothing until the clock runs out. There is no way to
 fail a walk. Full mechanical detail: <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>&#39;s <code>minigame</code>
 section.</p>
 <h3 id="doc-game_manual--the-reckoning"><a class="anchor" href="#doc-game_manual--the-reckoning" aria-label="Link to this section">#</a>The Reckoning</h3>
-<p>Once Truth Debt maxes out (or the four NPCs are done), the player faces
-up to three of their biggest logged lies, most recent first. Each one:
-<strong>Confess</strong> (pay that lie&#39;s debt back down, the truth version of what
-they should have said) or <strong>Double Down</strong> (dig in — a flat debt penalty,
-every time, regardless of the lie&#39;s size). This is the only place in the
-game debt can go back <em>down</em>.</p>
+<p>Once Truth Debt maxes out (or the four NPCs are done), the player is
+called down to the water by <strong>Pastor Gabriel</strong> (§5), standing waist-deep
+in the lake. He puts up to three of their most recent logged lies to
+them. Each one: <strong>Confess</strong> (that lie&#39;s debt comes back off, and the
+lake clears live on screen) or <strong>Double Down</strong> (a flat +3, every time,
+regardless of the lie&#39;s size). Confession is never quite enough for him.
+Then IT and SO, as his hellhound gatekeepers, walk the player into the
+water, and he holds them under at the lake&#39;s final level: the screen
+sinks into clear blue or swamp green. Even a player with nothing to
+confess still gets baptized.</p>
 <h3 id="doc-game_manual--the-ending"><a class="anchor" href="#doc-game_manual--the-ending" aria-label="Link to this section">#</a>The ending</h3>
-<p>Final Truth Debt alone decides which of four endings plays:</p>
+<p>The ending screen opens on the lake&#39;s <strong>final reading</strong>, full size, with
+whatever&#39;s left in the fish tank. Under it, the player&#39;s FEELZ check-in
+answers are set flat against what was recorded (lies told, to how many
+people, the final reading), with no comment on the gap. Final Truth Debt
+alone decides which of four endings plays:</p>
 <table>
 <thead>
 <tr>
@@ -405,16 +432,22 @@ it.</p>
 <td align="left">One background image (<code>prologue-lake.svg</code>, 🔲 placeholder) + a mid-scene branching choice (&quot;Get up&quot; / &quot;Stay down a little longer&quot;) that doesn&#39;t need divergent art.</td>
 </tr>
 <tr>
+<td align="left">3b</td>
+<td align="left">FEELZ boot + check-in</td>
+<td align="left">cutscene</td>
+<td align="left">✅ Code-drawn: a glowing FEELZ-wheel silhouette with a moving rainbow wave, the FEELZ logo, then text-and-button check-in screens. 🔲 The boot chime is a placeholder synth.</td>
+</tr>
+<tr>
 <td align="left">4</td>
 <td align="left">Questionnaire</td>
 <td align="left">questionnaire</td>
-<td align="left">No unique art — three swipe cards, then the Therapist&#39;s tinted-word diagnosis over the shared FEELZ pattern background.</td>
+<td align="left">No unique art — three swipe cards (&quot;INTAKE 1 / 3&quot;), then the Therapist&#39;s tinted-word diagnosis over the shared FEELZ pattern background.</td>
 </tr>
 <tr>
 <td align="left">5</td>
 <td align="left">Therapist</td>
 <td align="left">dialog</td>
-<td align="left">Location 1. Voice-only — no sprite, no portrait art needed by design (see §5).</td>
+<td align="left">Location 1. Voice-only — no sprite, no portrait art needed by design (see §5). Introduces each piece of the interface under a spotlight vignette.</td>
 </tr>
 <tr>
 <td align="left">6</td>
@@ -454,15 +487,15 @@ it.</p>
 </tr>
 <tr>
 <td align="left">18</td>
-<td align="left">Reckoning</td>
+<td align="left">Reckoning: Pastor Gabriel&#39;s baptism</td>
 <td align="left">reckoning</td>
-<td align="left">No unique art — text cards over the shared screen chrome.</td>
+<td align="left">Text over the lake gauge; the baptism is a full-screen water fill in the lake&#39;s final color. 🔲 No Pastor art yet, and IT/SO as hellhounds reuse the IT popups (real dog art is an open job).</td>
 </tr>
 <tr>
 <td align="left">19</td>
 <td align="left">Ending</td>
 <td align="left">ending</td>
-<td align="left">A full-bleed procedural pattern (already built, keyed by ending) before the text. No ending-specific art exists yet.</td>
+<td align="left">A full-bleed procedural pattern (already built, keyed by ending), then the final lake reading (large gauge + fish tank) and the check-in record before the text.</td>
 </tr>
 </tbody></table>
 <p><strong>Everything in rows 6–17 (all four mini-games and all four
@@ -482,8 +515,8 @@ if a piece of art is getting clipped on a real device.</p>
 <hr>
 <h2 id="doc-game_manual--5-the-cast-of-chapter-1"><a class="anchor" href="#doc-game_manual--5-the-cast-of-chapter-1" aria-label="Link to this section">#</a>5. The cast of Chapter 1</h2>
 <p>Four NPCs, one stop each around the lake, plus the Therapist (the
-chapter&#39;s tutorial voice) and Bob Baiter (the chapter&#39;s only non-playable
-lie). Location numbers below match <code>LOCATION:</code> in each NPC&#39;s manuscript
+chapter&#39;s tutorial voice), Pastor Gabriel (the chapter&#39;s judgment) and
+Bob Baiter (the chapter&#39;s only non-playable lie). Location numbers below match <code>LOCATION:</code> in each NPC&#39;s manuscript
 file. &quot;Background&quot; notes are lore from the original design bible
 (<a class="doc-ref" href="#doc-dx-bible" data-doc="doc-dx-bible"><code>DX Bible.md</code></a>) meant to inform how you write this character further —
 they aren&#39;t necessarily dramatized on-page yet, and are marked as such.</p>
@@ -499,18 +532,23 @@ same character, same wound, different angle of approach.</p>
 <li><strong>Leitmotif:</strong> the ambient track already scoring the Questionnaire
 (<code>heavens_waiting_room.mp3</code>), not a synthesized phrase like the other
 four — she&#39;s the one character whose &quot;theme&quot; is the room tone itself.</li>
-<li><strong>Voice:</strong> tired but warm. Overworked, still listening. A chart opens
-audibly on her end; another call is always waiting.</li>
-<li><strong>Role:</strong> the tutorial. She teaches truth-vs-lie with zero explanation
-of mechanics — the player learns what swiping left does by feeling her
-respond to it, nothing more. Keep any future Therapist writing
-mechanic-silent for this reason.</li>
-<li><strong>Core exchange:</strong> &quot;What happened in the dream?&quot; Truth costs Stability
-but earns a rare moment of her guard dropping (&quot;thank you for telling
-me that — most people give me the short version&quot;). The lie is barely a
-lie (&quot;I don&#39;t remember&quot;) and Truth Debt only ticks up by 1 — the
-gentlest cost in the whole chapter, intentionally, since this is the
-player&#39;s first swipe.</li>
+<li><strong>Voice:</strong> an LCSW (licensed clinical social worker) at a community
+clinic with a 40+ caseload, typing notes while you talk. She&#39;s also
+somehow a guru who speaks in small aphorisms (&quot;Weather, not a
+verdict&quot;), then gets pulled back by the clock (&quot;then I have to take my
+two o&#39;clock&quot;). Tired but warm, never cruel.</li>
+<li><strong>Role:</strong> the tutorial, done as guided discovery (the CBT technique of
+asking so the client finds the answer). She never explains a mechanic.
+Each question makes the player use one new piece of the app for the
+first time, and it&#39;s spotlit (everything else dims) as she reaches it:
+wheel, card, meters, lake. Keep any future Therapist writing
+mechanic-silent.</li>
+<li><strong>Two exchanges:</strong> &quot;How are you walking in today? Just point.&quot; (she
+describes the picked symbol in an image, never by name; the meters
+appear), then &quot;What happened in the dream?&quot; (the lake gauge appears:
+&quot;FEELZ reads it off the county sensors. It doesn&#39;t care how you feel&quot;).</li>
+<li><strong>Outro:</strong> surreal homework per class, a closing line depending on the
+dream answer, the call ends, then IT and SO get the last word.</li>
 </ul>
 <h3 id="doc-game_manual--deborah-location-2"><a class="anchor" href="#doc-game_manual--deborah-location-2" aria-label="Link to this section">#</a>DEBORAH — Location 2</h3>
 <ul>
@@ -600,6 +638,27 @@ chapter&#39;s only example of a meter changing <em>what content shows</em>, not
 just what gets narrated — see <a class="doc-ref" href="#doc-stat_math" data-doc="doc-stat_math"><code>STAT_MATH.md</code></a> if you want to gate a
 future NPC the same way.</li>
 </ul>
+<h3 id="doc-game_manual--pastor-gabriel-the-reckoning"><a class="anchor" href="#doc-game_manual--pastor-gabriel-the-reckoning" aria-label="Link to this section">#</a>PASTOR GABRIEL — the Reckoning</h3>
+<ul>
+<li><strong>Where:</strong> waist-deep in Lake Ulysses, running an altar call.</li>
+<li><strong>Names:</strong> he calls himself <strong>Gabriel</strong> (&quot;God gave me my chosen name&quot;).
+The town still calls him <strong>Sam</strong>. His mother named him <strong>Samael</strong>, the
+Angel of Death and accuser in Jewish tradition. He tells you that right
+before he holds you under, and his nameplate turns to SAMAEL.</li>
+<li><strong>Voice:</strong> a scary evangelical who embodies the game&#39;s contradictions:
+grace and a ledger (&quot;God don&#39;t keep a ledger. I do. For Him.&quot;), welcome
+and surveillance (&quot;Everybody&#39;s welcome. Everybody&#39;s watched.&quot;), new life
+by drowning. He&#39;s unsettling because he partly believes it.</li>
+<li><strong>Role:</strong> the judgment. Confession to him is never quite enough (&quot;…Is
+that all of it?&quot;). That&#39;s scrupulosity, religious OCD in which
+confession becomes a compulsion, and it&#39;s where IT and SO&#39;s doubt ends
+up. He knows the player&#39;s FEELZ check-in answers without being told.</li>
+<li><strong>Writing him:</strong> every line is picked from the player&#39;s own data (lake
+status, check-in answers, lies told), climbing from warm toward the
+contradictions. Lines live in
+<code>src/chapters/lake-ulysses/content/pastor.json</code>. Deborah&#39;s &quot;You&#39;re not
+the church&quot; is his setup.</li>
+</ul>
 <h3 id="doc-game_manual--bob-baiter-cutscene-only-not-an-encounter"><a class="anchor" href="#doc-game_manual--bob-baiter-cutscene-only-not-an-encounter" aria-label="Link to this section">#</a>BOB BAITER — cutscene only, not an encounter</h3>
 <ul>
 <li><strong>Where:</strong> a councilman, straight to camera, in the opening civic-ad
@@ -661,22 +720,34 @@ then lands on the title screen for new players or chapter select for
 returning ones.</p>
 <p>Shell chrome around it: title screen, chapter select, About/Contact. A
 returning player who hits ENTER on the title gets a &quot;You&#39;ve been here
-before — skip the story?&quot; prompt; SKIP jumps straight to the
-questionnaire, REPLAY starts the chapter from the top
-(<code>showSkipDialog()</code> in <code>main.js</code>). SKIP now cleanly bypasses all three
-opening cutscenes and drops you at the quiz -&gt; Therapist call; before the
-Prologue/Questionnaire swap it skipped to the quiz but then still played
-the Prologue afterwards.</p>
+before — skip the story?&quot; prompt; SKIP jumps straight to the FEELZ
+app launch, REPLAY starts the chapter from the top
+(<code>showSkipDialog()</code> in <code>main.js</code>). SKIP bypasses the three story
+cutscenes and drops you at FEELZ -&gt; intake quiz -&gt; Therapist call. The
+Therapist call is never skipped, because it&#39;s the tutorial.</p>
 <p>One chapter: <strong>Truth Debt: Lake Ulysses</strong>, in scene order: Opening quote
 (cutscene) -&gt; Bob Baiter (cutscene, the councilman&#39;s lake-reopening pitch)
 -&gt; Prologue (typewriter-drawn narrative cutscene; ends on &quot;Your phone
-buzzes against the gravel&quot;) -&gt; <strong>Questionnaire</strong> (three swipe questions
+buzzes against the gravel&quot;) -&gt; <strong>FEELZ launch</strong> (cutscene: the phone&#39;s
+therapy app opens and runs a real-app-style check-in — two &quot;over the
+last 2 weeks, how often…&quot; questions with the standard four frequency
+answers, modeled on the PHQ-2, then &quot;matching you with care&quot; — the
+game&#39;s whole UI <em>is</em> the FEELZ app from here on. The boot beat plays a
+placeholder synth chime (<code>audio.playFeelzBoot</code>) over a glowing silhouette
+of the FEELZ wheel, filled with a moving rainbow wave
+(<code>ui/feelzSilhouette.js</code>). The check-in answers are saved to
+<code>run.checkIn</code> and read back on the ending screen, set flat against what
+FEELZ recorded: lies told, to how many people, and the final lake
+reading. Self-report versus data, with no comment on the gap)
+-&gt; <strong>Questionnaire</strong> (the app&#39;s intake: three swipe questions
 whose answers <em>implicitly</em> set your class — Guns / Bible / Crystals —
 followed by the Therapist&#39;s cryptic diagnosis; the class name is never
-shown) -&gt; Therapist (location 1 — the tutorial NPC, a single swipe
-exchange, no in-fiction explanation of mechanics; teaches truth/lie purely
-by playing it) -&gt; Deborah -&gt; Rwanda -&gt; Samun -&gt; Rick -&gt; Reckoning (confess
-or double down on your lies) -&gt; one of four endings (Clean Cut / Functional
+shown) -&gt; Therapist (location 1 — the tutorial, see &quot;The Therapist
+tutorial&quot; below) -&gt; Deborah -&gt; Rwanda -&gt; Samun -&gt; Rick -&gt; <strong>Reckoning, as a baptism</strong>
+(Pastor Gabriel runs an altar call at the lake: confess or double down on
+your lies, IT and SO walk you into the water as his hellhound gatekeepers,
+and he holds you under at the lake&#39;s final level — see &quot;Pastor Gabriel&quot;
+below) -&gt; one of four endings (Clean Cut / Functional
 Mask / Collapse / Living Lie) based on final Truth Debt.</p>
 <p>Each of the four NPCs is now a three-beat unit — <strong>explore -&gt; confront -&gt;
 encounter</strong>: a mini-game walk to their door, a confrontation where you see
@@ -685,6 +756,59 @@ isn&#39;t decoration: it selects which node the NPC opens on, so the same
 character starts guarded, warm, or already cornered depending on how you
 came at them. All of it is placeholder art and placeholder prose right now
 (see &quot;Known gaps&quot;), but the shape is real and playable end to end.</p>
+<h3 id="doc-handoff--pastor-gabriel-the-reckoning"><a class="anchor" href="#doc-handoff--pastor-gabriel-the-reckoning" aria-label="Link to this section">#</a>Pastor Gabriel (the Reckoning)</h3>
+<p>The chapter&#39;s judgment. He&#39;s the local evangelical pastor, and he embodies
+the game&#39;s contradictions: grace and a ledger, welcome and surveillance,
+new life by drowning. He calls himself <strong>Gabriel</strong> (&quot;God gave me my chosen
+name&quot;). The town still calls him <strong>Sam</strong>. His mother named him <strong>Samael</strong>,
+the Angel of Death and accuser in Jewish tradition, and that name comes
+out at the baptism, when his nameplate switches to SAMAEL. Deborah&#39;s
+&quot;You&#39;re not the church&quot; sets him up.</p>
+<p>His lines (<code>content/pastor.json</code>, picked by <code>engine/pastor.js</code>) climb
+from warm toward the contradictions. They&#39;re chosen from the player&#39;s own
+data: the lake&#39;s live status, the FEELZ check-in answers (he knows them,
+and &quot;You never told him that&quot;), and how many lies were told. Confessing is
+never quite enough (&quot;…Is that all of it?&quot;). That&#39;s scrupulosity, religious
+OCD in which confession becomes a compulsion, and it&#39;s where IT and SO&#39;s
+doubt ends up. Confessing clears the water live on his screen, while
+doubling down fouls it. Even players with nothing to confess still go
+under: &quot;Even the clean ones go under.&quot;</p>
+<h3 id="doc-handoff--the-therapist-tutorial"><a class="anchor" href="#doc-handoff--the-therapist-tutorial" aria-label="Link to this section">#</a>The Therapist tutorial</h3>
+<p>Rebuilt 2026-09-24 after playtest feedback: the tester liked the wheel
+and swiping but didn&#39;t know what the colors, the meters, Truth Debt or
+the goal were, and found the IT popup&#39;s X-only dismiss clunky. The fix
+is guided discovery (the CBT technique: the therapist asks questions so
+the client finds the answer, instead of telling them). She never explains
+a mechanic. Each question makes the player use one new thing for the
+first time:</p>
+<ol>
+<li><em>&quot;How are you walking in today? Just point.&quot;</em> → the player picks a
+feeling → the card wiggles (<code>swipeCard.nudge()</code>) → she describes the
+symbol in an image (<code>PICK</code> lines). <strong>Feelings are symbols only, never
+named</strong>, in the UI or by her. After this node the four meters fade in
+(&quot;four little lines&quot;).</li>
+<li><em>&quot;What happened in the dream?&quot;</em> → after it, the lake gauge fades in (or
+earlier, the moment debt goes above 0), and she hints at what it
+counts.</li>
+<li>Outro: homework by class (surreal, not literal), a closing line by
+dream answer, HANGUP (screen dims, her music stops), then IT → SO,
+also by dream answer.</li>
+</ol>
+<p>Each piece is <strong>spotlit</strong> as it&#39;s introduced: a black vignette mask
+(<code>ui/spotlight.js</code>, a blurred SVG mask with holes) dims everything except
+the thing she&#39;s talking about plus her line about it. The order is wheel,
+then card, then meters, then debt. It&#39;s visual only
+(<code>pointer-events: none</code>), so it never blocks input.</p>
+<p><strong>Who she is:</strong> an LCSW (licensed clinical social worker) at a community
+clinic: a 40+ caseload, back-to-back telehealth, typing notes while you
+talk. She&#39;s also somehow a guru who speaks in small aphorisms (&quot;Weather,
+not a verdict&quot;), then gets pulled back by her actual day (&quot;then I have to
+take my two o&#39;clock&quot;). The wisdom is real, and so is the caseload. The
+voice notes are at the top of <code>manuscript/therapist.txt</code>.</p>
+<p>Engine pieces, all generic and opt-in per NPC: <code>PICK</code>/<code>REVEAL</code>/<code>SPOTLIGHT</code>/<code>=== OUTRO</code>
+manuscript lines (<a class="doc-ref" href="#doc-script_format" data-doc="doc-script_format"><code>SCRIPT_FORMAT.md</code></a>), <code>run.choices</code> (nodeId → truth/lie),
+IT popups dismiss on any tap, and touch-and-hold on a wheel wedge to hear
+its tone without picking it (<code>feelzDartboard.js</code>&#39;s <code>HOLD_MS</code>).</p>
 <p>Prologue / Questionnaire / Therapist are deliberately one continuous
 unit — <strong>the chapter&#39;s opening call</strong>, and the intended routine opener for
 future chapters too: you&#39;re on site, the Therapist buzzes in, she evaluates
@@ -889,9 +1013,19 @@ one placeholder line per class per threshold (<code>engine/itBlooms.js</code>),
 overlaid on top of whatever&#39;s already on screen rather than replacing it,
 since &quot;the player doesn&#39;t choose this, IT just shows up&quot; is the whole
 point (<a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a>). At 10 the popup still shows before the existing
-force-to-Reckoning jump runs. <code>lakeHealth</code> (the lake visibly degrading)
-remains unbuilt — that needs actual art to visualize, unlike the bloom
-trigger which only needed text. The four meters feed two things:
+force-to-Reckoning jump runs. The lake now shows Truth Debt:
+<code>ui/lakeGauge.js</code> replaced the &quot;DEBT N&quot; box with a horizontal
+water-quality chart. It&#39;s modeled on a real TDS (total dissolved solids)
+chart: clean blue (20 ppm, IDEAL) through swamp green (520 ppm, OVER
+LIMIT). A tamagotchi fish tank sits in its corner, going from three
+thriving fish to one belly-up. It&#39;s deliberately indifferent: a sensor
+readout with no sympathy words. Its five statuses line up exactly with
+the ending tiers and bloom thresholds (<code>engine/lake.js</code>), and the ending
+screen shows the final reading, full size, as the payoff. The lake is
+audible too: <code>audio.playLakeSplash(debt)</code> is a square-wave water splash
+whose pitch and brightness drop as the water turns. It plays at each
+reaction once the gauge is on screen, and once at the ending. The four meters
+feed two things:
 the ending epilogue line (names whichever meter moved furthest from
 baseline), and <strong>actual content gating</strong>: a node can carry an opt-in
 <code>gate</code> that redirects to a different node if a stat condition is met
@@ -1034,6 +1168,32 @@ needs to be a new opt-in field that intersects with the class set and
 falls back when the intersection is empty.</li>
 </ul>
 <h2 id="doc-handoff--what39s-next"><a class="anchor" href="#doc-handoff--what39s-next" aria-label="Link to this section">#</a>What&#39;s next</h2>
+<p><strong>Open from the 2026-09-24 playtest round</strong> (tutorial, lake, Pastor). All
+of these are decided or at least scoped; see the linked sections:</p>
+<ul>
+<li><strong>IT/SO observer voice for the older tables.</strong> The new finding,
+gatekeeper and Therapist-outro lines use the &quot;detached observers /
+countdown grim reapers who never admit they&#39;re against you&quot; voice
+(<a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a>&#39;s &quot;Findings, not commentary&quot;). The bloom, emotion-lean
+and SO rebuttal tables (~50 lines) still use the earlier voice.
+Rewriting them would also drop IT&#39;s per-class voices, so it&#39;s <strong>waiting
+on the designer&#39;s OK</strong>.</li>
+<li><strong>Therapist reads the check-in back.</strong> One line in her call (&quot;You put
+&#39;nearly every day.&#39; Okay.&quot;). This was proposed but not built. Only the
+ending comparison was chosen.</li>
+<li><strong>More ways to clean the lake</strong> (proposed, not chosen yet): the lake
+settles between visits after a truthful encounter, cheaper lies, a
+mid-conversation &quot;take it back&quot; branch, and a Reckoning that covers
+every lie instead of the last 3.</li>
+<li><strong>Audio is untuned.</strong> The FEELZ boot chime is a placeholder, and the
+lake splash hasn&#39;t been listened to on real devices yet. Tune volume
+and pitch by ear.</li>
+<li><strong>Art jobs.</strong> Pastor Gabriel (none yet), IT/SO as hellhounds (they
+reuse the IT popups today), the baptism underwater moment.</li>
+<li><strong>Playtest the new opening end to end</strong> on a phone: FEELZ check-in →
+intake → Therapist spotlight tutorial → first NPC. Watch whether the
+spotlight and the lake reveal land without any explanation.</li>
+</ul>
 <p>Roughly in order of how ready each one is to just start:</p>
 <p><strong>Ready to build, no further design needed:</strong></p>
 <ul>
@@ -1308,31 +1468,39 @@ contract.</p>
 <ul>
 <li><code>sceneSequencer.js</code> — runs a chapter&#39;s scene list (see above)</li>
 <li><code>cardEngine.js</code> — <code>resolveCard(state, node, swipeKey)</code>: applies stat
-deltas, debt, and ledger entries for a dialog choice</li>
-<li><code>debtEngine.js</code> — Truth Debt thresholds, bloom-event triggers, lake
-health calculation. <code>newlyFired</code> now drives an IT popup interrupt
-(<code>dialogScene.js</code>&#39;s <code>advance()</code>, text in <code>engine/itBlooms.js</code>) — see
-<a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a>. <code>lakeHealth</code> is still computed and stored but unread;
-visualizing it needs art this project doesn&#39;t have yet. The
+deltas, debt, and ledger entries for a dialog choice. Truths authored
+<code>DEBT: 0</code> apply <code>TRUTH_CLEANSE</code> (−1) unless pinned with <code>0!</code>.</li>
+<li><code>debtEngine.js</code> — Truth Debt thresholds and bloom-event triggers.
+<code>newlyFired</code> drives an IT popup interrupt (<code>dialogScene.js</code>&#39;s
+<code>advance()</code>, text in <code>engine/itBlooms.js</code>) — see <a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a>. The
 Reckoning-at-10 cutoff lives in <code>dialogScene.js</code>, not here.</li>
+<li><code>lake.js</code> — Truth Debt as water quality: ppm, status, fish stage,
+color, and <code>{ppm}</code>/<code>{status}</code> text tokens. Drives <code>ui/lakeGauge.js</code>,
+the splash pitch, IT/SO findings and the Pastor&#39;s line choices.</li>
 <li><code>endingEngine.js</code> — ending selection from final debt</li>
 <li><code>reckoning.js</code> — builds the end-of-run &quot;confess vs. double down&quot; deck
 from the ledger</li>
+<li><code>pastor.js</code> — picks Pastor Gabriel&#39;s Reckoning lines from
+<code>content/pastor.json</code> by lake status, FEELZ check-in answers and lies told</li>
+<li><code>itFindings.js</code> — IT/SO&#39;s end-of-encounter &quot;findings&quot; (pattern flips);
+they only speak when something new is noticed</li>
 </ul>
-<p>The last four are specific to the Truth Debt gameplay pattern. A chapter
+<p>Everything but the sequencer is specific to the Truth Debt gameplay pattern. A chapter
 that doesn&#39;t use Truth Debt (a pure mini-game, say) just doesn&#39;t import
 them — nothing forces it into this shape. <code>sceneSequencer.js</code> itself has
 no idea Truth Debt exists.</p>
 <h2 id="doc-architecture--scene-types-srcscenes"><a class="anchor" href="#doc-architecture--scene-types-srcscenes" aria-label="Link to this section">#</a>Scene types (<code>src/scenes/</code>)</h2>
-<p>The reusable scene handlers for the Truth Debt pattern: <code>dialogScene.js</code>,
-<code>reckoningScene.js</code>, <code>endingScene.js</code>. Each implements
-<code>mount(stageEl, scene, context) -&gt; unmount</code>. Full contract, plus the
-planned <code>cutscene</code>/<code>minigame</code> shapes, in <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>.</p>
+<p>The reusable scene handlers: <code>cutsceneScene.js</code>, <code>questionnaireScene.js</code>,
+<code>dialogScene.js</code>, <code>minigameScene.js</code>, <code>reckoningScene.js</code> (Pastor
+Gabriel&#39;s baptism), <code>endingScene.js</code>. Each implements
+<code>mount(stageEl, scene, context) -&gt; unmount</code>. Full contract in
+<a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>.</p>
 <h2 id="doc-architecture--ui-components-srcui"><a class="anchor" href="#doc-architecture--ui-components-srcui" aria-label="Link to this section">#</a>UI components (<code>src/ui/</code>)</h2>
-<p>Small DOM-factory functions (<code>createSwipeCard</code>, <code>createFeelzWheel</code>,
-<code>createMeterGroup</code>, <code>createNpcPortrait</code>, <code>createDebtSigil</code>). Each one
-returns <code>{ el, ...helpers }</code>. Reusable across chapters and scene types;
-not required.</p>
+<p>Small DOM-factory functions (<code>createSwipeCard</code>, <code>createFeelzDartboard</code>,
+<code>createMeterGroup</code>, <code>createNpcPortrait</code>, <code>createLakeGauge</code>,
+<code>createSpotlight</code>, <code>createFeelzSilhouette</code>, <code>createItPopup</code>, and more).
+Each one returns <code>{ el, ...helpers }</code>. Reusable across chapters and scene
+types; not required.</p>
 <h2 id="doc-architecture--adding-a-new-chapter"><a class="anchor" href="#doc-architecture--adding-a-new-chapter" aria-label="Link to this section">#</a>Adding a new chapter</h2>
 <ol>
 <li>Make <code>src/chapters/&lt;id&gt;/index.js</code> with the contract above (using the
@@ -1413,10 +1581,10 @@ timer here: this beat is the payoff for the choice and the one screen the
 player most needs to actually read. It used to advance itself after 2.2s,
 which cut off longer reactions mid-read.</p>
 <p><strong>Reactions answer the FEELZ wheel.</strong> The authored <code>npcReaction</code> is joined
-with a coda from <code>engine/reactions.js</code>, a shared table keyed by
-<code>[emotion][truth|lie]</code> — 8 emotions × 2 sides, one table for the whole
-game. This is why an NPC needs no extra authoring to respond to all 8
-emotions, and why adding an NPC doesn&#39;t mean writing 16 more variants.</p>
+with a coda from <code>engine/reactions.js</code>, a per-NPC table keyed by
+<code>[emotion][truth|lie]</code> — 8 emotions × 2 sides, voiced in that character&#39;s
+own imagery. A new NPC falls back to the <code>DEFAULT</code> table until it has
+its own, so it needs no extra authoring to respond to all 8 emotions.</p>
 <p>Codas describe <strong>delivery</strong> — how the line left you — never whether the
 choice was right. That&#39;s the same rule the fx intensity follows: weight,
 not verdict. Keep it that way; a coda that grades the player turns an
@@ -1431,20 +1599,29 @@ crosses two thresholds in one swipe, only the top one gets shown). Closing
 it resumes exactly what <code>advance()</code> would otherwise have done immediately:
 the force-to-Reckoning jump at debt 10 still happens, just after the
 popup&#39;s been dismissed rather than instead of it.</p>
-<p><strong>The end of each NPC&#39;s encounter fires a second, independent IT
-interrupt</strong> — the player&#39;s FEELZ pattern, not their debt. <code>handleSwipe()</code>
-tallies every pick into <code>run.emotionCounts</code> (never reset — a run-wide
-lean, not a per-NPC one); when an NPC&#39;s node graph ends (<code>edge.nextNodeId</code>
-is <code>null</code>), <code>proceed()</code> calls <code>engine/loadout.js</code>&#39;s <code>getDominantEmotion()</code>
-and shows the matching line from <code>engine/itEmotionLean.js</code>, skipping
-entirely below 2 total picks (a single data point isn&#39;t a lean — this is
-also what excludes the Therapist without naming her specifically). A
-genuine tie resolves to a <code>neutral</code> line per class, written calmer and
-more detached than the emotion-specific ones on purpose, not a coin flip
-between two equally-true reads. This and the bloom interrupt above can
-both fire on the same closing swipe — bloom shows first (it&#39;s tied to
-<em>that</em> swipe), the emotion read shows after (it&#39;s about the whole
-encounter), each closed independently before the scene actually advances.</p>
+<p><strong>The end of each NPC&#39;s encounter can fire an IT/SO &quot;finding&quot;</strong> — but only
+when something new was noticed (<code>showFindingIfAny()</code>, <code>engine/itFindings.js</code>):
+this encounter leaned the other way on truth vs. lie than the last
+leaning one (<code>run.itLastSide</code>), or the run-wide dominant FEELZ emotion
+(<code>run.emotionCounts</code>, never reset) changed since IT last read it
+(<code>run.itLastLean</code>; lines in <code>engine/itEmotionLean.js</code>). At most one per
+encounter, none if a bloom already interrupted it, none below 2 total
+picks. An NPC with an <code>outro</code> skips this entirely; the outro is its
+closing IT moment.</p>
+<p><strong>The lake gauge.</strong> Truth Debt shows as <code>ui/lakeGauge.js</code> at the bottom of
+the screen (water-quality chart + fish tank, <code>engine/lake.js</code>). Once it&#39;s
+on screen, each reaction also plays <code>audio.playLakeSplash(debt)</code>, pitched
+by the water&#39;s quality.</p>
+<p><strong>Tutorial extras (opt-in per NPC; only the Therapist uses them).</strong>
+From manuscript lines (<a class="doc-ref" href="#doc-script_format" data-doc="doc-script_format"><code>SCRIPT_FORMAT.md</code></a>): <code>picks</code> (a line under the
+prompt when a feeling is picked), <code>reveal</code> (meters/lake hidden until a
+named node is answered, then faded in at that node&#39;s reaction),
+<code>spotlight</code> (<code>ui/spotlight.js</code>: a black vignette over everything but the
+wheel, then the card, then any HUD piece making its first appearance,
+plus the line introducing it), and <code>outro</code> (LINE/HANGUP/IT/SO beats after
+the last node, filtered by class and <code>run.choices</code>). Every swipe records
+<code>run.choices[nodeId] = &#39;truth&#39;|&#39;lie&#39;</code>, and picking a feeling wiggles the
+card (<code>swipeCard.nudge()</code>) for every NPC.</p>
 <h3 id="doc-scene_types--questionnaire-srcscenesquestionnairescenejs"><a class="anchor" href="#doc-scene_types--questionnaire-srcscenesquestionnairescenejs" aria-label="Link to this section">#</a><code>questionnaire</code> (<code>src/scenes/questionnaireScene.js</code>)</h3>
 <p>Three swipe questions that assign the player&#39;s class loadout, followed by
 the Therapist&#39;s diagnosis. Carries no content in the scene object — the
@@ -1461,14 +1638,17 @@ individual words in that class&#39;s emotion colors — the intent is that it
 reads as character voice, not as a stat screen. Keep it that way if you
 extend this: naming the class turns an atmospheric beat into a menu.</p>
 <h3 id="doc-scene_types--reckoning-srcscenesreckoningscenejs"><a class="anchor" href="#doc-scene_types--reckoning-srcscenesreckoningscenejs" aria-label="Link to this section">#</a><code>reckoning</code> (<code>src/scenes/reckoningScene.js</code>)</h3>
-<p>Builds a confess/double-down deck from <code>run.get().ledger</code> and plays it.
-Completes immediately if the ledger is empty.</p>
-<pre><code class="language-json">{ &quot;type&quot;: &quot;reckoning&quot;, &quot;id&quot;: &quot;reckoning&quot; }
+<p>Pastor Gabriel&#39;s baptism. It plays in order: the altar call, the
+confess/double-down deck built from <code>run.get().ledger</code> (he still runs this
+when the ledger is empty; it just skips the cards), the gate (IT and SO as
+his hellhounds), then the baptism (the screen sinks into the lake&#39;s
+final color, and the nameplate turns to SAMAEL). All lines come from
+<code>content/pastor.json</code>: sections of slots, where each slot&#39;s first
+alternative whose <code>when</code> matches is the one that plays (<code>engine/pastor.js</code>).</p>
+<pre><code class="language-json">{ &quot;type&quot;: &quot;reckoning&quot;, &quot;id&quot;: &quot;reckoning&quot;, &quot;pastor&quot;: &lt;pastor.json&gt; }
 </code></pre>
-<p><strong>One IT popup, before the first card</strong> — &quot;IT is loudest here&quot;
-(<a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a>). Only reachable when the deck isn&#39;t empty (the empty-deck
-path above returns before ever mounting the popup). One line per class,
-<code>engine/itEndgame.js</code>&#39;s <code>RECKONING_IT_TEXT</code>; closing it reveals card 1/N.</p>
+<p>The Reckoning&#39;s old standalone IT line (<code>RECKONING_IT_TEXT</code>) was retired.
+IT and SO appear at the gate instead.</p>
 <h3 id="doc-scene_types--ending-srcscenesendingscenejs"><a class="anchor" href="#doc-scene_types--ending-srcscenesendingscenejs" aria-label="Link to this section">#</a><code>ending</code> (<code>src/scenes/endingScene.js</code>)</h3>
 <p>Terminal, two phases. Picks the ending by final Truth Debt and records
 it immediately on mount (not deferred to the end of the beat). Calls
@@ -1485,7 +1665,12 @@ pattern across replays. Auto-advances to phase 2 after ~900ms, or a tap
 anywhere skips ahead immediately. The dramatic flash/shake/sting
 (<code>ENDING_INTENSITY</code>) fires at mount, i.e. right as this phase appears.</p>
 <p><strong>Phase 2 — typewriter text.</strong> Title renders instantly (a banner, not
-part of the draw); the ending&#39;s body text plus the epilogue line (see
+part of the draw). Under it, the payoff for the lake: &quot;FINAL READING&quot; and
+the large lake gauge (<code>createLakeGauge(debt, { large: true })</code>, with a
+splash at that pitch), then the check-in record: the player&#39;s FEELZ
+check-in answers (<code>run.checkIn</code>) set flat against what was recorded
+(lies told from <code>run.choices</code>, to how many people, and the final
+reading). Then the ending&#39;s body text plus the epilogue line (see
 <a class="doc-ref" href="#doc-stat_math" data-doc="doc-stat_math"><code>STAT_MATH.md</code></a>) are joined into one block and typewriter-drawn together
 (<code>ui/typewriterText.js</code>). A tap while drawing finishes it instantly. Once
 the text is fully drawn, one IT popup appears — the actual last word of
@@ -1544,6 +1729,14 @@ want to wait) — for pacing a moment rather than gating it. Calls
 <td align="left">a dramatic beat — no character revealed, just a 250ms gap</td>
 </tr>
 </tbody></table>
+<p><strong>Built-in art, sound and recorded choices.</strong> A beat can name <code>art</code> (a
+key into <code>cutsceneScene.js</code>&#39;s <code>ART</code> registry, shown above the text box;
+today <code>feelzSilhouette</code>, the glowing rainbow FEELZ wheel) and <code>sound</code> (a
+key into <code>SOUNDS</code>, played as the beat opens; today <code>feelzBoot</code>). An
+<code>interactive</code> option can carry <code>record: &#39;key&#39;</code>: the chosen label is
+saved to <code>run.checkIn[key]</code>. That&#39;s how the FEELZ check-in answers reach
+the ending screen and Pastor Gabriel. Style <code>feelz</code> / <code>feelz-logo</code>
+gives the centered app-screen look. First use: <code>content/feelz_launch.json</code>.</p>
 <p><strong>Background beat (<code>image</code>).</strong> A beat can carry an <code>image</code> (a path
 string, e.g. <code>/assets/lake-ulysses/backgrounds/prologue-lake.svg</code>),
 rendered full-bleed behind the text box (<code>object-fit: cover</code>). <code>text</code> is
@@ -1655,13 +1848,13 @@ rest of the box beside it rather than centered underneath. The slot
 <code>ui/npcPortrait.js</code>&#39;s fallback box — no glyph inside, since IT has no real
 identity/mark yet. Real art drops into that same slot with no layout
 changes needed.</p>
-<p>Dismissal is deliberately <strong>not</strong> the usual tap-anywhere-to-continue.
-Tapping the box only finishes the draw early, same as everywhere else;
-only the X in the corner advances the beat. The player has to notice and
-actively close it, like an intrusive ad — a stray tap can&#39;t skip past it
-by accident, which is the opposite of every other beat type in this file.
-Once the line finishes drawing, the X itself flashes (<code>.is-flashing</code>,
-reusing the debt sigil&#39;s <code>dx-pulse</code> keyframes) to signal there&#39;s another
+<p>Dismissal is the usual tap-anywhere gesture: the first tap finishes the
+draw, the next one closes it. It used to be X-only, so the player had to
+notice and actively close it like an intrusive ad, but playtest feedback
+(2026-09-24) read the one screen that ignored taps as clunky, not
+intrusive. The X stays as the visible &quot;close this&quot; signal. Once the line
+finishes drawing, the X itself flashes (<code>.is-flashing</code>,
+reusing the shared <code>dx-pulse</code> keyframes) to signal there&#39;s another
 one of these coming — except on the last beat in the sequence, where
 nothing follows it and the X stays still.</p>
 <p>First real use: <code>content/it_intro.json</code>, three class-neutral lines wired
@@ -2799,7 +2992,7 @@ PROMPT: &lt;the NPC&#39;s line&gt;           ← ON SCREEN. What the player is a
 SAY:    &lt;the player&#39;s line&gt;        ← ON SCREEN first, right-aligned, labeled YOU
 REACT:  &lt;how the NPC takes it&gt;     ← ON SCREEN next, drawn letter by letter
 EFFECTS: integrity+2 stability-2   ← meter movement
-DEBT:   0                          ← Truth Debt (truths are ~always 0)
+DEBT:   0                          ← Truth Debt (a truth&#39;s 0 counts as −1; 0! = exactly 0)
 NEXT:   deborah_02_confronted      ← which node follows, or (end)
 
 -- LIE                             ← the RIGHT swipe
@@ -2858,9 +3051,9 @@ done:</p>
 conversation started from a different footing, and they converge on the
 same two middles.</p>
 <h3 id="doc-script_key--the-chapter39s-rhythm-around-all-this"><a class="anchor" href="#doc-script_key--the-chapter39s-rhythm-around-all-this" aria-label="Link to this section">#</a>The chapter&#39;s rhythm around all this</h3>
-<pre><code>Prologue → Questionnaire → Therapist          ← one continuous &quot;opening call&quot;
-[ walk → confrontation → NPC dialog ] × 4     ← Deborah, Rwanda, Samun, Rick
-Reckoning → Ending
+<pre><code>Prologue → FEELZ check-in → Questionnaire → Therapist   ← one continuous &quot;opening call&quot;
+[ walk → confrontation → NPC dialog ] × 4               ← Deborah, Rwanda, Samun, Rick
+Reckoning (Pastor Gabriel&#39;s baptism) → Ending
 </code></pre>
 <p>Full detail on each beat is in <a href="#doc-game_manual" data-doc="doc-game_manual"><a class="doc-ref" href="#doc-game_manual" data-doc="doc-game_manual"><code>GAME_MANUAL.md</code></a></a> §4.</p>
 <hr>
@@ -3119,7 +3312,7 @@ much the lie <em>costs someone else</em>, not how false it is:</p>
 </thead>
 <tbody><tr>
 <td align="left"><code>0</code></td>
-<td align="left">The truth.</td>
+<td align="left">The truth. The game applies it as −1: every truth clears the lake a little. Write <code>0!</code> if this truth shouldn&#39;t clear anything.</td>
 <td align="left">every <code>-- TRUTH</code> block in the game</td>
 </tr>
 <tr>
@@ -3316,9 +3509,12 @@ choice doesn&#39;t touch — you don&#39;t have to list all four. See
 <a class="doc-ref" href="#doc-content_schema" data-doc="doc-content_schema"><code>CONTENT_SCHEMA.md</code></a>&#39;s &quot;What the stats mean&quot; section for what each one
 represents narratively (short version: truth usually raises integrity
 and lucidity and costs stability/trust; lies usually invert that).</li>
-<li><code>DEBT:</code> — how much this adds to Truth Debt. Almost always <code>0</code> on the
-TRUTH side. On the LIE side, roughly <code>+2</code> for a small lie up to <code>+4</code> for
-a big one — look at other nodes for a feel of scale.</li>
+<li><code>DEBT:</code> — how much this adds to Truth Debt. On the TRUTH side, write
+<code>0</code>: the game treats that as <strong>−1</strong> (every truth clears the lake a
+little). Write <code>-2</code> for a truth that should clear more, or <code>0!</code> for a
+truth that shouldn&#39;t clear anything. On the LIE side, roughly <code>+2</code> for a
+small lie up to <code>+4</code> for a big one — look at other nodes for a feel of
+scale.</li>
 <li><code>TAGS:</code> (optional, only really matters for lies) — comma-separated
 freeform categories, e.g. <code>Faith, Health</code>. Skip the line entirely if
 there&#39;s nothing worth tagging.</li>
@@ -3328,6 +3524,42 @@ worth being confronted with at the end. Skip the line entirely for
 truths, or for lies too small to matter.</li>
 <li><code>NEXT:</code> — which node this leads to, or <code>(end)</code> if this is the last
 thing this NPC says (the game moves on to whoever&#39;s next).</li>
+</ul>
+<h3 id="doc-script_format--tutorial-extras-optional-the-therapist-uses-these"><a class="anchor" href="#doc-script_format--tutorial-extras-optional-the-therapist-uses-these" aria-label="Link to this section">#</a>Tutorial extras (optional — the Therapist uses these)</h3>
+<p>None of these are needed for a normal NPC. Leave them out and nothing
+changes.</p>
+<ul>
+<li><p><code>PICK Emotion: text</code> — inside a node, before its swipes. What the NPC
+says the moment the player picks that feeling, before they swipe. One
+line per emotion (<code>Joy</code>, <code>Trust</code>, <code>Fear</code>, <code>Surprise</code>, <code>Sadness</code>,
+<code>Disgust</code>, <code>Anger</code>, <code>Anticipation</code>). The player only ever sees
+symbols, so <strong>never name the feeling in the text</strong>. Describe it
+instead (&quot;That one runs hot&quot;).</p>
+</li>
+<li><p><code>REVEAL: meters after node_id</code> / <code>REVEAL: debt after node_id</code> — in the
+file header. Keeps the four meters (or the lake gauge) off screen until
+that node has been answered, so the NPC can introduce them. Debt also
+shows early the moment it goes above 0. When it appears, it&#39;s
+spotlit (everything else dims) along with the NPC&#39;s reaction line, so
+write that reaction to be the line that introduces it.</p>
+</li>
+<li><p><code>SPOTLIGHT: wheel, card</code> — inside a node. Before a feeling is picked,
+the screen dims except the wheel and the prompt. After a pick, it dims
+except the card and the <code>PICK</code> line. Use either one or both.</p>
+</li>
+<li><p><code>=== OUTRO</code> — a section after the last node, played once the NPC&#39;s
+last reaction is done. Each line is one beat:</p>
+<ul>
+<li><code>LINE: text</code> — the NPC speaks (tap to continue)</li>
+<li><code>HANGUP: text</code> — narration; the NPC&#39;s screen dims and their music stops</li>
+<li><code>IT: text</code> / <code>SO: text</code> — the intrusive-thought popups</li>
+</ul>
+<p>Any of them can take a condition in brackets before the colon, and only
+plays when it holds: a class (<code>LINE [Guns]: ...</code>), how a node was
+answered (<code>IT [therapist_02=lie]: ...</code>), or both, comma-separated
+(<code>[Bible, therapist_02=truth]</code>). An NPC with an outro skips the usual
+end-of-encounter IT read, since the outro is its closing IT moment.</p>
+</li>
 </ul>
 <h2 id="doc-script_format--rules-that-will-make-the-build-fail-on-purpose"><a class="anchor" href="#doc-script_format--rules-that-will-make-the-build-fail-on-purpose" aria-label="Link to this section">#</a>Rules that will make the build fail (on purpose)</h2>
 <ul>
@@ -3386,6 +3618,19 @@ just writing new dialog, you only ever need to touch files in
 see &quot;Asset folders&quot; below), or <code>null</code> for the colored-initial placeholder
 <code>ui/npcPortrait.js</code> still falls back to. Author it via a manuscript&#39;s
 <code>PORTRAIT:</code> line (<a class="doc-ref" href="#doc-script_format" data-doc="doc-script_format"><code>SCRIPT_FORMAT.md</code></a>) rather than hand-editing this JSON.</li>
+<li><code>reveal</code> — optional <code>{ meters?: nodeId, debt?: nodeId }</code>. That HUD piece
+stays hidden in this encounter until the named node is answered (debt
+also shows early once it&#39;s above 0). From <code>REVEAL:</code> lines.</li>
+<li><code>outro</code> — optional array of <code>{ kind: &#39;line&#39;|&#39;hangup&#39;|&#39;it&#39;|&#39;so&#39;, text, when?: { class?, choice?: { node, side } } }</code>, played after the last
+node; <code>when</code> filters on the player&#39;s loadout and on <code>run.choices</code>
+(nodeId → <code>&#39;truth&#39;|&#39;lie&#39;</code>, written by <code>dialogScene.js</code> on every swipe).
+Replaces the end-of-encounter emotion-lean IT read. From <code>=== OUTRO</code>.</li>
+<li>A node can also carry <code>picks</code> — <code>{ [emotion]: text }</code>, shown under the
+prompt when that feeling is picked. From <code>PICK Emotion:</code> lines.</li>
+<li>A node can also carry <code>spotlight</code> — <code>[&#39;wheel&#39;, &#39;card&#39;]</code> (either or
+both): the tutorial vignette (<code>ui/spotlight.js</code>) over the wheel before
+a pick, over the card after one. From a <code>SPOTLIGHT:</code> line. A <code>reveal</code>&#39;d
+HUD piece is spotlit automatically on its first appearance.</li>
 </ul>
 <h2 id="doc-content_schema--node"><a class="anchor" href="#doc-content_schema--node" aria-label="Link to this section">#</a>Node</h2>
 <pre><code class="language-json">{
@@ -3472,7 +3717,10 @@ things over (+stability); truths tend to crack something open
 <li><strong><code>lucidity</code></strong> — your own clarity/self-awareness. Truths build it; lies
 rarely touch it.</li>
 <li><strong><code>debtDelta</code> (Truth Debt)</strong> — the one meter with teeth. Only lies
-should add to it. It forces the Reckoning at 10 and picks the ending. It
+should add to it. A truth authored <code>0</code> actually applies −1
+(<code>cardEngine.js</code>&#39;s <code>TRUTH_CLEANSE</code>) unless it carries <code>debtFixed: true</code>
+(<code>DEBT: 0!</code>). The player sees it as the lake&#39;s water quality
+(<code>engine/lake.js</code>). It forces the Reckoning at 10 and picks the ending. It
 also crosses bloom-event thresholds at 3/6/8/10, each of which now pops
 up an IT interrupt over whatever&#39;s on screen (<code>engine/itBlooms.js</code>) —
 those lines are generic to the threshold, not to any node, so nothing
@@ -3826,8 +4074,7 @@ through the body, <code>tonic</code> on any node with nowhere left to go. Each i
 one fourth/fifth of root motion (<code>FUNCTION_HOPS</code>) — for Deborah&#39;s A
 tonic that&#39;s D → E → A, a textbook authentic cadence resolving by
 ascending fourth. A node with no outgoing edges is the resolution however
-early it arrives, so the Therapist&#39;s single-node tutorial is its own
-whole cadence. Position decides <em>when</em> the resolution lands; <code>resolution</code>
+early it arrives, however short the encounter. Position decides <em>when</em> the resolution lands; <code>resolution</code>
 decides whether it lands as unison or as the tritone.</p>
 <p><strong>Struck, not sustained.</strong> Each voice is its own oscillator with a 30ms
 attack and a 3.5s exponential ring to silence — no drone anywhere.
@@ -4581,11 +4828,13 @@ leaned on most <em>across the whole run so far</em> (not per-NPC — the tally
 never resets). A genuine tie (including never having picked yet) falls
 back to a calmer, more detached &quot;neutral&quot; line rather than an arbitrary
 pick. See <code>engine/loadout.js</code>&#39;s <code>getDominantEmotion()</code> and
-<code>engine/itEmotionLean.js</code>. Skipped below 2 total picks, which is what
-naturally excludes the Therapist (one swipe, already documented as
-exempt from the standard NPC shape).</li>
-<li><strong>Reckoning</strong> — one class-variant line before the first card
-(<code>engine/itEndgame.js</code>&#39;s <code>RECKONING_IT_TEXT</code>).</li>
+<code>engine/itEmotionLean.js</code>. Skipped below 2 total picks, and skipped for
+any NPC with an authored <code>outro</code> — today only the Therapist, whose
+outro ends on its own IT → SO pair (see &quot;Therapist outro&quot; below).</li>
+<li><strong>Reckoning</strong> — IT and SO as Pastor Gabriel&#39;s hellhound gatekeepers,
+walking the player into the water before the baptism
+(<code>content/pastor.json</code>&#39;s <code>gate</code>, lines keyed by final lake status). The
+old standalone Reckoning line (<code>RECKONING_IT_TEXT</code>) was retired.</li>
 <li><strong>Ending</strong> — one class-variant line once the body text finishes drawing,
 before &quot;BACK TO MENU&quot; — the actual last word of the chapter
 (<code>ENDING_IT_TEXT</code>, same file).</li>
@@ -4661,6 +4910,39 @@ without a second art asset.</p>
 <p><strong>Content.</strong> <code>engine/soRebuttals.js</code> — one rebuttal per existing IT line
 (12 bloom lines, 12 dominant-emotion lines), same placeholder-prose bar as
 the tables it answers.</p>
+<h3 id="doc-it_design--findings-not-commentary-2026-09-24"><a class="anchor" href="#doc-it_design--findings-not-commentary-2026-09-24" aria-label="Link to this section">#</a>Findings, not commentary (2026-09-24)</h3>
+<p>Playtest concern: IT and SO could get annoying. They used to read the
+player&#39;s dominant emotion after <em>every</em> NPC. Now they only speak at the
+end of an encounter when they&#39;ve noticed something <strong>new</strong>
+(<code>engine/itFindings.js</code>, <code>dialogScene.js</code>&#39;s <code>showFindingIfAny</code>):</p>
+<ol>
+<li><strong>Pattern flip</strong>: this encounter leaned the other way (more lies vs.
+more truths) from the last encounter that leaned at all.</li>
+<li><strong>Lean shift</strong>: the run&#39;s dominant emotion changed since they last
+read it. This uses the existing emotion-lean lines.</li>
+</ol>
+<p>There&#39;s at most one per encounter, and none if a bloom already
+interrupted it. Blooms themselves are findings too: they fire exactly
+when the ending the player is heading toward changes (<code>engine/lake.js</code>).</p>
+<p><strong>Voice direction:</strong> they&#39;re observers, the countdown grim reapers at
+the end of the tunnel. Both are judging, and neither admits they&#39;re
+working against you. It&#39;s the spotlight effect (Gilovich et al., 2000:
+people overestimate how much others notice and judge them) made real.
+The paranoia is correct, and somebody really is keeping score. They cite
+the lake&#39;s reading like a lab report (<code>{ppm}</code> / <code>{status}</code> tokens). The
+new finding lines are written this way. The older bloom, lean and SO
+tables still use the earlier voice until they&#39;re rewritten.</p>
+<h3 id="doc-it_design--therapist-outro-exception-deliberate"><a class="anchor" href="#doc-it_design--therapist-outro-exception-deliberate" aria-label="Link to this section">#</a>Therapist outro (exception, deliberate)</h3>
+<p>After the Therapist hangs up, IT and then SO react to how the dream
+question went (<code>=== OUTRO</code> in <code>manuscript/therapist.txt</code>). That&#39;s a
+one-off story beat, which by the rule above would get IT alone. SO is
+there on purpose. It&#39;s the second IT/SO exchange in the chapter, after
+the opening <code>it-intro</code> scene, and it bookends the opening call so the
+player meets both voices before the first real NPC. The lie version has
+SO doubting whether the lie even happened (&quot;Did you even lie?&quot;), which is
+the doubt-not-comfort job in its purest form. The cost: SO is a little
+less rare. Don&#39;t treat this as precedent for adding SO to other one-off
+beats.</p>
 <hr>
 <h2 id="doc-it_design--what-it-is"><a class="anchor" href="#doc-it_design--what-it-is" aria-label="Link to this section">#</a>What IT Is</h2>
 <p>IT is not a character. IT is the player&#39;s inner dialog — invasive thoughts,
@@ -4732,9 +5014,12 @@ rendered in IT&#39;s visual style, no speaker attribution needed (IT
 doesn&#39;t announce itself). Fires based on the current class/emotion
 state when that beat is reached.</p>
 <h3 id="doc-it_design--reckoning"><a class="anchor" href="#doc-it_design--reckoning" aria-label="Link to this section">#</a>Reckoning</h3>
-<p>IT is loudest here. The reckoning is the moment the player&#39;s own head
-catches up with what they&#39;ve done. IT dialog during the reckoning
-could be the most direct the voice ever gets.</p>
+<p>The Reckoning is now Pastor Gabriel&#39;s baptism. IT and SO appear there as
+his gatekeepers, hellhounds walking the player down the bank into the
+water, still insisting they&#39;re only observers (&quot;We&#39;re only making sure
+you get there&quot;). Their lines depend on the lake&#39;s final status
+(<code>content/pastor.json</code>&#39;s <code>gate</code>). It&#39;s another deliberate SO exception to
+the one-voice rule for one-off beats, since the pair is the point.</p>
 <h3 id="doc-it_design--bloom-events-truth-debt-thresholds"><a class="anchor" href="#doc-it_design--bloom-events-truth-debt-thresholds" aria-label="Link to this section">#</a>Bloom events (Truth Debt thresholds)</h3>
 <p>When Truth Debt crosses a threshold, IT intrudes mid-scene. The
 player doesn&#39;t choose this. IT just shows up.</p>
@@ -4827,21 +5112,22 @@ genuine absence of a lean, not something to arbitrarily break — it gets
 its own calmer, more detached &quot;neutral&quot; line per class
 (<code>engine/itEmotionLean.js</code>), rather than reusing an emotion-specific
 line&#39;s jittery register for a beat that isn&#39;t about a pattern.</li>
-<li><em>&quot;Which specific moments trigger it?&quot;</em> Once per NPC encounter, at the
-end of that NPC&#39;s node graph (<code>dialogScene.js</code>&#39;s <code>proceed()</code>) — not
-after every swipe, which would be exhausting on top of the SAY/REACT
-beats already there. Skipped below 2 total picks for the run, which
-also naturally excludes the Therapist (one swipe, already documented
-elsewhere as exempt from the standard NPC shape) without needing to
-special-case her by name.</li>
+<li><em>&quot;Which specific moments trigger it?&quot;</em> At the end of an NPC&#39;s node
+graph (<code>dialogScene.js</code>&#39;s <code>showFindingIfAny()</code>), and <strong>only when there&#39;s
+a new finding</strong> (see &quot;Findings, not commentary&quot; above): a truth/lie
+pattern flip, or the dominant emotion changing since IT last read it.
+At most one per encounter, none if a bloom already interrupted it,
+skipped below 2 total picks, and skipped for an NPC with an authored
+<code>outro</code> (the Therapist), whose outro already ends on IT.</li>
 </ul>
 <p><strong>Code:</strong></p>
 <ul>
 <li>IT beat type in <code>cutsceneScene.js</code>, and the render factored out into
 <code>ui/itPopup.js</code>&#39;s <code>createItPopup()</code> so any scene can call it directly —
-used by <code>dialogScene.js</code> (bloom events, the dominant-emotion read),
-<code>reckoningScene.js</code>, and <code>endingScene.js</code>, none of which sequence beats
-at all.</li>
+used by <code>dialogScene.js</code> (bloom events, findings, the Therapist outro),
+<code>reckoningScene.js</code> (the gatekeepers), and <code>endingScene.js</code>, none of
+which sequence beats at all. Any popup closes on a tap anywhere once its
+line has drawn, as well as on the X.</li>
 <li>Every popup plays <code>audio.playTyagl()</code> on mount (the diagnosis sting,
 reused deliberately).</li>
 </ul>
@@ -4852,8 +5138,12 @@ reused deliberately).</li>
 <li>12 bloom-threshold lines (4 thresholds × 3 classes) — <code>engine/itBlooms.js</code></li>
 <li>12 dominant-emotion lines (3 classes × 3 emotions + 3 neutral) —
 <code>engine/itEmotionLean.js</code></li>
-<li>3 Reckoning lines + 3 ending lines (one per class each) —
-<code>engine/itEndgame.js</code></li>
+<li>3 ending lines (one per class) — <code>engine/itEndgame.js</code></li>
+<li>4 finding lines (IT + SO for each pattern-flip direction, observer
+voice, class-neutral) — <code>engine/itFindings.js</code></li>
+<li>4 Therapist-outro lines (IT + SO per dream answer) —
+<code>manuscript/therapist.txt</code>&#39;s <code>=== OUTRO</code></li>
+<li>4 gatekeeper lines (IT + SO per lake status band) — <code>content/pastor.json</code></li>
 </ul>
 <p><strong>What&#39;s actually still open</strong>, and it&#39;s not engineering:</p>
 <ul>

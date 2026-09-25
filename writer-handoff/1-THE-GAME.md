@@ -22,7 +22,9 @@ again, algae bloom, "under control," reopens, closes. The town has an
 official story and a real one, and everybody in it has picked which one
 they live in.
 
-The lake is a character. It gets visibly worse as your debt climbs.
+The lake is a character. It gets visibly worse as your debt climbs: a
+water-quality readout at the bottom of the screen, clean blue to swamp
+green, with a little tank of fish that go from thriving to belly-up.
 
 The game's very first scene is a councilman cheerfully announcing the
 lake is safe while listing the things that will happen to you if you
@@ -33,13 +35,15 @@ right next to real grief, and neither one played for a joke.
 
 ```
 OPENING          Quote → the councilman's ad → you wake up →
-                 3 questions → your therapist calls
+                 your phone buzzes: the FEELZ app boots and checks in →
+                 3 intake questions → your therapist calls (the tutorial)
 
 THEN, 4 TIMES    Walk to their door → meet them, pick how you
                  open → the conversation
                  (Deborah, then Rwanda, then Samun, then Rick)
 
-ENDING           Reckoning — face your biggest lies again →
+ENDING           Pastor Gabriel's baptism — confess or double down on
+                 your biggest lies, then he holds you under the lake →
                  one of four endings
 ```
 
@@ -47,7 +51,8 @@ ENDING           Reckoning — face your biggest lies again →
 
 **Picks a feeling.** Before answering, they choose an emotion off a
 wheel. It colors the moment and nudges the numbers. There's no correct
-one.
+one. The player only ever sees symbols, never the feelings' names, so
+**never name a feeling in the text.** Describe it instead.
 
 **Swipes.** Left is the truth, right is the lie. That's the whole verb.
 
@@ -63,13 +68,17 @@ atmosphere and pacing, not a test.
 Four meters the player can see — **Integrity, Trust, Stability,
 Lucidity** — plus one that matters more than the rest:
 
-**Truth Debt.** Lies add to it. Truths don't. It's shown as a small
-pulsing mark that gets more agitated as it climbs. Hit the top and the
-game cuts straight to the ending, wherever you are.
+**Truth Debt.** Lies add to it. Every truth clears it by 1. It's shown
+as the lake's water quality. Hit the top and the game cuts straight to
+the ending, wherever you are.
 
 Every lie worth remembering also gets written down in a **ledger**. At
-the end the game reads them back to you one at a time and asks: confess,
-or double down?
+the end, Pastor Gabriel reads them back to you one at a time and asks:
+confess, or double down?
+
+**IT and SO.** Two intrusive-thought voices that pop up like ads. They
+only speak when they notice something new about you, and they never
+admit they're against you.
 
 Final debt picks the ending:
 

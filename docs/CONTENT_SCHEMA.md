@@ -129,7 +129,10 @@ them:
 - **`lucidity`** — your own clarity/self-awareness. Truths build it; lies
   rarely touch it.
 - **`debtDelta` (Truth Debt)** — the one meter with teeth. Only lies
-  should add to it. It forces the Reckoning at 10 and picks the ending. It
+  should add to it. A truth authored `0` actually applies −1
+  (`cardEngine.js`'s `TRUTH_CLEANSE`) unless it carries `debtFixed: true`
+  (`DEBT: 0!`). The player sees it as the lake's water quality
+  (`engine/lake.js`). It forces the Reckoning at 10 and picks the ending. It
   also crosses bloom-event thresholds at 3/6/8/10, each of which now pops
   up an IT interrupt over whatever's on screen (`engine/itBlooms.js`) —
   those lines are generic to the threshold, not to any node, so nothing

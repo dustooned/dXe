@@ -481,6 +481,31 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 
 ## What's next
 
+**Open from the 2026-09-24 playtest round** (tutorial, lake, Pastor). All
+of these are decided or at least scoped; see the linked sections:
+- **IT/SO observer voice for the older tables.** The new finding,
+  gatekeeper and Therapist-outro lines use the "detached observers /
+  countdown grim reapers who never admit they're against you" voice
+  (`IT_DESIGN.md`'s "Findings, not commentary"). The bloom, emotion-lean
+  and SO rebuttal tables (~50 lines) still use the earlier voice.
+  Rewriting them would also drop IT's per-class voices, so it's **waiting
+  on the designer's OK**.
+- **Therapist reads the check-in back.** One line in her call ("You put
+  'nearly every day.' Okay."). This was proposed but not built. Only the
+  ending comparison was chosen.
+- **More ways to clean the lake** (proposed, not chosen yet): the lake
+  settles between visits after a truthful encounter, cheaper lies, a
+  mid-conversation "take it back" branch, and a Reckoning that covers
+  every lie instead of the last 3.
+- **Audio is untuned.** The FEELZ boot chime is a placeholder, and the
+  lake splash hasn't been listened to on real devices yet. Tune volume
+  and pitch by ear.
+- **Art jobs.** Pastor Gabriel (none yet), IT/SO as hellhounds (they
+  reuse the IT popups today), the baptism underwater moment.
+- **Playtest the new opening end to end** on a phone: FEELZ check-in →
+  intake → Therapist spotlight tutorial → first NPC. Watch whether the
+  spotlight and the lake reveal land without any explanation.
+
 Roughly in order of how ready each one is to just start:
 
 **Ready to build, no further design needed:**

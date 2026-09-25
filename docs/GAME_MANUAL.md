@@ -47,14 +47,15 @@ tone; rewrite it to describe what the choice cost or bought instead.
 **Lake Ulysses** is the in-fiction rebrand of a real toxic-algae lake:
 "3,000 acres. A jewel," according to every sign and civic ad — and every
 few months, closed again, "under control," reopened, closed again. The
-lake is a character. Its health is tracked the same way the player's
-lies are (`lakeHealth`, driven by Truth Debt), but the lake itself doesn't
-visibly change during play — that still needs art this project doesn't
-have. What Truth Debt's bloom thresholds (3/6/8/10) *do* trigger now is an
-IT interrupt: an uninvited popup, over whatever's already on screen,
-one line per class per threshold, placeholder prose exercising the class
-voice split rather than final writing (`IT_DESIGN.md`, `engine/itBlooms.js`).
-The civic myth ("the water's fine") is the game's
+lake is a character, and **it's how the player sees their Truth Debt**:
+a water-quality gauge at the bottom of every dialog screen, modeled on a
+real TDS (total dissolved solids) chart. It runs from clean blue (20 ppm,
+IDEAL) to swamp green (520 ppm, OVER LIMIT), with a tamagotchi fish tank
+in the corner that goes from three thriving fish to one belly-up. It's
+indifferent on purpose: a sensor readout, not a judgment. A square-wave
+water splash, pitched by the water's quality, plays after each reaction.
+Crossing a bloom threshold (3/6/8/10) also brings in an IT interrupt
+(`IT_DESIGN.md`). The civic myth ("the water's fine") is the game's
 first lie, told to the player before they've made a single choice — the
 opening cutscene (Bob Baiter, the town's booster-councilman) is an
 *unchosen* lie, establishing the whole town's relationship to honesty
@@ -62,12 +63,15 @@ before any NPC does.
 
 ### FEELZ
 
-FEELZ is the diegetic device for every mechanic: a phone app with a mood
-wheel, ostensibly there to help the player process what happened at the
-lake. In practice it's how the player picks an emotional lean before
-every choice (see §3). It's deliberately a little broken — "janky" is
-the operative word, not "clean UI." The Therapist (§5) is the human voice
-behind it.
+FEELZ is the diegetic device for every mechanic: a therapy app on the
+player's phone, and **the game's whole interface is that app**. It boots
+when the phone buzzes at the end of the Prologue: a glowing rainbow
+silhouette of the FEELZ wheel and a synth chime, then a real-app-style
+check-in (two "over the last 2 weeks, how often…" questions, modeled on
+the PHQ-2 screening questionnaire), then "matching you with care." The
+check-in answers come back at the very end, set against what actually
+happened (§3, "The ending"). The Therapist (§5) is the human voice behind
+the app.
 
 ### The loop, at chapter scale
 
@@ -76,19 +80,20 @@ reuse it:
 
 ```
 Opening call (one continuous scene, order is load-bearing)
-  Prologue  →  Questionnaire  →  Therapist
+  Prologue  →  FEELZ boot + check-in  →  Questionnaire (intake)  →  Therapist (tutorial)
 
 Then, once per NPC (Deborah → Rwanda → Samun → Rick):
   Explore (mini-game walk)  →  Confront (pick your opener)  →  Encounter (dialog)
 
 Then:
-  Reckoning (confess or double down on your loudest lies)
-  →  Ending (one of four, picked by how much you lied)
+  Reckoning: Pastor Gabriel's baptism (confess or double down, then under the water)
+  →  Ending (one of four, picked by how dirty the lake is)
 ```
 
-**Why the opening call is one unit, not three scenes.** The Prologue
-ends on the player's phone buzzing. The Questionnaire's last beat hands
-off to the Therapist picking up mid-ring. Splitting or reordering these
+**Why the opening call is one unit, not four scenes.** The Prologue
+ends on the player's phone buzzing. FEELZ opens, runs its check-in, and
+matches the player with a provider. The Questionnaire is that provider's
+intake, and its last beat hands off to the Therapist picking up. Splitting or reordering these
 breaks a line that already answers a line — see
 [`HANDOFF.md`](HANDOFF.md) if you're ever tempted to move one.
 
@@ -118,11 +123,14 @@ drawing — see "Reading text," below.
 
 Before most swipes, the player taps or drags an emotion off an 8-slice
 wheel (Joy, Trust, Fear, Surprise, Sadness, Disgust, Anger, Anticipation
-— Plutchik's wheel). Only 3 of the 8 are ever lit up and selectable in a
-given playthrough — which 3 depends on an invisible "class" set by the
-opening Questionnaire (see below). Dragging the emotion onto the swipe
-card (instead of just tapping it) tints the card in that emotion's
-color — a small, optional flourish with no separate mechanical effect.
+— Plutchik's wheel). **The player only ever sees symbols** (★ ◆ ◉ ⊕ ▼ ✕
+▲ ▶), never the names, and no character names a feeling out loud either.
+Only 3 of the 8 are ever lit up and selectable in a given playthrough —
+which 3 depends on an invisible "class" set by the opening Questionnaire
+(see below). Picking one tints the swipe card in its color and gives the
+card a small wiggle, pointing at it as the next thing to touch. On a
+phone, holding a slice plays its tone louder without picking it: a way
+to listen before choosing.
 
 Picking an emotion does two things:
 - It's on record for that response.
@@ -148,12 +156,25 @@ same way. Full narrative meaning of each meter is in
 [`CONTENT_SCHEMA.md`](CONTENT_SCHEMA.md#what-the-stats-mean).
 
 **Truth Debt** is separate, 0–10, and it's the one number with teeth.
-Nearly every lie adds to it (truths almost never do). It's shown to the
-player as a small pulsing sigil that reads more urgent as debt climbs
-("elevated" at 3–7, "critical" at 8+). Hit 10 anywhere, mid-NPC or not,
-and the game cuts straight to the Reckoning — no more encounters, no
-matter who's left. Every lie big enough to matter is also logged, quietly,
-to a running **Truth Ledger** the player never sees until it comes due.
+Nearly every lie adds to it (+2 to +4), and **every truth clears it by
+1** unless the script says otherwise, so the lake can recover during
+play. The player sees it as the lake gauge (§2): its five statuses
+(IDEAL / MARGINAL / HIGH / CONTAMINATED / OVER LIMIT) line up exactly with
+the four endings, so a status change means the ending they're heading
+toward just changed. Hit 10 anywhere, mid-NPC or not, and the game cuts
+straight to the Reckoning — no more encounters, no matter who's left.
+Every lie big enough to matter is also logged, quietly, to a running
+**Truth Ledger** the player never sees until it comes due.
+
+### IT and SO
+
+Two intrusive-thought voices that pop up like ads. **IT** states things
+with dread and certainty. **SO** answers IT with doubt. They're
+observers who keep score and never admit they're against you. They don't
+comment after every conversation. They speak up only when they notice
+something new: the player's truth/lie pattern flipped, their go-to
+feeling changed, or the lake crossed into a new status. A tap anywhere
+closes them. Full design: [`IT_DESIGN.md`](IT_DESIGN.md).
 
 ### Reading text
 
@@ -180,16 +201,24 @@ section.
 
 ### The Reckoning
 
-Once Truth Debt maxes out (or the four NPCs are done), the player faces
-up to three of their biggest logged lies, most recent first. Each one:
-**Confess** (pay that lie's debt back down, the truth version of what
-they should have said) or **Double Down** (dig in — a flat debt penalty,
-every time, regardless of the lie's size). This is the only place in the
-game debt can go back *down*.
+Once Truth Debt maxes out (or the four NPCs are done), the player is
+called down to the water by **Pastor Gabriel** (§5), standing waist-deep
+in the lake. He puts up to three of their most recent logged lies to
+them. Each one: **Confess** (that lie's debt comes back off, and the
+lake clears live on screen) or **Double Down** (a flat +3, every time,
+regardless of the lie's size). Confession is never quite enough for him.
+Then IT and SO, as his hellhound gatekeepers, walk the player into the
+water, and he holds them under at the lake's final level: the screen
+sinks into clear blue or swamp green. Even a player with nothing to
+confess still gets baptized.
 
 ### The ending
 
-Final Truth Debt alone decides which of four endings plays:
+The ending screen opens on the lake's **final reading**, full size, with
+whatever's left in the fish tank. Under it, the player's FEELZ check-in
+answers are set flat against what was recorded (lies told, to how many
+people, the final reading), with no comment on the gap. Final Truth Debt
+alone decides which of four endings plays:
 
 | Debt | Ending | Lake Ulysses, after |
 | :-- | :-- | :-- |
@@ -234,16 +263,17 @@ it.
 | 1 | Opening Quote | cutscene | Full-bleed narration over an animated bg (`spr_QuoteBG`, 5 frames ✅). No characters. |
 | 2 | Bob Baiter | cutscene | Animated lake bg (`spr_lake_bg_001`, 46 frames ✅) + a councilman character sprite (`spr_bb`, 10 frames ✅) delivering a monologue direct to camera. |
 | 3 | Prologue | cutscene | One background image (`prologue-lake.svg`, 🔲 placeholder) + a mid-scene branching choice ("Get up" / "Stay down a little longer") that doesn't need divergent art. |
-| 4 | Questionnaire | questionnaire | No unique art — three swipe cards, then the Therapist's tinted-word diagnosis over the shared FEELZ pattern background. |
-| 5 | Therapist | dialog | Location 1. Voice-only — no sprite, no portrait art needed by design (see §5). |
+| 3b | FEELZ boot + check-in | cutscene | ✅ Code-drawn: a glowing FEELZ-wheel silhouette with a moving rainbow wave, the FEELZ logo, then text-and-button check-in screens. 🔲 The boot chime is a placeholder synth. |
+| 4 | Questionnaire | questionnaire | No unique art — three swipe cards ("INTAKE 1 / 3"), then the Therapist's tinted-word diagnosis over the shared FEELZ pattern background. |
+| 5 | Therapist | dialog | Location 1. Voice-only — no sprite, no portrait art needed by design (see §5). Introduces each piece of the interface under a spotlight vignette. |
 | 6 | Deborah — hallway walk | minigame | 🔲 placeholder. A residential hallway, 4 hotspots + 1 advance. See §5 for character notes. |
 | 7 | Deborah — confrontation | cutscene | 🔲 placeholder bust (`npc_deborah.svg`) + a 3-way opener choice. |
 | 8 | Deborah — encounter | dialog | Portrait is a colored-initial placeholder today (`ui/npcPortrait.js`) — real portrait art is an open job, 128×128, 1-bit, tinted by her accent color. |
 | 9–11 | Rwanda — walk / confront / encounter | minigame / cutscene / dialog | Same shape as 6–8. Walk room: an alley. |
 | 12–14 | Samun — walk / confront / encounter | minigame / cutscene / dialog | Same shape. Walk room: a gas station / garage. |
 | 15–17 | Rick — walk / confront / encounter | minigame / cutscene / dialog | Same shape. Walk room: a biker bar ("Barlot"). |
-| 18 | Reckoning | reckoning | No unique art — text cards over the shared screen chrome. |
-| 19 | Ending | ending | A full-bleed procedural pattern (already built, keyed by ending) before the text. No ending-specific art exists yet. |
+| 18 | Reckoning: Pastor Gabriel's baptism | reckoning | Text over the lake gauge; the baptism is a full-screen water fill in the lake's final color. 🔲 No Pastor art yet, and IT/SO as hellhounds reuse the IT popups (real dog art is an open job). |
+| 19 | Ending | ending | A full-bleed procedural pattern (already built, keyed by ending), then the final lake reading (large gauge + fish tank) and the check-in record before the text. |
 
 **Everything in rows 6–17 (all four mini-games and all four
 confrontations) is placeholder art and placeholder prose today** — this
@@ -266,8 +296,8 @@ if a piece of art is getting clipped on a real device.
 ## 5. The cast of Chapter 1
 
 Four NPCs, one stop each around the lake, plus the Therapist (the
-chapter's tutorial voice) and Bob Baiter (the chapter's only non-playable
-lie). Location numbers below match `LOCATION:` in each NPC's manuscript
+chapter's tutorial voice), Pastor Gabriel (the chapter's judgment) and
+Bob Baiter (the chapter's only non-playable lie). Location numbers below match `LOCATION:` in each NPC's manuscript
 file. "Background" notes are lore from the original design bible
 (`DX Bible.md`) meant to inform how you write this character further —
 they aren't necessarily dramatized on-page yet, and are marked as such.
@@ -285,18 +315,23 @@ same character, same wound, different angle of approach.
 - **Leitmotif:** the ambient track already scoring the Questionnaire
   (`heavens_waiting_room.mp3`), not a synthesized phrase like the other
   four — she's the one character whose "theme" is the room tone itself.
-- **Voice:** tired but warm. Overworked, still listening. A chart opens
-  audibly on her end; another call is always waiting.
-- **Role:** the tutorial. She teaches truth-vs-lie with zero explanation
-  of mechanics — the player learns what swiping left does by feeling her
-  respond to it, nothing more. Keep any future Therapist writing
-  mechanic-silent for this reason.
-- **Core exchange:** "What happened in the dream?" Truth costs Stability
-  but earns a rare moment of her guard dropping ("thank you for telling
-  me that — most people give me the short version"). The lie is barely a
-  lie ("I don't remember") and Truth Debt only ticks up by 1 — the
-  gentlest cost in the whole chapter, intentionally, since this is the
-  player's first swipe.
+- **Voice:** an LCSW (licensed clinical social worker) at a community
+  clinic with a 40+ caseload, typing notes while you talk. She's also
+  somehow a guru who speaks in small aphorisms ("Weather, not a
+  verdict"), then gets pulled back by the clock ("then I have to take my
+  two o'clock"). Tired but warm, never cruel.
+- **Role:** the tutorial, done as guided discovery (the CBT technique of
+  asking so the client finds the answer). She never explains a mechanic.
+  Each question makes the player use one new piece of the app for the
+  first time, and it's spotlit (everything else dims) as she reaches it:
+  wheel, card, meters, lake. Keep any future Therapist writing
+  mechanic-silent.
+- **Two exchanges:** "How are you walking in today? Just point." (she
+  describes the picked symbol in an image, never by name; the meters
+  appear), then "What happened in the dream?" (the lake gauge appears:
+  "FEELZ reads it off the county sensors. It doesn't care how you feel").
+- **Outro:** surreal homework per class, a closing line depending on the
+  dream answer, the call ends, then IT and SO get the last word.
 
 ### DEBORAH — Location 2
 
@@ -385,6 +420,27 @@ same character, same wound, different angle of approach.
   chapter's only example of a meter changing *what content shows*, not
   just what gets narrated — see `STAT_MATH.md` if you want to gate a
   future NPC the same way.
+
+### PASTOR GABRIEL — the Reckoning
+
+- **Where:** waist-deep in Lake Ulysses, running an altar call.
+- **Names:** he calls himself **Gabriel** ("God gave me my chosen name").
+  The town still calls him **Sam**. His mother named him **Samael**, the
+  Angel of Death and accuser in Jewish tradition. He tells you that right
+  before he holds you under, and his nameplate turns to SAMAEL.
+- **Voice:** a scary evangelical who embodies the game's contradictions:
+  grace and a ledger ("God don't keep a ledger. I do. For Him."), welcome
+  and surveillance ("Everybody's welcome. Everybody's watched."), new life
+  by drowning. He's unsettling because he partly believes it.
+- **Role:** the judgment. Confession to him is never quite enough ("…Is
+  that all of it?"). That's scrupulosity, religious OCD in which
+  confession becomes a compulsion, and it's where IT and SO's doubt ends
+  up. He knows the player's FEELZ check-in answers without being told.
+- **Writing him:** every line is picked from the player's own data (lake
+  status, check-in answers, lies told), climbing from warm toward the
+  contradictions. Lines live in
+  `src/chapters/lake-ulysses/content/pastor.json`. Deborah's "You're not
+  the church" is his setup.
 
 ### BOB BAITER — cutscene only, not an encounter
 

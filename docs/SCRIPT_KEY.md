@@ -66,7 +66,7 @@ PROMPT: <the NPC's line>           ← ON SCREEN. What the player is answering.
 SAY:    <the player's line>        ← ON SCREEN first, right-aligned, labeled YOU
 REACT:  <how the NPC takes it>     ← ON SCREEN next, drawn letter by letter
 EFFECTS: integrity+2 stability-2   ← meter movement
-DEBT:   0                          ← Truth Debt (truths are ~always 0)
+DEBT:   0                          ← Truth Debt (a truth's 0 counts as −1; 0! = exactly 0)
 NEXT:   deborah_02_confronted      ← which node follows, or (end)
 
 -- LIE                             ← the RIGHT swipe
@@ -138,9 +138,9 @@ same two middles.
 ### The chapter's rhythm around all this
 
 ```
-Prologue → Questionnaire → Therapist          ← one continuous "opening call"
-[ walk → confrontation → NPC dialog ] × 4     ← Deborah, Rwanda, Samun, Rick
-Reckoning → Ending
+Prologue → FEELZ check-in → Questionnaire → Therapist   ← one continuous "opening call"
+[ walk → confrontation → NPC dialog ] × 4               ← Deborah, Rwanda, Samun, Rick
+Reckoning (Pastor Gabriel's baptism) → Ending
 ```
 
 Full detail on each beat is in [`GAME_MANUAL.md`](GAME_MANUAL.md) §4.
@@ -306,7 +306,7 @@ much the lie *costs someone else*, not how false it is:
 
 | Value | Means | Example from the chapter |
 | :-- | :-- | :-- |
-| `0` | The truth. | every `-- TRUTH` block in the game |
+| `0` | The truth. The game applies it as −1: every truth clears the lake a little. Write `0!` if this truth shouldn't clear anything. | every `-- TRUTH` block in the game |
 | `+1` | Barely a lie. A deflection. | "I don't remember the dream." |
 | `+2` | A small lie to avoid a hard moment. | backing off a question you already asked |
 | `+3` | A real lie that props up someone's story. | "It's not that bad here. You're doing fine." |

@@ -21,8 +21,10 @@ The render is `ui/itPopup.js`'s `createItPopup()`, usable from anywhere
   `engine/itEmotionLean.js`. Skipped below 2 total picks, and skipped for
   any NPC with an authored `outro` — today only the Therapist, whose
   outro ends on its own IT → SO pair (see "Therapist outro" below).
-- **Reckoning** — one class-variant line before the first card
-  (`engine/itEndgame.js`'s `RECKONING_IT_TEXT`).
+- **Reckoning** — IT and SO as Pastor Gabriel's hellhound gatekeepers,
+  walking the player into the water before the baptism
+  (`content/pastor.json`'s `gate`, lines keyed by final lake status). The
+  old standalone Reckoning line (`RECKONING_IT_TEXT`) was retired.
 - **Ending** — one class-variant line once the body text finishes drawing,
   before "BACK TO MENU" — the actual last word of the chapter
   (`ENDING_IT_TEXT`, same file).
@@ -355,19 +357,21 @@ list.
   its own calmer, more detached "neutral" line per class
   (`engine/itEmotionLean.js`), rather than reusing an emotion-specific
   line's jittery register for a beat that isn't about a pattern.
-- *"Which specific moments trigger it?"* Once per NPC encounter, at the
-  end of that NPC's node graph (`dialogScene.js`'s `proceed()`) — not
-  after every swipe, which would be exhausting on top of the SAY/REACT
-  beats already there. Skipped below 2 total picks for the run, and for
-  an NPC with an authored `outro` (the Therapist), whose outro already
-  ends on IT.
+- *"Which specific moments trigger it?"* At the end of an NPC's node
+  graph (`dialogScene.js`'s `showFindingIfAny()`), and **only when there's
+  a new finding** (see "Findings, not commentary" above): a truth/lie
+  pattern flip, or the dominant emotion changing since IT last read it.
+  At most one per encounter, none if a bloom already interrupted it,
+  skipped below 2 total picks, and skipped for an NPC with an authored
+  `outro` (the Therapist), whose outro already ends on IT.
 
 **Code:**
 - IT beat type in `cutsceneScene.js`, and the render factored out into
   `ui/itPopup.js`'s `createItPopup()` so any scene can call it directly —
-  used by `dialogScene.js` (bloom events, the dominant-emotion read),
-  `reckoningScene.js`, and `endingScene.js`, none of which sequence beats
-  at all.
+  used by `dialogScene.js` (bloom events, findings, the Therapist outro),
+  `reckoningScene.js` (the gatekeepers), and `endingScene.js`, none of
+  which sequence beats at all. Any popup closes on a tap anywhere once its
+  line has drawn, as well as on the X.
 - Every popup plays `audio.playTyagl()` on mount (the diagnosis sting,
   reused deliberately).
 
@@ -377,8 +381,12 @@ list.
 - 12 bloom-threshold lines (4 thresholds × 3 classes) — `engine/itBlooms.js`
 - 12 dominant-emotion lines (3 classes × 3 emotions + 3 neutral) —
   `engine/itEmotionLean.js`
-- 3 Reckoning lines + 3 ending lines (one per class each) —
-  `engine/itEndgame.js`
+- 3 ending lines (one per class) — `engine/itEndgame.js`
+- 4 finding lines (IT + SO for each pattern-flip direction, observer
+  voice, class-neutral) — `engine/itFindings.js`
+- 4 Therapist-outro lines (IT + SO per dream answer) —
+  `manuscript/therapist.txt`'s `=== OUTRO`
+- 4 gatekeeper lines (IT + SO per lake status band) — `content/pastor.json`
 
 **What's actually still open**, and it's not engineering:
 - All of the above is exercise prose, not final writing — same "rewrite
