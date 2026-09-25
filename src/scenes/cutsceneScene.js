@@ -26,9 +26,21 @@
 //                              by dialogScene.js, not this generic beat
 //                              sequencer — see IT_DESIGN.md's "SO — the
 //                              doubt rebuttal".
+//   art?,                   ← key into ART below: a built-in visual shown
+//                              above the text box (the FEELZ boot silhouette)
+//   sound?,                 ← key into SOUNDS below, played as the beat opens
 // }
+// An interactive option can carry `record: 'key'` — the chosen label is
+// saved to run.checkIn[key] (the FEELZ check-in answers, read back at the
+// ending; see endingScene.js).
 import { createTypewriter } from '../ui/typewriterText.js';
-import { preloadTypewriterTick, playTypewriterTick, startAmbient, stopAmbient, startLeitmotif } from '../shell/audio.js';
+import { preloadTypewriterTick, playTypewriterTick, startAmbient, stopAmbient, startLeitmotif, playFeelzBoot } from '../shell/audio.js';
+import { createFeelzSilhouette } from '../ui/feelzSilhouette.js';
+
+// Built-in visuals and sounds a beat can name by key (`art:` / `sound:`),
+// so content JSON can ask for them without holding code.
+const ART = { feelzSilhouette: createFeelzSilhouette };
+const SOUNDS = { feelzBoot: playFeelzBoot };
 import { createSpriteAnimator } from '../ui/spriteAnimator.js';
 import { createItPopup } from '../ui/itPopup.js';
 import { createOscilloscope } from '../ui/oscilloscope.js';
@@ -127,6 +139,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
       screen.appendChild(spr);
     }
 
+    if (beat.art && ART[beat.art]) {
+      screen.appendChild(ART[beat.art]().el);
+    }
+    if (beat.sound) SOUNDS[beat.sound]?.();
+
     const textBox = document.createElement('div');
     textBox.className = 'dx-cutscene-textbox';
     currentTextBox = textBox;
@@ -212,6 +229,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   function resolveChoice(option) {
     applyOpener(option);
+    if (option.record) {
+      run.set({ checkIn: { ...run.get().checkIn, [option.record]: option.label } });
+    }
     if (option.jumpTo) {
       onComplete({ jumpTo: option.jumpTo });
       return;

@@ -9,6 +9,7 @@ import { drawEmotionPattern } from '../ui/emotionPattern.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createItPopup } from '../ui/itPopup.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
+import { ppmFor, statusFor } from '../engine/lake.js';
 import { ENDING_IT_TEXT } from '../engine/itEndgame.js';
 import * as fx from '../shell/fx.js';
 import * as audio from '../shell/audio.js';
@@ -23,6 +24,48 @@ const ENDING_INTENSITY = {
 };
 
 const JUDGMENT_BEAT_MS = 900;
+
+// What the player said about themselves in the FEELZ check-in, set flat
+// against what FEELZ actually recorded. No verdict, no commentary: two
+// columns of data, and the gap between them is the player's to read.
+function createCheckInRecord(state, finalDebt) {
+  const said = state.checkIn ?? {};
+  const lieNodes = Object.entries(state.choices ?? {}).filter(([, side]) => side === 'lie');
+  const people = new Set(lieNodes.map(([nodeId]) => nodeId.split('_')[0])).size;
+  const liesLine = lieNodes.length
+    ? `${lieNodes.length}, to ${people} ${people === 1 ? 'person' : 'people'}`
+    : '0';
+
+  const rows = [
+    ['SELF-REPORTED', null],
+    ['Water higher than it should be', said.water ?? '—'],
+    ['Told someone you were fine', said.fine ?? '—'],
+    ['RECORDED', null],
+    ['Lies told', liesLine],
+    ['Final reading', `${ppmFor(finalDebt)} ppm · ${statusFor(finalDebt)}`],
+  ];
+
+  const el = document.createElement('dl');
+  el.className = 'dx-checkin-record';
+  for (const [label, value] of rows) {
+    if (value === null) {
+      const head = document.createElement('dt');
+      head.className = 'dx-checkin-record__head';
+      head.textContent = label;
+      el.appendChild(head);
+      continue;
+    }
+    const row = document.createElement('div');
+    row.className = 'dx-checkin-record__row';
+    const dt = document.createElement('dt');
+    dt.textContent = label;
+    const dd = document.createElement('dd');
+    dd.textContent = value;
+    row.append(dt, dd);
+    el.appendChild(row);
+  }
+  return el;
+}
 
 export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
   const endingKey = getEndingKey(run.get().truthDebt);
@@ -82,6 +125,8 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
     finalReading.textContent = 'FINAL READING';
     screen.appendChild(finalReading);
     screen.appendChild(createLakeGauge(finalDebt, { large: true }).el);
+    audio.playLakeSplash(finalDebt);
+    screen.appendChild(createCheckInRecord(run.get(), finalDebt));
 
     const textEl = document.createElement('p');
     textEl.className = 'dx-text dx-ending-body';

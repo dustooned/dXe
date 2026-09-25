@@ -2,8 +2,10 @@
   "beats": [
     {
       "style": "feelz-logo",
+      "art": "feelzSilhouette",
+      "sound": "feelzBoot",
       "text": "{color:Anger}F{/color}{color:Joy}E{/color}{color:Trust}E{/color}{color:Sadness}L{/color}{color:Anticipation}Z{/color}",
-      "autoAdvanceMs": 1600
+      "autoAdvanceMs": 3200
     },
     {
       "style": "feelz",
@@ -15,10 +17,22 @@
       "interactive": {
         "type": "choice",
         "options": [
-          { "label": "Not at all" },
-          { "label": "Several days" },
-          { "label": "More than half the days" },
-          { "label": "Nearly every day" }
+          {
+            "label": "Not at all",
+            "record": "water"
+          },
+          {
+            "label": "Several days",
+            "record": "water"
+          },
+          {
+            "label": "More than half the days",
+            "record": "water"
+          },
+          {
+            "label": "Nearly every day",
+            "record": "water"
+          }
         ]
       }
     },
@@ -28,10 +42,22 @@
       "interactive": {
         "type": "choice",
         "options": [
-          { "label": "Not at all" },
-          { "label": "Several days" },
-          { "label": "More than half the days" },
-          { "label": "Nearly every day" }
+          {
+            "label": "Not at all",
+            "record": "fine"
+          },
+          {
+            "label": "Several days",
+            "record": "fine"
+          },
+          {
+            "label": "More than half the days",
+            "record": "fine"
+          },
+          {
+            "label": "Nearly every day",
+            "record": "fine"
+          }
         ]
       }
     },

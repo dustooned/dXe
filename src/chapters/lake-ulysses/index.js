@@ -122,6 +122,10 @@ const initialRunState = {
   // They only speak again when one of these changes.
   itLastSide: null,
   itLastLean: undefined,
+  // The FEELZ check-in answers ({ water, fine } → the chosen label), set by
+  // feelz_launch.json's `record` options. The ending reads them back against
+  // what the player actually did (endingScene.js).
+  checkIn: {},
 };
 
 export function mount(stageEl, { exit, restart, startSceneId }) {

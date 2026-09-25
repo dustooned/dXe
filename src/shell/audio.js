@@ -791,3 +791,95 @@ export function playHit(intensity = 'weak') {
   osc.start(now);
   osc.stop(now + duration + 0.05);
 }
+
+// ─── FEELZ boot chime ─────────────────────────────────────────────────────────
+
+// PLACEHOLDER synth tone for the FEELZ app booting (feelz_launch.json's
+// logo beat): a struck, ringing arpeggio rising through a major-ninth
+// chord — bright, clean, a little too cheerful, the way app startup sounds
+// are. Struck-and-ringing voices, not a held pad.
+const BOOT_NOTES = [523.25, 659.25, 783.99, 987.77, 1174.66]; // C5 E5 G5 B5 D6
+const BOOT_GAIN = 0.16;
+
+export function playFeelzBoot() {
+  const audioCtx = ensureContext();
+  const start = audioCtx.currentTime + 0.05;
+  BOOT_NOTES.forEach((frequency, i) => {
+    const at = start + i * 0.09;
+    const osc = audioCtx.createOscillator();
+    osc.type = 'triangle';
+    osc.frequency.value = frequency;
+    const gain = audioCtx.createGain();
+    gain.gain.setValueAtTime(0, at);
+    gain.gain.linearRampToValueAtTime(BOOT_GAIN, at + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, at + 1.4);
+    osc.connect(gain).connect(masterGain);
+    osc.start(at);
+    osc.stop(at + 1.45);
+    osc.onended = () => gain.disconnect();
+  });
+  // A soft square an octave under the root, for a little digital grit.
+  const sub = audioCtx.createOscillator();
+  sub.type = 'square';
+  sub.frequency.value = BOOT_NOTES[0] / 2;
+  const subGain = audioCtx.createGain();
+  subGain.gain.setValueAtTime(0.05, start);
+  subGain.gain.exponentialRampToValueAtTime(0.0001, start + 0.6);
+  sub.connect(subGain).connect(masterGain);
+  sub.start(start);
+  sub.stop(start + 0.65);
+  sub.onended = () => subGain.disconnect();
+}
+
+// ─── Lake splash ──────────────────────────────────────────────────────────────
+
+// A water splash built from square waves whose pitch follows the lake's
+// quality (engine/lake.js): clean water is a bright, high, rising droplet
+// "bloop" with sparkling spray; contaminated water is the same gesture
+// shifted way down and muffled — a thick, low plop. Played when the lake
+// gauge first appears and at every reaction after (dialogScene.js), and
+// once for the final reading at the ending.
+const SPLASH_GAIN = 0.12;
+
+export function playLakeSplash(truthDebt = 0) {
+  const audioCtx = ensureContext();
+  const now = audioCtx.currentTime;
+  const quality = 1 - clamp(truthDebt, 0, 10) / 10; // 1 clean … 0 swamp
+  const base = 180 * Math.pow(2, quality * 2.3);    // ~180 Hz … ~890 Hz
+
+  // Murk: contaminated water sounds like it's heard through mud.
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 700 + quality * 5300;
+  filter.connect(masterGain);
+
+  // The droplet: a square chirp rising from the base pitch — real droplet
+  // sounds rise as the air bubble they trap shrinks.
+  const drop = audioCtx.createOscillator();
+  drop.type = 'square';
+  drop.frequency.setValueAtTime(base, now);
+  drop.frequency.exponentialRampToValueAtTime(base * (1.6 + quality), now + 0.09);
+  const dropGain = audioCtx.createGain();
+  dropGain.gain.setValueAtTime(SPLASH_GAIN, now);
+  dropGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14 + (1 - quality) * 0.12);
+  drop.connect(dropGain).connect(filter);
+  drop.start(now);
+  drop.stop(now + 0.3);
+
+  // The spray: a scatter of tiny square blips above the droplet.
+  const blips = 3 + Math.round(quality * 4);
+  for (let i = 0; i < blips; i++) {
+    const at = now + 0.03 + Math.random() * 0.14;
+    const blip = audioCtx.createOscillator();
+    blip.type = 'square';
+    blip.frequency.value = base * (2.5 + Math.random() * 3);
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(SPLASH_GAIN * 0.35, at);
+    g.gain.exponentialRampToValueAtTime(0.0001, at + 0.03);
+    blip.connect(g).connect(filter);
+    blip.start(at);
+    blip.stop(at + 0.04);
+    blip.onended = () => g.disconnect();
+  }
+  drop.onended = () => { dropGain.disconnect(); setTimeout(() => filter.disconnect(), 300); };
+}

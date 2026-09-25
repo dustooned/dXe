@@ -42,7 +42,13 @@ buzzes against the gravel") -> **FEELZ launch** (cutscene: the phone's
 therapy app opens and runs a real-app-style check-in — two "over the
 last 2 weeks, how often…" questions with the standard four frequency
 answers, modeled on the PHQ-2, then "matching you with care" — the
-game's whole UI *is* the FEELZ app from here on)
+game's whole UI *is* the FEELZ app from here on. The boot beat plays a
+placeholder synth chime (`audio.playFeelzBoot`) over a glowing silhouette
+of the FEELZ wheel, filled with a moving rainbow wave
+(`ui/feelzSilhouette.js`). The check-in answers are saved to
+`run.checkIn` and read back on the ending screen, set flat against what
+FEELZ recorded: lies told, to how many people, and the final lake
+reading. Self-report versus data, with no comment on the gap)
 -> **Questionnaire** (the app's intake: three swipe questions
 whose answers *implicitly* set your class — Guns / Bible / Crystals —
 followed by the Therapist's cryptic diagnosis; the class name is never
@@ -301,7 +307,10 @@ LIMIT). A tamagotchi fish tank sits in its corner, going from three
 thriving fish to one belly-up. It's deliberately indifferent: a sensor
 readout with no sympathy words. Its five statuses line up exactly with
 the ending tiers and bloom thresholds (`engine/lake.js`), and the ending
-screen shows the final reading, full size, as the payoff. The four meters
+screen shows the final reading, full size, as the payoff. The lake is
+audible too: `audio.playLakeSplash(debt)` is a square-wave water splash
+whose pitch and brightness drop as the water turns. It plays at each
+reaction once the gauge is on screen, and once at the ending. The four meters
 feed two things:
 the ending epilogue line (names whichever meter moved furthest from
 baseline), and **actual content gating**: a node can carry an opt-in

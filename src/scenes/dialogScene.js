@@ -141,6 +141,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   function enterReaction() {
     answered.add(currentNodeId);
     stage = 'reaction';
+    // The lake answers too: a splash pitched by its current quality, once
+    // the gauge is on screen (audio.js's playLakeSplash).
+    if (isRevealed('debt')) audio.playLakeSplash(run.get().truthDebt);
   }
 
   function render() {
