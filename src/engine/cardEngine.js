@@ -3,6 +3,19 @@ import { emotionAmplifies } from './loadout.js';
 
 const STAT_KEYS = ['integrity', 'stability', 'lucidity', 'trust'];
 const AMPLIFY_MULTIPLIER = 1.5;
+// Every truth clears the lake a little: a TRUTH edge authored with
+// `DEBT: 0` actually applies this instead. Without it, debt could only
+// ever rise until the Reckoning — a player who lied early had no way back
+// during play. Any nonzero authored value wins, and `DEBT: 0!` (debtFixed)
+// pins a truth at exactly 0.
+export const TRUTH_CLEANSE = -1;
+
+// The debt change a swipe actually applies (see TRUTH_CLEANSE).
+export function effectiveDebtDelta(edge, swipeKey) {
+  const authored = edge.debtDelta || 0;
+  if (swipeKey === 'truth' && authored === 0 && !edge.debtFixed) return TRUTH_CLEANSE;
+  return authored;
+}
 
 // Symmetric rounding (round-half-away-from-zero) so a negative delta
 // amplifies just as strongly as the equivalent positive one — plain
@@ -38,7 +51,7 @@ export function resolveCard(state, node, swipeKey, emotion) {
   const edge = node.swipes[swipeKey];
   const leaningEffects = applyEmotionalLean(edge.effects, emotion);
   const statPatch = applyStatDelta(state, leaningEffects);
-  const truthDebt = clamp(state.truthDebt + (edge.debtDelta || 0), 0, 10);
+  const truthDebt = clamp(state.truthDebt + effectiveDebtDelta(edge, swipeKey), 0, 10);
 
   const ledger = edge.ledgerEntry
     ? [

@@ -115,9 +115,12 @@ Every node needs exactly two: `-- TRUTH` and `-- LIE`.
   `CONTENT_SCHEMA.md`'s "What the stats mean" section for what each one
   represents narratively (short version: truth usually raises integrity
   and lucidity and costs stability/trust; lies usually invert that).
-- `DEBT:` — how much this adds to Truth Debt. Almost always `0` on the
-  TRUTH side. On the LIE side, roughly `+2` for a small lie up to `+4` for
-  a big one — look at other nodes for a feel of scale.
+- `DEBT:` — how much this adds to Truth Debt. On the TRUTH side, write
+  `0`: the game treats that as **−1** (every truth clears the lake a
+  little). Write `-2` for a truth that should clear more, or `0!` for a
+  truth that shouldn't clear anything. On the LIE side, roughly `+2` for a
+  small lie up to `+4` for a big one — look at other nodes for a feel of
+  scale.
 - `TAGS:` (optional, only really matters for lies) — comma-separated
   freeform categories, e.g. `Faith, Health`. Skip the line entirely if
   there's nothing worth tagging.

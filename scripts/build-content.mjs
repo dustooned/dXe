@@ -175,7 +175,15 @@ function parseManuscript(text, fileName) {
     } else if (line.startsWith('EFFECTS:')) {
       currentEdge.effects = parseEffects(line.slice(8), fileName, lineNumber);
     } else if (line.startsWith('DEBT:')) {
-      currentEdge.debtDelta = parseDebt(line.slice(5));
+      // `DEBT: 0!` pins a TRUTH at exactly 0, opting out of the engine's
+      // default truth cleanse (cardEngine.js's TRUTH_CLEANSE).
+      const value = line.slice(5).trim();
+      if (value === '0!') {
+        currentEdge.debtDelta = 0;
+        currentEdge.debtFixed = true;
+      } else {
+        currentEdge.debtDelta = parseDebt(value);
+      }
     } else if (line.startsWith('TAGS:')) {
       currentEdge.tags = line
         .slice(5)
