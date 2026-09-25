@@ -117,6 +117,11 @@ const initialRunState = {
   // { [nodeId]: 'truth' | 'lie' } — how each dialog node was answered.
   // Read by npc.outro conditions (the Therapist's homework sign-off).
   choices: {},
+  // What IT/SO last "found" (engine/itFindings.js): which way the last
+  // leaning encounter went, and the last dominant emotion they read out.
+  // They only speak again when one of these changes.
+  itLastSide: null,
+  itLastLean: undefined,
 };
 
 export function mount(stageEl, { exit, restart, startSceneId }) {

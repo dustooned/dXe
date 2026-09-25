@@ -36,7 +36,7 @@ player use one new thing for the first time:
    feeling, and she describes it back in an image. **Feelings are
    symbols only. She never names one.** After this, the four meters
    appear ("four little lines").
-2. *"What happened in the dream?"* After this, the debt box appears, and
+2. *"What happened in the dream?"* After this, the lake gauge (Truth Debt as water quality, with fish) appears, and
    she hints at what it counts without saying "lies."
 
 Then homework (one surreal line per class), a closing line that depends

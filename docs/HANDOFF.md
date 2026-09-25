@@ -39,7 +39,10 @@ One chapter: **Truth Debt: Lake Ulysses**, in scene order: Opening quote
 (cutscene) -> Bob Baiter (cutscene, the councilman's lake-reopening pitch)
 -> Prologue (typewriter-drawn narrative cutscene; ends on "Your phone
 buzzes against the gravel") -> **FEELZ launch** (cutscene: the phone's
-therapy app opens — the game's whole UI *is* the FEELZ app from here on)
+therapy app opens and runs a real-app-style check-in — two "over the
+last 2 weeks, how often…" questions with the standard four frequency
+answers, modeled on the PHQ-2, then "matching you with care" — the
+game's whole UI *is* the FEELZ app from here on)
 -> **Questionnaire** (the app's intake: three swipe questions
 whose answers *implicitly* set your class — Guns / Bible / Crystals —
 followed by the Therapist's cryptic diagnosis; the class name is never
@@ -71,7 +74,7 @@ first time:
    symbol in an image (`PICK` lines). **Feelings are symbols only, never
    named**, in the UI or by her. After this node the four meters fade in
    ("four little lines").
-2. *"What happened in the dream?"* → after it, the debt box fades in (or
+2. *"What happened in the dream?"* → after it, the lake gauge fades in (or
    earlier, the moment debt goes above 0), and she hints at what it
    counts.
 3. Outro: homework by class (surreal, not literal), a closing line by
@@ -290,9 +293,16 @@ one placeholder line per class per threshold (`engine/itBlooms.js`),
 overlaid on top of whatever's already on screen rather than replacing it,
 since "the player doesn't choose this, IT just shows up" is the whole
 point (`IT_DESIGN.md`). At 10 the popup still shows before the existing
-force-to-Reckoning jump runs. `lakeHealth` (the lake visibly degrading)
-remains unbuilt — that needs actual art to visualize, unlike the bloom
-trigger which only needed text. The four meters feed two things:
+force-to-Reckoning jump runs. The lake now shows Truth Debt:
+`ui/lakeGauge.js` replaced the "DEBT N" box with a horizontal
+water-quality chart. It's modeled on a real TDS (total dissolved solids)
+chart: clean blue (20 ppm, IDEAL) through swamp green (520 ppm, OVER
+LIMIT). A tamagotchi fish tank sits in its corner, going from three
+thriving fish to one belly-up. It's deliberately indifferent: a sensor
+readout with no sympathy words. Its five statuses line up exactly with
+the ending tiers and bloom thresholds (`engine/lake.js`), and the ending
+screen shows the final reading, full size, as the payoff. The four meters
+feed two things:
 the ending epilogue line (names whichever meter moved furthest from
 baseline), and **actual content gating**: a node can carry an opt-in
 `gate` that redirects to a different node if a stat condition is met

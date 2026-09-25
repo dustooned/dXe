@@ -421,8 +421,8 @@
 
 /* ── IT — an uninvited thought, styled to feel like a popup ad, not a
    line of dialog. Centered over a scrim, inverted colors (white on black,
-   vs. the rest of the game's black-on-white), and closed only via an
-   explicit X — never a tap anywhere, on purpose. See ui/itPopup.js.
+   vs. the rest of the game's black-on-white), closed by the X or by any
+   tap once the line has drawn. See ui/itPopup.js.
    Absolutely positioned (not a normal-flow .dx-screen) so it can overlay
    on top of a scene that's already rendered — dialogScene's bloom
    interrupt pops this up over the current dialog screen without clearing
@@ -530,7 +530,7 @@
 }
 
 /* Signals "there's another one of these after this" once the line finishes
-   drawing — reuses the same dx-pulse keyframes the critical debt sigil uses
+   drawing — reuses the shared dx-pulse keyframes
    (ui/ui.css), for the same "notice me" urgency. Never applied on the last
    beat in the sequence, since nothing follows it. */
 .dx-it-close.is-flashing {
@@ -588,7 +588,7 @@
 /* HANGUP in an outro: the call is over, so the app chrome dims to almost
    nothing and only the narration line stays lit. */
 .dx-game-screen--hungup .dx-meters,
-.dx-game-screen--hungup .dx-debt-sigil,
+.dx-game-screen--hungup .dx-lake,
 .dx-game-screen--hungup .dx-portrait,
 .dx-game-screen--hungup .dx-nameplate,
 .dx-game-screen--hungup .dx-pattern-bg {
@@ -640,4 +640,11 @@
   .dx-dialog-interactive.is-entering {
     animation: none;
   }
+}
+
+.dx-ending-reading-label {
+  font-size: 7px;
+  letter-spacing: 0.2em;
+  opacity: 0.7;
+  margin-bottom: -6px;
 }

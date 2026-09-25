@@ -8,6 +8,7 @@ import { getEndingKey, getEpilogueStat } from '../engine/endingEngine.js';
 import { drawEmotionPattern } from '../ui/emotionPattern.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createItPopup } from '../ui/itPopup.js';
+import { createLakeGauge } from '../ui/lakeGauge.js';
 import { ENDING_IT_TEXT } from '../engine/itEndgame.js';
 import * as fx from '../shell/fx.js';
 import * as audio from '../shell/audio.js';
@@ -74,10 +75,13 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
     title.textContent = ending.title;
     screen.appendChild(title);
 
-    const debtLine = document.createElement('p');
-    debtLine.className = 'dx-text';
-    debtLine.textContent = `Final Truth Debt: ${finalDebt}`;
-    screen.appendChild(debtLine);
+    // The payoff for the gauge the player's watched all chapter: the
+    // lake's final reading, full size, with whatever's left in the tank.
+    const finalReading = document.createElement('p');
+    finalReading.className = 'dx-text dx-ending-reading-label';
+    finalReading.textContent = 'FINAL READING';
+    screen.appendChild(finalReading);
+    screen.appendChild(createLakeGauge(finalDebt, { large: true }).el);
 
     const textEl = document.createElement('p');
     textEl.className = 'dx-text dx-ending-body';

@@ -25,7 +25,7 @@
         },
         "lie": {
           "playerText": "Fine. I'm fine.",
-          "npcReaction": "\"Fine.\" The keys don't stop. \"Everyone's fine. My whole caseload is fine.\" A tired almost-laugh. \"I keep four little lines on you. They move whether you tell me the truth or not. And that little box? That one's yours, not mine.\"",
+          "npcReaction": "\"Fine.\" The keys don't stop. \"Everyone's fine. My whole caseload is fine.\" A tired almost-laugh. \"I keep four little lines on you. They move whether you tell me the truth or not.\" A pause. \"That reading at the bottom is the lake. FEELZ pulls it off the county sensors. It doesn't care how anybody feels.\"",
           "effects": {
             "stability": 1,
             "trust": -1
@@ -61,7 +61,7 @@
       "swipes": {
         "truth": {
           "playerText": "I don't know. Water. Something underneath it. I couldn't breathe.",
-          "npcReaction": "A pause. Then, quieter: \"Thank you. Most people give me the short version.\" A soft click, a chart opening. \"See that box? It stays light when you don't have to remember what you told people. Nothing weighs less than the truth. Nothing costs more up front, either.\"",
+          "npcReaction": "A pause. Then, quieter: \"Thank you. Most people give me the short version.\" A soft click, a chart opening. \"That's the lake, at the bottom. FEELZ reads it off the county sensors. It doesn't care how you feel. It stays clear when you don't have to remember what you told people.\" A breath. \"The fish were the county's idea. Somebody decided data needed a mascot.\"",
           "effects": {
             "integrity": 2,
             "lucidity": 2,
@@ -75,7 +75,7 @@
         },
         "lie": {
           "playerText": "Nothing, really. I don't remember.",
-          "npcReaction": "\"Mm-hm.\" A pause just a beat too long. \"We can leave it there. I'll write 'client deferred.' I write that a lot.\" Another soft click. \"That box keeps count. It's fine. Everyone carries some. The trick is noticing the weight.\"",
+          "npcReaction": "\"Mm-hm.\" A pause just a beat too long. \"We can leave it there. I'll write 'client deferred.' I write that a lot.\" Another soft click. \"That's the lake, at the bottom. FEELZ reads it off the county sensors. It doesn't care how anyone feels about it. It just keeps count.\" A breath. \"The fish were the county's idea. Watch the fish.\"",
           "effects": {
             "integrity": -1,
             "stability": 1,

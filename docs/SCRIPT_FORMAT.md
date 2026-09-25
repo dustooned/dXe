@@ -140,7 +140,7 @@ changes.
   symbols, so **never name the feeling in the text**. Describe it
   instead ("That one runs hot").
 - `REVEAL: meters after node_id` / `REVEAL: debt after node_id` — in the
-  file header. Keeps the four meters (or the debt box) off screen until
+  file header. Keeps the four meters (or the lake gauge) off screen until
   that node has been answered, so the NPC can introduce them. Debt also
   shows early the moment it goes above 0. When it appears, it's
   spotlit (everything else dims) along with the NPC's reaction line, so

@@ -7,7 +7,42 @@
     },
     {
       "style": "feelz",
-      "text": "Session 1 · Intake{pause:500}\nConnecting you now."
+      "text": "Welcome to FEELZ.{pause:400}\nBefore your first session, a quick check-in."
+    },
+    {
+      "style": "feelz",
+      "text": "Over the last 2 weeks, how often has the water seemed higher than it should be?",
+      "interactive": {
+        "type": "choice",
+        "options": [
+          { "label": "Not at all" },
+          { "label": "Several days" },
+          { "label": "More than half the days" },
+          { "label": "Nearly every day" }
+        ]
+      }
+    },
+    {
+      "style": "feelz",
+      "text": "Over the last 2 weeks, how often have you told someone you were fine?",
+      "interactive": {
+        "type": "choice",
+        "options": [
+          { "label": "Not at all" },
+          { "label": "Several days" },
+          { "label": "More than half the days" },
+          { "label": "Nearly every day" }
+        ]
+      }
+    },
+    {
+      "style": "feelz",
+      "text": "Thank you. Your answers are shared with your provider.{pause:500}\nMatching you with care...",
+      "autoAdvanceMs": 2200
+    },
+    {
+      "style": "feelz",
+      "text": "1 provider available.\n\nLCSW · Lake Ulysses Community Clinic\n{pause:400}Connecting."
     }
   ]
 }

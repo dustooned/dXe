@@ -14,8 +14,9 @@ ACCENT: var(--color-therapist)
 # reply reflects back what it did (guided discovery, not instruction).
 # Feelings are symbols only: she describes a pick, never names it.
 
-# The four meters stay hidden until the check-in is answered; the debt box
-# until the dream is (or earlier, the moment debt first goes above 0). Each
+# The four meters stay hidden until the check-in is answered; the lake
+# gauge (Truth Debt, shown as water quality) until the dream is (or earlier,
+# the moment debt first goes above 0). Each
 # is spotlit the moment it appears, alongside the line that introduces it.
 REVEAL: meters after therapist_01
 REVEAL: debt after therapist_02
@@ -41,7 +42,7 @@ NEXT: therapist_02
 
 -- LIE
 SAY: Fine. I'm fine.
-REACT: "Fine." The keys don't stop. "Everyone's fine. My whole caseload is fine." A tired almost-laugh. "I keep four little lines on you. They move whether you tell me the truth or not. And that little box? That one's yours, not mine."
+REACT: "Fine." The keys don't stop. "Everyone's fine. My whole caseload is fine." A tired almost-laugh. "I keep four little lines on you. They move whether you tell me the truth or not." A pause. "That reading at the bottom is the lake. FEELZ pulls it off the county sensors. It doesn't care how anybody feels."
 EFFECTS: stability+1 trust-1
 DEBT: +1
 TAGS: Deflection
@@ -53,14 +54,14 @@ PROMPT: "One more, then I have to take my two o'clock." A beat. "What happened i
 
 -- TRUTH
 SAY: I don't know. Water. Something underneath it. I couldn't breathe.
-REACT: A pause. Then, quieter: "Thank you. Most people give me the short version." A soft click, a chart opening. "See that box? It stays light when you don't have to remember what you told people. Nothing weighs less than the truth. Nothing costs more up front, either."
+REACT: A pause. Then, quieter: "Thank you. Most people give me the short version." A soft click, a chart opening. "That's the lake, at the bottom. FEELZ reads it off the county sensors. It doesn't care how you feel. It stays clear when you don't have to remember what you told people." A breath. "The fish were the county's idea. Somebody decided data needed a mascot."
 EFFECTS: integrity+2 lucidity+2 stability-1 trust+2
 DEBT: 0
 NEXT: (end)
 
 -- LIE
 SAY: Nothing, really. I don't remember.
-REACT: "Mm-hm." A pause just a beat too long. "We can leave it there. I'll write 'client deferred.' I write that a lot." Another soft click. "That box keeps count. It's fine. Everyone carries some. The trick is noticing the weight."
+REACT: "Mm-hm." A pause just a beat too long. "We can leave it there. I'll write 'client deferred.' I write that a lot." Another soft click. "That's the lake, at the bottom. FEELZ reads it off the county sensors. It doesn't care how anyone feels about it. It just keeps count." A breath. "The fish were the county's idea. Watch the fish."
 EFFECTS: integrity-1 stability+1 trust-1
 DEBT: +1
 TAGS: Denial

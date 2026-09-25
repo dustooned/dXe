@@ -10,6 +10,8 @@ import { checkBloomTriggers } from '../engine/debtEngine.js';
 import { BLOOM_IT_TEXT } from '../engine/itBlooms.js';
 import { emotionLeanText } from '../engine/itEmotionLean.js';
 import { SO_BLOOM_TEXT, soEmotionLeanText } from '../engine/soRebuttals.js';
+import { FLIP_TEXT, encounterSide } from '../engine/itFindings.js';
+import { fillReadings } from '../engine/lake.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createItPopup } from '../ui/itPopup.js';
 import { createMeterGroup } from '../ui/meterBar.js';
@@ -17,7 +19,7 @@ import { createNpcPortrait } from '../ui/npcPortrait.js';
 import { createFeelzDartboard } from '../ui/feelzDartboard.js';
 import { emotionColor, emotionsForClass, getDominantEmotion } from '../engine/loadout.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
-import { createDebtSigil } from '../ui/debtSigil.js';
+import { createLakeGauge } from '../ui/lakeGauge.js';
 import { createOscilloscope } from '../ui/oscilloscope.js';
 import { createSpotlight } from '../ui/spotlight.js';
 import * as fx from '../shell/fx.js';
@@ -72,6 +74,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // the call has hung up (sticks for the rest of the outro once a HANGUP
   // beat is reached).
   let outroQueue = [];
+  // For IT/SO's end-of-encounter findings (showFindingIfAny): every swipe
+  // made in this encounter, and whether a bloom already interrupted it.
+  const encounterSwipes = [];
+  let bloomedThisEncounter = false;
   let outroBeat = null;
   let hungUp = false;
 
@@ -364,9 +370,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
       });
     }
 
-    const sigil = createDebtSigil(runState.truthDebt).el;
-    if (applyReveal(sigil, 'debt')) spotlitHud.push(sigil);
-    content.appendChild(sigil);
+    // Truth Debt, shown as the lake's water quality (ui/lakeGauge.js).
+    const lake = createLakeGauge(runState.truthDebt).el;
+    if (applyReveal(lake, 'debt')) spotlitHud.push(lake);
+    content.appendChild(lake);
     stageEl.appendChild(screen);
 
     // A HUD piece's first appearance is spotlit together with the line
@@ -412,6 +419,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // Which way each node went, for anything later that reads it back —
     // today an outro beat's [node=truth|lie] condition.
     run.set({ choices: { ...before.choices, [currentNodeId]: swipeKey } });
+    encounterSwipes.push(swipeKey);
 
     // How this specific choice actually landed with the NPC — trust and
     // stability are their rapport/comfort with you, not a right-or-wrong
@@ -469,6 +477,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // on a debt that was already close), only the highest gets a line —
     // one intrusion, not a stack of them.
     if (bloom.newlyFired.length > 0) {
+      bloomedThisEncounter = true;
       showBloomIt(Math.max(...bloom.newlyFired), () => proceed(edge));
       return;
     }
@@ -476,7 +485,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
   // SO answers both of this scene's own IT moments — the pattern-reading
-  // ones (a bloom, or the end-of-encounter emotion lean), not IT generally.
+  // ones (a bloom, or an end-of-encounter finding), not IT generally.
   // The generic authored `it` beat in cutsceneScene.js and the ending's
   // closing line (endingScene.js — "IT gets the actual last word of the
   // chapter," deliberately) stay single-voice on purpose; see
@@ -487,14 +496,15 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // popup is dismissed, so callers don't need to know a second popup is
   // involved at all.
   function showItThenSo(itText, soText, onClose) {
+    const debt = run.get().truthDebt;
     itPopup = createItPopup(stageEl, {
-      text: itText,
+      text: fillReadings(itText, debt),
       loadout: run.get().loadout,
       flashClose: true,
       onClose: () => {
         itPopup?.destroy();
         itPopup = createItPopup(stageEl, {
-          text: soText,
+          text: fillReadings(soText, debt),
           loadout: run.get().loadout,
           flashClose: false, // last one in the sequence
           voice: 'so',
@@ -532,17 +542,36 @@ export function mount(stageEl, scene, { run, onComplete }) {
       return;
     }
 
-    // This NPC's encounter is over — IT reads the player's FEELZ pattern
-    // for the run so far, once there's actually a pattern to read. Skip
-    // below 2 picks: a single data point isn't a lean, it's a coin flip.
-    const counts = run.get().emotionCounts;
-    const totalPicks = Object.values(counts).reduce((a, b) => a + b, 0);
-    if (totalPicks < 2) {
-      onComplete();
-      return;
-    }
+    showFindingIfAny(onComplete);
+  }
 
-    showEmotionLeanIt(getDominantEmotion(counts), onComplete);
+  // End of encounter: IT and SO speak only if they've noticed something
+  // new (engine/itFindings.js) — at most once per encounter, and not at all
+  // if a bloom already interrupted it. Both records update either way, so
+  // the next encounter is compared against where the player is now.
+  function showFindingIfAny(onDone) {
+    const state = run.get();
+
+    const side = encounterSide(encounterSwipes);
+    const flipped = side && state.itLastSide && side !== state.itLastSide;
+    if (side) run.set({ itLastSide: side });
+
+    // Below 2 picks there's no lean yet — a single data point is a coin flip.
+    const counts = state.emotionCounts;
+    const totalPicks = Object.values(counts).reduce((a, b) => a + b, 0);
+    const dominant = totalPicks >= 2 ? getDominantEmotion(counts) : undefined;
+    const leanShifted = dominant !== undefined && dominant !== state.itLastLean;
+    if (dominant !== undefined) run.set({ itLastLean: dominant });
+
+    if (bloomedThisEncounter) {
+      onDone();
+    } else if (flipped) {
+      showItThenSo(FLIP_TEXT[side].it, FLIP_TEXT[side].so, onDone);
+    } else if (leanShifted) {
+      showEmotionLeanIt(dominant, onDone);
+    } else {
+      onDone();
+    }
   }
 
   // npc.outro: beats after the last node, each optionally gated on the

@@ -111,6 +111,31 @@ without a second art asset.
 (12 bloom lines, 12 dominant-emotion lines), same placeholder-prose bar as
 the tables it answers.
 
+### Findings, not commentary (2026-09-24)
+
+Playtest concern: IT and SO could get annoying. They used to read the
+player's dominant emotion after *every* NPC. Now they only speak at the
+end of an encounter when they've noticed something **new**
+(`engine/itFindings.js`, `dialogScene.js`'s `showFindingIfAny`):
+
+1. **Pattern flip**: this encounter leaned the other way (more lies vs.
+   more truths) from the last encounter that leaned at all.
+2. **Lean shift**: the run's dominant emotion changed since they last
+   read it. This uses the existing emotion-lean lines.
+
+There's at most one per encounter, and none if a bloom already
+interrupted it. Blooms themselves are findings too: they fire exactly
+when the ending the player is heading toward changes (`engine/lake.js`).
+
+**Voice direction:** they're observers, the countdown grim reapers at
+the end of the tunnel. Both are judging, and neither admits they're
+working against you. It's the spotlight effect (Gilovich et al., 2000:
+people overestimate how much others notice and judge them) made real.
+The paranoia is correct, and somebody really is keeping score. They cite
+the lake's reading like a lab report (`{ppm}` / `{status}` tokens). The
+new finding lines are written this way. The older bloom, lean and SO
+tables still use the earlier voice until they're rewritten.
+
 ### Therapist outro (exception, deliberate)
 
 After the Therapist hangs up, IT and then SO react to how the dream
