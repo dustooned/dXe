@@ -53,8 +53,11 @@ reading. Self-report versus data, with no comment on the gap)
 whose answers *implicitly* set your class — Guns / Bible / Crystals —
 followed by the Therapist's cryptic diagnosis; the class name is never
 shown) -> Therapist (location 1 — the tutorial, see "The Therapist
-tutorial" below) -> Deborah -> Rwanda -> Samun -> Rick -> Reckoning (confess
-or double down on your lies) -> one of four endings (Clean Cut / Functional
+tutorial" below) -> Deborah -> Rwanda -> Samun -> Rick -> **Reckoning, as a baptism**
+(Pastor Gabriel runs an altar call at the lake: confess or double down on
+your lies, IT and SO walk you into the water as his hellhound gatekeepers,
+and he holds you under at the lake's final level — see "Pastor Gabriel"
+below) -> one of four endings (Clean Cut / Functional
 Mask / Collapse / Living Lie) based on final Truth Debt.
 
 Each of the four NPCs is now a three-beat unit — **explore -> confront ->
@@ -64,6 +67,26 @@ isn't decoration: it selects which node the NPC opens on, so the same
 character starts guarded, warm, or already cornered depending on how you
 came at them. All of it is placeholder art and placeholder prose right now
 (see "Known gaps"), but the shape is real and playable end to end.
+
+### Pastor Gabriel (the Reckoning)
+
+The chapter's judgment. He's the local evangelical pastor, and he embodies
+the game's contradictions: grace and a ledger, welcome and surveillance,
+new life by drowning. He calls himself **Gabriel** ("God gave me my chosen
+name"). The town still calls him **Sam**. His mother named him **Samael**,
+the Angel of Death and accuser in Jewish tradition, and that name comes
+out at the baptism, when his nameplate switches to SAMAEL. Deborah's
+"You're not the church" sets him up.
+
+His lines (`content/pastor.json`, picked by `engine/pastor.js`) climb
+from warm toward the contradictions. They're chosen from the player's own
+data: the lake's live status, the FEELZ check-in answers (he knows them,
+and "You never told him that"), and how many lies were told. Confessing is
+never quite enough ("…Is that all of it?"). That's scrupulosity, religious
+OCD in which confession becomes a compulsion, and it's where IT and SO's
+doubt ends up. Confessing clears the water live on his screen, while
+doubling down fouls it. Even players with nothing to confess still go
+under: "Even the clean ones go under."
 
 ### The Therapist tutorial
 

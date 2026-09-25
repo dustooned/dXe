@@ -1,16 +1,12 @@
-// IT's lines for the two terminal beats — the Reckoning and the Ending.
-// PLACEHOLDER PROSE, one line per class each, not final writing.
-// Both are the { Guns, Bible, Crystals } object shape ui/itPopup.js's
+// IT's line for the chapter's terminal beat, the Ending.
+// PLACEHOLDER PROSE, one line per class, not final writing.
+// It's the { Guns, Bible, Crystals } object shape ui/itPopup.js's
 // resolveItText() already expects, since there's no second axis (emotion,
 // threshold) to key on here — just the class.
 
-// Shown once, before the first Reckoning card — "IT is loudest here"
-// (docs/IT_DESIGN.md).
-export const RECKONING_IT_TEXT = {
-  Guns: "Here it is. Everything you didn't want to carry, waiting to be carried anyway.",
-  Bible: 'This is the part where you find out what you actually believe, not what you said you did.',
-  Crystals: "All of it, at once. You don't get to feel this in pieces anymore.",
-};
+// (The Reckoning's own IT line was retired when the Reckoning became Pastor
+// Gabriel's baptism: IT and SO now appear there as his gatekeepers, from
+// content/pastor.json's `gate` section. See docs/IT_DESIGN.md.)
 
 // Shown once the ending's body text finishes drawing, before "BACK TO
 // MENU" appears — IT gets the actual last word of the chapter.

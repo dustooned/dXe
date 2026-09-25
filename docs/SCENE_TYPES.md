@@ -135,17 +135,20 @@ extend this: naming the class turns an atmospheric beat into a menu.
 
 ### `reckoning` (`src/scenes/reckoningScene.js`)
 
-Builds a confess/double-down deck from `run.get().ledger` and plays it.
-Completes immediately if the ledger is empty.
+Pastor Gabriel's baptism. It plays in order: the altar call, the
+confess/double-down deck built from `run.get().ledger` (he still runs this
+when the ledger is empty; it just skips the cards), the gate (IT and SO as
+his hellhounds), then the baptism (the screen sinks into the lake's
+final color, and the nameplate turns to SAMAEL). All lines come from
+`content/pastor.json`: sections of slots, where each slot's first
+alternative whose `when` matches is the one that plays (`engine/pastor.js`).
 
 ```json
-{ "type": "reckoning", "id": "reckoning" }
+{ "type": "reckoning", "id": "reckoning", "pastor": <pastor.json> }
 ```
 
-**One IT popup, before the first card** — "IT is loudest here"
-(`IT_DESIGN.md`). Only reachable when the deck isn't empty (the empty-deck
-path above returns before ever mounting the popup). One line per class,
-`engine/itEndgame.js`'s `RECKONING_IT_TEXT`; closing it reveals card 1/N.
+The Reckoning's old standalone IT line (`RECKONING_IT_TEXT`) was retired.
+IT and SO appear at the gate instead.
 
 ### `ending` (`src/scenes/endingScene.js`)
 

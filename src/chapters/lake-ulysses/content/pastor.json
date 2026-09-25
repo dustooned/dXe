@@ -1,0 +1,252 @@
+{
+  "_about": "Pastor Gabriel (born Samael; the town still calls him Sam) runs the Reckoning as a baptism at the lake. Each section is a list of slots; each slot is a list of alternatives, and the FIRST alternative whose `when` matches is the one that plays (no match = the slot is skipped). `when` keys: status (lake status list), water / fine (FEELZ check-in answers), lies [min, max] (lies told in dialog), noLedger (true = nothing to confess). His lines climb from warm toward the contradictions: welcome -> watched, grace -> ledger, \"Sam\" -> Gabriel -> Samael. PLACEHOLDER PROSE.",
+  "altar": [
+    [
+      {
+        "text": "A man in shirtsleeves is standing waist-deep in Lake Ulysses, arms open, like he's been waiting there all chapter. Somebody up the bank calls, \"Morning, Sam!\" He doesn't turn around. \"Gabriel,\" he says, to you, like you'd asked. \"Come on down to the water, child. Everybody's welcome.\""
+      }
+    ],
+    [
+      {
+        "when": {
+          "status": [
+            "IDEAL"
+          ]
+        },
+        "text": "\"Clear water today.\" He looks down at it. \"Clear water always makes me a little nervous.\""
+      },
+      {
+        "when": {
+          "status": [
+            "MARGINAL"
+          ]
+        },
+        "text": "\"Water's a little cloudy. Nothing a good soak won't fix.\""
+      },
+      {
+        "when": {
+          "status": [
+            "HIGH"
+          ]
+        },
+        "text": "\"Don't mind the color. The Lord's worked with worse.\" A pause. \"So have I.\""
+      },
+      {
+        "text": "\"Smell that? That's everything this town wouldn't say out loud. We'll stand in it together.\""
+      }
+    ],
+    [
+      {
+        "when": {
+          "water": [
+            "Not at all"
+          ]
+        },
+        "text": "\"You told that phone the water looked fine.\" You never told him that. \"It always does, right before it isn't.\""
+      },
+      {
+        "when": {
+          "water": [
+            "Several days"
+          ]
+        },
+        "text": "\"Some days you notice the water. Some days you don't.\" You never told him that. \"The water notices every day.\""
+      },
+      {
+        "when": {
+          "water": [
+            "More than half the days",
+            "Nearly every day"
+          ]
+        },
+        "text": "\"You've been watching the water rise.\" You never told him that. \"Good. Somebody ought to.\""
+      }
+    ],
+    [
+      {
+        "when": {
+          "fine": [
+            "Not at all"
+          ],
+          "lies": [
+            1,
+            99
+          ]
+        },
+        "text": "\"And you never once told anybody you were fine.\" He smiles. \"I believe you. Out loud, I believe you.\""
+      },
+      {
+        "when": {
+          "fine": [
+            "Not at all"
+          ]
+        },
+        "text": "\"Never once told anybody you were fine. That's rare.\" He smiles. \"I'll be watching for it.\""
+      },
+      {
+        "when": {
+          "fine": [
+            "Nearly every day",
+            "More than half the days"
+          ]
+        },
+        "text": "\"'Fine,' most days. Honest about the lying. That's a start.\" He smiles. \"Starts are cheap.\""
+      },
+      {
+        "when": {
+          "fine": [
+            "Several days"
+          ]
+        },
+        "text": "\"'Fine,' a few days. The Lord counts days.\" He smiles. \"So do I.\""
+      }
+    ],
+    [
+      {
+        "when": {
+          "noLedger": true
+        },
+        "text": "\"Now. What are you bringing down to the water?\" He waits. You have nothing. \"Nothing? Everybody's got something.\" He waits longer. \"That's all right. Even the clean ones go under.\""
+      },
+      {
+        "text": "\"Now. Let's hear what you're bringing down to the water.\""
+      }
+    ]
+  ],
+  "cardPrompt": [
+    "\"Start wherever it's heaviest.\"",
+    "\"Go on. There's more. There's always more.\"",
+    "\"Last one. Take your time. I've got all of it.\""
+  ],
+  "confess": [
+    [
+      {
+        "text": "\"Praise.\" He nods, slow. \"Now say it louder.\""
+      }
+    ],
+    [
+      {
+        "text": "\"Louder. The back pews can't hear you.\" He leans in. \"...Is that all of it?\""
+      }
+    ],
+    [
+      {
+        "text": "\"There it is.\" He writes something on his palm with one finger. \"God don't keep a ledger, child. I do. For Him.\""
+      }
+    ]
+  ],
+  "doubleDown": [
+    [
+      {
+        "text": "\"Mm.\" Not angry. Patient. \"The water's patient too. It'll get it out of you.\""
+      }
+    ],
+    [
+      {
+        "text": "\"That's all right. I've baptized liars.\" He looks up the bank at the town. \"Most of this congregation.\""
+      }
+    ],
+    [
+      {
+        "text": "He doesn't argue. \"Everybody's welcome, child.\" His hand finds your shoulder. \"Everybody's watched.\""
+      }
+    ]
+  ],
+  "gate": [
+    [
+      {
+        "text": "Two shapes come down the bank on either side of you, low and patient, like dogs that already know the way."
+      }
+    ],
+    [
+      {
+        "voice": "it",
+        "when": {
+          "status": [
+            "IDEAL",
+            "MARGINAL"
+          ]
+        },
+        "text": "We'll walk you down. It's shallow here. Mostly."
+      },
+      {
+        "voice": "it",
+        "text": "We'll walk you down. Mind the bottom. It's softer than it used to be."
+      }
+    ],
+    [
+      {
+        "voice": "so",
+        "when": {
+          "status": [
+            "IDEAL",
+            "MARGINAL"
+          ]
+        },
+        "text": "We're only making sure you get there. Nobody's pushing."
+      },
+      {
+        "voice": "so",
+        "text": "We're only making sure you get there. What happens after is the water's business."
+      }
+    ]
+  ],
+  "baptism": [
+    [
+      {
+        "text": "His hand settles on the back of your neck. Warm. Heavy. \"Folks around here still call me Sam. Old habit. God gave me my chosen name. Gabriel.\""
+      }
+    ],
+    [
+      {
+        "text": "\"Sam's short for the one my mother gave me.\" He leans close, like it's a secret between you. \"Samael.\" The hand presses. \"Hold your breath, child.\""
+      }
+    ],
+    [
+      {
+        "underwater": true,
+        "when": {
+          "status": [
+            "IDEAL"
+          ]
+        },
+        "text": "The water is clear enough to see the sky through. He holds you under a second longer than he needs to."
+      },
+      {
+        "underwater": true,
+        "when": {
+          "status": [
+            "MARGINAL"
+          ]
+        },
+        "text": "Cloudy. Cold. You can see his hand, and not much past it."
+      },
+      {
+        "underwater": true,
+        "when": {
+          "status": [
+            "HIGH"
+          ]
+        },
+        "text": "Green, and warm, and thick. He holds you under a while."
+      },
+      {
+        "underwater": true,
+        "text": "You can't see anything. You can taste it. He holds you under until you stop counting."
+      }
+    ],
+    [
+      {
+        "when": {
+          "status": [
+            "IDEAL"
+          ]
+        },
+        "text": "\"Buried with Him,\" he says, lifting you. \"Raised new.\" He looks at the clear water around you both. He looks almost disappointed."
+      },
+      {
+        "text": "\"Buried with Him,\" he says, lifting you. \"Raised new.\" He smiles like he meant every word of it. He probably did."
+      }
+    ]
+  ]
+}

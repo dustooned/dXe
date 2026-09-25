@@ -724,3 +724,66 @@
 .dx-checkin-record__row dd {
   text-align: right;
 }
+
+/* ── Pastor Gabriel's baptism (reckoningScene.js) ── */
+.dx-reckoning-screen {
+  position: relative;
+  overflow: hidden;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.dx-pastor-nameplate {
+  font-size: 8px;
+  letter-spacing: 0.25em;
+  opacity: 0.75;
+}
+
+.dx-pastor-line {
+  position: relative;
+  z-index: 2;
+  text-align: left;
+  line-height: 1.8;
+}
+
+.dx-reckoning-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid var(--color-white);
+  padding: 12px;
+  cursor: default;
+}
+
+.dx-reckoning-card__count {
+  font-size: 7px;
+  letter-spacing: 0.2em;
+  opacity: 0.6;
+}
+
+/* Held under: the lake rises over the whole screen in its final color,
+   murkier the worse the reading. */
+.dx-baptism-water {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--water);
+  animation: dx-baptism-rise 1.4s ease-in forwards;
+}
+.dx-baptism-water[data-stage="2"] { filter: brightness(0.75); }
+.dx-baptism-water[data-stage="3"] { filter: brightness(0.5) saturate(1.2); }
+.dx-baptism-water[data-stage="4"] { filter: brightness(0.3) saturate(1.3); }
+
+@keyframes dx-baptism-rise {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.dx-pastor-line.is-underwater {
+  color: var(--color-white);
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.9);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-baptism-water { animation: none; }
+}

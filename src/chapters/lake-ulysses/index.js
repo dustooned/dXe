@@ -15,6 +15,7 @@ import itIntro from './content/it_intro.json';
 import openingQuote from './content/opening_quote.json';
 import bobBaiter from './content/bob_baiter.json';
 import prologue from './content/prologue.json';
+import pastor from './content/pastor.json';
 import feelzLaunch from './content/feelz_launch.json';
 import therapist from './content/therapist.json';
 import deborah from './content/deborah.json';
@@ -85,7 +86,7 @@ const SCENES = [
   { type: 'cutscene', id: 'rick-confront', beats: confrontRick.beats, opensDialog: 'rick' },
   { type: 'dialog', id: 'rick', npc: rick },
 
-  { type: 'reckoning', id: 'reckoning' },
+  { type: 'reckoning', id: 'reckoning', pastor },
   { type: 'ending', id: 'ending', endings },
 ];
 

@@ -237,9 +237,12 @@ doesn't announce itself). Fires based on the current class/emotion
 state when that beat is reached.
 
 ### Reckoning
-IT is loudest here. The reckoning is the moment the player's own head
-catches up with what they've done. IT dialog during the reckoning
-could be the most direct the voice ever gets.
+The Reckoning is now Pastor Gabriel's baptism. IT and SO appear there as
+his gatekeepers, hellhounds walking the player down the bank into the
+water, still insisting they're only observers ("We're only making sure
+you get there"). Their lines depend on the lake's final status
+(`content/pastor.json`'s `gate`). It's another deliberate SO exception to
+the one-voice rule for one-off beats, since the pair is the point.
 
 ### Bloom events (Truth Debt thresholds)
 When Truth Debt crosses a threshold, IT intrudes mid-scene. The

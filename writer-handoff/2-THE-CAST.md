@@ -122,6 +122,16 @@ player out.
 
 ## Also in the chapter
 
+**PASTOR GABRIEL** — the Reckoning. The local evangelical pastor, waist-deep
+in the lake, running an altar call. Warm and terrifying at once: grace and a
+ledger ("God don't keep a ledger. I do. For Him."), welcome and surveillance
+("Everybody's welcome. Everybody's watched."). He chose the name Gabriel,
+the town still calls him Sam, and his mother named him Samael (the Angel of
+Death), which he tells you right before he holds you under. He knows your
+FEELZ check-in answers without being told. Confessing to him is never quite
+enough. His lines are in `src/chapters/lake-ulysses/content/pastor.json`,
+and each one changes with the player's answers and how dirty the lake is.
+
 **BOB BAITER** — the councilman in the opening ad. Not someone you talk
 to. He delivers the lake's official story straight to camera, cheerfully,
 including the parts that contradict it. He's the game's first lie, told
