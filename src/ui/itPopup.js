@@ -25,7 +25,7 @@ export function resolveItText(text, loadout) {
 // `flashClose` controls whether the X flashes once the line finishes
 // drawing, signaling "there's another one of these coming" — leave it off
 // for a one-off interrupt (nothing follows), on for a beat mid-sequence
-// that isn't the last one. `onClose` fires once, when the player taps X;
+// that isn't the last one. `onClose` fires once, when the player dismisses it;
 // this popup does not call destroy() on itself afterward — the caller does,
 // same as it owns deciding what happens next.
 //
@@ -79,16 +79,25 @@ export function createItPopup(stageEl, { text, loadout, flashClose = false, onCl
     onDone: () => { if (flashClose) closeBtn.classList.add('is-flashing'); },
   });
 
-  // Tapping the box only finishes the draw early. Only the X advances —
-  // the point is that it has to be *noticed and dismissed*, like an
-  // intrusive ad, not tapped past on the way to something else.
-  box.addEventListener('click', (e) => {
+  // Same tap-anywhere gesture as every other beat: the first tap finishes
+  // the draw, the next one dismisses. It used to be X-only (IT had to be
+  // *noticed and dismissed*, like an intrusive ad), but playtesters read
+  // the one screen that ignored taps as clunky rather than intrusive — the
+  // X stays as the visible "close this" signal, it just isn't the only way.
+  let closed = false;
+  function close() {
+    if (closed) return;
+    closed = true;
+    onClose?.();
+  }
+  screen.addEventListener('click', (e) => {
     e.stopPropagation();
     if (typewriter && !typewriter.isDone()) typewriter.finish();
+    else close();
   });
   closeBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    onClose?.();
+    close();
   });
 
   return {

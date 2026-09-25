@@ -1,0 +1,13 @@
+{
+  "beats": [
+    {
+      "style": "feelz-logo",
+      "text": "{color:Anger}F{/color}{color:Joy}E{/color}{color:Trust}E{/color}{color:Sadness}L{/color}{color:Anticipation}Z{/color}",
+      "autoAdvanceMs": 1600
+    },
+    {
+      "style": "feelz",
+      "text": "Session 1 · Intake{pause:500}\nConnecting you now."
+    }
+  ]
+}

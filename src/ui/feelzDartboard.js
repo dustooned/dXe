@@ -6,6 +6,7 @@
 // Same tap + drag-to-card API as feelzWheel.js:
 //   - tap a segment → select, source = 'tap'
 //   - drag segment onto card → select, source = 'drag'
+//   - touch-and-hold a segment → listen only, no select (see HOLD_MS)
 // `source` used to also decide whether the card's border colored (drag
 // only, "keeps drag meaningful") — a tap that visibly did nothing read as
 // broken rather than restrained, so dialogScene.js now colors the card on
@@ -46,6 +47,12 @@ const HALF_GAP = 0.03;
 // above it; 20px had zero false negatives while still leaving an intentional
 // drag toward the card (which travels 60px+) unambiguous.
 const DRAG_THRESHOLD = 20;
+// Touch/pen only: a finger held still on a wedge this long becomes a
+// listen, not a pick — the tone swells, the wedge pulses, and letting go
+// picks nothing. It's the phone's stand-in for mouse hover (which already
+// previews the tone). Mouse is left alone: a slow click is still a click.
+// Well above any real tap's duration so a deliberate tap never lands here.
+const HOLD_MS = 550;
 
 function svgEl(tag, attrs = {}) {
   const el = document.createElementNS(NS, tag);
@@ -90,6 +97,9 @@ export function createFeelzDartboard({ loadout, dropTarget, onSelect, selected, 
 
   // Track which path/text belongs to each emotion so we can update visual state.
   const segments = {};
+  // One per active wedge — lets destroy() cancel a hold-to-listen timer
+  // still pending, so it can't start a tone after the wheel is gone.
+  const holdClearers = [];
 
   function applyState(emotion, path, label) {
     const em = EMOTIONS[emotion];
@@ -154,6 +164,15 @@ export function createFeelzDartboard({ loadout, dropTarget, onSelect, selected, 
     if (!isActive) return;
 
     let dragging = false, startX, startY, ghost;
+    let holdTimer = null, previewing = false;
+
+    function clearHold() {
+      clearTimeout(holdTimer);
+      holdTimer = null;
+      previewing = false;
+      g.classList.remove('is-previewing');
+    }
+    holdClearers.push(clearHold);
 
     g.addEventListener('pointerenter', () => {
       g.classList.add('is-hovering');
@@ -170,12 +189,25 @@ export function createFeelzDartboard({ loadout, dropTarget, onSelect, selected, 
       startX = e.clientX;
       startY = e.clientY;
       g.setPointerCapture(e.pointerId);
+      clearHold();
+      if (e.pointerType !== 'mouse') {
+        holdTimer = setTimeout(() => {
+          previewing = true;
+          g.classList.add('is-previewing');
+          // pointerenter normally started the tone already on touch; start
+          // it here too in case that event didn't come through.
+          audio.startFeelzHover(emotion, activeEmotionsOrder, harmonicFunction);
+          audio.swellFeelzHover();
+        }, HOLD_MS);
+      }
     });
 
     g.addEventListener('pointermove', (e) => {
       if (!dragging) return;
       const dx = e.clientX - startX, dy = e.clientY - startY;
       if (!ghost && Math.hypot(dx, dy) > DRAG_THRESHOLD) {
+        // A real drag toward the card — not a listen, even mid-swell.
+        clearHold();
         ghost = document.createElement('div');
         ghost.className = 'dx-feelz__ghost';
         ghost.style.setProperty('--bubble-color', em.color);
@@ -205,8 +237,12 @@ export function createFeelzDartboard({ loadout, dropTarget, onSelect, selected, 
 
       const onCard = dropTarget && isOverEl(dropTarget.el, e.clientX, e.clientY);
       const wasTap = Math.hypot(e.clientX - startX, e.clientY - startY) < DRAG_THRESHOLD;
+      const wasListen = previewing;
+      clearHold();
 
-      if (onCard) {
+      if (wasListen) {
+        // Held to listen — the tone stopped with the finger, nothing picked.
+      } else if (onCard) {
         selectEmotion(emotion, 'drag');
       } else if (wasTap) {
         selectEmotion(emotion, 'tap');
@@ -253,6 +289,7 @@ export function createFeelzDartboard({ loadout, dropTarget, onSelect, selected, 
     // shell/audio.js (replaced on the next pick, stopped when the swipe
     // commits or the scene ends) — see docs/STAT_MATH.md.
     destroy() {
+      holdClearers.forEach((clear) => clear());
       audio.stopFeelzHover();
     },
   };

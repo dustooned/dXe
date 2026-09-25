@@ -200,7 +200,9 @@ export function mount(stageEl, _scene, { run, onComplete }) {
 
     const counter = document.createElement('p');
     counter.className = 'dx-text dx-questionnaire-counter';
-    counter.textContent = `${questionIndex + 1} / ${questions.length}`;
+    // This is the FEELZ app's intake form (the feelz-launch cutscene just
+    // opened the app), so it's labeled like one.
+    counter.textContent = `INTAKE ${questionIndex + 1} / ${questions.length}`;
     header.appendChild(counter);
 
     screen.appendChild(header);

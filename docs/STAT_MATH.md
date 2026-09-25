@@ -296,8 +296,7 @@ through the body, `tonic` on any node with nowhere left to go. Each is
 one fourth/fifth of root motion (`FUNCTION_HOPS`) — for Deborah's A
 tonic that's D → E → A, a textbook authentic cadence resolving by
 ascending fourth. A node with no outgoing edges is the resolution however
-early it arrives, so the Therapist's single-node tutorial is its own
-whole cadence. Position decides *when* the resolution lands; `resolution`
+early it arrives, however short the encounter. Position decides *when* the resolution lands; `resolution`
 decides whether it lands as unison or as the tritone.
 
 **Struck, not sustained.** Each voice is its own oscillator with a 30ms

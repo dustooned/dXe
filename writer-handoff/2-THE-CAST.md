@@ -24,9 +24,20 @@ She teaches the whole game without explaining any of it — you learn what
 swiping left does by feeling how she takes it. **Never let her explain a
 mechanic.**
 
-Her one exchange: *"What happened in the dream?"* The truth costs you but
-gets her guard down. The lie is barely a lie and costs almost nothing —
-it's the player's first swipe and it's meant to be gentle.
+She's the tutorial, and she's also the FEELZ app the player opens when
+their phone buzzes at the lake. Two exchanges, and each one makes the
+player use one new thing for the first time:
+
+1. *"How are you walking in today? Just point."* The player picks a
+   feeling, and she describes it back in an image. **Feelings are
+   symbols only. She never names one.** After this, the four meters
+   appear ("four little lines").
+2. *"What happened in the dream?"* After this, the debt box appears, and
+   she hints at what it counts without saying "lies."
+
+Then homework (one surreal line per class), a closing line that depends
+on how the dream question went, the call ends, and IT and SO get the last
+word. All of it is in `script/1-therapist.txt`.
 
 ---
 

@@ -562,3 +562,82 @@
     transform: translateY(4px);
   }
 }
+
+/* ── Therapist tutorial ── */
+
+/* Her read of the feeling just picked (a node's PICK lines) — set under
+   her prompt, dimmer and italic, so it reads as an aside, not a new
+   question. */
+.dx-pick-line {
+  background: var(--color-black);
+  color: var(--color-therapist);
+  font-size: 9px;
+  line-height: 1.8;
+}
+
+/* The wheel and card arrive once per node, after her prompt finishes. */
+.dx-dialog-interactive.is-entering {
+  animation: dx-interactive-in 0.6s ease-out;
+}
+
+@keyframes dx-interactive-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+/* HANGUP in an outro: the call is over, so the app chrome dims to almost
+   nothing and only the narration line stays lit. */
+.dx-game-screen--hungup .dx-meters,
+.dx-game-screen--hungup .dx-debt-sigil,
+.dx-game-screen--hungup .dx-portrait,
+.dx-game-screen--hungup .dx-nameplate,
+.dx-game-screen--hungup .dx-pattern-bg {
+  opacity: 0.08;
+  transition: opacity 1.4s ease;
+}
+
+.dx-hangup-line {
+  text-align: center;
+  opacity: 0.85;
+}
+
+/* The FEELZ app splash (content/feelz_launch.json): the logo beat, then
+   the session line. */
+.dx-cutscene-screen--feelz,
+.dx-cutscene-screen--feelz-logo {
+  justify-content: center;
+}
+
+.dx-cutscene-screen--feelz .dx-cutscene-textbox,
+.dx-cutscene-screen--feelz-logo .dx-cutscene-textbox {
+  border: none;
+  background: transparent;
+  text-align: center;
+  margin: 32px;
+  min-height: 0;
+  width: calc(100% - 64px);
+}
+
+.dx-cutscene-screen--feelz .dx-cutscene-text {
+  letter-spacing: 0.15em;
+  line-height: 2;
+}
+
+.dx-cutscene-screen--feelz-logo .dx-cutscene-text {
+  font-size: 32px;
+  letter-spacing: 0.4em;
+}
+
+.dx-cutscene-screen--feelz .dx-continue-arrow,
+.dx-cutscene-screen--feelz-logo .dx-continue-arrow {
+  position: static;
+  display: block;
+  margin-top: 20px;
+  animation: dx-bob 0.9s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-dialog-interactive.is-entering {
+    animation: none;
+  }
+}

@@ -29,22 +29,22 @@ returning ones.
 
 Shell chrome around it: title screen, chapter select, About/Contact. A
 returning player who hits ENTER on the title gets a "You've been here
-before — skip the story?" prompt; SKIP jumps straight to the
-questionnaire, REPLAY starts the chapter from the top
-(`showSkipDialog()` in `main.js`). SKIP now cleanly bypasses all three
-opening cutscenes and drops you at the quiz -> Therapist call; before the
-Prologue/Questionnaire swap it skipped to the quiz but then still played
-the Prologue afterwards.
+before — skip the story?" prompt; SKIP jumps straight to the FEELZ
+app launch, REPLAY starts the chapter from the top
+(`showSkipDialog()` in `main.js`). SKIP bypasses the three story
+cutscenes and drops you at FEELZ -> intake quiz -> Therapist call. The
+Therapist call is never skipped, because it's the tutorial.
 
 One chapter: **Truth Debt: Lake Ulysses**, in scene order: Opening quote
 (cutscene) -> Bob Baiter (cutscene, the councilman's lake-reopening pitch)
 -> Prologue (typewriter-drawn narrative cutscene; ends on "Your phone
-buzzes against the gravel") -> **Questionnaire** (three swipe questions
+buzzes against the gravel") -> **FEELZ launch** (cutscene: the phone's
+therapy app opens — the game's whole UI *is* the FEELZ app from here on)
+-> **Questionnaire** (the app's intake: three swipe questions
 whose answers *implicitly* set your class — Guns / Bible / Crystals —
 followed by the Therapist's cryptic diagnosis; the class name is never
-shown) -> Therapist (location 1 — the tutorial NPC, a single swipe
-exchange, no in-fiction explanation of mechanics; teaches truth/lie purely
-by playing it) -> Deborah -> Rwanda -> Samun -> Rick -> Reckoning (confess
+shown) -> Therapist (location 1 — the tutorial, see "The Therapist
+tutorial" below) -> Deborah -> Rwanda -> Samun -> Rick -> Reckoning (confess
 or double down on your lies) -> one of four endings (Clean Cut / Functional
 Mask / Collapse / Living Lie) based on final Truth Debt.
 
@@ -55,6 +55,33 @@ isn't decoration: it selects which node the NPC opens on, so the same
 character starts guarded, warm, or already cornered depending on how you
 came at them. All of it is placeholder art and placeholder prose right now
 (see "Known gaps"), but the shape is real and playable end to end.
+
+### The Therapist tutorial
+
+Rebuilt 2026-09-24 after playtest feedback: the tester liked the wheel
+and swiping but didn't know what the colors, the meters, Truth Debt or
+the goal were, and found the IT popup's X-only dismiss clunky. The fix
+is guided discovery (the CBT technique: the therapist asks questions so
+the client finds the answer, instead of telling them). She never explains
+a mechanic. Each question makes the player use one new thing for the
+first time:
+
+1. *"How are you walking in today? Just point."* → the player picks a
+   feeling → the card wiggles (`swipeCard.nudge()`) → she describes the
+   symbol in an image (`PICK` lines). **Feelings are symbols only, never
+   named**, in the UI or by her. After this node the four meters fade in
+   ("four little lines").
+2. *"What happened in the dream?"* → after it, the debt box fades in (or
+   earlier, the moment debt goes above 0), and she hints at what it
+   counts.
+3. Outro: homework by class (surreal, not literal), a closing line by
+   dream answer, HANGUP (screen dims, her music stops), then IT → SO,
+   also by dream answer.
+
+Engine pieces, all generic and opt-in per NPC: `PICK`/`REVEAL`/`=== OUTRO`
+manuscript lines (`SCRIPT_FORMAT.md`), `run.choices` (nodeId → truth/lie),
+IT popups dismiss on any tap, and touch-and-hold on a wheel wedge to hear
+its tone without picking it (`feelzDartboard.js`'s `HOLD_MS`).
 
 Prologue / Questionnaire / Therapist are deliberately one continuous
 unit — **the chapter's opening call**, and the intended routine opener for

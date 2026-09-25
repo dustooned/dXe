@@ -8,11 +8,56 @@
       "id": "therapist_01",
       "npc": "THERAPIST",
       "location": 1,
-      "prompt": "The screen lights up. A voice, tired but warm, cuts through the ringing in your ears. \"You're still there? Okay. Good. What happened in the {color:Anticipation}dream{/color}?\"",
+      "prompt": "The screen lights up. A voice, tired but warm, cuts through the ringing in your ears. \"You're still there? Okay. Good.\"\n\"See the three lighting up? Those are the ones you reach for. The rest are still there. You just don't pick them up much.\"\n\"So. How are you walking in today? Don't think about it. Just point.\"",
+      "swipes": {
+        "truth": {
+          "playerText": "Not great. I woke up on the side of the road.",
+          "npcReaction": "\"Okay. Thank you.\" Somewhere on her end, a pen starts moving. \"I keep four little lines on you. You'll see them move. They're not a grade. Just how today is sitting on you.\"",
+          "effects": {
+            "trust": 1,
+            "lucidity": 1,
+            "stability": -1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": "therapist_02"
+        },
+        "lie": {
+          "playerText": "Fine. I'm fine.",
+          "npcReaction": "\"Fine.\" The pen moves anyway. \"I keep four little lines on you. They move whether you tell me the truth or not.\" A pause. \"And that little box in the corner? That one's yours, not mine.\"",
+          "effects": {
+            "stability": 1,
+            "trust": -1
+          },
+          "debtDelta": 1,
+          "tags": [
+            "Deflection"
+          ],
+          "ledgerEntry": "You told your therapist you were fine.",
+          "nextNodeId": "therapist_02"
+        }
+      },
+      "picks": {
+        "Joy": "\"Bright. Maybe brighter than the morning's earned. Okay.\"",
+        "Trust": "\"Open hands. I'll try to deserve that.\"",
+        "Fear": "\"Small and quick. Like something under a porch. Okay.\"",
+        "Surprise": "\"Caught mid-step. That's allowed.\"",
+        "Sadness": "\"Low tide. I see it.\"",
+        "Disgust": "\"Something you'd rather spit out. Noted.\"",
+        "Anger": "\"That one runs hot. Hold it a second before you use it.\"",
+        "Anticipation": "\"Leaning forward already. Okay.\""
+      }
+    },
+    "therapist_02": {
+      "id": "therapist_02",
+      "npc": "THERAPIST",
+      "location": 1,
+      "prompt": "\"One more, then I'll let you go.\" A beat. \"What happened in the {color:Anticipation}dream{/color}?\"",
       "swipes": {
         "truth": {
           "playerText": "I don't know. Water. Something underneath it. I couldn't breathe.",
-          "npcReaction": "A pause. Then, quieter: \"Thank you for telling me that. Most people give me the short version.\" You hear a chart open somewhere on her end — a soft click, and a sigh she didn't mean to let through.",
+          "npcReaction": "A pause. Then, quieter: \"Thank you for telling me that. Most people give me the short version.\" A soft click, a chart opening on her end. \"See the box in the corner? It stays light when you don't have to remember what you told people.\"",
           "effects": {
             "integrity": 2,
             "lucidity": 2,
@@ -26,7 +71,7 @@
         },
         "lie": {
           "playerText": "Nothing, really. I don't remember.",
-          "npcReaction": "\"Mm-hm.\" A pause just a beat too long. \"We can leave it there for today.\" Faintly, another call is already waiting on her line.",
+          "npcReaction": "\"Mm-hm.\" A pause just a beat too long. \"We can leave it there for today.\" Another soft click. \"You'll notice the box in the corner keeps count. It's fine. Everyone carries some.\"",
           "effects": {
             "integrity": -1,
             "stability": 1,
@@ -41,5 +86,96 @@
         }
       }
     }
-  }
+  },
+  "reveal": {
+    "meters": "therapist_01",
+    "debt": "therapist_02"
+  },
+  "outro": [
+    {
+      "kind": "line",
+      "text": "\"Homework. Four people live around the lake. Each of them is holding something that belongs to you. Don't take it back. Just find out what it is.\"",
+      "when": {
+        "class": "Guns"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Homework. The lake remembers every word said near it. By tonight it'll know you. Decide what you want it to know.\"",
+      "when": {
+        "class": "Bible"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Homework. Go talk to the water. It'll answer in four voices. Write down which ones sound like you.\"",
+      "when": {
+        "class": "Crystals"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"You told me about the water. It heard you too.\"",
+      "when": {
+        "choice": {
+          "node": "therapist_02",
+          "side": "truth"
+        }
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"The dream can wait. Dreams are patient. Lakes are more patient.\"",
+      "when": {
+        "choice": {
+          "node": "therapist_02",
+          "side": "lie"
+        }
+      }
+    },
+    {
+      "kind": "hangup",
+      "text": "The call ends. FEELZ goes dark in your hand, and the lake is very quiet."
+    },
+    {
+      "kind": "it",
+      "text": "She's writing it down. Everything you said. Somewhere a file with your name on it just got thicker.",
+      "when": {
+        "choice": {
+          "node": "therapist_02",
+          "side": "truth"
+        }
+      }
+    },
+    {
+      "kind": "so",
+      "text": "Or she hung up and forgot you already. Which would be worse?",
+      "when": {
+        "choice": {
+          "node": "therapist_02",
+          "side": "truth"
+        }
+      }
+    },
+    {
+      "kind": "it",
+      "text": "She knew. They always know. Four more people to fool now.",
+      "when": {
+        "choice": {
+          "node": "therapist_02",
+          "side": "lie"
+        }
+      }
+    },
+    {
+      "kind": "so",
+      "text": "Did she? Did you even lie? What was the dream again?",
+      "when": {
+        "choice": {
+          "node": "therapist_02",
+          "side": "lie"
+        }
+      }
+    }
+  ]
 }

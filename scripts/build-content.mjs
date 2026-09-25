@@ -9,6 +9,31 @@ import { join } from 'node:path';
 
 const STAT_PATTERN = /^(integrity|trust|stability|lucidity)([+-]\d+)$/;
 const GATE_PATTERN = /^(integrity|trust|stability|lucidity)\s*(<=|>=|<|>)\s*(\d+)\s*->\s*(\S+)$/;
+const EMOTIONS = ['Joy', 'Trust', 'Fear', 'Surprise', 'Sadness', 'Disgust', 'Anger', 'Anticipation'];
+const CLASSES = ['Guns', 'Bible', 'Crystals'];
+const PICK_PATTERN = /^PICK\s+(\w+):\s*(.*)$/;
+const REVEAL_PATTERN = /^(meters|debt)\s+after\s+(\S+)$/;
+// Inside `=== OUTRO`: LINE / HANGUP / IT / SO, each with an optional
+// [condition] before the colon — see docs/SCRIPT_FORMAT.md.
+const OUTRO_PATTERN = /^(LINE|HANGUP|IT|SO)(?:\s*\[([^\]]*)\])?:\s*(.*)$/;
+
+// "[Guns]", "[therapist_02=lie]", or both comma-separated — every part has
+// to hold for the beat to play.
+function parseCondition(text, fileName, lineNumber) {
+  const when = {};
+  for (const part of text.split(',').map((s) => s.trim()).filter(Boolean)) {
+    if (CLASSES.includes(part)) {
+      when.class = part;
+      continue;
+    }
+    const match = part.match(/^(\S+)=(truth|lie)$/);
+    if (!match) {
+      throw new Error(`${fileName}:${lineNumber}: bad condition "${part}" (expected a class name or node_id=truth|lie)`);
+    }
+    when.choice = { node: match[1], side: match[2] };
+  }
+  return when;
+}
 
 function parseGate(line, fileName, lineNumber) {
   const match = line.trim().match(GATE_PATTERN);
@@ -52,6 +77,9 @@ function parseManuscript(text, fileName) {
   let accentColor = null;
   let portrait = null;
   const nodes = {};
+  const reveal = {};
+  const outro = [];
+  let inOutro = false;
 
   let currentNodeId = null;
   let currentNode = null;
@@ -88,10 +116,32 @@ function parseManuscript(text, fileName) {
       accentColor = line.slice(7).trim();
     } else if (line.startsWith('PORTRAIT:')) {
       portrait = line.slice(9).trim();
+    } else if (line.startsWith('REVEAL:')) {
+      const match = line.slice(7).trim().match(REVEAL_PATTERN);
+      if (!match) throw new Error(`${fileName}:${lineNumber}: bad REVEAL line "${raw}"`);
+      reveal[match[1]] = match[2];
     } else if (line.startsWith('===')) {
       commitNode();
-      currentNodeId = line.replace(/^=+/, '').trim();
+      const id = line.replace(/^=+/, '').trim();
+      if (id === 'OUTRO') {
+        inOutro = true;
+        return;
+      }
+      inOutro = false;
+      currentNodeId = id;
       currentNode = { id: currentNodeId, npc, location, prompt: '', swipes: {} };
+    } else if (inOutro) {
+      const match = line.match(OUTRO_PATTERN);
+      if (!match) throw new Error(`${fileName}:${lineNumber}: unrecognized OUTRO line "${raw}"`);
+      const beat = { kind: match[1].toLowerCase(), text: parseText(match[3]) };
+      if (match[2]) beat.when = parseCondition(match[2], fileName, lineNumber);
+      outro.push(beat);
+    } else if (line.startsWith('PICK ')) {
+      const match = line.match(PICK_PATTERN);
+      if (!match || !EMOTIONS.includes(match[1])) {
+        throw new Error(`${fileName}:${lineNumber}: bad PICK line "${raw}"`);
+      }
+      currentNode.picks = { ...currentNode.picks, [match[1]]: parseText(match[2]) };
     } else if (line.startsWith('PROMPT:')) {
       currentNode.prompt = parseText(line.slice(7));
     } else if (line.startsWith('GATE:')) {
@@ -137,7 +187,12 @@ function parseManuscript(text, fileName) {
   });
   commitNode();
 
-  return { npc, location, accentColor, portrait, nodes };
+  // Optional sections only appear in the JSON when authored, so NPCs that
+  // don't use them build byte-identical to before they existed.
+  const result = { npc, location, accentColor, portrait, nodes };
+  if (Object.keys(reveal).length) result.reveal = reveal;
+  if (outro.length) result.outro = outro;
+  return result;
 }
 
 function buildChapter(chapterId) {

@@ -2,21 +2,72 @@ NPC: THERAPIST
 LOCATION: 1
 ACCENT: var(--color-therapist)
 
+# The tutorial. She never explains a mechanic — every question makes the
+# player use one new piece of the FEELZ app for the first time, and her
+# reply reflects back what it did (guided discovery, not instruction).
+# Feelings are symbols only: she describes a pick, never names it.
+
+# The four meters stay hidden until the check-in is answered; the debt box
+# until the dream is (or earlier, the moment debt first goes above 0).
+REVEAL: meters after therapist_01
+REVEAL: debt after therapist_02
+
 === therapist_01
-PROMPT: The screen lights up. A voice, tired but warm, cuts through the ringing in your ears. "You're still there? Okay. Good. What happened in the dream?"
+PROMPT: The screen lights up. A voice, tired but warm, cuts through the ringing in your ears. "You're still there? Okay. Good."\n"See the three lighting up? Those are the ones you reach for. The rest are still there. You just don't pick them up much."\n"So. How are you walking in today? Don't think about it. Just point."
+PICK Joy: "Bright. Maybe brighter than the morning's earned. Okay."
+PICK Trust: "Open hands. I'll try to deserve that."
+PICK Fear: "Small and quick. Like something under a porch. Okay."
+PICK Surprise: "Caught mid-step. That's allowed."
+PICK Sadness: "Low tide. I see it."
+PICK Disgust: "Something you'd rather spit out. Noted."
+PICK Anger: "That one runs hot. Hold it a second before you use it."
+PICK Anticipation: "Leaning forward already. Okay."
+
+-- TRUTH
+SAY: Not great. I woke up on the side of the road.
+REACT: "Okay. Thank you." Somewhere on her end, a pen starts moving. "I keep four little lines on you. You'll see them move. They're not a grade. Just how today is sitting on you."
+EFFECTS: trust+1 lucidity+1 stability-1
+DEBT: 0
+NEXT: therapist_02
+
+-- LIE
+SAY: Fine. I'm fine.
+REACT: "Fine." The pen moves anyway. "I keep four little lines on you. They move whether you tell me the truth or not." A pause. "And that little box in the corner? That one's yours, not mine."
+EFFECTS: stability+1 trust-1
+DEBT: +1
+TAGS: Deflection
+LEDGER: You told your therapist you were fine.
+NEXT: therapist_02
+
+=== therapist_02
+PROMPT: "One more, then I'll let you go." A beat. "What happened in the {color:Anticipation}dream{/color}?"
 
 -- TRUTH
 SAY: I don't know. Water. Something underneath it. I couldn't breathe.
-REACT: A pause. Then, quieter: "Thank you for telling me that. Most people give me the short version." You hear a chart open somewhere on her end — a soft click, and a sigh she didn't mean to let through.
+REACT: A pause. Then, quieter: "Thank you for telling me that. Most people give me the short version." A soft click, a chart opening on her end. "See the box in the corner? It stays light when you don't have to remember what you told people."
 EFFECTS: integrity+2 lucidity+2 stability-1 trust+2
 DEBT: 0
 NEXT: (end)
 
 -- LIE
 SAY: Nothing, really. I don't remember.
-REACT: "Mm-hm." A pause just a beat too long. "We can leave it there for today." Faintly, another call is already waiting on her line.
+REACT: "Mm-hm." A pause just a beat too long. "We can leave it there for today." Another soft click. "You'll notice the box in the corner keeps count. It's fine. Everyone carries some."
 EFFECTS: integrity-1 stability+1 trust-1
 DEBT: +1
 TAGS: Denial
 LEDGER: You told your therapist you didn't remember the dream.
 NEXT: (end)
+
+# After the last reaction: homework by class, a closing line by how the
+# dream question went, the call ends, then IT and SO get the last word.
+=== OUTRO
+LINE [Guns]: "Homework. Four people live around the lake. Each of them is holding something that belongs to you. Don't take it back. Just find out what it is."
+LINE [Bible]: "Homework. The lake remembers every word said near it. By tonight it'll know you. Decide what you want it to know."
+LINE [Crystals]: "Homework. Go talk to the water. It'll answer in four voices. Write down which ones sound like you."
+LINE [therapist_02=truth]: "You told me about the water. It heard you too."
+LINE [therapist_02=lie]: "The dream can wait. Dreams are patient. Lakes are more patient."
+HANGUP: The call ends. FEELZ goes dark in your hand, and the lake is very quiet.
+IT [therapist_02=truth]: She's writing it down. Everything you said. Somewhere a file with your name on it just got thicker.
+SO [therapist_02=truth]: Or she hung up and forgot you already. Which would be worse?
+IT [therapist_02=lie]: She knew. They always know. Four more people to fool now.
+SO [therapist_02=lie]: Did she? Did you even lie? What was the dream again?

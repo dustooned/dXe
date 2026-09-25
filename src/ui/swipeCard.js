@@ -83,5 +83,16 @@ export function createSwipeCard({ promptText, onSwipe, hints }) {
     el.classList.remove('is-truth', 'is-lie');
   }
 
-  return { el, destroy: detach, setPreviewColor, setSelectedColor, reset };
+  // One short side-to-side wiggle — "this is the next thing to touch."
+  // dialogScene.js fires it the moment a FEELZ wedge is picked, so the pick
+  // itself points the player at the card without any text saying so.
+  function nudge() {
+    card.classList.remove('is-nudging');
+    // Force a reflow so re-adding the class restarts the animation.
+    void card.offsetWidth;
+    card.classList.add('is-nudging');
+    card.addEventListener('animationend', () => card.classList.remove('is-nudging'), { once: true });
+  }
+
+  return { el, destroy: detach, setPreviewColor, setSelectedColor, reset, nudge };
 }

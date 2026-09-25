@@ -18,12 +18,15 @@ The door opens before you knock.
 
 She has been standing on the other side of it for a while.
 
-[confront_deborah / beat 2] (DEBORAH speaking)
+[confront_deborah / beat 2]
+[object Object]
+
+[confront_deborah / beat 3] (DEBORAH speaking)
 {slow}Well.{/slow}{pause:400} You're not the church.
 
-[confront_deborah / beat 2 / choice A] Say nothing. Let her fill it.
-[confront_deborah / beat 2 / choice B] "You look like you haven't slept."
-[confront_deborah / beat 2 / choice C] "I heard about your son."
+[confront_deborah / beat 3 / choice A] Say nothing. Let her fill it.
+[confront_deborah / beat 3 / choice B] "You look like you haven't slept."
+[confront_deborah / beat 3 / choice C] "I heard about your son."
 
 # --- RWANDA ---
 
@@ -32,12 +35,15 @@ She's at the window with her back to the room.
 
 She knew you came in. She hasn't decided yet whether to make that your problem.
 
-[confront_rwanda / beat 2] (RWANDA speaking)
+[confront_rwanda / beat 2]
+[object Object]
+
+[confront_rwanda / beat 3] (RWANDA speaking)
 You gonna stand there,{pause:300} or you gonna say the thing you came to say?
 
-[confront_rwanda / beat 2 / choice A] Wait her out.
-[confront_rwanda / beat 2 / choice B] "What are you looking at out there?"
-[confront_rwanda / beat 2 / choice C] "People have been telling me about you."
+[confront_rwanda / beat 3 / choice A] Wait her out.
+[confront_rwanda / beat 3 / choice B] "What are you looking at out there?"
+[confront_rwanda / beat 3 / choice C] "People have been telling me about you."
 
 # --- SAMUN ---
 
@@ -46,12 +52,15 @@ He's wiping his hands on a rag that stopped being clean a long time ago.
 
 He keeps doing it after they're dry.
 
-[confront_samun / beat 2] (SAMUN speaking)
+[confront_samun / beat 2]
+[object Object]
+
+[confront_samun / beat 3] (SAMUN speaking)
 Hey. {slow}Hey.{/slow}{pause:350} You need something, or you just walking around tonight?
 
-[confront_samun / beat 2 / choice A] Let him keep talking.
-[confront_samun / beat 2 / choice B] "How's business been?"
-[confront_samun / beat 2 / choice C] Look at his hands until he stops.
+[confront_samun / beat 3 / choice A] Let him keep talking.
+[confront_samun / beat 3 / choice B] "How's business been?"
+[confront_samun / beat 3 / choice C] Look at his hands until he stops.
 
 # --- RICK ---
 
@@ -60,10 +69,13 @@ He's at the end of the bar with his back to the wall, which is where he always s
 
 There's blood on his knuckles that isn't his.
 
-[confront_rick / beat 2] (RICK speaking)
+[confront_rick / beat 2]
+[object Object]
+
+[confront_rick / beat 3] (RICK speaking)
 {slow}You're new.{/slow}{pause:400} Sit if you're sitting.
 
-[confront_rick / beat 2 / choice A] Sit down and say nothing.
-[confront_rick / beat 2 / choice B] Buy him a drink first.
-[confront_rick / beat 2 / choice C] "What happened to the guy outside?"
+[confront_rick / beat 3 / choice A] Sit down and say nothing.
+[confront_rick / beat 3 / choice B] Buy him a drink first.
+[confront_rick / beat 3 / choice C] "What happened to the guy outside?"
 

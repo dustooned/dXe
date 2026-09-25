@@ -128,6 +128,33 @@ Every node needs exactly two: `-- TRUTH` and `-- LIE`.
 - `NEXT:` — which node this leads to, or `(end)` if this is the last
   thing this NPC says (the game moves on to whoever's next).
 
+### Tutorial extras (optional — the Therapist uses these)
+
+None of these are needed for a normal NPC. Leave them out and nothing
+changes.
+
+- `PICK Emotion: text` — inside a node, before its swipes. What the NPC
+  says the moment the player picks that feeling, before they swipe. One
+  line per emotion (`Joy`, `Trust`, `Fear`, `Surprise`, `Sadness`,
+  `Disgust`, `Anger`, `Anticipation`). The player only ever sees
+  symbols, so **never name the feeling in the text**. Describe it
+  instead ("That one runs hot").
+- `REVEAL: meters after node_id` / `REVEAL: debt after node_id` — in the
+  file header. Keeps the four meters (or the debt box) off screen until
+  that node has been answered, so the NPC can introduce them. Debt also
+  shows early the moment it goes above 0.
+- `=== OUTRO` — a section after the last node, played once the NPC's
+  last reaction is done. Each line is one beat:
+  - `LINE: text` — the NPC speaks (tap to continue)
+  - `HANGUP: text` — narration; the NPC's screen dims and their music stops
+  - `IT: text` / `SO: text` — the intrusive-thought popups
+  
+  Any of them can take a condition in brackets before the colon, and only
+  plays when it holds: a class (`LINE [Guns]: ...`), how a node was
+  answered (`IT [therapist_02=lie]: ...`), or both, comma-separated
+  (`[Bible, therapist_02=truth]`). An NPC with an outro skips the usual
+  end-of-encounter IT read, since the outro is its closing IT moment.
+
 ## Rules that will make the build fail (on purpose)
 
 - Every `EFFECTS:` token must be one of the four stat names above,

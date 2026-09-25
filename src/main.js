@@ -268,7 +268,7 @@ function showSkipDialog(screen, menu) {
   const yesBtn = document.createElement('button');
   yesBtn.className = 'dx-btn';
   yesBtn.textContent = 'SKIP';
-  yesBtn.addEventListener('click', () => beginTransition('chapter/lake-ulysses/questionnaire'));
+  yesBtn.addEventListener('click', () => beginTransition('chapter/lake-ulysses/feelz-launch'));
 
   const noBtn = document.createElement('button');
   noBtn.className = 'dx-btn';

@@ -18,9 +18,9 @@ The render is `ui/itPopup.js`'s `createItPopup()`, usable from anywhere
   never resets). A genuine tie (including never having picked yet) falls
   back to a calmer, more detached "neutral" line rather than an arbitrary
   pick. See `engine/loadout.js`'s `getDominantEmotion()` and
-  `engine/itEmotionLean.js`. Skipped below 2 total picks, which is what
-  naturally excludes the Therapist (one swipe, already documented as
-  exempt from the standard NPC shape).
+  `engine/itEmotionLean.js`. Skipped below 2 total picks, and skipped for
+  any NPC with an authored `outro` — today only the Therapist, whose
+  outro ends on its own IT → SO pair (see "Therapist outro" below).
 - **Reckoning** — one class-variant line before the first card
   (`engine/itEndgame.js`'s `RECKONING_IT_TEXT`).
 - **Ending** — one class-variant line once the body text finishes drawing,
@@ -110,6 +110,19 @@ without a second art asset.
 **Content.** `engine/soRebuttals.js` — one rebuttal per existing IT line
 (12 bloom lines, 12 dominant-emotion lines), same placeholder-prose bar as
 the tables it answers.
+
+### Therapist outro (exception, deliberate)
+
+After the Therapist hangs up, IT and then SO react to how the dream
+question went (`=== OUTRO` in `manuscript/therapist.txt`). That's a
+one-off story beat, which by the rule above would get IT alone. SO is
+there on purpose. It's the second IT/SO exchange in the chapter, after
+the opening `it-intro` scene, and it bookends the opening call so the
+player meets both voices before the first real NPC. The lie version has
+SO doubting whether the lie even happened ("Did you even lie?"), which is
+the doubt-not-comfort job in its purest form. The cost: SO is a little
+less rare. Don't treat this as precedent for adding SO to other one-off
+beats.
 
 ---
 
@@ -317,10 +330,9 @@ list.
 - *"Which specific moments trigger it?"* Once per NPC encounter, at the
   end of that NPC's node graph (`dialogScene.js`'s `proceed()`) — not
   after every swipe, which would be exhausting on top of the SAY/REACT
-  beats already there. Skipped below 2 total picks for the run, which
-  also naturally excludes the Therapist (one swipe, already documented
-  elsewhere as exempt from the standard NPC shape) without needing to
-  special-case her by name.
+  beats already there. Skipped below 2 total picks for the run, and for
+  an NPC with an authored `outro` (the Therapist), whose outro already
+  ends on IT.
 
 **Code:**
 - IT beat type in `cutsceneScene.js`, and the render factored out into

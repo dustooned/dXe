@@ -450,6 +450,19 @@ export function startFeelzHover(emotion, activeEmotions, fn = 'tonic') {
   hoverVoice = { osc, gain };
 }
 
+// Touch has no hover, so on a phone the hover tone only ever sounds for the
+// split second a finger is down. Holding a wedge (feelzDartboard.js's
+// HOLD_MS) swells that same tone up to where it can actually be heard —
+// listening before choosing, with no pick made.
+const HOLD_GAIN = 0.07;
+
+export function swellFeelzHover() {
+  if (!hoverVoice || !ctx) return;
+  const now = ctx.currentTime;
+  hoverVoice.gain.gain.cancelScheduledValues(now);
+  hoverVoice.gain.gain.setTargetAtTime(HOLD_GAIN, now, 0.08);
+}
+
 // Called on pointer-leave, and as a safety net when the wheel itself is
 // torn down (a re-render mid-hover, or the scene unmounting) so a hover
 // tone never outlives the wedge that started it.

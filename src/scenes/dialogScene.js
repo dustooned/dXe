@@ -53,6 +53,23 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let itPopup = null;
   let oscilloscope = null;
   let dartboard = null;
+  // The Therapist's PICK: line for the current feeling, drawn under her
+  // prompt the moment a wedge is picked (see the prompt branch of render()).
+  let pickTypewriter = null;
+  // Set by a wedge pick, consumed by the next render — makes the swipe card
+  // wiggle once, pointing at it as the next thing to touch.
+  let justPicked = false;
+  // Nodes answered in *this* encounter — drives npc.reveal (a HUD piece
+  // stays hidden until its node is answered) — and which HUD pieces have
+  // already played their one-time reveal animation.
+  const answered = new Set();
+  const revealAnimated = new Set();
+  // npc.outro playback: what's left to play, the beat on screen, and whether
+  // the call has hung up (sticks for the rest of the outro once a HANGUP
+  // beat is reached).
+  let outroQueue = [];
+  let outroBeat = null;
+  let hungUp = false;
 
   function currentNode() {
     return npc.nodes[currentNodeId];
@@ -65,7 +82,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // choices went, not by where you are (see shell/harmony.js).
   //
   // A node with nowhere left to go is the resolution however early it
-  // arrives: the Therapist's single-node tutorial is its own whole cadence.
+  // arrives, however short the encounter.
   function harmonicFunction() {
     const swipes = currentNode()?.swipes ?? {};
     const terminal = Object.values(swipes).every((swipe) => !swipe.nextNodeId);
@@ -83,10 +100,32 @@ export function mount(stageEl, scene, { run, onComplete }) {
     render();
   }
 
+  // npc.reveal ({ meters?: nodeId, debt?: nodeId }, authored as REVEAL:
+  // lines) keeps a HUD piece off screen until the Therapist reaches it, so a
+  // first-time player isn't handed every readout at once with nothing
+  // pointing at any of it. Debt also shows early the moment it's non-zero —
+  // a lie shouldn't land invisibly. NPCs without `reveal` show everything.
+  function isRevealed(kind) {
+    const gateNode = npc.reveal?.[kind];
+    if (!gateNode || answered.has(gateNode)) return true;
+    return kind === 'debt' && run.get().truthDebt > 0;
+  }
+
+  function applyReveal(el, kind) {
+    if (!isRevealed(kind)) {
+      el.classList.add('is-concealed');
+    } else if (npc.reveal?.[kind] && !revealAnimated.has(kind)) {
+      revealAnimated.add(kind);
+      el.classList.add('is-revealing');
+    }
+  }
+
   function render() {
     const runState = run.get();
     typewriter?.destroy();
     typewriter = null;
+    pickTypewriter?.destroy();
+    pickTypewriter = null;
     oscilloscope?.destroy();
     oscilloscope = null;
     // Only stops a lingering hover preview, not the select drone — see
@@ -97,7 +136,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     stageEl.innerHTML = '';
 
     const screen = document.createElement('div');
-    screen.className = 'dx-screen dx-game-screen';
+    screen.className = `dx-screen dx-game-screen${hungUp ? ' dx-game-screen--hungup' : ''}`;
 
     // The battle background, not a decorative pattern — a live dual-trace
     // read on both sides of the encounter (docs/STAT_MATH.md's
@@ -119,7 +158,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
     content.className = 'dx-game-content dx-game-content--live-bg';
     screen.appendChild(content);
 
-    content.appendChild(createMeterGroup(runState).el);
+    const meters = createMeterGroup(runState).el;
+    applyReveal(meters, 'meters');
+    content.appendChild(meters);
 
     const portrait = createNpcPortrait(npc.npc, npc.accentColor, npc.portrait);
     content.appendChild(portrait.el);
@@ -129,7 +170,27 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // including the very first render, where mood is still neutral (0).
     portrait.updateMood(audio.getLeitmotifMood());
 
-    if (stage === 'say') {
+    if (stage === 'outro') {
+      const line = document.createElement('p');
+      line.className = `dx-text dx-reaction${outroBeat.kind === 'hangup' ? ' dx-hangup-line' : ''}`;
+      content.appendChild(line);
+
+      const tapHint = document.createElement('p');
+      tapHint.className = 'dx-text dx-tap-hint';
+      tapHint.textContent = '(tap to continue)';
+      tapHint.hidden = true;
+      content.appendChild(tapHint);
+
+      typewriter = createTypewriter(line, outroBeat.text, {
+        onChar: audio.playTypewriterTick,
+        onDone: () => { tapHint.hidden = false; },
+      });
+
+      screen.addEventListener('click', () => {
+        if (typewriter && !typewriter.isDone()) typewriter.finish();
+        else nextOutroBeat();
+      });
+    } else if (stage === 'say') {
       // Its own bordered box, in the same screen slot the swipe card and
       // dartboard just occupied — the player's line replaces the choice UI
       // rather than appearing as loose text, so it reads as "this is what
@@ -193,12 +254,27 @@ export function mount(stageEl, scene, { run, onComplete }) {
       prompt.className = 'dx-text dx-prompt';
       content.appendChild(prompt);
 
+      // The Therapist's read of the feeling just picked — imagery, never the
+      // emotion's name (feelings are symbols only). Only nodes with PICK
+      // lines have any; everyone else skips this entirely.
+      const pickText = activeEmotion && currentNode().picks?.[activeEmotion];
+      if (pickText) {
+        const pickLine = document.createElement('p');
+        pickLine.className = 'dx-text dx-pick-line';
+        content.appendChild(pickLine);
+        pickTypewriter = createTypewriter(pickLine, pickText, {
+          onChar: audio.playTypewriterTick,
+          startRevealed: !justPicked,
+        });
+      }
+
       // Card + dartboard build up front but stay hidden until the prompt
       // finishes drawing — tapping the screen still finishes the draw early.
       const interactive = document.createElement('div');
       interactive.className = 'dx-dialog-interactive';
       interactive.hidden = !promptRevealed;
       content.appendChild(interactive);
+      const wasRevealed = promptRevealed;
 
       const card = createSwipeCard({
         promptText: activeEmotion ? 'Drag to respond.' : 'Pick a feeling first.',
@@ -221,6 +297,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
       if (activeEmotionColor) {
         card.setSelectedColor(activeEmotionColor);
       }
+      if (justPicked) {
+        justPicked = false;
+        card.nudge();
+      }
 
       dartboard = createFeelzDartboard({
         loadout: run.get().loadout,
@@ -234,6 +314,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
         onSelect: (emotion, _source) => {
           activeEmotion = emotion;
           activeEmotionColor = emotionColor(emotion);
+          justPicked = true;
           render();
         },
       });
@@ -243,16 +324,25 @@ export function mount(stageEl, scene, { run, onComplete }) {
       // prompt — startRevealed skips replaying the draw from scratch.
       typewriter = createTypewriter(prompt, currentNode().prompt, {
         onChar: audio.playTypewriterTick,
-        onDone: () => { promptRevealed = true; interactive.hidden = false; },
+        onDone: () => {
+          promptRevealed = true;
+          interactive.hidden = false;
+          // Wheel and card fade in the first time they appear on a node,
+          // not on every re-render a pick triggers.
+          if (!wasRevealed) interactive.classList.add('is-entering');
+        },
         startRevealed: promptRevealed,
       });
 
       screen.addEventListener('click', () => {
         if (typewriter && !typewriter.isDone()) typewriter.finish();
+        else if (pickTypewriter && !pickTypewriter.isDone()) pickTypewriter.finish();
       });
     }
 
-    content.appendChild(createDebtSigil(runState.truthDebt).el);
+    const sigil = createDebtSigil(runState.truthDebt).el;
+    applyReveal(sigil, 'debt');
+    content.appendChild(sigil);
     stageEl.appendChild(screen);
   }
 
@@ -265,6 +355,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const before = run.get();
     const { edge, patch } = resolveCard(before, currentNode(), swipeKey, activeEmotion);
     run.set(patch);
+    // Which way each node went, for anything later that reads it back —
+    // today an outro beat's [node=truth|lie] condition.
+    run.set({ choices: { ...before.choices, [currentNodeId]: swipeKey } });
+    answered.add(currentNodeId);
 
     // How this specific choice actually landed with the NPC — trust and
     // stability are their rapport/comfort with you, not a right-or-wrong
@@ -376,11 +470,17 @@ export function mount(stageEl, scene, { run, onComplete }) {
       return;
     }
 
+    // An authored outro (the Therapist's homework + IT/SO sign-off) *is*
+    // this encounter's closing IT moment, so it replaces the emotion-lean
+    // read below rather than stacking a second IT/SO pair on top of it.
+    if (npc.outro?.length) {
+      startOutro();
+      return;
+    }
+
     // This NPC's encounter is over — IT reads the player's FEELZ pattern
     // for the run so far, once there's actually a pattern to read. Skip
-    // below 2 picks: a single data point isn't a lean, it's a coin flip,
-    // and this is also what naturally excludes the Therapist (one swipe,
-    // exempt from the rest of the NPC shape anyway — see docs/HANDOFF.md).
+    // below 2 picks: a single data point isn't a lean, it's a coin flip.
     const counts = run.get().emotionCounts;
     const totalPicks = Object.values(counts).reduce((a, b) => a + b, 0);
     if (totalPicks < 2) {
@@ -389,6 +489,55 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
 
     showEmotionLeanIt(getDominantEmotion(counts), onComplete);
+  }
+
+  // npc.outro: beats after the last node, each optionally gated on the
+  // player's class and/or how a given node was answered. LINE/HANGUP draw
+  // in the reaction slot, tap to continue; IT/SO pop up over whatever's on
+  // screen, same popup the rest of the game uses.
+  function outroBeatApplies(beat) {
+    const state = run.get();
+    if (beat.when?.class && beat.when.class !== state.loadout) return false;
+    const choice = beat.when?.choice;
+    if (choice && state.choices?.[choice.node] !== choice.side) return false;
+    return true;
+  }
+
+  function startOutro() {
+    outroQueue = npc.outro.filter(outroBeatApplies);
+    nextOutroBeat();
+  }
+
+  function nextOutroBeat() {
+    const beat = outroQueue.shift();
+    if (!beat) {
+      onComplete();
+      return;
+    }
+    if (beat.kind === 'it' || beat.kind === 'so') {
+      const next = outroQueue[0];
+      itPopup = createItPopup(stageEl, {
+        text: beat.text,
+        loadout: run.get().loadout,
+        voice: beat.kind,
+        flashClose: next?.kind === 'it' || next?.kind === 'so',
+        onClose: () => {
+          itPopup?.destroy();
+          itPopup = null;
+          nextOutroBeat();
+        },
+      });
+      return;
+    }
+    if (beat.kind === 'hangup' && !hungUp) {
+      hungUp = true;
+      // The call is over — the Therapist's underscore goes with it, so the
+      // hang-up (and IT after it) lands in the lake's silence.
+      audio.stopLeitmotif();
+    }
+    outroBeat = beat;
+    stage = 'outro';
+    render();
   }
 
   function showEmotionLeanIt(dominant, onClose) {
@@ -407,6 +556,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   return function unmount() {
     typewriter?.destroy();
+    pickTypewriter?.destroy();
     itPopup?.destroy();
     oscilloscope?.destroy();
     dartboard?.destroy();

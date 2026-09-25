@@ -349,12 +349,12 @@ rest of the box beside it rather than centered underneath. The slot
 identity/mark yet. Real art drops into that same slot with no layout
 changes needed.
 
-Dismissal is deliberately **not** the usual tap-anywhere-to-continue.
-Tapping the box only finishes the draw early, same as everywhere else;
-only the X in the corner advances the beat. The player has to notice and
-actively close it, like an intrusive ad — a stray tap can't skip past it
-by accident, which is the opposite of every other beat type in this file.
-Once the line finishes drawing, the X itself flashes (`.is-flashing`,
+Dismissal is the usual tap-anywhere gesture: the first tap finishes the
+draw, the next one closes it. It used to be X-only, so the player had to
+notice and actively close it like an intrusive ad, but playtest feedback
+(2026-09-24) read the one screen that ignored taps as clunky, not
+intrusive. The X stays as the visible "close this" signal. Once the line
+finishes drawing, the X itself flashes (`.is-flashing`,
 reusing the debt sigil's `dx-pulse` keyframes) to signal there's another
 one of these coming — except on the last beat in the sequence, where
 nothing follows it and the X stays still.

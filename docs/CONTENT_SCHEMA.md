@@ -24,6 +24,16 @@ One JSON file per NPC, e.g. `content/deborah.json`:
   see "Asset folders" below), or `null` for the colored-initial placeholder
   `ui/npcPortrait.js` still falls back to. Author it via a manuscript's
   `PORTRAIT:` line (`SCRIPT_FORMAT.md`) rather than hand-editing this JSON.
+- `reveal` — optional `{ meters?: nodeId, debt?: nodeId }`. That HUD piece
+  stays hidden in this encounter until the named node is answered (debt
+  also shows early once it's above 0). From `REVEAL:` lines.
+- `outro` — optional array of `{ kind: 'line'|'hangup'|'it'|'so', text,
+  when?: { class?, choice?: { node, side } } }`, played after the last
+  node; `when` filters on the player's loadout and on `run.choices`
+  (nodeId → `'truth'|'lie'`, written by `dialogScene.js` on every swipe).
+  Replaces the end-of-encounter emotion-lean IT read. From `=== OUTRO`.
+- A node can also carry `picks` — `{ [emotion]: text }`, shown under the
+  prompt when that feeling is picked. From `PICK Emotion:` lines.
 
 ## Node
 

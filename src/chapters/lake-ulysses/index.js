@@ -15,6 +15,7 @@ import itIntro from './content/it_intro.json';
 import openingQuote from './content/opening_quote.json';
 import bobBaiter from './content/bob_baiter.json';
 import prologue from './content/prologue.json';
+import feelzLaunch from './content/feelz_launch.json';
 import therapist from './content/therapist.json';
 import deborah from './content/deborah.json';
 import rwanda from './content/rwanda.json';
@@ -61,6 +62,10 @@ const SCENES = [
   { type: 'cutscene', id: 'opening-quote', beats: openingQuote.beats, anims: ANIMS },
   { type: 'cutscene', id: 'bob-baiter', beats: bobBaiter.beats, anims: ANIMS, ambient: '/assets/lake-ulysses/audio/lk_01.mp3' },
   { type: 'cutscene', id: 'prologue', beats: prologue.beats },
+  // The buzz from the prologue's last beat, answered: the FEELZ app opens,
+  // and everything after it (intake quiz, Therapist, the HUD itself) is
+  // happening inside that app.
+  { type: 'cutscene', id: 'feelz-launch', beats: feelzLaunch.beats },
   { type: 'questionnaire', id: 'questionnaire' },
   { type: 'dialog', id: 'therapist', npc: therapist },
 
@@ -109,6 +114,9 @@ const initialRunState = {
   // emotion name. Drives the dominant-emotion IT interrupt at the end of
   // each NPC encounter (engine/loadout.js's getDominantEmotion()).
   emotionCounts: {},
+  // { [nodeId]: 'truth' | 'lie' } — how each dialog node was answered.
+  // Read by npc.outro conditions (the Therapist's homework sign-off).
+  choices: {},
 };
 
 export function mount(stageEl, { exit, restart, startSceneId }) {
