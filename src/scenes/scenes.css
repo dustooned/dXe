@@ -887,3 +887,102 @@
 @media (prefers-reduced-motion: reduce) {
   .dx-notify { animation: none; }
 }
+
+/* ── Ending pages (endingScene.js) ─────────────────────────────────────── */
+.dx-ending-page--report,
+.dx-ending-page--story {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.dx-ending-next {
+  margin-top: auto;
+}
+
+/* FEELZ clinical report (ui/feelzReport.js). */
+.dx-report {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dx-report p {
+  margin: 0;
+}
+
+.dx-report__app {
+  font-size: calc(7 * var(--fs));
+  letter-spacing: 0.08em;
+  color: var(--color-therapist);
+}
+
+.dx-report__section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  padding-top: 10px;
+}
+
+.dx-report__label {
+  font-size: calc(6 * var(--fs));
+  opacity: 0.55;
+  letter-spacing: 0.08em;
+}
+
+.dx-report__diagnosis {
+  font-size: calc(9 * var(--fs));
+  line-height: 1.5;
+}
+
+.dx-report__body {
+  font-size: calc(7 * var(--fs));
+  line-height: 1.7;
+}
+
+.dx-report__note {
+  font-style: italic;
+}
+
+.dx-report__bar-row {
+  display: grid;
+  grid-template-columns: 9.5em 1fr 2em;
+  align-items: center;
+  gap: 8px;
+  font-size: calc(7 * var(--fs));
+}
+
+.dx-report__bar-track {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.dx-report__bar-fill {
+  display: block;
+  height: 100%;
+}
+
+.dx-report__bar-count {
+  text-align: right;
+}
+
+.dx-report__row {
+  display: flex;
+  justify-content: space-between;
+  font-size: calc(7 * var(--fs));
+}
+
+.dx-ending-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  padding-top: 12px;
+}
+
+.dx-ending-summary__line {
+  margin: 0;
+  font-size: calc(7 * var(--fs));
+  line-height: 1.7;
+  text-align: center;
+}

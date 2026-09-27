@@ -10,7 +10,8 @@ import { createTypewriter } from '../ui/typewriterText.js';
 import { createItPopup } from '../ui/itPopup.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
 import { ppmFor, statusFor } from '../engine/lake.js';
-import { ENDING_IT_TEXT } from '../engine/itEndgame.js';
+import { ENDING_IT_TEXT, ENDING_SO_TEXT } from '../engine/itEndgame.js';
+import { createFeelzReport, reportSummaryLine } from '../ui/feelzReport.js';
 import * as fx from '../shell/fx.js';
 import * as audio from '../shell/audio.js';
 
@@ -106,17 +107,33 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
     showText();
   }
 
-  function showText() {
-    clearTimeout(judgmentTimer);
+  // The ending is three pages, so no one screen is a wall of data:
+  //   1. the water  — the science: final reading, self-report vs. record
+  //   2. the report — FEELZ's clinical read, where the class is revealed
+  //   3. the story  — the ending text, then all of it compact on one page
+  //      (screenshot-ready), then IT and SO get the last word.
+  function newPage(className) {
     stageEl.innerHTML = '';
     const screen = document.createElement('div');
-    screen.className = 'dx-screen dx-ending-screen';
-    screen.addEventListener('click', handleTextTap);
+    screen.className = `dx-screen dx-ending-screen ${className}`;
+    stageEl.appendChild(screen);
+    return screen;
+  }
 
-    const title = document.createElement('h2');
-    title.className = 'dx-title';
-    title.textContent = ending.title;
-    screen.appendChild(title);
+  function appendNext(screen, onNext) {
+    const btn = document.createElement('button');
+    btn.className = 'dx-btn dx-ending-next';
+    btn.textContent = 'NEXT ▶';
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      onNext();
+    });
+    screen.appendChild(btn);
+  }
+
+  function showText() {
+    clearTimeout(judgmentTimer);
+    const screen = newPage('dx-ending-page--water');
 
     // The payoff for the gauge the player's watched all chapter: the
     // lake's final reading, full size, with whatever's left in the tank.
@@ -127,6 +144,23 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
     screen.appendChild(createLakeGauge(finalDebt, { large: true }).el);
     audio.playLakeSplash(finalDebt);
     screen.appendChild(createCheckInRecord(run.get(), finalDebt));
+    appendNext(screen, showReport);
+  }
+
+  function showReport() {
+    const screen = newPage('dx-ending-page--report');
+    screen.appendChild(createFeelzReport(run.get()));
+    appendNext(screen, showStory);
+  }
+
+  function showStory() {
+    const screen = newPage('dx-ending-page--story');
+    screen.addEventListener('click', handleTextTap);
+
+    const title = document.createElement('h2');
+    title.className = 'dx-title';
+    title.textContent = ending.title;
+    screen.appendChild(title);
 
     const textEl = document.createElement('p');
     textEl.className = 'dx-text dx-ending-body';
@@ -136,8 +170,24 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
 
     const fullText = [...ending.text, epilogueLine].filter(Boolean).join('\n\n');
     typewriter = createTypewriter(textEl, fullText, {
-      onDone: () => showEndingIt(screen),
+      onDone: () => {
+        appendSummary(screen);
+        showEndingIt(screen);
+      },
     });
+  }
+
+  // Everything on one page once the story's drawn: small gauge, the
+  // diagnosis line, the tally. Left in place so the player can screenshot it.
+  function appendSummary(screen) {
+    const box = document.createElement('div');
+    box.className = 'dx-ending-summary';
+    box.appendChild(createLakeGauge(finalDebt).el);
+    const line = document.createElement('p');
+    line.className = 'dx-ending-summary__line';
+    line.textContent = reportSummaryLine(run.get());
+    box.appendChild(line);
+    screen.appendChild(box);
   }
 
   function handleTextTap() {
@@ -146,17 +196,25 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
     }
   }
 
-  // IT gets the actual last word of the chapter — one line, once the body
-  // text is fully drawn, before the player can leave.
+  // IT and SO get the actual last word of the chapter — once the body text
+  // is fully drawn, before the player can leave.
   function showEndingIt(screen) {
     itPopup = createItPopup(stageEl, {
       text: ENDING_IT_TEXT,
       loadout: run.get().loadout,
-      flashClose: false,
+      flashClose: true,
       onClose: () => {
         itPopup?.destroy();
-        itPopup = null;
-        appendMenuButton(screen);
+        itPopup = createItPopup(stageEl, {
+          text: ENDING_SO_TEXT,
+          loadout: run.get().loadout,
+          voice: 'so',
+          onClose: () => {
+            itPopup?.destroy();
+            itPopup = null;
+            appendMenuButton(screen);
+          },
+        });
       },
     });
   }

@@ -15,3 +15,10 @@ export const ENDING_IT_TEXT = {
   Bible: "Whatever you're telling yourself about this right now — that's the last lie. Or the first true thing. Your call.",
   Crystals: 'Something in you is going to carry this a while. Let it.',
 };
+
+// SO answers IT's last word, same class split. PLACEHOLDER PROSE.
+export const ENDING_SO_TEXT = {
+  Guns: "Or you didn't know anything, and you're only calling it knowing now that it's over.",
+  Bible: "Or it's neither, and you're making it mean something because the alternative is worse.",
+  Crystals: "Or it's gone by Tuesday. You've carried heavier and forgotten it faster.",
+};
