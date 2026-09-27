@@ -137,6 +137,9 @@ Don't count characters as you write. Use these instead:
   *"She flinches. Her bible shifts in her grip."* is the length the game
   is built around.
 - **If a beat wants to be longer, make it two beats.** Tapping is free.
+- **Over ~140 characters, the game pages it for you**, breaking at the
+  end of a sentence. So a long line won't overflow, but you don't control
+  where the break lands. Two beats still reads better.
 
 One exception: the Bob Baiter ad is hand-wrapped to ~27 characters per
 line on purpose, to get that stilted public-address cadence. Keep that.

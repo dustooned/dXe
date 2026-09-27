@@ -128,6 +128,10 @@ Every node needs exactly two: `-- TRUTH` and `-- LIE`.
   used later in the Reckoning. Only include this if the choice is a lie
   worth being confronted with at the end. Skip the line entirely for
   truths, or for lies too small to matter.
+- `IT:` / `SO:` (optional) — an intrusive-thought popup right after this
+  answer's `REACT:`, before the next node. Use one or both (IT first,
+  then SO). Example: the Therapist's intrusive-thoughts question has IT
+  say "Are you sure about that?" after the lie.
 - `NEXT:` — which node this leads to, or `(end)` if this is the last
   thing this NPC says (the game moves on to whoever's next).
 
@@ -138,8 +142,8 @@ changes.
 
 - `PICK Emotion: text` — inside a node, before its swipes. What the NPC
   says the moment the player picks that feeling, before they swipe. One
-  line per emotion (`Joy`, `Trust`, `Fear`, `Surprise`, `Sadness`,
-  `Disgust`, `Anger`, `Anticipation`). The player only ever sees
+  line per emotion (`Happy`, `Trust`, `Fear`, `Surprise`, `Sadness`,
+  `Disgust`, `Anger`, `Anxiety`). The player only ever sees
   symbols, so **never name the feeling in the text**. Describe it
   instead ("That one runs hot").
 - `REVEAL: meters after node_id` / `REVEAL: debt after node_id` — in the
@@ -155,6 +159,10 @@ changes.
   last reaction is done. Each line is one beat:
   - `LINE: text` — the NPC speaks (tap to continue)
   - `HANGUP: text` — narration; the NPC's screen dims and their music stops
+  - `NOTIFY: text` — a FEELZ push notification (text only, with a ping).
+    Lines split on `\n`: the first is the app header, the second the
+    headline, the rest the body. The Therapist uses it to send Deborah's
+    profile as homework.
   - `IT: text` / `SO: text` — the intrusive-thought popups
   
   Any of them can take a condition in brackets before the colon, and only

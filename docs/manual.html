@@ -320,7 +320,11 @@ character-by-character, old-JRPG style. <strong>Tap once to finish a line
 instantly; tap again to move on.</strong> Nothing on a story beat ever
 auto-advances <em>before</em> the player has read it — the only exception is a
 handful of intentionally brief pacing beats that advance themselves a
-moment after finishing, and even those still accept an early tap. Writers
+moment after finishing, and even those still accept an early tap. Long
+text (over ~140 characters) splits into pages at sentence ends: each page
+draws in a fresh box, a blinking ▶ says there&#39;s more, and a tap turns the
+page. Text size scales with the screen, so it stays readable on a tablet.
+Writers
 control the <em>rhythm</em> of this draw directly from the script — see
 <a href="#doc-script_key" data-doc="doc-script_key"><a class="doc-ref" href="#doc-script_key" data-doc="doc-script_key"><code>SCRIPT_KEY.md</code></a></a>.</p>
 <h3 id="doc-game_manual--between-npcs-the-walk"><a class="anchor" href="#doc-game_manual--between-npcs-the-walk" aria-label="Link to this section">#</a>Between NPCs: the walk</h3>
@@ -345,11 +349,22 @@ water, and he holds them under at the lake&#39;s final level: the screen
 sinks into clear blue or swamp green. Even a player with nothing to
 confess still gets baptized.</p>
 <h3 id="doc-game_manual--the-ending"><a class="anchor" href="#doc-game_manual--the-ending" aria-label="Link to this section">#</a>The ending</h3>
-<p>The ending screen opens on the lake&#39;s <strong>final reading</strong>, full size, with
-whatever&#39;s left in the fish tank. Under it, the player&#39;s FEELZ check-in
-answers are set flat against what was recorded (lies told, to how many
-people, the final reading), with no comment on the gap. Final Truth Debt
-alone decides which of four endings plays:</p>
+<p>The ending is three pages, tap NEXT between them:</p>
+<ol>
+<li><strong>The water.</strong> The lake&#39;s final reading, full size, with whatever&#39;s
+left in the fish tank. Under it, the player&#39;s FEELZ check-in answers
+set flat against what was recorded (lies told, to how many people),
+with no comment on the gap.</li>
+<li><strong>The FEELZ clinical summary.</strong> The app&#39;s read on the player: their
+class, revealed for the first time as a clinical diagnosis (e.g.
+<em>Reactive-Protective Type (FP-01)</em>); bars for how often they reached
+for each feeling; a one-line interpretation by class and top emotion;
+truths and lies per person; and a case note. Built in
+<code>ui/feelzReport.js</code> from data the run already tracks.</li>
+<li><strong>The story.</strong> The ending text, then a compact one-line summary under a
+small gauge (screenshot-ready), then IT and SO get the last word.</li>
+</ol>
+<p>Final Truth Debt alone decides which of four endings plays:</p>
 <table>
 <thead>
 <tr>
@@ -382,14 +397,29 @@ alone decides which of four endings plays:</p>
 <p>One extra line — the &quot;epilogue&quot; — is appended, naming whichever of the
 four meters strayed furthest from its starting value of 5. That&#39;s the
 only place the four meters get the last word.</p>
+<h3 id="doc-game_manual--trust-in-progress"><a class="anchor" href="#doc-game_manual--trust-in-progress" aria-label="Link to this section">#</a>Trust (in progress)</h3>
+<p>Trust is not Truth. Truth is the lake: did you say what&#39;s real. Trust is
+whether people can rely on you, and it&#39;s built three ways:</p>
+<ul>
+<li><strong>Attunement.</strong> Every NPC moment has a mood (one of the 8 feelings),
+shown as the oscilloscope&#39;s color. Pick the matching feeling and the
+waves sync.</li>
+<li><strong>Turning toward.</strong> Some lines are &quot;bids&quot; (Deborah saying Caleb&#39;s name).
+Engaging with a bid builds trust. On some bids a kind lie counts too,
+so a player can build trust while still dirtying the lake.</li>
+<li><strong>Consistency.</strong> Contradicting yourself across characters costs trust
+(planned; needs contradiction pairs authored).</li>
+</ul>
+<p>Earn trust with 2 characters and the <strong>Trust</strong> feeling unlocks on the
+wheel. No class starts with Trust.</p>
 <h3 id="doc-game_manual--the-class-the-player-never-sees"><a class="anchor" href="#doc-game_manual--the-class-the-player-never-sees" aria-label="Link to this section">#</a>The class the player never sees</h3>
 <p>Three swipe questions right after the Prologue quietly sort the player
 into <strong>Guns</strong> (Anger / Fear / Sadness), <strong>Bible</strong> (Anxiety / Disgust /
 Fear), or <strong>Crystals</strong> (Happy / Anxiety / Surprise) — which 3 FEELZ
 emotions are lit up all run, and which meter each one amplifies. The
 Therapist&#39;s very next line is a &quot;diagnosis&quot; with a few words tinted in
-that class&#39;s colors — the <em>only</em> signal the player ever gets, and the
-class name itself is never shown. Same idea drives the walk captions
+that class&#39;s colors — the only signal during play. The class is named
+only at the very end, as a diagnosis on the FEELZ clinical summary. Same idea drives the walk captions
 (three tonal variants per hotspot, one per class). Writers: when you
 write class-varying text, you&#39;re writing a <em>lens</em> on the same room or
 line, not a different plot.</p>
@@ -1168,6 +1198,30 @@ needs to be a new opt-in field that intersects with the class set and
 falls back when the intersection is empty.</li>
 </ul>
 <h2 id="doc-handoff--what39s-next"><a class="anchor" href="#doc-handoff--what39s-next" aria-label="Link to this section">#</a>What&#39;s next</h2>
+<p><strong>Done in the 2026-09-27 session</strong> (from <code>devnotes/Sep 27 at 12_35 PM.md</code>):</p>
+<ul>
+<li>Bigger text that scales with the canvas; the canvas fills the viewport
+height (iPad). Long text pages at sentence ends. Fixed a stray-space
+indent on wrapped lines.</li>
+<li>Bob Baiter: GameMaker announcement symbols ported
+(<code>scripts/import-gm-symbols.mjs</code>, beat field <code>symbolAnim</code>), centered
+over his head, frames preloaded. Eleven new lines unveil the lake gauge
+(beat <code>art: lakeGauge</code>) and teach it in his voice.</li>
+<li>New class emotion sets: Guns Anger/Fear/Sadness, Bible
+Anxiety/Disgust/Fear, Crystals Happy/Anxiety/Surprise. Anxiety replaced
+Anticipation, Joy became Happy, Trust is unlock-only. New palette.</li>
+<li>Therapist: plain-advice homework, a FEELZ notification with Deborah&#39;s
+profile (<code>NOTIFY:</code>, with a ping), and an intrusive-thoughts question
+where IT/SO answer back (per-answer <code>IT:</code>/<code>SO:</code>).</li>
+<li>Ending in three pages with the FEELZ clinical summary; class revealed
+as a diagnosis; SO answers IT&#39;s last word.</li>
+</ul>
+<p><strong>In progress: Trust</strong> (see GAME_MANUAL &quot;Trust&quot;). Next build: per-node NPC
+moods on the oscilloscope, sync when the pick matches, authored bids, the
+Trust unlock. Then the contradiction check.</p>
+<p><strong>Still open from that discussion:</strong> the full feeling-unlock system (one
+feeling per character), class screen redesign, scene moves (Deborah&#39;s
+garden, Rwanda&#39;s mural, Samun&#39;s crosswalk), walk stills, contacts.</p>
 <p><strong>Open from the 2026-09-24 playtest round</strong> (tutorial, lake, Pastor). All
 of these are decided or at least scoped; see the linked sections:</p>
 <ul>
@@ -3522,6 +3576,10 @@ there&#39;s nothing worth tagging.</li>
 used later in the Reckoning. Only include this if the choice is a lie
 worth being confronted with at the end. Skip the line entirely for
 truths, or for lies too small to matter.</li>
+<li><code>IT:</code> / <code>SO:</code> (optional) — an intrusive-thought popup right after this
+answer&#39;s <code>REACT:</code>, before the next node. Use one or both (IT first,
+then SO). Example: the Therapist&#39;s intrusive-thoughts question has IT
+say &quot;Are you sure about that?&quot; after the lie.</li>
 <li><code>NEXT:</code> — which node this leads to, or <code>(end)</code> if this is the last
 thing this NPC says (the game moves on to whoever&#39;s next).</li>
 </ul>
@@ -3531,8 +3589,8 @@ changes.</p>
 <ul>
 <li><p><code>PICK Emotion: text</code> — inside a node, before its swipes. What the NPC
 says the moment the player picks that feeling, before they swipe. One
-line per emotion (<code>Joy</code>, <code>Trust</code>, <code>Fear</code>, <code>Surprise</code>, <code>Sadness</code>,
-<code>Disgust</code>, <code>Anger</code>, <code>Anticipation</code>). The player only ever sees
+line per emotion (<code>Happy</code>, <code>Trust</code>, <code>Fear</code>, <code>Surprise</code>, <code>Sadness</code>,
+<code>Disgust</code>, <code>Anger</code>, <code>Anxiety</code>). The player only ever sees
 symbols, so <strong>never name the feeling in the text</strong>. Describe it
 instead (&quot;That one runs hot&quot;).</p>
 </li>
@@ -3552,6 +3610,10 @@ last reaction is done. Each line is one beat:</p>
 <ul>
 <li><code>LINE: text</code> — the NPC speaks (tap to continue)</li>
 <li><code>HANGUP: text</code> — narration; the NPC&#39;s screen dims and their music stops</li>
+<li><code>NOTIFY: text</code> — a FEELZ push notification (text only, with a ping).
+Lines split on <code>\n</code>: the first is the app header, the second the
+headline, the rest the body. The Therapist uses it to send Deborah&#39;s
+profile as homework.</li>
 <li><code>IT: text</code> / <code>SO: text</code> — the intrusive-thought popups</li>
 </ul>
 <p>Any of them can take a condition in brackets before the colon, and only

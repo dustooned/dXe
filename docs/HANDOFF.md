@@ -481,6 +481,31 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 
 ## What's next
 
+**Done in the 2026-09-27 session** (from `devnotes/Sep 27 at 12_35 PM.md`):
+- Bigger text that scales with the canvas; the canvas fills the viewport
+  height (iPad). Long text pages at sentence ends. Fixed a stray-space
+  indent on wrapped lines.
+- Bob Baiter: GameMaker announcement symbols ported
+  (`scripts/import-gm-symbols.mjs`, beat field `symbolAnim`), centered
+  over his head, frames preloaded. Eleven new lines unveil the lake gauge
+  (beat `art: lakeGauge`) and teach it in his voice.
+- New class emotion sets: Guns Anger/Fear/Sadness, Bible
+  Anxiety/Disgust/Fear, Crystals Happy/Anxiety/Surprise. Anxiety replaced
+  Anticipation, Joy became Happy, Trust is unlock-only. New palette.
+- Therapist: plain-advice homework, a FEELZ notification with Deborah's
+  profile (`NOTIFY:`, with a ping), and an intrusive-thoughts question
+  where IT/SO answer back (per-answer `IT:`/`SO:`).
+- Ending in three pages with the FEELZ clinical summary; class revealed
+  as a diagnosis; SO answers IT's last word.
+
+**In progress: Trust** (see GAME_MANUAL "Trust"). Next build: per-node NPC
+moods on the oscilloscope, sync when the pick matches, authored bids, the
+Trust unlock. Then the contradiction check.
+
+**Still open from that discussion:** the full feeling-unlock system (one
+feeling per character), class screen redesign, scene moves (Deborah's
+garden, Rwanda's mural, Samun's crosswalk), walk stills, contacts.
+
 **Open from the 2026-09-24 playtest round** (tutorial, lake, Pastor). All
 of these are decided or at least scoped; see the linked sections:
 - **IT/SO observer voice for the older tables.** The new finding,

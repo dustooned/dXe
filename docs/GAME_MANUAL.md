@@ -183,7 +183,11 @@ character-by-character, old-JRPG style. **Tap once to finish a line
 instantly; tap again to move on.** Nothing on a story beat ever
 auto-advances *before* the player has read it — the only exception is a
 handful of intentionally brief pacing beats that advance themselves a
-moment after finishing, and even those still accept an early tap. Writers
+moment after finishing, and even those still accept an early tap. Long
+text (over ~140 characters) splits into pages at sentence ends: each page
+draws in a fresh box, a blinking ▶ says there's more, and a tap turns the
+page. Text size scales with the screen, so it stays readable on a tablet.
+Writers
 control the *rhythm* of this draw directly from the script — see
 [`SCRIPT_KEY.md`](SCRIPT_KEY.md).
 
@@ -214,11 +218,22 @@ confess still gets baptized.
 
 ### The ending
 
-The ending screen opens on the lake's **final reading**, full size, with
-whatever's left in the fish tank. Under it, the player's FEELZ check-in
-answers are set flat against what was recorded (lies told, to how many
-people, the final reading), with no comment on the gap. Final Truth Debt
-alone decides which of four endings plays:
+The ending is three pages, tap NEXT between them:
+
+1. **The water.** The lake's final reading, full size, with whatever's
+   left in the fish tank. Under it, the player's FEELZ check-in answers
+   set flat against what was recorded (lies told, to how many people),
+   with no comment on the gap.
+2. **The FEELZ clinical summary.** The app's read on the player: their
+   class, revealed for the first time as a clinical diagnosis (e.g.
+   *Reactive-Protective Type (FP-01)*); bars for how often they reached
+   for each feeling; a one-line interpretation by class and top emotion;
+   truths and lies per person; and a case note. Built in
+   `ui/feelzReport.js` from data the run already tracks.
+3. **The story.** The ending text, then a compact one-line summary under a
+   small gauge (screenshot-ready), then IT and SO get the last word.
+
+Final Truth Debt alone decides which of four endings plays:
 
 | Debt | Ending | Lake Ulysses, after |
 | :-- | :-- | :-- |
@@ -231,6 +246,23 @@ One extra line — the "epilogue" — is appended, naming whichever of the
 four meters strayed furthest from its starting value of 5. That's the
 only place the four meters get the last word.
 
+### Trust (in progress)
+
+Trust is not Truth. Truth is the lake: did you say what's real. Trust is
+whether people can rely on you, and it's built three ways:
+
+- **Attunement.** Every NPC moment has a mood (one of the 8 feelings),
+  shown as the oscilloscope's color. Pick the matching feeling and the
+  waves sync.
+- **Turning toward.** Some lines are "bids" (Deborah saying Caleb's name).
+  Engaging with a bid builds trust. On some bids a kind lie counts too,
+  so a player can build trust while still dirtying the lake.
+- **Consistency.** Contradicting yourself across characters costs trust
+  (planned; needs contradiction pairs authored).
+
+Earn trust with 2 characters and the **Trust** feeling unlocks on the
+wheel. No class starts with Trust.
+
 ### The class the player never sees
 
 Three swipe questions right after the Prologue quietly sort the player
@@ -238,8 +270,8 @@ into **Guns** (Anger / Fear / Sadness), **Bible** (Anxiety / Disgust /
 Fear), or **Crystals** (Happy / Anxiety / Surprise) — which 3 FEELZ
 emotions are lit up all run, and which meter each one amplifies. The
 Therapist's very next line is a "diagnosis" with a few words tinted in
-that class's colors — the *only* signal the player ever gets, and the
-class name itself is never shown. Same idea drives the walk captions
+that class's colors — the only signal during play. The class is named
+only at the very end, as a diagnosis on the FEELZ clinical summary. Same idea drives the walk captions
 (three tonal variants per hotspot, one per class). Writers: when you
 write class-varying text, you're writing a *lens* on the same room or
 line, not a different plot.
