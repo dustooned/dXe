@@ -835,3 +835,55 @@
 @media (prefers-reduced-motion: reduce) {
   .dx-baptism-water { animation: none; }
 }
+
+/* FEELZ push notification (ui/feelzNotification.js) — a phone banner on the
+   dark screen after the Therapist hangs up. Plain case-file text. */
+.dx-notify-screen {
+  justify-content: center;
+  cursor: pointer;
+}
+
+.dx-notify {
+  border: 2px solid var(--color-white);
+  background: var(--color-black);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: dx-notify-in 0.35s steps(5, end) both;
+}
+
+.dx-notify p {
+  margin: 0;
+}
+
+.dx-notify__header {
+  font-size: calc(7 * var(--fs));
+  letter-spacing: 0.08em;
+  color: var(--color-therapist, #9370db);
+}
+
+.dx-notify__headline {
+  font-size: calc(10 * var(--fs));
+}
+
+.dx-notify__line {
+  font-size: calc(8 * var(--fs));
+  line-height: 1.7;
+}
+
+.dx-notify__dismiss {
+  font-size: calc(7 * var(--fs));
+  text-align: center;
+  opacity: 0.5;
+  margin-top: 6px !important;
+}
+
+@keyframes dx-notify-in {
+  from { transform: translateY(-40px); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-notify { animation: none; }
+}

@@ -13,6 +13,7 @@ import { SO_BLOOM_TEXT, soEmotionLeanText } from '../engine/soRebuttals.js';
 import { FLIP_TEXT, encounterSide } from '../engine/itFindings.js';
 import { fillReadings } from '../engine/lake.js';
 import { createTypewriter } from '../ui/typewriterText.js';
+import { createFeelzNotification } from '../ui/feelzNotification.js';
 import { createItPopup } from '../ui/itPopup.js';
 import { createMeterGroup } from '../ui/meterBar.js';
 import { createNpcPortrait } from '../ui/npcPortrait.js';
@@ -607,6 +608,18 @@ export function mount(stageEl, scene, { run, onComplete }) {
         loadout: run.get().loadout,
         voice: beat.kind,
         flashClose: next?.kind === 'it' || next?.kind === 'so',
+        onClose: () => {
+          itPopup?.destroy();
+          itPopup = null;
+          nextOutroBeat();
+        },
+      });
+      return;
+    }
+    if (beat.kind === 'notify') {
+      stageEl.innerHTML = '';
+      itPopup = createFeelzNotification(stageEl, {
+        text: beat.text,
         onClose: () => {
           itPopup?.destroy();
           itPopup = null;

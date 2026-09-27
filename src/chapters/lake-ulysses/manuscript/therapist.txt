@@ -72,12 +72,14 @@ NEXT: (end)
 # dream question went, the call ends, then IT and SO get the last word.
 === OUTRO
 LINE: "I give everyone homework. Almost nobody does it. Here's yours anyway."
-LINE [Guns]: "Four people live around the lake. Each of them is holding something that belongs to you. Don't take it back. Just find out what it is."
-LINE [Bible]: "The lake remembers every word said near it. By tonight it'll know you. Decide what you want it to know."
-LINE [Crystals]: "Go talk to the water. It'll answer in four voices. Write down which ones sound like you."
+LINE [Guns]: "Talk to one neighbor. Not a fight, not a favor. Say something nice about something they care about, then stand there while they answer."
+LINE [Bible]: "Knock on a neighbor's door. Be the one who asks how they're doing, and mean it. Then listen past the first answer."
+LINE [Crystals]: "Go find a neighbor. Notice one thing they love, a plant, a dog, whatever, and say so out loud. Let them do the rest."
 LINE [therapist_02=truth]: "You told me about the water. It heard you too."
 LINE [therapist_02=lie]: "The dream can wait. Dreams are patient. Lakes are more patient."
+LINE: "I'll have FEELZ send you somebody to start with."
 HANGUP: The call ends mid-sentence, the way her calls do. FEELZ goes dark in your hand, and the lake is very quiet.
+NOTIFY: FEELZ · HOMEWORK\nDEBORAH · your neighbor · Unit 3C\nChurch greeter, First Baptist of Lake Ulysses.\nRecently bereaved (son, Caleb).\nLikes: her petunias, being useful.\nSuggested opener: "Those are nice flowers."
 IT [therapist_02=truth]: She's writing it down. Everything you said. Somewhere a file with your name on it just got thicker.
 SO [therapist_02=truth]: Or she hung up and forgot you already. Which would be worse?
 IT [therapist_02=lie]: She knew. They always know. Four more people to fool now.

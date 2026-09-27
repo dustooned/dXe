@@ -13,9 +13,9 @@ const EMOTIONS = ['Happy', 'Trust', 'Fear', 'Surprise', 'Sadness', 'Disgust', 'A
 const CLASSES = ['Guns', 'Bible', 'Crystals'];
 const PICK_PATTERN = /^PICK\s+(\w+):\s*(.*)$/;
 const REVEAL_PATTERN = /^(meters|debt)\s+after\s+(\S+)$/;
-// Inside `=== OUTRO`: LINE / HANGUP / IT / SO, each with an optional
+// Inside `=== OUTRO`: LINE / HANGUP / NOTIFY / IT / SO, each with an optional
 // [condition] before the colon — see docs/SCRIPT_FORMAT.md.
-const OUTRO_PATTERN = /^(LINE|HANGUP|IT|SO)(?:\s*\[([^\]]*)\])?:\s*(.*)$/;
+const OUTRO_PATTERN = /^(LINE|HANGUP|NOTIFY|IT|SO)(?:\s*\[([^\]]*)\])?:\s*(.*)$/;
 
 // "[Guns]", "[therapist_02=lie]", or both comma-separated — every part has
 // to hold for the beat to play.
