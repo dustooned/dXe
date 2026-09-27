@@ -8,6 +8,8 @@
 // beat shape: {
 //   text?, speaker?, style?,
 //   bgAnim?, spriteAnim?,   ← animated (key into scene.anims)
+//   symbolAnim?,            ← animated sign in the upper right, over the
+//                              speaker (Bob Baiter's biohazard/fish/etc.)
 //   image?, sprite?,        ← static fallback (direct URL)
 //   autoAdvanceMs?, interactive?
 //   it?,                    ← IT intrusion beat (see renderItBeat below).
@@ -137,6 +139,14 @@ export function mount(stageEl, scene, { run, onComplete }) {
       spr.src = beat.sprite;
       spr.alt = '';
       screen.appendChild(spr);
+    }
+
+    if (beat.symbolAnim) {
+      const sym = document.createElement('img');
+      sym.className = 'dx-cutscene-symbol';
+      sym.alt = '';
+      screen.appendChild(sym);
+      attachAnim(sym, beat.symbolAnim);
     }
 
     if (beat.art && ART[beat.art]) {

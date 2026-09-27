@@ -8,16 +8,16 @@
     { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "state regional water boards\nhave deemed Lake Ulysses\nas {slow}acceptable.{/slow}" },
     { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "You know what that means!\nYour family and friends are" },
     { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "legally allowed to return\nto our blue pride and joy!" },
-    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "Families are advised\nnot to drink the water," },
-    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "or allow your pets\nto enter the lake." },
-    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "Pregnant women are cautioned\nto keep their skin covered\nat all times." },
+    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "symbolAnim": "sym_biohazard", "text": "Families are advised\nnot to drink the water," },
+    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "symbolAnim": "sym_pets", "text": "or allow your pets\nto enter the lake." },
+    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "symbolAnim": "sym_exposure", "text": "Pregnant women are cautioned\nto keep their skin covered\nat all times." },
     { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "And {slow}most importantly{/slow} —" },
-    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "give your catch of the day\na good scrubbin' with\nsome fresh bottled water!" },
-    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "{slow}NOW AVAILABLE\nAT MY SHOP!{/slow}" },
+    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "symbolAnim": "sym_fish", "text": "give your catch of the day\na good scrubbin' with\nsome fresh bottled water!" },
+    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "symbolAnim": "sym_baitshop", "text": "{slow}NOW AVAILABLE\nAT MY SHOP!{/slow}" },
     { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "From live bait\nto the latest fishing gear!" },
     { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "We've got you covered!" },
     { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "Whether you're local\nor just passin' by —" },
-    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "{slow}Welcome back,\nLake Ulysses!{/slow}", "autoAdvanceMs": 2500 },
+    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "{slow}Welcome back,\nLake Ulysses!{/slow}", "autoAdvanceMs": 2500},
     { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "Now let's go enjoy\nour watery playground!" }
   ]
 }
