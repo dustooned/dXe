@@ -16,8 +16,19 @@
     { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "symbolAnim": "sym_baitshop", "text": "{slow}NOW AVAILABLE\nAT MY SHOP!{/slow}" },
     { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "From live bait\nto the latest fishing gear!" },
     { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "We've got you covered!" },
+    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "art": "lakeGauge", "text": "And thanks to your city council, every family in Lake Ulysses now carries our lake right in their pocket!" },
+    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "art": "lakeGauge", "text": "That's the official water reading, live in your FEELZ app. The county sensors keep an eye on it, so you don't have to worry." },
+    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "art": "lakeGauge", "text": "We're lookin' out for you." },
+    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "art": "lakeGauge", "text": "See those little fellas? Those are {slow}our{/slow} fish. The good Lord gave us this lake, and the county gave us the numbers to prove we're takin' care of it." },
+    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "art": "lakeGauge", "text": "Low number, clear water, happy fish. Number climbs, water clouds up, fish get to lookin' poorly. Simple as Sunday school." },
+    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "art": "lakeGauge", "text": "Clean water comes from clean living, folks. Every little thing a person keeps to themselves ends up in that water somehow." },
+    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "art": "lakeGauge", "text": "A fib here, a fib there? That water remembers. Every one of 'em muddies it a little more." },
+    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "art": "lakeGauge", "text": "But an honest word? Clears it right back up. Little by little. That's how the Lord does His washin'." },
+    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "art": "lakeGauge", "text": "Now, we don't judge here.{pause:600}\nWe just {slow}measure.{/slow}" },
+    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "art": "lakeGauge", "text": "And come the end of the season, we all go down to the water together. Pastor Gabriel will see what you've been bringin' in." },
+    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "art": "lakeGauge", "text": "So keep 'em swimmin'! And if it ever goes a little green on ya — water filters, {slow}NOW AVAILABLE AT MY SHOP!{/slow}" },
     { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "Whether you're local\nor just passin' by —" },
-    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "{slow}Welcome back,\nLake Ulysses!{/slow}", "autoAdvanceMs": 2500},
+    { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "{slow}Welcome back,\nLake Ulysses!{/slow}", "autoAdvanceMs":2500 },
     { "speaker": "BOB BAITER", "bgAnim": "lake_bg", "spriteAnim": "bob_baiter", "text": "Now let's go enjoy\nour watery playground!" }
   ]
 }

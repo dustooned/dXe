@@ -29,7 +29,8 @@
 //                              sequencer — see IT_DESIGN.md's "SO — the
 //                              doubt rebuttal".
 //   art?,                   ← key into ART below: a built-in visual shown
-//                              above the text box (the FEELZ boot silhouette)
+//                              above the text box (the FEELZ boot silhouette,
+//                              the lake gauge)
 //   sound?,                 ← key into SOUNDS below, played as the beat opens
 // }
 // An interactive option can carry `record: 'key'` — the chosen label is
@@ -38,10 +39,14 @@
 import { createTypewriter } from '../ui/typewriterText.js';
 import { preloadTypewriterTick, playTypewriterTick, startAmbient, stopAmbient, startLeitmotif, playFeelzBoot } from '../shell/audio.js';
 import { createFeelzSilhouette } from '../ui/feelzSilhouette.js';
+import { createLakeGauge } from '../ui/lakeGauge.js';
 
 // Built-in visuals and sounds a beat can name by key (`art:` / `sound:`),
 // so content JSON can ask for them without holding code.
-const ART = { feelzSilhouette: createFeelzSilhouette };
+const ART = {
+  feelzSilhouette: createFeelzSilhouette,
+  lakeGauge: ({ run }) => createLakeGauge(run.get().truthDebt ?? 0),
+};
 const SOUNDS = { feelzBoot: playFeelzBoot };
 import { createSpriteAnimator } from '../ui/spriteAnimator.js';
 import { createItPopup } from '../ui/itPopup.js';
@@ -150,7 +155,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
 
     if (beat.art && ART[beat.art]) {
-      screen.appendChild(ART[beat.art]().el);
+      screen.appendChild(ART[beat.art]({ run }).el);
     }
     if (beat.sound) SOUNDS[beat.sound]?.();
 
