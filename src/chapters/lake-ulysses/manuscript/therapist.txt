@@ -95,9 +95,9 @@ NEXT: (end)
 # dream question went, the call ends, then IT and SO get the last word.
 === OUTRO
 LINE: "I give everyone homework. Almost nobody does it. Here's yours anyway."
-LINE [Guns]: "Talk to one neighbor. Not a fight, not a favor. Say something nice about something they care about, then stand there while they answer."
-LINE [Bible]: "Knock on a neighbor's door. Be the one who asks how they're doing, and mean it. Then listen past the first answer."
-LINE [Crystals]: "Go find a neighbor. Notice one thing they love, a plant, a dog, whatever, and say so out loud. Let them do the rest."
+LINE [Guns]: "This week, ask one person a question about their day. Then wait for the answer. You don't have to fix anything. Just listen."
+LINE [Bible]: "Try getting curious about someone this week. Ask how they're doing, then ask a follow-up. People can tell when you mean it."
+LINE [Crystals]: "Take an interest in somebody this week. Notice what they're doing and ask about it. Curiosity's a good place to start."
 LINE [therapist_02=truth]: "You told me about the water. It heard you too."
 LINE [therapist_02=lie]: "The dream can wait. Dreams are patient. Lakes are more patient."
 LINE: "I'll have FEELZ send you somebody to start with."

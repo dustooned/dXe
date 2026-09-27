@@ -141,21 +141,21 @@
     },
     {
       "kind": "line",
-      "text": "\"Talk to one neighbor. Not a fight, not a favor. Say something nice about something they care about, then stand there while they answer.\"",
+      "text": "\"This week, ask one person a question about their day. Then wait for the answer. You don't have to fix anything. Just listen.\"",
       "when": {
         "class": "Guns"
       }
     },
     {
       "kind": "line",
-      "text": "\"Knock on a neighbor's door. Be the one who asks how they're doing, and mean it. Then listen past the first answer.\"",
+      "text": "\"Try getting curious about someone this week. Ask how they're doing, then ask a follow-up. People can tell when you mean it.\"",
       "when": {
         "class": "Bible"
       }
     },
     {
       "kind": "line",
-      "text": "\"Go find a neighbor. Notice one thing they love, a plant, a dog, whatever, and say so out loud. Let them do the rest.\"",
+      "text": "\"Take an interest in somebody this week. Notice what they're doing and ask about it. Curiosity's a good place to start.\"",
       "when": {
         "class": "Crystals"
       }
