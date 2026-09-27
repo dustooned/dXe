@@ -4,9 +4,13 @@
 // contract as ui/itPopup.js: mounts inside `stageEl` without clearing it,
 // calls `onClose` once when tapped, and the caller destroys it.
 //
+import { playFeelzPing } from '../shell/audio.js';
+
 // `text` lines: first is the app header, second the headline, the rest body.
 export function createFeelzNotification(stageEl, { text, onClose } = {}) {
   const [header = '', headline = '', ...body] = text.split('\n');
+
+  playFeelzPing();
 
   const screen = document.createElement('div');
   screen.className = 'dx-screen dx-notify-screen';

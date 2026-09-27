@@ -831,6 +831,33 @@ export function playFeelzBoot() {
   sub.onended = () => subGain.disconnect();
 }
 
+// ─── FEELZ notification ping ──────────────────────────────────────────────────
+
+// Two quick sine blips, up a fifth (E6 → B6): a plain phone-notification
+// ping for ui/feelzNotification.js. Shorter and thinner than the boot chime
+// so it reads as "message," not "app starting."
+const PING_NOTES = [1318.51, 1975.53];
+const PING_GAIN = 0.1;
+
+export function playFeelzPing() {
+  const audioCtx = ensureContext();
+  const start = audioCtx.currentTime + 0.02;
+  PING_NOTES.forEach((frequency, i) => {
+    const at = start + i * 0.11;
+    const osc = audioCtx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = frequency;
+    const gain = audioCtx.createGain();
+    gain.gain.setValueAtTime(0, at);
+    gain.gain.linearRampToValueAtTime(PING_GAIN, at + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.25);
+    osc.connect(gain).connect(masterGain);
+    osc.start(at);
+    osc.stop(at + 0.3);
+    osc.onended = () => gain.disconnect();
+  });
+}
+
 // ─── Lake splash ──────────────────────────────────────────────────────────────
 
 // A water splash built from square waves whose pitch follows the lake's
