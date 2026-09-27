@@ -13,7 +13,7 @@
 }
 
 .dx-meter__label {
-  font-size: 6px;
+  font-size: calc(6 * var(--fs));
 }
 
 .dx-meter__track {
@@ -39,7 +39,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 32px;
+  font-size: calc(32 * var(--px));
   border: 3px solid var(--accent, var(--color-white));
   color: var(--accent, var(--color-white));
   background: var(--color-black);
@@ -75,7 +75,7 @@
 
 .dx-nameplate {
   text-align: center;
-  font-size: 10px;
+  font-size: calc(10 * var(--fs));
 }
 
 .dx-swipe-card-wrap {
@@ -97,7 +97,7 @@
 
 .dx-swipe-card__hint {
   flex: 1;
-  font-size: 10px;
+  font-size: calc(10 * var(--fs));
   line-height: 1.3;
   opacity: 0.3;
   /* No transition — the active side should snap to full opacity the
@@ -141,7 +141,7 @@
 }
 
 .dx-swipe-card__text {
-  font-size: 9px;
+  font-size: calc(9 * var(--fs));
   line-height: 1.8;
   text-align: center;
   margin: 0;
@@ -190,7 +190,7 @@
   background: var(--color-black);
   color: var(--bubble-color, var(--color-white));
   font-family: inherit;
-  font-size: 6px;
+  font-size: calc(6 * var(--fs));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -206,7 +206,7 @@
 
 /* ── Intro / title screens ── */
 .dx-press-start {
-  font-size: 8px;
+  font-size: calc(8 * var(--fs));
   letter-spacing: 0.18em;
   opacity: 0.7;
   animation: dx-blink 1.1s step-start infinite;
@@ -226,7 +226,7 @@
 .dx-title-sub {
   text-align: center;
   opacity: 0.6;
-  font-size: 8px;
+  font-size: calc(8 * var(--fs));
   letter-spacing: 0.06em;
 }
 
@@ -245,7 +245,7 @@
 
 .dx-skip-dialog .dx-text {
   margin: 0 0 16px;
-  font-size: 8px;
+  font-size: calc(8 * var(--fs));
   line-height: 1.9;
 }
 
@@ -261,7 +261,7 @@
   align-items: center;
   justify-content: center;
   font-family: inherit;
-  font-size: 12px;
+  font-size: calc(12 * var(--fs));
   line-height: 1;
   background: var(--color-black);
   color: var(--color-white);
@@ -311,7 +311,7 @@
 
 .dx-hud-panel__title {
   margin: 0 0 4px;
-  font-size: 10px;
+  font-size: calc(10 * var(--fs));
   text-align: center;
 }
 
@@ -320,7 +320,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  font-size: 8px;
+  font-size: calc(8 * var(--fs));
 }
 
 .dx-hud-volume {
@@ -335,7 +335,7 @@
 
 .dx-hud-panel__confirm-text {
   margin: 0 0 4px;
-  font-size: 8px;
+  font-size: calc(8 * var(--fs));
   line-height: 1.9;
   text-align: center;
 }
@@ -529,7 +529,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 2px 6px;
-  font-size: 6px;
+  font-size: calc(6 * var(--fs));
   letter-spacing: 0.05em;
 }
 .dx-lake__title,
@@ -557,7 +557,7 @@
 .dx-lake__ticks {
   position: relative;
   height: 8px;
-  font-size: 5px;
+  font-size: calc(5 * var(--fs));
   opacity: 0.7;
 }
 .dx-lake__ticks span {
@@ -573,9 +573,9 @@
 .dx-lake--large .dx-fish--0 { top: 14px; }
 .dx-lake--large .dx-fish--1 { top: 44px; }
 .dx-lake--large .dx-fish--2 { top: 70px; }
-.dx-lake--large .dx-lake__head { font-size: 8px; }
+.dx-lake--large .dx-lake__head { font-size: calc(8 * var(--fs)); }
 .dx-lake--large .dx-lake__bar { height: 20px; }
-.dx-lake--large .dx-lake__ticks { font-size: 6px; }
+.dx-lake--large .dx-lake__ticks { font-size: calc(6 * var(--fs)); }
 
 .dx-lake.is-concealed { visibility: hidden; }
 .dx-lake.is-revealing { animation: dx-hud-reveal 1.1s ease-out; }

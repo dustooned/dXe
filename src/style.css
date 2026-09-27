@@ -25,7 +25,6 @@
      the game's own UI chrome. */
   --font-it: 'VT323', 'Courier New', monospace;
 
-  --canvas-w: 390px;
   --canvas-h: 844px;
 }
 
@@ -62,7 +61,16 @@ body {
   position: relative;
   width: 100%;
   /* Scale to fill viewport height — whichever dimension is the tighter constraint */
-  max-width: min(var(--canvas-w), calc(100dvh * 390 / 844));
+  /* Fills the viewport height on every device (iPad, desktop included);
+     the width follows from the phone aspect ratio. */
+  max-width: calc(100dvh * 390 / 844);
+  container-type: inline-size;
+  /* --px is one design pixel at the 390-wide reference size, so text grows
+     and shrinks with the canvas instead of staying fixed. --fs adds a
+     readability boost for body-size text (14px and under); display text
+     (titles, IT's VT323) is already big and uses --px. */
+  --px: calc(100cqw / 390);
+  --fs: calc(var(--px) * 1.35);
   aspect-ratio: 390 / 844;
   background: var(--color-black);
   color: var(--color-white);
@@ -94,7 +102,7 @@ body {
 }
 
 .dx-title {
-  font-size: 14px;
+  font-size: calc(14 * var(--fs));
   text-align: center;
   margin: 0;
 }
@@ -108,14 +116,14 @@ body {
   margin-top: auto;
   margin-bottom: 0;
   text-align: center;
-  font-size: 7px;
+  font-size: calc(7 * var(--fs));
   letter-spacing: 0.05em;
   opacity: 0.35;
 }
 
 .dx-btn {
   font-family: inherit;
-  font-size: 10px;
+  font-size: calc(10 * var(--fs));
   background: var(--color-black);
   color: var(--color-white);
   border: 2px solid var(--color-white);
@@ -130,7 +138,7 @@ body {
 }
 
 .dx-text {
-  font-size: 9px;
+  font-size: calc(9 * var(--fs));
   line-height: 1.8;
 }
 
@@ -181,7 +189,7 @@ body {
 /* Pulses rather than hard-blinks — a step-start blink is invisible half the
    time at this size, which read as the loading screen not being there. */
 .dx-loading-text {
-  font-size: 9px;
+  font-size: calc(9 * var(--fs));
   line-height: 1.8;
   text-align: center;
   letter-spacing: 0.06em;
@@ -214,7 +222,7 @@ body {
 }
 
 .dx-logo-skip {
-  font-size: 8px;
+  font-size: calc(8 * var(--fs));
   text-align: center;
   animation: dx-blink 1.1s step-start infinite;
 }

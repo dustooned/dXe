@@ -17,7 +17,15 @@
 //
 // Each word's character spans are wrapped in a dx-typewriter-word
 // (display:inline-block) so the browser wraps at word boundaries only,
-// never mid-character between individual char spans.
+// never mid-character between individual char spans. The space after a
+// word goes inside that word's span as a non-breaking space: a bare space
+// between two inline-blocks can wrap onto the start of the next line when
+// the word before it ends flush with the edge, indenting that line.
+//
+// Long text is split into pages at sentence ends (see paginate()), each
+// drawn fresh in the same box, so nothing ever becomes a wall of text.
+// Callers don't change: finish() on a finished page turns to the next one,
+// and isDone()/onDone only report true after the last page.
 import { emotionColor } from '../engine/loadout.js';
 
 const DEFAULT_MS_PER_CHAR = 28;
@@ -65,13 +73,104 @@ export function parseSegments(raw) {
   return segments;
 }
 
+// Pages hold whole sentences, up to about this many characters. A single
+// sentence longer than this still gets its own page rather than being cut.
+const PAGE_CHARS = 140;
+const SENTENCE_END = /[.!?…]/;
+const CLOSERS = /["')\]”’]/;
+
+// Splits parsed segments into pages at sentence boundaries: after . ! ? …
+// (plus any closing quote/paren) followed by a space or line break. Working
+// on segments rather than raw text keeps {slow}/{color} spans intact across
+// a page break, since each char segment already carries its own speed/color.
+export function paginate(segments) {
+  const breaks = [];
+  for (let i = 0; i < segments.length; i++) {
+    const seg = segments[i];
+    if (seg.type !== 'char' || !SENTENCE_END.test(seg.char)) continue;
+    let j = i + 1;
+    while (segments[j]?.type === 'char' && (CLOSERS.test(segments[j].char) || SENTENCE_END.test(segments[j].char))) j++;
+    const next = segments[j];
+    if (next && (next.type === 'br' || next.char === ' ')) breaks.push(j);
+  }
+
+  // Greedy: keep extending the page to the furthest sentence end that
+  // still fits; when the next one doesn't, cut at the last one that did.
+  const charCount = (from, to) => segments.slice(from, to).filter((s) => s.type === 'char').length;
+  const pages = [];
+  let start = 0;
+  let lastFit = null;
+  for (const b of [...breaks, segments.length]) {
+    if (charCount(start, b) <= PAGE_CHARS) { lastFit = b; continue; }
+    if (lastFit !== null) {
+      pages.push(segments.slice(start, lastFit));
+      start = lastFit;
+    }
+    if (charCount(start, b) <= PAGE_CHARS) {
+      lastFit = b;
+    } else {
+      // One sentence longer than a page: it gets a page to itself.
+      pages.push(segments.slice(start, b));
+      start = b;
+      lastFit = null;
+    }
+  }
+  if (start < segments.length) pages.push(segments.slice(start));
+
+  // Drop the whitespace a break leaves at the start of the next page.
+  return pages
+    .map((page) => {
+      let k = 0;
+      while (page[k] && (page[k].type === 'br' || page[k].char === ' ')) k++;
+      return page.slice(k);
+    })
+    .filter((page) => page.length);
+}
+
 // `startRevealed` skips the character-by-character draw and shows the full
 // text immediately — for re-rendering a line that already finished drawing
 // once (e.g. dialogScene rebuilding its screen when the player picks a FEELZ
 // emotion, without replaying the node's prompt from scratch).
 export function createTypewriter(container, text, { onDone, onChar, startRevealed = false } = {}) {
+  const pages = paginate(parseSegments(text));
+  let pageIndex = startRevealed ? pages.length - 1 : 0;
+  let page = null;
+
+  function isLastPage() {
+    return pageIndex >= pages.length - 1;
+  }
+
+  function showPage() {
+    page?.destroy();
+    page = drawPage(container, pages[pageIndex] ?? [], {
+      onChar,
+      startRevealed,
+      moreAfter: !isLastPage(),
+      onDone: () => { if (isLastPage()) onDone?.(); },
+    });
+  }
+
+  showPage();
+
+  return {
+    // Drawing → reveal this page. Revealed, more to come → next page.
+    finish() {
+      if (!page.isDone()) { page.finish(); return; }
+      if (isLastPage()) return;
+      pageIndex += 1;
+      showPage();
+    },
+    isDone: () => isLastPage() && page.isDone(),
+    destroy: () => page.destroy(),
+  };
+}
+
+// Draws one page into the container, replacing whatever was there.
+function drawPage(container, segments, { onDone, onChar, startRevealed, moreAfter }) {
   container.innerHTML = '';
-  const segments = parseSegments(text);
+  container.classList.remove('is-new-page');
+  void container.offsetWidth; // restart the new-page pop animation
+  container.classList.add('is-new-page');
 
   // Group character spans by word so the browser can only break at spaces,
   // never mid-word between individual character spans.
@@ -87,8 +186,9 @@ export function createTypewriter(container, text, { onDone, onChar, startReveale
     if (seg.type !== 'char') continue;
 
     if (seg.char === ' ') {
+      if (wordSpan) wordSpan.appendChild(document.createTextNode('\u00a0'));
+      else container.appendChild(document.createTextNode(' '));
       wordSpan = null;
-      container.appendChild(document.createTextNode(' '));
       continue;
     }
 
@@ -111,11 +211,19 @@ export function createTypewriter(container, text, { onDone, onChar, startReveale
   let timer = null;
   let done = false;
 
+  // A ▶ after a finished page that isn't the last says "tap for more."
+  const more = document.createElement('span');
+  more.className = 'dx-typewriter-more';
+  more.textContent = ' ▶';
+  more.hidden = true;
+  if (moreAfter) container.appendChild(more);
+
   function finishNow() {
     if (done) return;
     clearTimeout(timer);
     charSpans.forEach((span) => span.classList.add('is-visible'));
     done = true;
+    more.hidden = false;
     onDone?.();
   }
 
@@ -138,6 +246,7 @@ export function createTypewriter(container, text, { onDone, onChar, startReveale
   if (startRevealed) {
     charSpans.forEach((span) => span.classList.add('is-visible'));
     done = true;
+    more.hidden = false;
   } else {
     step();
   }
