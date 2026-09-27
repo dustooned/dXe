@@ -59,8 +59,19 @@ const MAX_COLOR_BLEND = 0.4;
 
 export function createOscilloscope(
   canvas,
-  { npcColor = '#ffffff', playerColor = '#4fd6ff', lineWidth = 2, getPlayerStats, isSynced } = {}
+  { npcColor = '#ffffff', playerColor = '#4fd6ff', lineWidth = 2, getPlayerStats, isSynced, getDrama } = {}
 ) {
+  // The battle beats (dialogScene.js's `drama`), read every frame so they
+  // survive the scene rebuilding this canvas between stages:
+  //   tension   0..1, the wind-up: the NPC wave grows as their line types
+  //   color     { from, to, t0 }: the NPC's mood color, easing to the next
+  //   shock     { t0, strength, color }: the impact ring when they react
+  //   ripple    { t0 }: gold ring when the player turned toward a bid
+  //   mismatch  a feeling is picked that isn't theirs: the lines grind
+  let npcColorNow = npcColor;
+  const COLOR_EASE_MS = 450;
+  const SHOCK_MS = 700;
+  const RIPPLE_MS = 1100;
   const analyser = getAnalyser();
   const bufferLength = analyser.fftSize;
   const data = new Uint8Array(bufferLength);
@@ -89,13 +100,15 @@ export function createOscilloscope(
   const MAX_SPLIT_PX = 6;
   const SPLIT_THRESHOLD = 0.5;
 
+  let ampScale = 1;
+
   function traceNpcPath(w, h, xOffset) {
     ctx2d.beginPath();
     const sliceWidth = w / bufferLength;
     let x = xOffset;
     for (let i = 0; i < bufferLength; i++) {
       const v = data[i] / 128; // 0..2, 1.0 = silence (midline)
-      const y = (v * h) / 2;
+      const y = h / 2 + ((v - 1) * h * ampScale) / 2;
       if (i === 0) ctx2d.moveTo(x, y);
       else ctx2d.lineTo(x, y);
       x += sliceWidth;
@@ -122,7 +135,7 @@ export function createOscilloscope(
       ctx2d.globalCompositeOperation = 'source-over';
     }
 
-    ctx2d.strokeStyle = npcColor;
+    ctx2d.strokeStyle = npcColorNow;
     traceNpcPath(w, h, 0);
     ctx2d.filter = 'none';
   }
@@ -164,14 +177,16 @@ export function createOscilloscope(
     // is in. Their line locks on — clean, steady, and in the NPC's color —
     // the one moment the two signals are allowed to read as one.
     const synced = !!isSynced?.();
-    const coherence = synced ? 1 : Math.min(consonance, clarity);
+    const mismatch = !synced && !!getDrama?.()?.mismatch;
+    // Wrong feeling picked: the lines grind — pushed out of phase, jittery.
+    const coherence = synced ? 1 : mismatch ? Math.min(consonance, clarity, 0.15) : Math.min(consonance, clarity);
 
     const amplitude = h * (synced ? PLAYER_AMPLITUDE_RATIO * 1.6 : PLAYER_AMPLITUDE_RATIO);
-    const noiseAmount = synced ? 0 : (1 - clarity) * amplitude; // 0 at full clarity
+    const noiseAmount = synced ? 0 : (mismatch ? 0.5 : 1 - clarity) * amplitude; // 0 at full clarity
     const wobble = synced ? 1 : 0.4 + clarity * 0.6; // steadier sine as clarity rises
     const cycles = PLAYER_CYCLES + (1 - coherence) * BEAT_DETUNE_CYCLES;
 
-    const target = coherence >= 0.5 ? hexToRgb(npcColor) : CLASH_RGB;
+    const target = coherence >= 0.5 ? hexToRgb(npcColorNow) : CLASH_RGB;
     const blendT = synced ? 0.9 : Math.abs(coherence - 0.5) * 2 * MAX_COLOR_BLEND; // 0..MAX_COLOR_BLEND
     const [r, g, b] = lerpRgb(hexToRgb(playerColor), target, blendT);
 
@@ -192,14 +207,55 @@ export function createOscilloscope(
     ctx2d.shadowBlur = 0;
   }
 
+  function ring(w, h, t, rgb, maxWidth, alphaPeak) {
+    const radius = t * Math.hypot(w, h) * 0.6;
+    ctx2d.lineWidth = Math.max(1, maxWidth * (1 - t));
+    ctx2d.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alphaPeak * (1 - t)})`;
+    ctx2d.beginPath();
+    ctx2d.arc(w / 2, h / 2, radius, 0, Math.PI * 2);
+    ctx2d.stroke();
+  }
+
+  function applyDrama(now) {
+    const drama = getDrama?.();
+    ampScale = 1 + clamp(drama?.tension ?? 0, 0, 1) * 0.9;
+    const c = drama?.color;
+    if (c?.to) {
+      const t = clamp((now - (c.t0 ?? 0)) / COLOR_EASE_MS, 0, 1);
+      const [r, g, b] = lerpRgb(hexToRgb(c.from ?? c.to), hexToRgb(c.to), t);
+      npcColorNow = `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)}`;
+    }
+    return drama;
+  }
+
+  function drawRings(w, h, now, drama) {
+    const shock = drama?.shock;
+    if (shock) {
+      const t = (now - shock.t0) / SHOCK_MS;
+      if (t >= 0 && t < 1) {
+        const rgb = hexToRgb(shock.color ?? npcColorNow);
+        ring(w, h, t, rgb, 4 + shock.strength * 10, 0.9);
+        if (shock.strength > 0.5) ring(w, h, clamp(t * 1.4, 0, 1), rgb, 3, 0.5);
+      }
+    }
+    const ripple = drama?.ripple;
+    if (ripple) {
+      const t = (now - ripple.t0) / RIPPLE_MS;
+      if (t >= 0 && t < 1) ring(w, h, t, [255, 201, 77], 6, 0.8);
+    }
+  }
+
   function draw(timeMs) {
     syncSize();
     const w = canvas.width;
     const h = canvas.height;
     ctx2d.clearRect(0, 0, w, h);
+    const now = performance.now();
+    const drama = applyDrama(now);
     const dissonance = getDissonance();
     drawNpcTrace(w, h, dissonance);
     drawPlayerTrace(w, h, timeMs, dissonance);
+    drawRings(w, h, now, drama);
     rafId = requestAnimationFrame(draw);
   }
   rafId = requestAnimationFrame(draw);

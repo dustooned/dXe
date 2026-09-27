@@ -47,6 +47,9 @@ function moodHex(mood) {
   return getComputedStyle(document.documentElement).getPropertyValue(token).trim() || '#ffffff';
 }
 
+// How long the committed card hangs before the answer plays out.
+const FREEZE_MS = 150;
+
 export function mount(stageEl, scene, { run, onComplete }) {
   const { npc } = scene;
   let currentNodeId = resolveGatedNode(openingNodeId(scene, npc, run.get()), npc, run.get());
@@ -93,6 +96,27 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // Set once the player turns toward one of this NPC's bids; warms the
   // portrait for the rest of the encounter (engine/trust.js).
   let turnedTowardThisEncounter = false;
+  // The battle beats (ui/oscilloscope.js reads this every frame): wind-up
+  // tension as the NPC's line types, their mood color easing between
+  // moments, the impact ring when they react, a gold ripple on a bid.
+  const drama = { tension: 0, color: null, shock: null, ripple: null, mismatch: false };
+  // Set at the swipe, spent when the reaction lands.
+  let pendingImpact = null;
+
+  function easeMoodTo(mood) {
+    const to = moodHex(mood);
+    const now = performance.now();
+    const from = drama.color ? currentMoodColor(now) : to;
+    drama.color = { from, to, t0: now };
+  }
+
+  // Where the color easing currently is (so a new ease starts from what's
+  // on screen, not from the old target).
+  function currentMoodColor(now) {
+    const c = drama.color;
+    if (!c) return '#ffffff';
+    return now - c.t0 >= 450 ? c.to : c.from;
+  }
 
   function currentNode() {
     return npc.nodes[currentNodeId];
@@ -119,6 +143,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
     activeEmotionColor = null;
     stage = 'prompt';
     promptRevealed = false;
+    drama.tension = 0;
+    drama.mismatch = false;
+    easeMoodTo(currentNode().mood);
+    audio.startPulse(() => drama.tension);
     audio.strikeChord(emotionsForClass(run.get().loadout, run.get().unlocked), harmonicFunction());
     render();
   }
@@ -154,6 +182,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   function enterReaction() {
     answered.add(currentNodeId);
     stage = 'reaction';
+    landImpact();
     // The lake answers too: a splash pitched by its current quality, once
     // the gauge is on screen (audio.js's playLakeSplash).
     if (isRevealed('debt')) audio.playLakeSplash(run.get().truthDebt);
@@ -193,11 +222,12 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const scopeCanvas = document.createElement('canvas');
     scopeCanvas.className = 'dx-pattern-bg';
     screen.appendChild(scopeCanvas);
-    const mood = stage === 'outro' ? null : currentNode()?.mood;
+    const mood = stage === 'prompt' ? currentNode()?.mood : null;
     oscilloscope = createOscilloscope(scopeCanvas, {
       getPlayerStats: () => run.get(),
-      npcColor: moodHex(mood),
+      npcColor: drama.color?.to ?? '#ffffff',
       isSynced: () => !!mood && activeEmotion === mood,
+      getDrama: () => drama,
     });
 
     const content = document.createElement('div');
@@ -363,6 +393,12 @@ export function mount(stageEl, scene, { run, onComplete }) {
           activeEmotion = emotion;
           activeEmotionColor = emotionColor(emotion);
           justPicked = true;
+          const nodeMood = currentNode().mood;
+          if (nodeMood) {
+            drama.mismatch = emotion !== nodeMood;
+            if (drama.mismatch) audio.playGrind();
+            else audio.playSyncChime();
+          }
           render();
         },
       });
@@ -370,10 +406,17 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
       // Re-renders triggered by picking a FEELZ emotion reuse this same node's
       // prompt — startRevealed skips replaying the draw from scratch.
+      const promptChars = currentNode().prompt.replace(/{[^}]*}/g, '').length || 1;
+      let typed = 0;
       typewriter = createTypewriter(prompt, currentNode().prompt, {
-        onChar: audio.playTypewriterTick,
+        onChar: () => {
+          audio.playTypewriterTick();
+          typed += 1;
+          drama.tension = Math.max(drama.tension, Math.min(1, typed / promptChars));
+        },
         onDone: () => {
           promptRevealed = true;
+          drama.tension = 1;
           interactive.hidden = false;
           // Wheel and card fade in the first time they appear on a node,
           // not on every re-render a pick triggers.
@@ -460,6 +503,18 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const stabilityDelta = (patch.stability ?? before.stability) - before.stability;
     audio.nudgeLeitmotifMood(trustDelta + stabilityDelta);
 
+    // The impact lands on their reaction: how hard is how much their TRU
+    // and STB moved; the new color is the mood this answer sends them into
+    // (the next moment's), or holds if this was their last.
+    audio.stopPulse();
+    const nextMood = edge.nextNodeId ? npc.nodes[edge.nextNodeId]?.mood : node.mood;
+    pendingImpact = {
+      strength: Math.min(1, (Math.abs(trustDelta) + Math.abs(stabilityDelta)) / 4),
+      mood: nextMood ?? node.mood,
+      turnedToward,
+    };
+    drama.mismatch = false;
+
     // Tally every FEELZ pick for the whole run, not just this node — feeds
     // the dominant-emotion IT read at the end of the encounter (proceed()).
     const counts = run.get().emotionCounts;
@@ -476,15 +531,34 @@ export function mount(stageEl, scene, { run, onComplete }) {
       Math.abs(edge.debtDelta || 0);
     const intensity = magnitude >= STRONG_HIT_THRESHOLD ? 'strong' : 'weak';
 
-    fx.flash(intensity);
-    fx.shake(intensity);
+    fx.flash(intensity, activeEmotionColor);
     audio.playHit(intensity);
     // Struck *after* the mood nudge above, so what you hear is the chord as
     // this choice just left it — the answer to the swipe, not a repeat of
     // where things stood before it.
     audio.strikeChord(emotionsForClass(run.get().loadout, run.get().unlocked), harmonicFunction());
 
-    render();
+    // Freeze frame: the committed card hangs for a beat before anything
+    // answers it.
+    stageEl.classList.add('is-frozen');
+    setTimeout(() => {
+      stageEl.classList.remove('is-frozen');
+      if (stage === 'reaction') landImpact();
+      render();
+    }, FREEZE_MS);
+  }
+
+  // Impact: ring out from the center in the new mood's color, shake as hard
+  // as it landed, ease the wave to the new mood, gold ripple on a bid.
+  function landImpact() {
+    if (!pendingImpact) return;
+    const { strength, mood, turnedToward } = pendingImpact;
+    pendingImpact = null;
+    const now = performance.now();
+    easeMoodTo(mood);
+    drama.shock = { t0: now, strength, color: moodHex(mood) };
+    drama.ripple = turnedToward ? { t0: now + 300 } : drama.ripple;
+    fx.shake(strength > 0.6 ? 'strong' : strength > 0.2 ? 'weak' : 'subtle');
   }
 
   function continueAfterReaction() {
@@ -734,6 +808,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // strike/drone outlasts a scene exit, so without this the encounter's
     // audio bleeds into the next scene.
     audio.stopLeitmotif();
+    audio.stopPulse();
+    stageEl.classList.remove('is-frozen');
     stageEl.innerHTML = '';
   };
 }

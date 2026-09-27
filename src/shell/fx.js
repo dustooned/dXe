@@ -15,10 +15,13 @@ const FLASH_DURATION_MS = { weak: 160, strong: 260 };
 // yet), so it needs to read as clearly smaller than any real feedback.
 const SHAKE_DISTANCE_PX = { subtle: 2, weak: 4, strong: 10 };
 
-export function flash(intensity = 'weak') {
+// `color` (optional, any CSS color) tints the flash — the swipe uses the
+// picked feeling's color. It's the player's own color, not a verdict.
+export function flash(intensity = 'weak', color) {
   if (!canvasEl) return;
   const overlay = document.createElement('div');
   overlay.className = 'dx-fx-flash';
+  if (color) overlay.style.background = color;
   canvasEl.appendChild(overlay);
 
   const anim = overlay.animate(

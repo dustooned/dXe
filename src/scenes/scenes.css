@@ -993,3 +993,10 @@
   line-height: 1.7;
   text-align: center;
 }
+
+/* Freeze frame after a swipe (dialogScene.js FREEZE_MS): the committed
+   moment hangs, a touch harsher, before the answer plays out. */
+.dx-stage.is-frozen {
+  pointer-events: none;
+  filter: contrast(1.25) brightness(1.1);
+}

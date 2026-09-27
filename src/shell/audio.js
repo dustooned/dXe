@@ -858,6 +858,86 @@ export function playFeelzPing() {
   });
 }
 
+// ─── Battle drama (dialogScene.js) ────────────────────────────────────────────
+
+// A low heartbeat under an NPC's line while it types: the wind-up. Its rate
+// follows getTension() (0..1), from a resting ~70bpm up to ~150bpm.
+const PULSE_GAIN = 0.22;
+let pulseTimer = null;
+
+function thumpAt(at, peak) {
+  const audioCtx = ensureContext();
+  const osc = audioCtx.createOscillator();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(70, at);
+  osc.frequency.exponentialRampToValueAtTime(38, at + 0.12);
+  const gain = audioCtx.createGain();
+  gain.gain.setValueAtTime(0, at);
+  gain.gain.linearRampToValueAtTime(peak, at + 0.008);
+  gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.16);
+  osc.connect(gain).connect(masterGain);
+  osc.start(at);
+  osc.stop(at + 0.18);
+  osc.onended = () => gain.disconnect();
+}
+
+export function startPulse(getTension) {
+  stopPulse();
+  const beat = () => {
+    const tension = Math.min(1, Math.max(0, getTension?.() ?? 0));
+    const at = ensureContext().currentTime + 0.01;
+    thumpAt(at, PULSE_GAIN * (0.6 + tension * 0.4));
+    thumpAt(at + 0.14, PULSE_GAIN * 0.6 * (0.6 + tension * 0.4)); // lub-dub
+    pulseTimer = setTimeout(beat, 860 - tension * 460);
+  };
+  beat();
+}
+
+export function stopPulse() {
+  clearTimeout(pulseTimer);
+  pulseTimer = null;
+}
+
+// The picked feeling matches the NPC's: a bright, rising two-note lock-on.
+export function playSyncChime() {
+  const audioCtx = ensureContext();
+  const start = audioCtx.currentTime + 0.01;
+  [987.77, 1479.98].forEach((frequency, i) => {
+    const at = start + i * 0.07;
+    const osc = audioCtx.createOscillator();
+    osc.type = 'triangle';
+    osc.frequency.value = frequency;
+    const gain = audioCtx.createGain();
+    gain.gain.setValueAtTime(0, at);
+    gain.gain.linearRampToValueAtTime(0.12, at + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.5);
+    osc.connect(gain).connect(masterGain);
+    osc.start(at);
+    osc.stop(at + 0.55);
+    osc.onended = () => gain.disconnect();
+  });
+}
+
+// The picked feeling isn't theirs: two close-detuned tones beating against
+// each other for a moment — a grind, not an error buzz.
+export function playGrind() {
+  const audioCtx = ensureContext();
+  const at = audioCtx.currentTime + 0.01;
+  [196, 203].forEach((frequency) => {
+    const osc = audioCtx.createOscillator();
+    osc.type = 'sawtooth';
+    osc.frequency.value = frequency;
+    const gain = audioCtx.createGain();
+    gain.gain.setValueAtTime(0, at);
+    gain.gain.linearRampToValueAtTime(0.045, at + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.45);
+    osc.connect(gain).connect(masterGain);
+    osc.start(at);
+    osc.stop(at + 0.5);
+    osc.onended = () => gain.disconnect();
+  });
+}
+
 // ─── Lake splash ──────────────────────────────────────────────────────────────
 
 // A water splash built from square waves whose pitch follows the lake's
