@@ -52,11 +52,15 @@ export function emotionAmplifies(emotion) {
   return EMOTIONS[emotion]?.amplifies ?? null;
 }
 
-// The 3 emotions a class actually has loaded — the only ones the dartboard
-// lets the player select, and so the only ones that should have audio stems
-// running. Falls back to all 8 if the class is unknown.
-export function emotionsForClass(loadout) {
-  return CLASSES[loadout]?.emotions ?? EMOTION_ORDER;
+// The emotions a player actually has loaded — their class's 3, plus any
+// they've unlocked during the run (run.unlocked, e.g. Trust) — the only
+// ones the dartboard lets the player select, and so the only ones that
+// should have audio stems running. Falls back to all 8 if the class is
+// unknown.
+export function emotionsForClass(loadout, unlocked = []) {
+  const base = CLASSES[loadout]?.emotions;
+  if (!base) return EMOTION_ORDER;
+  return [...base, ...unlocked.filter((e) => !base.includes(e))];
 }
 
 // `counts` is a { [emotion]: number } tally of FEELZ picks across the run

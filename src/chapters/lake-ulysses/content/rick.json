@@ -46,7 +46,8 @@
         "op": "<",
         "value": 3,
         "elseNodeId": "rick_shut_down"
-      }
+      },
+      "mood": "Anger"
     },
     "rick_02_enabled": {
       "id": "rick_02_enabled",
@@ -83,7 +84,8 @@
           "ledgerEntry": "You told Rick that violence was proof, not a problem.",
           "nextNodeId": "rick_03"
         }
-      }
+      },
+      "mood": "Trust"
     },
     "rick_02_confronted": {
       "id": "rick_02_confronted",
@@ -120,7 +122,8 @@
           "ledgerEntry": "You backed off Rick right as he almost let something show.",
           "nextNodeId": "rick_03"
         }
-      }
+      },
+      "mood": "Anger"
     },
     "rick_shut_down": {
       "id": "rick_shut_down",
@@ -153,7 +156,8 @@
           "ledgerEntry": "You tried to talk your way past Rick after word of your lies had already reached him.",
           "nextNodeId": null
         }
-      }
+      },
+      "mood": "Disgust"
     },
     "rick_01_soft": {
       "id": "rick_01_soft",
@@ -195,7 +199,8 @@
         "op": "<",
         "value": 3,
         "elseNodeId": "rick_shut_down"
-      }
+      },
+      "mood": "Anxiety"
     },
     "rick_01_hard": {
       "id": "rick_01_hard",
@@ -239,7 +244,8 @@
         "op": "<",
         "value": 3,
         "elseNodeId": "rick_shut_down"
-      }
+      },
+      "mood": "Anger"
     },
     "rick_03": {
       "id": "rick_03",
@@ -276,7 +282,11 @@
           "ledgerEntry": "You told Rick his inability to leave the club was commitment.",
           "nextNodeId": "rick_04"
         }
-      }
+      },
+      "mood": "Fear",
+      "bid": [
+        "truth"
+      ]
     },
     "rick_04": {
       "id": "rick_04",
@@ -314,7 +324,12 @@
           "ledgerEntry": "You told Rick the club kept him close out of love, not fear.",
           "nextNodeId": null
         }
-      }
+      },
+      "mood": "Fear",
+      "bid": [
+        "truth",
+        "lie"
+      ]
     }
   }
 }

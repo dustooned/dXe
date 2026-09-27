@@ -12,13 +12,14 @@ import { emotionLeanText } from '../engine/itEmotionLean.js';
 import { SO_BLOOM_TEXT, soEmotionLeanText } from '../engine/soRebuttals.js';
 import { FLIP_TEXT, encounterSide } from '../engine/itFindings.js';
 import { fillReadings } from '../engine/lake.js';
+import { recordTrust, shouldUnlockTrust } from '../engine/trust.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createFeelzNotification } from '../ui/feelzNotification.js';
 import { createItPopup } from '../ui/itPopup.js';
 import { createMeterGroup } from '../ui/meterBar.js';
 import { createNpcPortrait } from '../ui/npcPortrait.js';
 import { createFeelzDartboard } from '../ui/feelzDartboard.js';
-import { emotionColor, emotionsForClass, getDominantEmotion } from '../engine/loadout.js';
+import { EMOTIONS, emotionColor, emotionsForClass, getDominantEmotion } from '../engine/loadout.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
 import { createOscilloscope } from '../ui/oscilloscope.js';
@@ -36,6 +37,14 @@ const STRONG_HIT_THRESHOLD = 8;
 function openingNodeId(scene, npc, state) {
   const chosen = state.openers?.[scene.id];
   return chosen && npc.nodes[chosen] ? chosen : Object.keys(npc.nodes)[0];
+}
+
+// The oscilloscope draws on a canvas, which can't read CSS variables, so
+// resolve the mood's --color-feelz-* token to its hex value.
+function moodHex(mood) {
+  if (!mood || !EMOTIONS[mood]) return '#ffffff';
+  const token = EMOTIONS[mood].color.match(/--[\w-]+/)?.[0];
+  return getComputedStyle(document.documentElement).getPropertyValue(token).trim() || '#ffffff';
 }
 
 export function mount(stageEl, scene, { run, onComplete }) {
@@ -81,6 +90,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let bloomedThisEncounter = false;
   let outroBeat = null;
   let hungUp = false;
+  // Set once the player turns toward one of this NPC's bids; warms the
+  // portrait for the rest of the encounter (engine/trust.js).
+  let turnedTowardThisEncounter = false;
 
   function currentNode() {
     return npc.nodes[currentNodeId];
@@ -107,7 +119,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     activeEmotionColor = null;
     stage = 'prompt';
     promptRevealed = false;
-    audio.strikeChord(emotionsForClass(run.get().loadout), harmonicFunction());
+    audio.strikeChord(emotionsForClass(run.get().loadout, run.get().unlocked), harmonicFunction());
     render();
   }
 
@@ -181,8 +193,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const scopeCanvas = document.createElement('canvas');
     scopeCanvas.className = 'dx-pattern-bg';
     screen.appendChild(scopeCanvas);
+    const mood = stage === 'outro' ? null : currentNode()?.mood;
     oscilloscope = createOscilloscope(scopeCanvas, {
       getPlayerStats: () => run.get(),
+      npcColor: moodHex(mood),
+      isSynced: () => !!mood && activeEmotion === mood,
     });
 
     const content = document.createElement('div');
@@ -200,6 +215,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // (rather than only right after a swipe) covers every case for free —
     // including the very first render, where mood is still neutral (0).
     portrait.updateMood(audio.getLeitmotifMood());
+    if (turnedTowardThisEncounter) portrait.el.classList.add('is-warm');
 
     if (stage === 'outro') {
       const line = document.createElement('p');
@@ -335,6 +351,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
       dartboard = createFeelzDartboard({
         loadout: run.get().loadout,
+        unlocked: run.get().unlocked,
         dropTarget: card,
         selected: activeEmotion,
         harmonicFunction: harmonicFunction(),
@@ -425,6 +442,14 @@ export function mount(stageEl, scene, { run, onComplete }) {
     run.set({ choices: { ...before.choices, [currentNodeId]: swipeKey } });
     encounterSwipes.push(swipeKey);
 
+    const node = currentNode();
+    const synced = !!node.mood && activeEmotion === node.mood;
+    const turnedToward = !!node.bid?.includes(swipeKey);
+    if (synced || turnedToward) {
+      run.set({ bonds: recordTrust(run.get().bonds ?? {}, npc.npc, { synced, turnedToward }) });
+    }
+    if (turnedToward) turnedTowardThisEncounter = true;
+
     // How this specific choice actually landed with the NPC — trust and
     // stability are their rapport/comfort with you, not a right-or-wrong
     // score (see docs/HANDOFF.md's stat meanings). Uses the post-clamp
@@ -457,7 +482,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // Struck *after* the mood nudge above, so what you hear is the chord as
     // this choice just left it — the answer to the swipe, not a repeat of
     // where things stood before it.
-    audio.strikeChord(emotionsForClass(run.get().loadout), harmonicFunction());
+    audio.strikeChord(emotionsForClass(run.get().loadout, run.get().unlocked), harmonicFunction());
 
     render();
   }
@@ -559,6 +584,30 @@ export function mount(stageEl, scene, { run, onComplete }) {
       return;
     }
 
+    if (shouldUnlockTrust(run.get())) {
+      showTrustUnlock(() => finishEncounter());
+      return;
+    }
+    finishEncounter();
+  }
+
+  // Two people trust you: the Trust feeling lights up on the wheel for the
+  // rest of the run. Said in FEELZ's flat voice, like the homework ping.
+  function showTrustUnlock(onDone) {
+    run.set({ unlocked: [...(run.get().unlocked ?? []), 'Trust'] });
+    audio.playFeelzBoot();
+    stageEl.innerHTML = '';
+    itPopup = createFeelzNotification(stageEl, {
+      text: `FEELZ · NEW FEELING\n${EMOTIONS.Trust.symbol} unlocked\nTwo people let you in.\nIt's on your wheel now. Reach for it when it's real.`,
+      onClose: () => {
+        itPopup?.destroy();
+        itPopup = null;
+        onDone();
+      },
+    });
+  }
+
+  function finishEncounter() {
     // An authored outro (the Therapist's homework + IT/SO sign-off) *is*
     // this encounter's closing IT moment, so it replaces the emotion-lean
     // read below rather than stacking a second IT/SO pair on top of it.

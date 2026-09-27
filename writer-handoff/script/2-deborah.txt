@@ -4,6 +4,7 @@ ACCENT: var(--color-deborah)
 
 === deborah_01
 PROMPT: God took my boy when He needed him. I just have to {color:Trust}trust{/color} that.
+MOOD: Sadness
 
 -- TRUTH
 SAY: Your faith didn't protect him. Someone failed him.
@@ -23,6 +24,7 @@ NEXT: deborah_02_denial
 
 === deborah_02_denial
 PROMPT: I knew you'd {color:Trust}understand{/color}. Most people don't want to hear it.
+MOOD: Happy
 
 -- TRUTH
 SAY: I lied to you. Your grief deserves better than that.
@@ -42,6 +44,7 @@ NEXT: deborah_03
 
 === deborah_02_confronted
 PROMPT: You don't know what it's like to {color:Sadness}lose{/color} a child.
+MOOD: Anger
 
 -- TRUTH
 SAY: No. But you do. And you're still here.
@@ -61,6 +64,7 @@ NEXT: deborah_03
 
 === deborah_01_soft
 PROMPT: You {color:Surprise}noticed{/color}. Nobody notices. Sit down — I'll make coffee neither of us is going to drink.
+MOOD: Sadness
 
 -- TRUTH
 SAY: I'm not here for coffee. I'm here about your son.
@@ -80,6 +84,7 @@ NEXT: deborah_02_denial
 
 === deborah_01_hard
 PROMPT: [She stops in the doorway and does not move out of it.] You {color:Anxiety}heard{/color}. Everybody heard. Go on — say the part where it was God's will.
+MOOD: Anger
 
 -- TRUTH
 SAY: I wasn't going to say that.
@@ -99,6 +104,8 @@ NEXT: deborah_02_denial
 
 === deborah_03
 PROMPT: (She sits down at the kitchen table, like her legs finally admit it.) His name was {color:Sadness}Caleb{/color}. Nobody at this church says his name anymore.
+MOOD: Sadness
+BID: truth
 
 -- TRUTH
 SAY: Say it as much as you need to. I'm listening.
@@ -118,6 +125,8 @@ NEXT: deborah_04
 
 === deborah_04
 PROMPT: (She reaches for her bible out of habit, then stops, hand resting on the cover instead.) Everyone who knew him is either gone or {color:Disgust}pretending{/color} they weren't there.
+MOOD: Disgust
+BID: both
 
 -- TRUTH
 SAY: Then let me be someone who was.

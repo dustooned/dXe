@@ -43,6 +43,14 @@
   border: 3px solid var(--accent, var(--color-white));
   color: var(--accent, var(--color-white));
   background: var(--color-black);
+  transition: border-color 0.8s ease, box-shadow 0.8s ease;
+}
+
+/* Warmed: the player turned toward one of this NPC's bids (engine/trust.js).
+   A gold edge and glow, kept for the rest of the encounter. */
+.dx-portrait.is-warm {
+  border-color: #ffc94d;
+  box-shadow: 0 0 10px rgba(255, 201, 77, 0.6), inset 0 0 12px rgba(255, 201, 77, 0.25);
 }
 
 .dx-portrait__img {

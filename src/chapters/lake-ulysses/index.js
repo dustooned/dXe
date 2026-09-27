@@ -127,6 +127,11 @@ const initialRunState = {
   // feelz_launch.json's `record` options. The ending reads them back against
   // what the player actually did (endingScene.js).
   checkIn: {},
+  // Trust built with each NPC ({ [npc]: { syncs, bids } }, engine/trust.js;
+  // not `trust`, which is the TRU meter), and the feelings unlocked during
+  // the run beyond the class's starting three.
+  bonds: {},
+  unlocked: [],
 };
 
 export function mount(stageEl, { exit, restart, startSceneId }) {

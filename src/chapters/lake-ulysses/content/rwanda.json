@@ -40,7 +40,8 @@
           "ledgerEntry": "You told Rwanda her experience wasn't that bad.",
           "nextNodeId": "rwanda_02_closed"
         }
-      }
+      },
+      "mood": "Anger"
     },
     "rwanda_02_closed": {
       "id": "rwanda_02_closed",
@@ -76,7 +77,8 @@
           "ledgerEntry": "You told Rwanda her erasure was a universal experience.",
           "nextNodeId": "rwanda_03"
         }
-      }
+      },
+      "mood": "Disgust"
     },
     "rwanda_02_open": {
       "id": "rwanda_02_open",
@@ -113,7 +115,8 @@
           "ledgerEntry": "You told Rwanda to wait for the world to catch up to her.",
           "nextNodeId": "rwanda_03"
         }
-      }
+      },
+      "mood": "Surprise"
     },
     "rwanda_01_soft": {
       "id": "rwanda_01_soft",
@@ -149,7 +152,8 @@
           "ledgerEntry": "You told Rwanda that what she was seeing wasn't there.",
           "nextNodeId": "rwanda_02_closed"
         }
-      }
+      },
+      "mood": "Anxiety"
     },
     "rwanda_01_hard": {
       "id": "rwanda_01_hard",
@@ -186,7 +190,8 @@
           "ledgerEntry": "You lied to Rwanda about why you were at her door at all.",
           "nextNodeId": "rwanda_02_closed"
         }
-      }
+      },
+      "mood": "Fear"
     },
     "rwanda_03": {
       "id": "rwanda_03",
@@ -222,7 +227,11 @@
           "ledgerEntry": "You told Rwanda her self-protection was the problem.",
           "nextNodeId": "rwanda_04"
         }
-      }
+      },
+      "mood": "Anxiety",
+      "bid": [
+        "truth"
+      ]
     },
     "rwanda_04": {
       "id": "rwanda_04",
@@ -258,7 +267,11 @@
           "ledgerEntry": "You told Rwanda to stay braced even with you.",
           "nextNodeId": null
         }
-      }
+      },
+      "mood": "Trust",
+      "bid": [
+        "truth"
+      ]
     }
   }
 }

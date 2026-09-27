@@ -59,7 +59,7 @@ const MAX_COLOR_BLEND = 0.4;
 
 export function createOscilloscope(
   canvas,
-  { npcColor = '#ffffff', playerColor = '#4fd6ff', lineWidth = 2, getPlayerStats } = {}
+  { npcColor = '#ffffff', playerColor = '#4fd6ff', lineWidth = 2, getPlayerStats, isSynced } = {}
 ) {
   const analyser = getAnalyser();
   const bufferLength = analyser.fftSize;
@@ -160,18 +160,24 @@ export function createOscilloscope(
     // *worse* reading: one side genuinely falling apart should be able to
     // break the picture even while the other still looks fine.
     const consonance = 1 - clamp(dissonance, 0, 1);
-    const coherence = Math.min(consonance, clarity);
+    // Attunement (engine/trust.js): the player picked the feeling the NPC
+    // is in. Their line locks on — clean, steady, and in the NPC's color —
+    // the one moment the two signals are allowed to read as one.
+    const synced = !!isSynced?.();
+    const coherence = synced ? 1 : Math.min(consonance, clarity);
 
-    const amplitude = h * PLAYER_AMPLITUDE_RATIO;
-    const noiseAmount = (1 - clarity) * amplitude; // 0 at full clarity
-    const wobble = 0.4 + clarity * 0.6; // steadier sine as clarity rises
+    const amplitude = h * (synced ? PLAYER_AMPLITUDE_RATIO * 1.6 : PLAYER_AMPLITUDE_RATIO);
+    const noiseAmount = synced ? 0 : (1 - clarity) * amplitude; // 0 at full clarity
+    const wobble = synced ? 1 : 0.4 + clarity * 0.6; // steadier sine as clarity rises
     const cycles = PLAYER_CYCLES + (1 - coherence) * BEAT_DETUNE_CYCLES;
 
     const target = coherence >= 0.5 ? hexToRgb(npcColor) : CLASH_RGB;
-    const blendT = Math.abs(coherence - 0.5) * 2 * MAX_COLOR_BLEND; // 0..MAX_COLOR_BLEND
+    const blendT = synced ? 0.9 : Math.abs(coherence - 0.5) * 2 * MAX_COLOR_BLEND; // 0..MAX_COLOR_BLEND
     const [r, g, b] = lerpRgb(hexToRgb(playerColor), target, blendT);
 
-    ctx2d.lineWidth = lineWidth;
+    ctx2d.lineWidth = synced ? lineWidth + 1 : lineWidth;
+    ctx2d.shadowColor = synced ? `rgb(${r},${g},${b})` : 'transparent';
+    ctx2d.shadowBlur = synced ? 8 : 0;
     ctx2d.strokeStyle = `rgb(${r},${g},${b})`;
     ctx2d.beginPath();
     for (let i = 0; i <= PLAYER_STEPS; i++) {
@@ -183,6 +189,7 @@ export function createOscilloscope(
       else ctx2d.lineTo(x, y);
     }
     ctx2d.stroke();
+    ctx2d.shadowBlur = 0;
   }
 
   function draw(timeMs) {

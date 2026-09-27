@@ -5,6 +5,7 @@ ACCENT: var(--color-rick)
 === rick_01
 GATE: trust < 3 -> rick_shut_down
 PROMPT: Guy looked at me {color:Anger}wrong{/color} outside. Now he's got a busted jaw and I got my patch back. That's just how it works out here.
+MOOD: Anger
 
 -- TRUTH
 SAY: That's not how it works. You just wanted a reason.
@@ -24,6 +25,7 @@ NEXT: rick_02_enabled
 
 === rick_02_enabled
 PROMPT: See, that's why I run with guys like you. Most people get {color:Disgust}soft{/color}, start asking questions.
+MOOD: Trust
 
 -- TRUTH
 SAY: Maybe the questions are the only thing keeping you human.
@@ -43,6 +45,7 @@ NEXT: rick_03
 
 === rick_02_confronted
 PROMPT: You don't get to {color:Anger}judge{/color} me. You don't know what it costs to keep this patch.
+MOOD: Anger
 
 -- TRUTH
 SAY: What's it cost, Rick? Who's it for? Who are you trying to prove this to?
@@ -62,6 +65,7 @@ NEXT: rick_03
 
 === rick_shut_down
 PROMPT: [Rick looks you over from the doorway and doesn't step aside.] Word gets around. I {color:Anxiety}know{/color} what you are.
+MOOD: Disgust
 
 -- TRUTH
 SAY: I'm not here to convince you of anything.
@@ -82,6 +86,7 @@ NEXT: (end)
 === rick_01_soft
 GATE: trust < 3 -> rick_shut_down
 PROMPT: (He takes the drink without looking at it.) You buying because you want something, or because I {color:Fear}scare{/color} you?
+MOOD: Anxiety
 
 -- TRUTH
 SAY: Little of both.
@@ -102,6 +107,7 @@ NEXT: rick_02_enabled
 === rick_01_hard
 GATE: trust < 3 -> rick_shut_down
 PROMPT: The guy outside. (He wipes his {color:Anger}knuckles{/color} on his jeans, slow, so that you watch him do it.) What about him.
+MOOD: Anger
 
 -- TRUTH
 SAY: You put him down and you want somebody to have seen you do it.
@@ -121,6 +127,8 @@ NEXT: rick_02_enabled
 
 === rick_03
 PROMPT: (He turns the empty glass in a slow circle.) You know why I got the patch tattooed instead of just wearing it? Can't take off {color:Fear}skin{/color}.
+MOOD: Fear
+BID: truth
 
 -- TRUTH
 SAY: Sounds less like loyalty and more like you don't trust yourself to leave.
@@ -140,6 +148,8 @@ NEXT: rick_04
 
 === rick_04
 PROMPT: (He rolls his sleeve back up, slow, like it costs him something now.) Guys who try to walk {color:Fear}away{/color} from this patch don't walk away clean. Never have.
+MOOD: Fear
+BID: both
 
 -- TRUTH
 SAY: So who's stopping you — them, or you?

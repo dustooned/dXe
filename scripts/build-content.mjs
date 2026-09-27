@@ -150,6 +150,18 @@ function parseManuscript(text, fileName) {
       currentNode.spotlight = parts;
     } else if (line.startsWith('PROMPT:')) {
       currentNode.prompt = parseText(line.slice(7));
+    } else if (line.startsWith('MOOD:')) {
+      // The NPC's feeling at this moment: tints the oscilloscope, and a
+      // matching FEELZ pick counts as attunement (Trust).
+      const mood = line.slice(5).trim();
+      if (!EMOTIONS.includes(mood)) throw new Error(`${fileName}:${lineNumber}: bad MOOD "${mood}"`);
+      currentNode.mood = mood;
+    } else if (line.startsWith('BID:')) {
+      // A vulnerable moment. Which answer(s) turn toward it: truth, lie, or both.
+      const value = line.slice(4).trim().toLowerCase();
+      const sides = { truth: ['truth'], lie: ['lie'], both: ['truth', 'lie'] }[value];
+      if (!sides) throw new Error(`${fileName}:${lineNumber}: bad BID "${value}" (truth, lie or both)`);
+      currentNode.bid = sides;
     } else if (line.startsWith('GATE:')) {
       currentNode.gate = parseGate(line.slice(5), fileName, lineNumber);
     } else if (line.startsWith('--')) {

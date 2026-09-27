@@ -4,6 +4,7 @@ ACCENT: var(--color-samun)
 
 === samun_01
 PROMPT: Man, everyone's {color:Fear}hooked{/color} on something. Mine's just more honest.
+MOOD: Happy
 
 -- TRUTH
 SAY: Honest or not, you're still killing yourself slowly.
@@ -23,6 +24,7 @@ NEXT: samun_02_enabled
 
 === samun_02_enabled
 PROMPT: See? You get it. Nobody else does. They all want me {color:Disgust}fixed{/color}.
+MOOD: Happy
 
 -- TRUTH
 SAY: Maybe fixed is the wrong word. But not this — not this either.
@@ -42,6 +44,7 @@ NEXT: samun_03
 
 === samun_02_confronted
 PROMPT: Easy for you to say. You're not the one {color:Sadness}hurting{/color}.
+MOOD: Anger
 
 -- TRUTH
 SAY: You're right. I'm not. But you are. Every day.
@@ -61,6 +64,7 @@ NEXT: samun_03
 
 === samun_01_soft
 PROMPT: Business? Business is {color:Disgust}great{/color}, man. Look around. Everybody's real busy.
+MOOD: Happy
 
 -- TRUTH
 SAY: There's nobody here, Samun.
@@ -80,6 +84,7 @@ NEXT: samun_02_enabled
 
 === samun_01_hard
 PROMPT: (He puts the rag down.) Ask it, then. Everybody who comes in here asks it {color:Anxiety}eventually{/color}.
+MOOD: Fear
 
 -- TRUTH
 SAY: What are you on, Samun?
@@ -99,6 +104,8 @@ NEXT: samun_02_enabled
 
 === samun_03
 PROMPT: (He sets two bottles on the counter, unopened, just to have something to look at instead of you.) Tried quitting once. Four days. Everybody around me got {color:Disgust}worse{/color}, not me.
+MOOD: Sadness
+BID: truth
 
 -- TRUTH
 SAY: Everybody around you didn't change. You did, for four days. That's the part worth noticing.
@@ -118,6 +125,8 @@ NEXT: samun_04
 
 === samun_04
 PROMPT: Fifth day, my {color:Sadness}brother{/color} called asking for money. That's the whole story. That's all it ever takes.
+MOOD: Sadness
+BID: both
 
 -- TRUTH
 SAY: That's not a small thing to say out loud.

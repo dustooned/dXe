@@ -81,8 +81,8 @@ function isOverEl(el, x, y) {
   return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
 }
 
-export function createFeelzDartboard({ loadout, dropTarget, onSelect, selected, harmonicFunction = 'tonic' }) {
-  const activeEmotions = new Set(CLASSES[loadout]?.emotions ?? []);
+export function createFeelzDartboard({ loadout, unlocked = [], dropTarget, onSelect, selected, harmonicFunction = 'tonic' }) {
+  const activeEmotions = new Set([...(CLASSES[loadout]?.emotions ?? []), ...unlocked]);
   // Same order engine/loadout.js's emotionsForClass() returns (Set preserves
   // insertion order) — has to match dialogScene.js's own ordering exactly,
   // since it's this order that decides which chord voice index each emotion

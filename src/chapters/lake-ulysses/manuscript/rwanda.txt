@@ -4,6 +4,7 @@ ACCENT: var(--color-rwanda)
 
 === rwanda_01
 PROMPT: Why do I gotta sand myself down just to be {color:Disgust}digestible{/color}?
+MOOD: Anger
 
 -- TRUTH
 SAY: Because people are scared of you being fully real.
@@ -23,6 +24,7 @@ NEXT: rwanda_02_closed
 
 === rwanda_02_closed
 PROMPT: Right. Sure. I'm doing {color:Sadness}fine{/color}. (She turns back to the window.)
+MOOD: Disgust
 
 -- TRUTH
 SAY: I was wrong. You don't have to minimize this for me.
@@ -42,6 +44,7 @@ NEXT: rwanda_03
 
 === rwanda_02_open
 PROMPT: You actually mean that? Most people just want me to {color:Disgust}perform{/color}.
+MOOD: Surprise
 
 -- TRUTH
 SAY: I know. And it's exhausting to watch, let alone live.
@@ -61,6 +64,7 @@ NEXT: rwanda_03
 
 === rwanda_01_soft
 PROMPT: (She doesn't turn around.) You {color:Anxiety}see{/color} it too, right. Whatever's out there tonight.
+MOOD: Anxiety
 
 -- TRUTH
 SAY: I see something. I don't know what it is yet.
@@ -80,6 +84,7 @@ NEXT: rwanda_02_closed
 
 === rwanda_01_hard
 PROMPT: Word travels. You've been at three doors tonight already. What is it you're {color:Anxiety}collecting{/color}?
+MOOD: Fear
 
 -- TRUTH
 SAY: I don't know yet. That's the honest answer.
@@ -99,6 +104,8 @@ NEXT: rwanda_02_closed
 
 === rwanda_03
 PROMPT: (She lights a cigarette she doesn't smoke, just holds.) You want to know the actual tiring part? It's not them. It's {color:Fear}flinching{/color} before they even say anything.
+MOOD: Anxiety
+BID: truth
 
 -- TRUTH
 SAY: That's not a flaw in you. That's what being braced all the time does to a person.
@@ -118,6 +125,8 @@ NEXT: rwanda_04
 
 === rwanda_04
 PROMPT: (She sets the cigarette down for good this time.) You're the first person tonight I haven't had to {color:Fear}brace{/color} for. That's either good, or it means I'm not paying attention.
+MOOD: Trust
+BID: truth
 
 -- TRUTH
 SAY: Maybe it's neither. Maybe you just get to have one conversation that doesn't cost you anything.

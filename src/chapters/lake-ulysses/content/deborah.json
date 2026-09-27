@@ -40,7 +40,8 @@
           "ledgerEntry": "You told Deborah God took her son on purpose.",
           "nextNodeId": "deborah_02_denial"
         }
-      }
+      },
+      "mood": "Sadness"
     },
     "deborah_02_denial": {
       "id": "deborah_02_denial",
@@ -77,7 +78,8 @@
           "ledgerEntry": "You told Deborah she was spiritually superior for blaming God.",
           "nextNodeId": "deborah_03"
         }
-      }
+      },
+      "mood": "Happy"
     },
     "deborah_02_confronted": {
       "id": "deborah_02_confronted",
@@ -114,7 +116,8 @@
           "ledgerEntry": "You apologized for telling Deborah the truth.",
           "nextNodeId": "deborah_03"
         }
-      }
+      },
+      "mood": "Anger"
     },
     "deborah_01_soft": {
       "id": "deborah_01_soft",
@@ -150,7 +153,8 @@
           "ledgerEntry": "You let Deborah change the subject away from her son.",
           "nextNodeId": "deborah_02_denial"
         }
-      }
+      },
+      "mood": "Sadness"
     },
     "deborah_01_hard": {
       "id": "deborah_01_hard",
@@ -187,7 +191,8 @@
           "ledgerEntry": "You told Deborah her son's death was God's will, standing on her doorstep.",
           "nextNodeId": "deborah_02_denial"
         }
-      }
+      },
+      "mood": "Anger"
     },
     "deborah_03": {
       "id": "deborah_03",
@@ -224,7 +229,11 @@
           "ledgerEntry": "You told Deborah to stop saying her son's name.",
           "nextNodeId": "deborah_04"
         }
-      }
+      },
+      "mood": "Sadness",
+      "bid": [
+        "truth"
+      ]
     },
     "deborah_04": {
       "id": "deborah_04",
@@ -260,7 +269,12 @@
           "ledgerEntry": "You told Deborah her son was still present at a church that had stopped saying his name.",
           "nextNodeId": null
         }
-      }
+      },
+      "mood": "Disgust",
+      "bid": [
+        "truth",
+        "lie"
+      ]
     }
   }
 }
