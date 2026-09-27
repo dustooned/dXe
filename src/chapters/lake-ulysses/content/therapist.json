@@ -21,7 +21,7 @@
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
-          "nextNodeId": "therapist_02"
+          "nextNodeId": "therapist_intrusive"
         },
         "lie": {
           "playerText": "Fine. I'm fine.",
@@ -35,7 +35,7 @@
             "Deflection"
           ],
           "ledgerEntry": "You told your therapist you were fine.",
-          "nextNodeId": "therapist_02"
+          "nextNodeId": "therapist_intrusive"
         }
       },
       "spotlight": [
@@ -51,6 +51,45 @@
         "Disgust": "\"Something you'd rather spit out. Your body's smarter than your mouth. Noted.\"",
         "Anger": "\"That one runs hot. Hold it a second before you use it.\"",
         "Anxiety": "\"Braced already, and nothing's even happened yet. Okay.\""
+      }
+    },
+    "therapist_intrusive": {
+      "id": "therapist_intrusive",
+      "npc": "THERAPIST",
+      "location": 1,
+      "prompt": "\"Quick one, it's on the intake form.\" Keys. \"Some people get thoughts that don't feel like theirs. Uninvited. Loud. Like somebody else got into the room. Ever happen to you?\"",
+      "swipes": {
+        "truth": {
+          "playerText": "Yeah. There's... a voice. Maybe two.",
+          "npcReaction": "\"Okay. That's more common than people think. You don't have to argue with them. Just notice who's talking.\"",
+          "effects": {
+            "integrity": 1,
+            "lucidity": 1,
+            "stability": -1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": "therapist_02",
+          "itText": "Great. Now you've ruined the fun.",
+          "soText": "Go ahead, tell her all about us. She won't believe you."
+        },
+        "lie": {
+          "playerText": "No. Never.",
+          "npcReaction": "\"Okay. I'll check the box.\" A pause. \"If that changes, it's not a failure. It's information.\"",
+          "effects": {
+            "stability": 1,
+            "lucidity": -1
+          },
+          "debtDelta": 1,
+          "tags": [
+            "Denial"
+          ],
+          "ledgerEntry": "You told your therapist you don't hear voices.",
+          "nextNodeId": "therapist_02",
+          "itText": "Are you sure about that?",
+          "soText": "Good. Keep quiet about it. We'll keep quiet about you."
+        }
       }
     },
     "therapist_02": {

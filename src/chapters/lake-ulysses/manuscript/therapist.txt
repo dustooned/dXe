@@ -38,7 +38,7 @@ SAY: Not great. I woke up on the side of the road.
 REACT: "Okay. Thank you." The keys keep going; she types while you talk, the way you learn to with forty people on your caseload. "I keep four little lines on you. You'll see them move. They're not a grade. Weather, not a verdict."
 EFFECTS: trust+1 lucidity+1 stability-1
 DEBT: 0
-NEXT: therapist_02
+NEXT: therapist_intrusive
 
 -- LIE
 SAY: Fine. I'm fine.
@@ -47,6 +47,29 @@ EFFECTS: stability+1 trust-1
 DEBT: +1
 TAGS: Deflection
 LEDGER: You told your therapist you were fine.
+NEXT: therapist_intrusive
+
+=== therapist_intrusive
+PROMPT: "Quick one, it's on the intake form." Keys. "Some people get thoughts that don't feel like theirs. Uninvited. Loud. Like somebody else got into the room. Ever happen to you?"
+
+-- TRUTH
+SAY: Yeah. There's... a voice. Maybe two.
+REACT: "Okay. That's more common than people think. You don't have to argue with them. Just notice who's talking."
+EFFECTS: integrity+1 lucidity+1 stability-1
+DEBT: 0
+IT: Great. Now you've ruined the fun.
+SO: Go ahead, tell her all about us. She won't believe you.
+NEXT: therapist_02
+
+-- LIE
+SAY: No. Never.
+REACT: "Okay. I'll check the box." A pause. "If that changes, it's not a failure. It's information."
+EFFECTS: stability+1 lucidity-1
+DEBT: +1
+TAGS: Denial
+LEDGER: You told your therapist you don't hear voices.
+IT: Are you sure about that?
+SO: Good. Keep quiet about it. We'll keep quiet about you.
 NEXT: therapist_02
 
 === therapist_02

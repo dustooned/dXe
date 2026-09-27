@@ -526,7 +526,28 @@ export function mount(stageEl, scene, { run, onComplete }) {
     showItThenSo(BLOOM_IT_TEXT[threshold], SO_BLOOM_TEXT[threshold], onClose);
   }
 
+  // An answer can carry its own IT/SO reaction (manuscript IT:/SO: under a
+  // swipe), shown after the NPC's reaction and before anything else moves.
   function proceed(edge) {
+    if (edge.itText && edge.soText) {
+      showItThenSo(edge.itText, edge.soText, () => proceedAfterIt(edge));
+    } else if (edge.itText || edge.soText) {
+      itPopup = createItPopup(stageEl, {
+        text: fillReadings(edge.itText ?? edge.soText, run.get().truthDebt),
+        loadout: run.get().loadout,
+        voice: edge.itText ? 'it' : 'so',
+        onClose: () => {
+          itPopup?.destroy();
+          itPopup = null;
+          proceedAfterIt(edge);
+        },
+      });
+    } else {
+      proceedAfterIt(edge);
+    }
+  }
+
+  function proceedAfterIt(edge) {
     if (run.get().truthDebt >= 10) {
       onComplete({ jumpTo: 'reckoning' });
       return;

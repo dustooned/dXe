@@ -190,6 +190,11 @@ function parseManuscript(text, fileName) {
         .split(',')
         .map((s) => s.trim())
         .filter(Boolean);
+    } else if (line.startsWith('IT:')) {
+      // IT/SO right after this answer's reaction, before the next node.
+      currentEdge.itText = parseText(line.slice(3));
+    } else if (line.startsWith('SO:')) {
+      currentEdge.soText = parseText(line.slice(3));
     } else if (line.startsWith('LEDGER:')) {
       currentEdge.ledgerEntry = line.slice(7).trim();
     } else if (line.startsWith('NEXT:')) {
