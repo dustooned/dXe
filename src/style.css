@@ -10,14 +10,14 @@
   --color-samun: #4169e1;
   --color-rick: #b22222;
   --color-therapist: #9370db;
-  --color-feelz-anger: #ff4500;
-  --color-feelz-fear: #ffd700;
-  --color-feelz-anticipation: #00bfff;
-  --color-feelz-trust: #00e676;
-  --color-feelz-disgust: #aa00ff;
-  --color-feelz-joy: #ffeb3b;
-  --color-feelz-sadness: #2979ff;
-  --color-feelz-surprise: #ff6d00;
+  --color-feelz-anger: #ff3b1f;
+  --color-feelz-fear: #7b5cff;
+  --color-feelz-anxiety: #ff9800;
+  --color-feelz-trust: #00d9c0;
+  --color-feelz-disgust: #5fd35f;
+  --color-feelz-happy: #ffe135;
+  --color-feelz-sadness: #1e90ff;
+  --color-feelz-surprise: #ff5fd2;
 
   --font-pixel: 'Press Start 2P', 'Courier New', monospace;
   /* IT's voice only — a rough CRT-terminal font, not the game's clean

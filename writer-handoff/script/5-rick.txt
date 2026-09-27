@@ -61,7 +61,7 @@ LEDGER: You backed off Rick right as he almost let something show.
 NEXT: rick_03
 
 === rick_shut_down
-PROMPT: [Rick looks you over from the doorway and doesn't step aside.] Word gets around. I {color:Anticipation}know{/color} what you are.
+PROMPT: [Rick looks you over from the doorway and doesn't step aside.] Word gets around. I {color:Anxiety}know{/color} what you are.
 
 -- TRUTH
 SAY: I'm not here to convince you of anything.

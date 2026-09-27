@@ -15,18 +15,18 @@ const EMOTION_LEAN_IT_TEXT = {
   Guns: {
     Anger: "You keep reaching for anger. It's the only one that feels like doing something.",
     Fear: "You keep bracing. Every single time. Even when nothing's coming.",
-    Anticipation: "You're already three moves ahead of whatever just happened. You never actually arrive.",
+    Sadness: 'You keep landing here. Heavy, every time, whether the moment asked for it or not.',
     neutral: "You didn't lead with anything. Not once. Interesting, that.",
   },
   Bible: {
-    Trust: 'You keep handing it over. Every time. Whether or not it was earned.',
+    Anxiety: "You've decided how this ends before it does. You always have.",
     Disgust: 'Something in you recoils first and asks questions later. Every single time.',
-    Anticipation: "You've decided how this ends before it does. You always have.",
+    Fear: "You keep bracing. Every single time. Even when nothing's coming.",
     neutral: "You didn't commit to a read on any of it. That's its own kind of answer.",
   },
   Crystals: {
-    Joy: "You keep reaching for the light version. Even when there isn't one.",
-    Sadness: 'You keep landing here. Heavy, every time, whether the moment asked for it or not.',
+    Happy: "You keep reaching for the light version. Even when there isn't one.",
+    Anxiety: "You're already three moves ahead of whatever just happened. You never actually arrive.",
     Surprise: "Nothing lands where you expect it to. You've stopped expecting.",
     neutral: "You felt all of it a little. None of it all the way. That's not nothing.",
   },

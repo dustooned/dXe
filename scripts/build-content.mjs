@@ -9,7 +9,7 @@ import { join } from 'node:path';
 
 const STAT_PATTERN = /^(integrity|trust|stability|lucidity)([+-]\d+)$/;
 const GATE_PATTERN = /^(integrity|trust|stability|lucidity)\s*(<=|>=|<|>)\s*(\d+)\s*->\s*(\S+)$/;
-const EMOTIONS = ['Joy', 'Trust', 'Fear', 'Surprise', 'Sadness', 'Disgust', 'Anger', 'Anticipation'];
+const EMOTIONS = ['Happy', 'Trust', 'Fear', 'Surprise', 'Sadness', 'Disgust', 'Anger', 'Anxiety'];
 const CLASSES = ['Guns', 'Bible', 'Crystals'];
 const PICK_PATTERN = /^PICK\s+(\w+):\s*(.*)$/;
 const REVEAL_PATTERN = /^(meters|debt)\s+after\s+(\S+)$/;

@@ -9,35 +9,36 @@
 export const EMOTIONS = {
   Anger:        { symbol: '▲', color: 'var(--color-feelz-anger)',        amplifies: 'stability' },
   Fear:         { symbol: '◉', color: 'var(--color-feelz-fear)',         amplifies: 'integrity' },
-  Anticipation: { symbol: '▶', color: 'var(--color-feelz-anticipation)', amplifies: 'trust'     },
+  Anxiety: { symbol: '▶', color: 'var(--color-feelz-anxiety)', amplifies: 'trust'     },
   Trust:        { symbol: '◆', color: 'var(--color-feelz-trust)',        amplifies: 'trust'     },
   Disgust:      { symbol: '✕', color: 'var(--color-feelz-disgust)',      amplifies: 'integrity' },
-  Joy:          { symbol: '★', color: 'var(--color-feelz-joy)',          amplifies: 'stability' },
+  Happy:          { symbol: '★', color: 'var(--color-feelz-happy)',          amplifies: 'stability' },
   Sadness:      { symbol: '▼', color: 'var(--color-feelz-sadness)',      amplifies: 'integrity' },
   Surprise:     { symbol: '⊕', color: 'var(--color-feelz-surprise)',     amplifies: 'trust'     },
 };
 
-// The 8 emotions in clockwise dartboard order, matching Plutchik's wheel:
-// Joy → Trust → Fear → Surprise → Sadness → Disgust → Anger → Anticipation
+// The 8 emotions in clockwise dartboard order. Plutchik's wheel, with
+// Anxiety in Anticipation's slot and Joy renamed Happy (2026-09-27):
+// Happy → Trust → Fear → Surprise → Sadness → Disgust → Anger → Anxiety
 export const EMOTION_ORDER = [
-  'Joy', 'Trust', 'Fear', 'Surprise', 'Sadness', 'Disgust', 'Anger', 'Anticipation',
+  'Happy', 'Trust', 'Fear', 'Surprise', 'Sadness', 'Disgust', 'Anger', 'Anxiety',
 ];
 
 export const CLASSES = {
   Guns: {
     label: 'GUNS',
     description: 'Confrontation. Force. No flinching.',
-    emotions: ['Anger', 'Fear', 'Anticipation'],
+    emotions: ['Anger', 'Fear', 'Sadness'],
   },
   Bible: {
     label: 'BIBLE',
     description: 'Faith. Loyalty. Buried doubt.',
-    emotions: ['Trust', 'Disgust', 'Anticipation'],
+    emotions: ['Anxiety', 'Disgust', 'Fear'],
   },
   Crystals: {
     label: 'CRYSTALS',
     description: 'Feeling everything. Processing nothing.',
-    emotions: ['Joy', 'Sadness', 'Surprise'],
+    emotions: ['Happy', 'Anxiety', 'Surprise'],
   },
 };
 

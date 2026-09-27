@@ -82,7 +82,7 @@ function pickQuestions() {
 }
 
 // Dominant emotion per class drives the background pattern on the diagnosis.
-const CLASS_ANCHOR = { Guns: 'Anger', Bible: 'Trust', Crystals: 'Joy' };
+const CLASS_ANCHOR = { Guns: 'Anger', Bible: 'Disgust', Crystals: 'Happy' };
 
 // Diagnosis text: each segment is either plain text or a colored word.
 // Colored words use one of the class's three emotion colors — the player
@@ -107,7 +107,7 @@ const DIAGNOSES = {
       { text: ' what you’re going to do. You’re just ' },
       { text: 'waiting', emotion: 'Fear' },
       { text: ' to see if I’ll ' },
-      { text: 'tell you not to', emotion: 'Anticipation' },
+      { text: 'tell you not to', emotion: 'Sadness' },
       { text: '.' },
     ],
     split: [
@@ -121,18 +121,18 @@ const DIAGNOSES = {
   Bible: {
     majority: [
       { text: 'You ' },
-      { text: 'hold', emotion: 'Trust' },
+      { text: 'hold', emotion: 'Fear' },
       { text: ' to things most people let go. That’s either ' },
-      { text: 'faith', emotion: 'Anticipation' },
+      { text: 'faith', emotion: 'Anxiety' },
       { text: ' or a ' },
       { text: 'fist', emotion: 'Disgust' },
       { text: ' — I’m not sure yet.' },
     ],
     split: [
       { text: 'You ' },
-      { text: 'hold on', emotion: 'Trust' },
+      { text: 'hold on', emotion: 'Fear' },
       { text: ' when it’s ' },
-      { text: 'faith', emotion: 'Anticipation' },
+      { text: 'faith', emotion: 'Anxiety' },
       { text: ', and let go when it’s a ' },
       { text: 'fist', emotion: 'Disgust' },
       { text: '. Convenient, that you always know which is which.' },
@@ -141,18 +141,18 @@ const DIAGNOSES = {
   Crystals: {
     majority: [
       { text: 'You ' },
-      { text: 'carry', emotion: 'Sadness' },
+      { text: 'carry', emotion: 'Anxiety' },
       { text: ' a lot for someone who doesn’t ' },
-      { text: 'say so', emotion: 'Joy' },
+      { text: 'say so', emotion: 'Happy' },
       { text: '. Most of it probably ' },
       { text: 'isn’t even yours', emotion: 'Surprise' },
       { text: '.' },
     ],
     split: [
       { text: 'You ' },
-      { text: 'carry', emotion: 'Sadness' },
+      { text: 'carry', emotion: 'Anxiety' },
       { text: ' a lot for someone who doesn’t ' },
-      { text: 'say so', emotion: 'Joy' },
+      { text: 'say so', emotion: 'Happy' },
       { text: ' — though for a second there, you almost ' },
       { text: 'put some of it down', emotion: 'Surprise' },
       { text: '.' },

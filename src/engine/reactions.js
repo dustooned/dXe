@@ -18,7 +18,7 @@
 // all 16 combinations per NPC, not as final writing.
 
 const DEFAULT = {
-  Joy: {
+  Happy: {
     truth: 'It came out lighter than the thing deserved.',
     lie: 'You enjoyed how easy that was. You notice yourself enjoying it.',
   },
@@ -46,7 +46,7 @@ const DEFAULT = {
     truth: 'Harder than you meant it. You do not take it back.',
     lie: 'You put an edge on it so nobody would look too closely.',
   },
-  Anticipation: {
+  Anxiety: {
     truth: 'You were already braced for what comes after.',
     lie: 'You were three moves ahead before the sentence finished.',
   },
@@ -55,7 +55,7 @@ const DEFAULT = {
 // Kitchen, bible, coffee neither of them drinks, Caleb's name. Deborah's
 // scenes stay domestic and quiet even when what's said isn't.
 const DEBORAH = {
-  Joy: {
+  Happy: {
     truth: 'It came out clean, in a house that doesn’t usually allow that.',
     lie: 'The lie went down easy as the coffee neither of you touch — warm, and gone before it could matter.',
   },
@@ -83,7 +83,7 @@ const DEBORAH = {
     truth: 'Harder than you meant it, in a room built for softer voices than that.',
     lie: 'You put an edge on it so the silence after wouldn’t ask you anything.',
   },
-  Anticipation: {
+  Anxiety: {
     truth: 'You were already braced before her hand found the bible again.',
     lie: 'You knew exactly which words would keep her hand off the cover, and used them.',
   },
@@ -92,7 +92,7 @@ const DEBORAH = {
 // Bar, patch, knuckles, the performance that cracks and reseals. Rick's
 // scenes stay physical — hands, jaw, sleeve — even in the quiet ones.
 const RICK = {
-  Joy: {
+  Happy: {
     truth: 'It came out easy, and for once he didn’t read that as weakness.',
     lie: 'You said it like a toast. He drank to it like one too.',
   },
@@ -120,7 +120,7 @@ const RICK = {
     truth: 'Harder than you meant it, and for a second his jaw matched yours.',
     lie: 'You put an edge on it because a flat answer would’ve gotten you a worse one back.',
   },
-  Anticipation: {
+  Anxiety: {
     truth: 'You were already reading which way his hand would move before you finished the sentence.',
     lie: 'You were already three moves past whatever he was about to do about it.',
   },
@@ -129,7 +129,7 @@ const RICK = {
 // Window, cigarette she doesn't smoke, flinching before anyone's said
 // anything. Rwanda's scenes track the exact moment guardedness lifts.
 const RWANDA = {
-  Joy: {
+  Happy: {
     truth: 'It came out light, and she let herself take it that way, just for a second.',
     lie: 'It came out smooth as the version she’s used to hearing — easy, and just as hollow.',
   },
@@ -157,7 +157,7 @@ const RWANDA = {
     truth: 'Harder than you meant, and for once it wasn’t aimed at her having to explain herself.',
     lie: 'You put an edge on it so she wouldn’t hear how unsure you actually were.',
   },
-  Anticipation: {
+  Anxiety: {
     truth: 'You were already bracing for the flinch before you’d even finished the sentence.',
     lie: 'You were already rehearsing her reaction before she’d had a chance to have one.',
   },
@@ -166,7 +166,7 @@ const RWANDA = {
 // Rag, unopened bottles, the brother who calls on day five. Samun's scenes
 // stay circular — the same room, the same counter, further in each time.
 const SAMUN = {
-  Joy: {
+  Happy: {
     truth: 'It came out light. Lighter than anything gets in that garage lately.',
     lie: 'It went down easy as the first one always does. That’s the whole problem with easy.',
   },
@@ -194,7 +194,7 @@ const SAMUN = {
     truth: 'Harder than you meant, in a room that’s built to absorb exactly that and keep going.',
     lie: 'You put an edge on it so it would sound like conviction instead of the guess it was.',
   },
-  Anticipation: {
+  Anxiety: {
     truth: 'You already knew which bottle he’d reach for before you finished talking.',
     lie: 'You were already rehearsing how he’d spin it back to you before he even started.',
   },
@@ -204,7 +204,7 @@ const SAMUN = {
 // Therapist's coda set stays this short and quiet on purpose — there's
 // only ever one exchange to color.
 const THERAPIST = {
-  Joy: {
+  Happy: {
     truth: 'It came out lighter than you expected, into a line that’s heard heavier.',
     lie: 'It went down easy — easy enough that she didn’t reach for the chart at all.',
   },
@@ -232,7 +232,7 @@ const THERAPIST = {
     truth: 'Harder than you meant, down a phone line built for softer things.',
     lie: 'You put an edge on it so the pause after wouldn’t turn into a real question.',
   },
-  Anticipation: {
+  Anxiety: {
     truth: 'You were already bracing for her next question before you’d finished this answer.',
     lie: 'You knew which answer would end the call fastest, and gave her that one.',
   },

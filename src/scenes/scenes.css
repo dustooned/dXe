@@ -718,8 +718,8 @@
   mask-repeat: no-repeat;
   background-image: linear-gradient(
     115deg,
-    var(--color-feelz-anger), var(--color-feelz-surprise), var(--color-feelz-joy),
-    var(--color-feelz-trust), var(--color-feelz-anticipation), var(--color-feelz-sadness),
+    var(--color-feelz-anger), var(--color-feelz-surprise), var(--color-feelz-happy),
+    var(--color-feelz-trust), var(--color-feelz-anxiety), var(--color-feelz-sadness),
     var(--color-feelz-disgust), var(--color-feelz-fear), var(--color-feelz-anger)
   );
   background-size: 300% 300%;

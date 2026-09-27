@@ -79,7 +79,7 @@ LEDGER: You let Deborah change the subject away from her son.
 NEXT: deborah_02_denial
 
 === deborah_01_hard
-PROMPT: [She stops in the doorway and does not move out of it.] You {color:Anticipation}heard{/color}. Everybody heard. Go on — say the part where it was God's will.
+PROMPT: [She stops in the doorway and does not move out of it.] You {color:Anxiety}heard{/color}. Everybody heard. Go on — say the part where it was God's will.
 
 -- TRUTH
 SAY: I wasn't going to say that.

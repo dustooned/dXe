@@ -59,7 +59,7 @@ const audioCache = new Map();
 // One waveform per Plutchik emotion (engine/loadout.js's EMOTIONS) — every
 // class's 3 loaded emotions need an entry here or that voice is silent
 // (see docs/HANDOFF.md's "known gaps": Bible/Crystals had no audio until
-// Trust/Disgust/Joy/Sadness/Surprise were added below).
+// Trust/Disgust/Happy/Sadness/Surprise were added below).
 //
 // Waveform only — these used to carry a hardcoded frequency each, eight
 // unrelated pitches droning with no shared key centre. Pitch now comes from
@@ -68,10 +68,10 @@ const audioCache = new Map();
 const EMOTION_WAVEFORMS = {
   Anger:        'sawtooth',
   Fear:         'sine',
-  Anticipation: 'triangle',
+  Anxiety: 'triangle',
   Trust:        'sine',
   Disgust:      'sawtooth',
-  Joy:          'triangle',
+  Happy:          'triangle',
   Sadness:      'sine',
   Surprise:     'square',
 };

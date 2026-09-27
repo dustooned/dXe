@@ -122,8 +122,8 @@ drawing — see "Reading text," below.
 ### FEELZ: pick a feeling before you answer
 
 Before most swipes, the player taps or drags an emotion off an 8-slice
-wheel (Joy, Trust, Fear, Surprise, Sadness, Disgust, Anger, Anticipation
-— Plutchik's wheel). **The player only ever sees symbols** (★ ◆ ◉ ⊕ ▼ ✕
+wheel (Happy, Trust, Fear, Surprise, Sadness, Disgust, Anger, Anxiety
+— Plutchik's wheel, with Anxiety in Anticipation's slot). **The player only ever sees symbols** (★ ◆ ◉ ⊕ ▼ ✕
 ▲ ▶), never the names, and no character names a feeling out loud either.
 Only 3 of the 8 are ever lit up and selectable in a given playthrough —
 which 3 depends on an invisible "class" set by the opening Questionnaire
@@ -234,8 +234,8 @@ only place the four meters get the last word.
 ### The class the player never sees
 
 Three swipe questions right after the Prologue quietly sort the player
-into **Guns** (Anger / Fear / Anticipation), **Bible** (Trust / Disgust /
-Anticipation), or **Crystals** (Joy / Sadness / Surprise) — which 3 FEELZ
+into **Guns** (Anger / Fear / Sadness), **Bible** (Anxiety / Disgust /
+Fear), or **Crystals** (Happy / Anxiety / Surprise) — which 3 FEELZ
 emotions are lit up all run, and which meter each one amplifies. The
 Therapist's very next line is a "diagnosis" with a few words tinted in
 that class's colors — the *only* signal the player ever gets, and the

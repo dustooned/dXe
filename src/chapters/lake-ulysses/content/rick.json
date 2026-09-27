@@ -126,7 +126,7 @@
       "id": "rick_shut_down",
       "npc": "RICK",
       "location": 5,
-      "prompt": "[Rick looks you over from the doorway and doesn't step aside.] Word gets around. I {color:Anticipation}know{/color} what you are.",
+      "prompt": "[Rick looks you over from the doorway and doesn't step aside.] Word gets around. I {color:Anxiety}know{/color} what you are.",
       "swipes": {
         "truth": {
           "playerText": "I'm not here to convince you of anything.",

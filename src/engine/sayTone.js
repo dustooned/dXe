@@ -7,10 +7,10 @@
 const SAY_CODA = {
   Anger:        { truth: '. I’m done pretending otherwise.',                 lie: ', so drop it.' },
   Fear:         { truth: ', and I don’t know what happens now.',             lie: ', and please just leave it there.' },
-  Anticipation: { truth: '—you’ll want to know before you find out some other way.', lie: ', so we don’t have to get into the rest.' },
+  Anxiety: { truth: '—you’ll want to know before you find out some other way.', lie: ', so we don’t have to get into the rest.' },
   Trust:        { truth: '. I think you can handle it.',                          lie: ', and I need you to believe me.' },
   Disgust:      { truth: '. I can’t keep saying otherwise.',                 lie: ', and I’d rather not say more.' },
-  Joy:          { truth: '—and honestly, it feels good to finally say it.',  lie: ', and everything’s fine, really.' },
+  Happy:          { truth: '—and honestly, it feels good to finally say it.',  lie: ', and everything’s fine, really.' },
   Sadness:      { truth: '—I’m sorry it’s this.',                  lie: ', and it’s easier this way.' },
   Surprise:     { truth: '—even I didn’t expect to say it like that.',  lie: ', so let’s just leave it at that.' },
 };

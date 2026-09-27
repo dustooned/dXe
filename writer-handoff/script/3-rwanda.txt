@@ -60,7 +60,7 @@ LEDGER: You told Rwanda to wait for the world to catch up to her.
 NEXT: rwanda_03
 
 === rwanda_01_soft
-PROMPT: (She doesn't turn around.) You {color:Anticipation}see{/color} it too, right. Whatever's out there tonight.
+PROMPT: (She doesn't turn around.) You {color:Anxiety}see{/color} it too, right. Whatever's out there tonight.
 
 -- TRUTH
 SAY: I see something. I don't know what it is yet.
@@ -79,7 +79,7 @@ LEDGER: You told Rwanda that what she was seeing wasn't there.
 NEXT: rwanda_02_closed
 
 === rwanda_01_hard
-PROMPT: Word travels. You've been at three doors tonight already. What is it you're {color:Anticipation}collecting{/color}?
+PROMPT: Word travels. You've been at three doors tonight already. What is it you're {color:Anxiety}collecting{/color}?
 
 -- TRUTH
 SAY: I don't know yet. That's the honest answer.

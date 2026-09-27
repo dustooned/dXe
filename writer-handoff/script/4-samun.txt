@@ -79,7 +79,7 @@ LEDGER: You agreed with Samun that the shop was doing fine.
 NEXT: samun_02_enabled
 
 === samun_01_hard
-PROMPT: (He puts the rag down.) Ask it, then. Everybody who comes in here asks it {color:Anticipation}eventually{/color}.
+PROMPT: (He puts the rag down.) Ask it, then. Everybody who comes in here asks it {color:Anxiety}eventually{/color}.
 
 -- TRUTH
 SAY: What are you on, Samun?

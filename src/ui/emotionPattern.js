@@ -6,14 +6,14 @@
 // than "emotion" below.
 const HUES = {
   // FEELZ emotions
-  Anger: 16,
-  Fear: 51,
-  Anticipation: 195,
-  Trust: 145,
-  Disgust: 280,
-  Joy: 55,
-  Sadness: 220,
-  Surprise: 26,
+  Anger: 8,
+  Fear: 252,
+  Anxiety: 36,
+  Trust: 172,
+  Disgust: 120,
+  Happy: 52,
+  Sadness: 210,
+  Surprise: 316,
   // Ending tiers
   CLEAN_CUT: 200,
   FUNCTIONAL_MASK: 90,

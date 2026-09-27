@@ -33,7 +33,7 @@ import * as audio from '../shell/audio.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 const CX = 100, CY = 100, OUTER_R = 88, INNER_R = 34, SYMBOL_R = 61;
-// Center Joy at the top; sectors go clockwise.
+// Center Happy at the top; sectors go clockwise.
 const START = -Math.PI / 2 - Math.PI / 8;
 const STEP = (2 * Math.PI) / 8;
 const HALF_GAP = 0.03;

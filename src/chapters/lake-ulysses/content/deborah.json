@@ -156,7 +156,7 @@
       "id": "deborah_01_hard",
       "npc": "DEBORAH",
       "location": 2,
-      "prompt": "[She stops in the doorway and does not move out of it.] You {color:Anticipation}heard{/color}. Everybody heard. Go on — say the part where it was God's will.",
+      "prompt": "[She stops in the doorway and does not move out of it.] You {color:Anxiety}heard{/color}. Everybody heard. Go on — say the part where it was God's will.",
       "swipes": {
         "truth": {
           "playerText": "I wasn't going to say that.",

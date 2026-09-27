@@ -45,18 +45,18 @@ const SO_EMOTION_LEAN_TEXT = {
   Guns: {
     Anger: "Feels like it. Doesn't mean it is. You haven't actually checked.",
     Fear: "How do you know nothing's coming. You're not exactly a reliable narrator on that one.",
-    Anticipation: 'Or you arrive fine and just don’t notice, because you’re too busy checking if you have.',
+    Sadness: "Heavy, or honest. You're the one deciding it doesn't fit.",
     neutral: "Interesting, or just true. Not everything means something.",
   },
   Bible: {
-    Trust: "Earned by whose measure. You don't actually have a way to check that.",
+    Anxiety: 'Or you’re guessing like everyone else and calling it certainty after the fact.',
     Disgust: "Recoils, or notices fast. You've decided which one it is without any real evidence.",
-    Anticipation: 'Or you’re guessing like everyone else and calling it certainty after the fact.',
+    Fear: "How do you know nothing's coming. You're not exactly a reliable narrator on that one.",
     neutral: "Is it, though. Or is it just not an answer at all, and you're the one insisting it means something.",
   },
   Crystals: {
-    Joy: "Isn't there? Or did you just stop looking before you found it.",
-    Sadness: "Heavy, or honest. You're the one deciding it doesn't fit.",
+    Happy: "Isn't there? Or did you just stop looking before you found it.",
+    Anxiety: 'Or you arrive fine and just don’t notice, because you’re too busy checking if you have.',
     Surprise: 'Or you never really expected anything, and you’re only calling it "stopped" now.',
     neutral: "Isn't it, though. Maybe it's exactly nothing, and you just don't want it to be.",
   },

@@ -14,9 +14,9 @@
 #
 
 
-# --- Joy ---
-[coda / Joy / truth] It came out lighter than the thing deserved.
-[coda / Joy / lie] You enjoyed how easy that was. You notice yourself enjoying it.
+# --- Happy ---
+[coda / Happy / truth] It came out lighter than the thing deserved.
+[coda / Happy / lie] You enjoyed how easy that was. You notice yourself enjoying it.
 
 # --- Trust ---
 [coda / Trust / truth] You handed it over whole, without checking who was holding it.
@@ -42,13 +42,13 @@
 [coda / Anger / truth] Harder than you meant it. You do not take it back.
 [coda / Anger / lie] You put an edge on it so nobody would look too closely.
 
-# --- Anticipation ---
-[coda / Anticipation / truth] You were already braced for what comes after.
-[coda / Anticipation / lie] You were three moves ahead before the sentence finished.
+# --- Anxiety ---
+[coda / Anxiety / truth] You were already braced for what comes after.
+[coda / Anxiety / lie] You were three moves ahead before the sentence finished.
 
-# --- Joy ---
-[coda / Joy / truth] It came out clean, in a house that doesn’t usually allow that.
-[coda / Joy / lie] The lie went down easy as the coffee neither of you touch — warm, and gone before it could matter.
+# --- Happy ---
+[coda / Happy / truth] It came out clean, in a house that doesn’t usually allow that.
+[coda / Happy / lie] The lie went down easy as the coffee neither of you touch — warm, and gone before it could matter.
 
 # --- Trust ---
 [coda / Trust / truth] You handed her the plain version and let her decide what to do with it.
@@ -74,13 +74,13 @@
 [coda / Anger / truth] Harder than you meant it, in a room built for softer voices than that.
 [coda / Anger / lie] You put an edge on it so the silence after wouldn’t ask you anything.
 
-# --- Anticipation ---
-[coda / Anticipation / truth] You were already braced before her hand found the bible again.
-[coda / Anticipation / lie] You knew exactly which words would keep her hand off the cover, and used them.
+# --- Anxiety ---
+[coda / Anxiety / truth] You were already braced before her hand found the bible again.
+[coda / Anxiety / lie] You knew exactly which words would keep her hand off the cover, and used them.
 
-# --- Joy ---
-[coda / Joy / truth] It came out easy, and for once he didn’t read that as weakness.
-[coda / Joy / lie] You said it like a toast. He drank to it like one too.
+# --- Happy ---
+[coda / Happy / truth] It came out easy, and for once he didn’t read that as weakness.
+[coda / Happy / lie] You said it like a toast. He drank to it like one too.
 
 # --- Trust ---
 [coda / Trust / truth] You gave it to him straight, the one thing he can’t stand being handled with gloves.
@@ -106,13 +106,13 @@
 [coda / Anger / truth] Harder than you meant it, and for a second his jaw matched yours.
 [coda / Anger / lie] You put an edge on it because a flat answer would’ve gotten you a worse one back.
 
-# --- Anticipation ---
-[coda / Anticipation / truth] You were already reading which way his hand would move before you finished the sentence.
-[coda / Anticipation / lie] You were already three moves past whatever he was about to do about it.
+# --- Anxiety ---
+[coda / Anxiety / truth] You were already reading which way his hand would move before you finished the sentence.
+[coda / Anxiety / lie] You were already three moves past whatever he was about to do about it.
 
-# --- Joy ---
-[coda / Joy / truth] It came out light, and she let herself take it that way, just for a second.
-[coda / Joy / lie] It came out smooth as the version she’s used to hearing — easy, and just as hollow.
+# --- Happy ---
+[coda / Happy / truth] It came out light, and she let herself take it that way, just for a second.
+[coda / Happy / lie] It came out smooth as the version she’s used to hearing — easy, and just as hollow.
 
 # --- Trust ---
 [coda / Trust / truth] You handed it over plain, no performance in it for her to brace against.
@@ -138,13 +138,13 @@
 [coda / Anger / truth] Harder than you meant, and for once it wasn’t aimed at her having to explain herself.
 [coda / Anger / lie] You put an edge on it so she wouldn’t hear how unsure you actually were.
 
-# --- Anticipation ---
-[coda / Anticipation / truth] You were already bracing for the flinch before you’d even finished the sentence.
-[coda / Anticipation / lie] You were already rehearsing her reaction before she’d had a chance to have one.
+# --- Anxiety ---
+[coda / Anxiety / truth] You were already bracing for the flinch before you’d even finished the sentence.
+[coda / Anxiety / lie] You were already rehearsing her reaction before she’d had a chance to have one.
 
-# --- Joy ---
-[coda / Joy / truth] It came out light. Lighter than anything gets in that garage lately.
-[coda / Joy / lie] It went down easy as the first one always does. That’s the whole problem with easy.
+# --- Happy ---
+[coda / Happy / truth] It came out light. Lighter than anything gets in that garage lately.
+[coda / Happy / lie] It went down easy as the first one always does. That’s the whole problem with easy.
 
 # --- Trust ---
 [coda / Trust / truth] You gave it to him straight and let him do what he wants with it, same as always.
@@ -170,13 +170,13 @@
 [coda / Anger / truth] Harder than you meant, in a room that’s built to absorb exactly that and keep going.
 [coda / Anger / lie] You put an edge on it so it would sound like conviction instead of the guess it was.
 
-# --- Anticipation ---
-[coda / Anticipation / truth] You already knew which bottle he’d reach for before you finished talking.
-[coda / Anticipation / lie] You were already rehearsing how he’d spin it back to you before he even started.
+# --- Anxiety ---
+[coda / Anxiety / truth] You already knew which bottle he’d reach for before you finished talking.
+[coda / Anxiety / lie] You were already rehearsing how he’d spin it back to you before he even started.
 
-# --- Joy ---
-[coda / Joy / truth] It came out lighter than you expected, into a line that’s heard heavier.
-[coda / Joy / lie] It went down easy — easy enough that she didn’t reach for the chart at all.
+# --- Happy ---
+[coda / Happy / truth] It came out lighter than you expected, into a line that’s heard heavier.
+[coda / Happy / lie] It went down easy — easy enough that she didn’t reach for the chart at all.
 
 # --- Trust ---
 [coda / Trust / truth] You gave her the real version and let her hold it, the way her job asks people to.
@@ -202,7 +202,7 @@
 [coda / Anger / truth] Harder than you meant, down a phone line built for softer things.
 [coda / Anger / lie] You put an edge on it so the pause after wouldn’t turn into a real question.
 
-# --- Anticipation ---
-[coda / Anticipation / truth] You were already bracing for her next question before you’d finished this answer.
-[coda / Anticipation / lie] You knew which answer would end the call fastest, and gave her that one.
+# --- Anxiety ---
+[coda / Anxiety / truth] You were already bracing for her next question before you’d finished this answer.
+[coda / Anxiety / lie] You knew which answer would end the call fastest, and gave her that one.
 
