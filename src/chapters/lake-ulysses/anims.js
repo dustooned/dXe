@@ -5,7 +5,7 @@ export const ANIMS = {
   quote_bg:  { base: `${BASE}spr_QuoteBG/spr_QuoteBG_`,        frames: 5,  fps: 6  },
   bob_baiter:{ base: `${BASE}spr_bb/spr_bb_`,                  frames: 10, fps: 8  },
   // Bob Baiter's announcement symbols, from the GameMaker beta
-  // (obj_intro_dialog_symbols) — imported by scripts/import-gm-symbols.mjs.
+  // (obj_intro_dialog_symbols) â€” imported by scripts/import-gm-symbols.mjs.
   sym_biohazard: { base: `${BASE}spr_biohazard/spr_biohazard_`,   frames: 31, fps: 12 },
   sym_pets:      { base: `${BASE}spr_pet_symbol/spr_pet_symbol_`, frames: 31, fps: 12 },
   sym_exposure:  { base: `${BASE}spr_exposure/spr_exposure_`,     frames: 31, fps: 12 },
