@@ -2,6 +2,8 @@
 // One-time import of Bob Baiter's announcement symbols from the GameMaker
 // beta (obj_intro_dialog_symbols). Reads each sprite's .yy for frame order,
 // then writes the frames as numbered WebP next to the other lake sprites.
+// Downscaled to 384px wide: they display at about half the canvas width, so
+// this is still 2x for retina, at a fraction of the source bytes.
 //
 // Usage: node scripts/import-gm-symbols.mjs
 import sharp from 'sharp';
@@ -19,7 +21,8 @@ for (const name of SPRITES) {
   mkdirSync(join(OUT, name), { recursive: true });
   for (const [i, id] of frames.entries()) {
     await sharp(join(GM, name, `${id}.png`))
-      .webp({ quality: 80, alphaQuality: 70 })
+      .resize({ width: 384 })
+      .webp({ quality: 70, alphaQuality: 60 })
       .toFile(join(OUT, name, `${name}_${String(i).padStart(4, '0')}.webp`));
   }
   console.log(`${name}: ${frames.length} frames`);

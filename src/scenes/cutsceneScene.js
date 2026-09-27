@@ -155,7 +155,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
 
     if (beat.art && ART[beat.art]) {
-      screen.appendChild(ART[beat.art]({ run }).el);
+      const artEl = ART[beat.art]({ run }).el;
+      // Animate in only when this art wasn't already on the previous beat.
+      if (scene.beats[beatIndex - 1]?.art !== beat.art) artEl.classList.add('is-entering');
+      screen.appendChild(artEl);
     }
     if (beat.sound) SOUNDS[beat.sound]?.();
 
@@ -278,6 +281,19 @@ export function mount(stageEl, scene, { run, onComplete }) {
       return;
     }
     render();
+  }
+
+  // Warm the browser cache with every frame this cutscene will animate, so
+  // a sequence doesn't stutter on first play while its frames trickle in.
+  const preloaded = [];
+  for (const key of new Set(scene.beats.flatMap((b) => [b.bgAnim, b.spriteAnim, b.symbolAnim]))) {
+    const cfg = scene.anims?.[key];
+    if (!cfg) continue;
+    for (let i = 0; i < cfg.frames; i++) {
+      const img = new Image();
+      img.src = `${cfg.base}${String(i).padStart(4, '0')}.${cfg.ext ?? 'webp'}`;
+      preloaded.push(img);
+    }
   }
 
   if (scene.ambient) startAmbient(scene.ambient);
