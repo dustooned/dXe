@@ -1115,3 +1115,21 @@
 .dx-connect__beat p {
   margin: 0;
 }
+
+/* In an encounter the lake gauge (and the contacts dock under it) stays put
+   at the bottom, under where the wheel sits, whether or not the wheel is on
+   screen this beat. The fish hold still: each stage's pose, no swimming. */
+.dx-game-content > .dx-lake {
+  margin-top: auto;
+}
+
+.dx-game-content .dx-fish,
+.dx-game-content .dx-bubble {
+  animation: none;
+}
+
+.dx-game-content .dx-fish--1 { left: 12px; }
+.dx-game-content .dx-fish--2 { left: 22px; transform: scaleX(-1); }
+.dx-game-content .dx-lake__tank[data-stage="3"] .dx-fish { transform: translateX(8px) rotate(28deg); }
+.dx-game-content .dx-lake__tank[data-stage="4"] .dx-fish { transform: rotate(180deg); }
+.dx-game-content .dx-bubble { display: none; }
