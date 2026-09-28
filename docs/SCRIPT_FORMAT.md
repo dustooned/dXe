@@ -95,6 +95,19 @@ emotions the player can pick from is set once by the opening Questionnaire
 A `FEELZ:` line used to sit in this block and was read by nothing; it's
 gone, and the build rejects one if it turns up in a file.
 
+### Trust and feelings (per node, optional)
+
+- `MOOD: Emotion` — the NPC's feeling at this moment (one of the 8:
+  `Happy`, `Trust`, `Fear`, `Surprise`, `Sadness`, `Disgust`, `Anger`,
+  `Anxiety`). Tints the oscilloscope; a player whose picked feeling
+  matches it "syncs" (attunement, builds trust). The color the answer's
+  impact lands in is the *next* node's mood, so write moods as a path.
+- `BID: truth` / `lie` / `both` — marks a vulnerable moment ("His name
+  was Caleb."). The listed side(s) turn toward it: the portrait warms,
+  it counts toward trust, and it's when the NPC gives the player a
+  feeling (engine/unlocks.js). Use `both` when a kind lie still meets
+  them.
+
 ### A swipe (what happens for Truth vs. Lie)
 
 Every node needs exactly two: `-- TRUTH` and `-- LIE`.
@@ -128,12 +141,27 @@ Every node needs exactly two: `-- TRUTH` and `-- LIE`.
   used later in the Reckoning. Only include this if the choice is a lie
   worth being confronted with at the end. Skip the line entirely for
   truths, or for lies too small to matter.
+- `IF PICK Emotion: text` (optional, repeatable) — a line said *before*
+  `REACT:` when the player picked that feeling. Use it to vary a reaction
+  by feeling while `REACT:` stays the same.
+- `IF GIFT Emotion: text` / `IF GIFT none: text` (optional) — a line said
+  *after* `REACT:` when this answer turned toward a bid and unlocked that
+  feeling (or `none`: turned toward, nothing left to give). The
+  Therapist's intrusive-thoughts question uses both, and every version
+  ends on the same closing sentence so the lesson stays recognizable.
 - `IT:` / `SO:` (optional) — an intrusive-thought popup right after this
   answer's `REACT:`, before the next node. Use one or both (IT first,
   then SO). Example: the Therapist's intrusive-thoughts question has IT
   say "Are you sure about that?" after the lie.
 - `NEXT:` — which node this leads to, or `(end)` if this is the last
   thing this NPC says (the game moves on to whoever's next).
+
+### File-level extras
+
+- `CONNECT [Guns|Bible|Crystals]: text` — the connection moment: the
+  story beat played when this NPC first trusts the player (vignette,
+  silence, a crack, then this text). One per class. Put these in the
+  file header, before the first node.
 
 ### Tutorial extras (optional — the Therapist uses these)
 

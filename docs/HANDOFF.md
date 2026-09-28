@@ -498,9 +498,16 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 - Ending in three pages with the FEELZ clinical summary; class revealed
   as a diagnosis; SO answers IT's last word.
 
-**In progress: Trust** (see GAME_MANUAL "Trust"). Next build: per-node NPC
-moods on the oscilloscope, sync when the pick matches, authored bids, the
-Trust unlock. Then the contradiction check.
+**Later the same day:** Trust (moods, sync, bids, `run.bonds`), the battle
+hit on every answer, feeling unlocks (`engine/unlocks.js`, one per NPC
+plus the Therapist demo), the dramatic slice entrance, varied reactions
+(`IF PICK` / `IF GIFT`), the connection moment (`CONNECT`), cleaner HUD,
+homework as advice, and the walk-home cutscene. See GAME_MANUAL "Trust"
+and "Filling the wheel", SCRIPT_FORMAT for the new lines.
+
+**Next:** the consistency check (contradiction pairs), scene moves, class
+screen redesign. The connection beats and reaction variants are
+placeholder prose for the writer.
 
 **Still open from that discussion:** the full feeling-unlock system (one
 feeling per character), class screen redesign, scene moves (Deborah's

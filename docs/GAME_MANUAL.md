@@ -246,7 +246,17 @@ One extra line — the "epilogue" — is appended, naming whichever of the
 four meters strayed furthest from its starting value of 5. That's the
 only place the four meters get the last word.
 
-### Trust (in progress)
+### Every answer is a hit
+
+Each answer plays as a battle beat. **Wind-up:** the NPC's wave grows as
+their line types, over a quickening heartbeat. **Aim:** picking their
+mood chimes and locks the player's line onto theirs; a different feeling
+grinds. **Commit:** a 150ms freeze frame and a flash in the picked
+feeling's color. **Impact:** on their reaction, a shockwave in the mood
+the answer sends them into, their wave shifts to it, and the shake
+scales with how far their TRU and STB moved.
+
+### Trust
 
 Trust is not Truth. Truth is the lake: did you say what's real. Trust is
 whether people can rely on you, and it's built three ways:
@@ -255,13 +265,25 @@ whether people can rely on you, and it's built three ways:
   shown as the oscilloscope's color. Pick the matching feeling and the
   waves sync.
 - **Turning toward.** Some lines are "bids" (Deborah saying Caleb's name).
-  Engaging with a bid builds trust. On some bids a kind lie counts too,
-  so a player can build trust while still dirtying the lake.
+  Meeting one warms the portrait gold. On some bids a kind lie counts
+  too, so a player can build trust while still dirtying the lake.
 - **Consistency.** Contradicting yourself across characters costs trust
   (planned; needs contradiction pairs authored).
 
-Earn trust with 2 characters and the **Trust** feeling unlocks on the
-wheel. No class starts with Trust.
+Two syncs plus one bid met and that NPC **trusts you**: the screen closes
+to a vignette on them, all sound drops out, a crack, then a short story
+beat of them letting you in (different per NPC and per class). Earn
+trust with 2 NPCs and the **Trust** feeling unlocks on the wheel.
+
+### Filling the wheel
+
+Each class starts with 3 of the 8 feelings. Meeting a bid also unlocks a
+feeling: the first on that NPC's list the player doesn't have yet. No
+announcement: the next time the wheel shows, the new slice cracks in,
+slams into place, and rings its tone, and the chord gains a voice. The
+Therapist's intrusive-thoughts question demonstrates it in the tutorial.
+Turning toward all four NPCs collects 7; Trust is the 8th. The ending
+report shows FEELINGS COLLECTED n/8.
 
 ### The class the player never sees
 

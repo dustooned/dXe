@@ -397,7 +397,15 @@ small gauge (screenshot-ready), then IT and SO get the last word.</li>
 <p>One extra line — the &quot;epilogue&quot; — is appended, naming whichever of the
 four meters strayed furthest from its starting value of 5. That&#39;s the
 only place the four meters get the last word.</p>
-<h3 id="doc-game_manual--trust-in-progress"><a class="anchor" href="#doc-game_manual--trust-in-progress" aria-label="Link to this section">#</a>Trust (in progress)</h3>
+<h3 id="doc-game_manual--every-answer-is-a-hit"><a class="anchor" href="#doc-game_manual--every-answer-is-a-hit" aria-label="Link to this section">#</a>Every answer is a hit</h3>
+<p>Each answer plays as a battle beat. <strong>Wind-up:</strong> the NPC&#39;s wave grows as
+their line types, over a quickening heartbeat. <strong>Aim:</strong> picking their
+mood chimes and locks the player&#39;s line onto theirs; a different feeling
+grinds. <strong>Commit:</strong> a 150ms freeze frame and a flash in the picked
+feeling&#39;s color. <strong>Impact:</strong> on their reaction, a shockwave in the mood
+the answer sends them into, their wave shifts to it, and the shake
+scales with how far their TRU and STB moved.</p>
+<h3 id="doc-game_manual--trust"><a class="anchor" href="#doc-game_manual--trust" aria-label="Link to this section">#</a>Trust</h3>
 <p>Trust is not Truth. Truth is the lake: did you say what&#39;s real. Trust is
 whether people can rely on you, and it&#39;s built three ways:</p>
 <ul>
@@ -405,13 +413,23 @@ whether people can rely on you, and it&#39;s built three ways:</p>
 shown as the oscilloscope&#39;s color. Pick the matching feeling and the
 waves sync.</li>
 <li><strong>Turning toward.</strong> Some lines are &quot;bids&quot; (Deborah saying Caleb&#39;s name).
-Engaging with a bid builds trust. On some bids a kind lie counts too,
-so a player can build trust while still dirtying the lake.</li>
+Meeting one warms the portrait gold. On some bids a kind lie counts
+too, so a player can build trust while still dirtying the lake.</li>
 <li><strong>Consistency.</strong> Contradicting yourself across characters costs trust
 (planned; needs contradiction pairs authored).</li>
 </ul>
-<p>Earn trust with 2 characters and the <strong>Trust</strong> feeling unlocks on the
-wheel. No class starts with Trust.</p>
+<p>Two syncs plus one bid met and that NPC <strong>trusts you</strong>: the screen closes
+to a vignette on them, all sound drops out, a crack, then a short story
+beat of them letting you in (different per NPC and per class). Earn
+trust with 2 NPCs and the <strong>Trust</strong> feeling unlocks on the wheel.</p>
+<h3 id="doc-game_manual--filling-the-wheel"><a class="anchor" href="#doc-game_manual--filling-the-wheel" aria-label="Link to this section">#</a>Filling the wheel</h3>
+<p>Each class starts with 3 of the 8 feelings. Meeting a bid also unlocks a
+feeling: the first on that NPC&#39;s list the player doesn&#39;t have yet. No
+announcement: the next time the wheel shows, the new slice cracks in,
+slams into place, and rings its tone, and the chord gains a voice. The
+Therapist&#39;s intrusive-thoughts question demonstrates it in the tutorial.
+Turning toward all four NPCs collects 7; Trust is the 8th. The ending
+report shows FEELINGS COLLECTED n/8.</p>
 <h3 id="doc-game_manual--the-class-the-player-never-sees"><a class="anchor" href="#doc-game_manual--the-class-the-player-never-sees" aria-label="Link to this section">#</a>The class the player never sees</h3>
 <p>Three swipe questions right after the Prologue quietly sort the player
 into <strong>Guns</strong> (Anger / Fear / Sadness), <strong>Bible</strong> (Anxiety / Disgust /
@@ -1216,9 +1234,15 @@ where IT/SO answer back (per-answer <code>IT:</code>/<code>SO:</code>).</li>
 <li>Ending in three pages with the FEELZ clinical summary; class revealed
 as a diagnosis; SO answers IT&#39;s last word.</li>
 </ul>
-<p><strong>In progress: Trust</strong> (see GAME_MANUAL &quot;Trust&quot;). Next build: per-node NPC
-moods on the oscilloscope, sync when the pick matches, authored bids, the
-Trust unlock. Then the contradiction check.</p>
+<p><strong>Later the same day:</strong> Trust (moods, sync, bids, <code>run.bonds</code>), the battle
+hit on every answer, feeling unlocks (<code>engine/unlocks.js</code>, one per NPC
+plus the Therapist demo), the dramatic slice entrance, varied reactions
+(<code>IF PICK</code> / <code>IF GIFT</code>), the connection moment (<code>CONNECT</code>), cleaner HUD,
+homework as advice, and the walk-home cutscene. See GAME_MANUAL &quot;Trust&quot;
+and &quot;Filling the wheel&quot;, SCRIPT_FORMAT for the new lines.</p>
+<p><strong>Next:</strong> the consistency check (contradiction pairs), scene moves, class
+screen redesign. The connection beats and reaction variants are
+placeholder prose for the writer.</p>
 <p><strong>Still open from that discussion:</strong> the full feeling-unlock system (one
 feeling per character), class screen redesign, scene moves (Deborah&#39;s
 garden, Rwanda&#39;s mural, Samun&#39;s crosswalk), walk stills, contacts.</p>
@@ -3544,6 +3568,19 @@ emotions the player can pick from is set once by the opening Questionnaire
 — it assigns their class — and holds for the whole run (<code>engine/loadout.js</code>).
 A <code>FEELZ:</code> line used to sit in this block and was read by nothing; it&#39;s
 gone, and the build rejects one if it turns up in a file.</p>
+<h3 id="doc-script_format--trust-and-feelings-per-node-optional"><a class="anchor" href="#doc-script_format--trust-and-feelings-per-node-optional" aria-label="Link to this section">#</a>Trust and feelings (per node, optional)</h3>
+<ul>
+<li><code>MOOD: Emotion</code> — the NPC&#39;s feeling at this moment (one of the 8:
+<code>Happy</code>, <code>Trust</code>, <code>Fear</code>, <code>Surprise</code>, <code>Sadness</code>, <code>Disgust</code>, <code>Anger</code>,
+<code>Anxiety</code>). Tints the oscilloscope; a player whose picked feeling
+matches it &quot;syncs&quot; (attunement, builds trust). The color the answer&#39;s
+impact lands in is the <em>next</em> node&#39;s mood, so write moods as a path.</li>
+<li><code>BID: truth</code> / <code>lie</code> / <code>both</code> — marks a vulnerable moment (&quot;His name
+was Caleb.&quot;). The listed side(s) turn toward it: the portrait warms,
+it counts toward trust, and it&#39;s when the NPC gives the player a
+feeling (engine/unlocks.js). Use <code>both</code> when a kind lie still meets
+them.</li>
+</ul>
 <h3 id="doc-script_format--a-swipe-what-happens-for-truth-vs-lie"><a class="anchor" href="#doc-script_format--a-swipe-what-happens-for-truth-vs-lie" aria-label="Link to this section">#</a>A swipe (what happens for Truth vs. Lie)</h3>
 <p>Every node needs exactly two: <code>-- TRUTH</code> and <code>-- LIE</code>.</p>
 <ul>
@@ -3576,12 +3613,27 @@ there&#39;s nothing worth tagging.</li>
 used later in the Reckoning. Only include this if the choice is a lie
 worth being confronted with at the end. Skip the line entirely for
 truths, or for lies too small to matter.</li>
+<li><code>IF PICK Emotion: text</code> (optional, repeatable) — a line said <em>before</em>
+<code>REACT:</code> when the player picked that feeling. Use it to vary a reaction
+by feeling while <code>REACT:</code> stays the same.</li>
+<li><code>IF GIFT Emotion: text</code> / <code>IF GIFT none: text</code> (optional) — a line said
+<em>after</em> <code>REACT:</code> when this answer turned toward a bid and unlocked that
+feeling (or <code>none</code>: turned toward, nothing left to give). The
+Therapist&#39;s intrusive-thoughts question uses both, and every version
+ends on the same closing sentence so the lesson stays recognizable.</li>
 <li><code>IT:</code> / <code>SO:</code> (optional) — an intrusive-thought popup right after this
 answer&#39;s <code>REACT:</code>, before the next node. Use one or both (IT first,
 then SO). Example: the Therapist&#39;s intrusive-thoughts question has IT
 say &quot;Are you sure about that?&quot; after the lie.</li>
 <li><code>NEXT:</code> — which node this leads to, or <code>(end)</code> if this is the last
 thing this NPC says (the game moves on to whoever&#39;s next).</li>
+</ul>
+<h3 id="doc-script_format--file-level-extras"><a class="anchor" href="#doc-script_format--file-level-extras" aria-label="Link to this section">#</a>File-level extras</h3>
+<ul>
+<li><code>CONNECT [Guns|Bible|Crystals]: text</code> — the connection moment: the
+story beat played when this NPC first trusts the player (vignette,
+silence, a crack, then this text). One per class. Put these in the
+file header, before the first node.</li>
 </ul>
 <h3 id="doc-script_format--tutorial-extras-optional-the-therapist-uses-these"><a class="anchor" href="#doc-script_format--tutorial-extras-optional-the-therapist-uses-these" aria-label="Link to this section">#</a>Tutorial extras (optional — the Therapist uses these)</h3>
 <p>None of these are needed for a normal NPC. Leave them out and nothing

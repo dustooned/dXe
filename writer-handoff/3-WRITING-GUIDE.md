@@ -50,6 +50,18 @@ only rewrite two things per node, rewrite those.
   raises integrity and lucidity and costs stability; a lie usually does
   the reverse. `trust` is a judgment call per character — a comforting
   lie often *raises* it.
+- **`MOOD:`** — how they feel *right now*, as one of the 8 feelings. The
+  screen turns that color. Think of it as the stage lighting for the line.
+- **`BID:`** — mark the moment they hand you something fragile. Which
+  answer meets it: `truth`, `lie`, or `both` (a kind lie can meet
+  someone). Meeting a bid is how the player earns their trust and a new
+  feeling. One or two per character; more and they stop feeling special.
+- **`IF PICK Feeling:`** — an extra opening beat when the player walked
+  in with that feeling. Short. It's a flicker of them noticing you.
+- **`CONNECT [Class]:`** — the payoff when they trust you. Two or three
+  sentences: something they've never told anyone, or a gesture instead of
+  words. Written three times, once per class, because they're letting in
+  a different person each time.
 
 ### Things that will break the build
 
