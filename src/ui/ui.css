@@ -828,3 +828,29 @@ svg .is-hinted path {
 .dx-call__box .dx-text {
   flex: 1;
 }
+
+/* Tablet/desktop: the encounter's pieces grow with the canvas like the text
+   does. --px is 1 at the 390px phone reference, so phones are unchanged.
+   (The fish tank stays fixed: its fish are positioned by pixel.) */
+.dx-portrait {
+  width: calc(96 * var(--px));
+  height: calc(96 * var(--px));
+}
+
+.dx-dartboard {
+  max-width: calc(160 * var(--px));
+}
+
+.dx-swipe-card {
+  min-height: calc(90 * var(--px));
+}
+
+.dx-dock__contact {
+  width: calc(34 * var(--px));
+  height: calc(34 * var(--px));
+}
+
+.dx-hud-btn {
+  width: max(36px, calc(36 * var(--px)));
+  height: max(36px, calc(36 * var(--px)));
+}

@@ -1142,7 +1142,7 @@
   background: rgba(0, 0, 0, 0.96);
 }
 
-.dx-connect__bust {
+.dx-portrait.dx-connect__bust {
   width: 45%;
   height: auto;
   aspect-ratio: 1;
@@ -1165,7 +1165,7 @@
   background: var(--color-black);
 }
 
-.dx-connect__bust {
+.dx-portrait.dx-connect__bust {
   width: 58%;
   animation: dx-bust-in 1.4s ease-out both;
 }
