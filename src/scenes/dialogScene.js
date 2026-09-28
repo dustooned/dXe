@@ -510,10 +510,18 @@ export function mount(stageEl, scene, { run, onComplete }) {
             if (freshFeeling) {
               const f = freshFeeling;
               const voices = emotionsForClass(run.get().loadout, run.get().unlocked);
+              // A moment of its own (~3s): the screen dims, the wheel lifts to
+              // the center at nearly double size, the slice cracks in and slams,
+              // its tone rings, the whole chord swells with it, the wheel
+              // settles back. Input waits.
               interactive.classList.add('is-receiving');
-              setTimeout(() => audio.strikeEmotionVoice(f, voices, harmonicFunction()), 650);
-              setTimeout(() => audio.strikeChord(voices, harmonicFunction()), 1050);
-              setTimeout(() => interactive.classList.remove('is-receiving'), 1700);
+              const dim = document.createElement('div');
+              dim.className = 'dx-receive-dim';
+              dim.style.setProperty('--gift', emotionColor(f));
+              stageEl.appendChild(dim);
+              setTimeout(() => { audio.strikeEmotionVoice(f, voices, harmonicFunction()); fx.shake('weak'); }, 1250);
+              setTimeout(() => audio.strikeChord(voices, harmonicFunction()), 1700);
+              setTimeout(() => { interactive.classList.remove('is-receiving'); dim.remove(); }, 3000);
             }
             spotlightInteractive();
           }
