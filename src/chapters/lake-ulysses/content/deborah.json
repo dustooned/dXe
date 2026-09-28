@@ -281,5 +281,10 @@
     "Guns": "She holds out her hand, palm up, the way you'd show a dog you're not a threat. \"Caleb used to stand like you. Like he was waiting to get hit.\" She doesn't pull the hand back.",
     "Bible": "She opens her bible to a page with a pressed petunia in it. \"He picked this for me the Easter before. I never told anyone I kept it.\" She closes it gently, with you still looking.",
     "Crystals": "She laughs, and it breaks halfway into something else. \"You're the first person who hasn't told me he's in a better place.\" She lets herself cry, and doesn't apologize for it."
+  },
+  "contactAsk": {
+    "Guns": "\"You'll call me if you need anything. I mean it.\" She takes a pen and writes her number on the back of your hand. \"There. So you can't lose it.\"",
+    "Bible": "\"Come by Wednesday night, we do a supper.\" She presses a card into your hand. \"And that's my number, for the other six nights.\"",
+    "Crystals": "\"Can I have your number?\" She laughs at herself. \"I don't know why. I just want to know you're out there.\""
   }
 }

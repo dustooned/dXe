@@ -6,6 +6,10 @@ ACCENT: var(--color-samun)
 CONNECT [Guns]: He stops wiping the counter. "Army taught me to spot guys like you. Ready to swing." He slides you one of the unopened bottles. "Didn't figure you'd be the one to set it down."
 CONNECT [Bible]: "My mother prayed over me every night. Didn't take." He turns the bottle in his hands. "You didn't pray at me. You listened. That's worse." A beat. "That's better."
 CONNECT [Crystals]: For once, the joke doesn't come. "Four days," he says quietly. "Nobody ever asked what the four days felt like." He tells you. It takes a while.
+# Then they ask to stay in touch, and join your contacts.
+CONTACT [Guns]: "Put my number in. Call me before you swing at somebody." He grins. "I'll talk you down. Somebody should."
+CONTACT [Bible]: "My number. Pray for me if you want." He shrugs. "Or just call. Calling works better."
+CONTACT [Crystals]: "Yo, gimme your phone." He types fast. "There. Now you got a friend with a whole lot of free time."
 
 === samun_01
 PROMPT: Man, everyone's {color:Fear}hooked{/color} on something. Mine's just more honest.

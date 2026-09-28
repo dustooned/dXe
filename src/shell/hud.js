@@ -92,6 +92,7 @@ function renderSettingsPanel() {
         <input type="range" min="0" max="1" step="0.05" class="dx-hud-volume">
       </label>
       <button type="button" class="dx-btn dx-hud-mute"></button>
+      <button type="button" class="dx-btn dx-hud-speed"></button>
       ${chapterActive ? '<button type="button" class="dx-btn dx-hud-restart">RESTART CHAPTER</button>' : ''}
       <button type="button" class="dx-btn dx-hud-chapters">CHAPTER SELECT</button>
       <button type="button" class="dx-btn dx-hud-resume">RESUME</button>
@@ -108,6 +109,16 @@ function renderSettingsPanel() {
     muteBtn.classList.toggle('is-active', s.muted);
   }
   syncVolumeUI(settings);
+
+  // Text speed cycles NORMAL → FAST → INSTANT (ui/typewriterText.js).
+  const speedBtn = panelEl.querySelector('.dx-hud-speed');
+  const SPEEDS = ['normal', 'fast', 'instant'];
+  const syncSpeed = (s) => { speedBtn.textContent = `TEXT: ${s.textSpeed.toUpperCase()}`; };
+  syncSpeed(settings);
+  speedBtn.addEventListener('click', () => {
+    const cur = loadSettings().textSpeed;
+    syncSpeed(updateSettings({ textSpeed: SPEEDS[(SPEEDS.indexOf(cur) + 1) % SPEEDS.length] }));
+  });
 
   volumeSlider.addEventListener('input', () => {
     const next = updateSettings({ volume: Number(volumeSlider.value), muted: false });

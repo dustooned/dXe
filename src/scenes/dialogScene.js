@@ -14,7 +14,7 @@ import { FLIP_TEXT, encounterSide } from '../engine/itFindings.js';
 import { fillReadings } from '../engine/lake.js';
 import { recordTrust, shouldUnlockTrust, isTrusted } from '../engine/trust.js';
 import { giftFor } from '../engine/unlocks.js';
-import { STALL_MARKS, FAST_MS, STREAK_NEEDED, pressureLine } from '../engine/itPressure.js';
+import { STALL_MARKS, FAST_MS, FAST_STREAK, SKIM_STREAK, pressureLine } from '../engine/itPressure.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createFeelzNotification } from '../ui/feelzNotification.js';
 import { createItPopup } from '../ui/itPopup.js';
@@ -119,8 +119,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let cardShownAt = null;
   let fastStreak = 0;
   let skimStreak = 0;
-  let fastCommented = false;
-  let skimCommented = false;
+  // Rushing comments are once per run, and never in the tutorial.
+  const pressureAllowed = (kind) => npc.npc !== 'THERAPIST' && !run.get().pressureSaid?.[kind];
   let pendingPressure = null;
   // Phone: the live status bar (rebuilt each render; its clock ticks), and
   // who's already been called this encounter (one call per contact).
@@ -166,7 +166,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   function tapLine(tw) {
     if (tw?.isDrawing()) {
       skimStreak += 1;
-      if (skimStreak >= STREAK_NEEDED && !skimCommented) pendingPressure = 'skim';
+      if (skimStreak >= SKIM_STREAK && pressureAllowed('skim')) pendingPressure = 'skim';
     }
     tw?.finish();
   }
@@ -568,7 +568,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     clearStall();
     if (cardShownAt !== null) {
       fastStreak = performance.now() - cardShownAt < FAST_MS ? fastStreak + 1 : 0;
-      if (fastStreak >= STREAK_NEEDED && !fastCommented) pendingPressure = 'fast';
+      if (fastStreak >= FAST_STREAK && pressureAllowed('fast')) pendingPressure = 'fast';
       cardShownAt = null;
     }
 
@@ -729,9 +729,12 @@ export function mount(stageEl, scene, { run, onComplete }) {
     let tw = null;
     const box = document.createElement('div');
     box.className = 'dx-call__box';
+    const avatar = document.createElement('div');
+    avatar.className = 'dx-call__avatar';
+    avatar.textContent = CONTACTS[who].name.charAt(0);
     const p = document.createElement('p');
     p.className = 'dx-text';
-    box.appendChild(p);
+    box.append(avatar, p);
     function next() {
       if (i >= call.lines.length) {
         overlay.remove();
@@ -782,6 +785,44 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }, silence + 500);
   }
 
+  // The last beat of an encounter where they came to trust you: the room
+  // goes dark, their bust fades in large and centered, one on one — the
+  // way it felt walking into their place — and they ask to stay in touch.
+  // Tapping through drops their contact into the dock for later encounters.
+  function showContactAsk(onDone) {
+    const text = npc.contactAsk[run.get().loadout] ?? Object.values(npc.contactAsk)[0];
+    stageEl.innerHTML = '';
+    const overlay = document.createElement('div');
+    overlay.className = 'dx-connect is-asking';
+    stageEl.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add('is-closing'));
+    const bust = createNpcPortrait(npc.npc, npc.accentColor, npc.portrait);
+    bust.el.classList.add('dx-connect__bust');
+    overlay.appendChild(bust.el);
+    const name = document.createElement('p');
+    name.className = 'dx-connect__name';
+    name.textContent = npc.npc;
+    overlay.appendChild(name);
+    const box = document.createElement('div');
+    box.className = 'dx-connect__beat';
+    const p = document.createElement('p');
+    p.className = 'dx-text';
+    box.appendChild(p);
+    let tw = null;
+    setTimeout(() => {
+      overlay.appendChild(box);
+      tw = createTypewriter(p, text, { onChar: audio.playTypewriterTick });
+    }, 1300);
+    overlay.addEventListener('click', () => {
+      if (!tw) return;
+      if (!tw.isDone()) { tw.finish(); return; }
+      tw.destroy();
+      audio.playFeelzPing();
+      overlay.remove();
+      onDone();
+    });
+  }
+
   // Authored variations around the reaction (manuscript IF PICK / IF GIFT).
   function varyReaction(edge) {
     const before = edge.byPick?.[reactionEmotion];
@@ -799,8 +840,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (pendingPressure) {
       const kind = pendingPressure;
       pendingPressure = null;
-      if (kind === 'fast') { fastCommented = true; fastStreak = 0; }
-      else { skimCommented = true; skimStreak = 0; }
+      run.set({ pressureSaid: { ...(run.get().pressureSaid ?? {}), [kind]: true } });
+      if (kind === 'fast') fastStreak = 0;
+      else skimStreak = 0;
       showItThenSo(pressureLine(`${kind}It`), pressureLine(`${kind}So`), continueAfterReaction);
       return;
     }
@@ -899,11 +941,12 @@ export function mount(stageEl, scene, { run, onComplete }) {
       return;
     }
 
-    if (shouldUnlockTrust(run.get())) {
-      showTrustUnlock(() => finishEncounter());
-      return;
-    }
-    finishEncounter();
+    const afterAsk = () => {
+      if (shouldUnlockTrust(run.get())) showTrustUnlock(() => finishEncounter());
+      else finishEncounter();
+    };
+    if (npc.contactAsk && isTrusted(run.get().bonds?.[npc.npc])) showContactAsk(afterAsk);
+    else afterAsk();
   }
 
   // Two people trust you: the Trust feeling lights up on the wheel for the

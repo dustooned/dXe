@@ -278,5 +278,10 @@
     "Guns": "She finally turns all the way around. \"I clocked you as trouble the second you walked up.\" She sets the cigarette down. \"Guess I flinch at the wrong people too.\"",
     "Bible": "\"My grandmother carried a bible like that. Swore by it. Swore at me with it, too.\" A small smile, the first real one. \"You didn't do either. That's new.\"",
     "Crystals": "She leans her head back against the brick and lets the breath all the way out. \"You didn't try to fix me. Or save me.\" Her shoulders come down an inch. \"Stay a minute. Don't say anything.\""
+  },
+  "contactAsk": {
+    "Guns": "\"Give me your phone.\" She types her number in, then holds your eyes a second. \"Don't make me regret that.\"",
+    "Bible": "\"If you ever want to see this finished, text me.\" She puts her number in your phone. \"I won't preach at you if you don't preach at me.\"",
+    "Crystals": "\"Here. My number.\" She hands your phone back. \"Text me something that isn't a question sometime.\""
   }
 }

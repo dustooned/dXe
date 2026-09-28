@@ -804,3 +804,27 @@ svg .is-hinted path {
   stroke-width: 2.5;
   filter: drop-shadow(0 0 4px #ffc94d);
 }
+
+/* Undertale-style: the caller's face on the left, their words beside it. */
+.dx-call__box {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  min-height: 96px;
+}
+
+.dx-call__avatar {
+  flex: 0 0 64px;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffc94d;
+  color: #ffc94d;
+  font-size: calc(24 * var(--px));
+}
+
+.dx-call__box .dx-text {
+  flex: 1;
+}

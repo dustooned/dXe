@@ -137,6 +137,8 @@ const initialRunState = {
   bonds: {},
   // { [npc]: emotion } — which feeling each NPC gave (engine/unlocks.js).
   giftedBy: {},
+  // Which pace comments IT/SO have already made this run ({ fast, skim }).
+  pressureSaid: {},
   unlocked: [],
 };
 

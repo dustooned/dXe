@@ -5,6 +5,45 @@
 // their own lens, which isn't always what the lake would want.
 // PLACEHOLDER PROSE throughout.
 import { isTrusted } from './trust.js';
+import { ppmFor } from './lake.js';
+
+// The Therapist reads your vitals off FEELZ: whichever reading is lowest
+// gets a line (or the lake, when it's worse than all of them).
+const HEALTH_LINES = {
+  stability: [
+    "Your battery's in the red. Sit down for a second before you answer anything.",
+    "You're running on fumes. I can see it. Nothing has to be decided this second.",
+  ],
+  trust: [
+    "Your bars are low. People aren't feeling you right now. One honest sentence can change that.",
+    "Signal's weak. They don't know what to make of you yet.",
+  ],
+  lucidity: [
+    "Your Wi-Fi's barely holding. You're not seeing this clearly. Slow down.",
+    "You're foggy. Say less, notice more.",
+  ],
+  integrity: [
+    "Your clock's slipping. You know what that means.",
+    "The time on your phone is wrong again. That's not the phone.",
+  ],
+  lake: [
+    "And the lake's reading {ppm} ppm. I can see it from here.",
+    "The lake's at {ppm}. Every one of those is something you said.",
+  ],
+  steady: [
+    "Your readings look steady. That's rare. Use it.",
+    "Everything's holding. Good. Don't spend it all in one conversation.",
+  ],
+};
+
+function healthLine(state) {
+  const readings = ['stability', 'trust', 'lucidity', 'integrity'].map((k) => [k, state[k] ?? 5]);
+  const [worst, value] = readings.sort((a, b) => a[1] - b[1])[0];
+  const debt = state.truthDebt ?? 0;
+  let key = value <= 3 ? worst : 'steady';
+  if (debt >= 6 && (key === 'steady' || debt - 5 > 3 - value)) key = 'lake';
+  return pick(HEALTH_LINES[key]).replace('{ppm}', ppmFor(debt));
+}
 
 // Plain-language images for a mood, so a contact can describe it without
 // naming the feeling.
@@ -104,8 +143,11 @@ export function callFor(contact, { state, currentName, mood }) {
   const lines = [
     pick(c.greet),
     `${c.read.replace('{who}', currentName)} ${MOOD_IMAGES[read]}.`,
-    pick(c[lean]),
   ];
-  if ((state.stability ?? 10) <= 3) lines.push(c.tired);
+  // The Therapist always checks your vitals; friends only notice when
+  // you're visibly running low.
+  if (contact === 'THERAPIST') lines.push(healthLine(state));
+  lines.push(pick(c[lean]));
+  if (contact !== 'THERAPIST' && (state.stability ?? 10) <= 3) lines.push(c.tired);
   return { lines, read, lean };
 }

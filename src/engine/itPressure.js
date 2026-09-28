@@ -4,9 +4,11 @@
 //
 // Stalling: the clock starts when the card and wheel appear and resets per
 // node. One nudge at each mark, alternating voices, then silence.
-// Rushing: 3 answers in a row under FAST_MS from the card appearing, or 3
-// lines in a row tapped short before they finish drawing — one comment per
-// encounter each, after that answer's reaction.
+// Rushing: FAST_STREAK answers in a row under FAST_MS from the card
+// appearing, or SKIM_STREAK lines in a row tapped short while drawing —
+// each said once per whole run (run.pressureSaid), never during the
+// Therapist tutorial, after that answer's reaction. SO's skim reply points
+// at the text speed setting, so the jab comes with a way out.
 
 export const STALL_MARKS = [
   { ms: 30000, voice: 'it', pool: 'stall1' },
@@ -15,7 +17,8 @@ export const STALL_MARKS = [
   { ms: 75000, voice: 'so', pool: 'stall4' },
 ];
 export const FAST_MS = 2000;
-export const STREAK_NEEDED = 3;
+export const FAST_STREAK = 3;
+export const SKIM_STREAK = 4;
 
 const POOLS = {
   stall1: [
@@ -58,9 +61,8 @@ const POOLS = {
     "They're still talking. You've already left.",
   ],
   skimSo: [
-    "Or they can't, and that's the scary part.",
-    "Or you've heard this one before. Everyone has.",
-    "Or the ending was never the important part.",
+    "Or just turn the text speed up. It's in the gear.",
+    "Or you read fast. There's a setting for that. Gear, top right.",
   ],
 };
 

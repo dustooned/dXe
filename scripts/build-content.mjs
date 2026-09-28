@@ -79,6 +79,7 @@ function parseManuscript(text, fileName) {
   const nodes = {};
   const reveal = {};
   const connect = {};
+  const contactAsk = {};
   const outro = [];
   let inOutro = false;
 
@@ -117,6 +118,12 @@ function parseManuscript(text, fileName) {
       accentColor = line.slice(7).trim();
     } else if (line.startsWith('PORTRAIT:')) {
       portrait = line.slice(9).trim();
+    } else if (line.startsWith('CONTACT')) {
+      // After the connection beat: they ask to stay in touch (one per class),
+      // and their contact joins the dock.
+      const m = line.match(/^CONTACT \[(Guns|Bible|Crystals)\]:\s*(.*)$/);
+      if (!m) throw new Error(`${fileName}:${lineNumber}: bad CONTACT line "${raw}" (CONTACT [Guns|Bible|Crystals]: text)`);
+      contactAsk[m[1]] = parseText(m[2]);
     } else if (line.startsWith('CONNECT')) {
       // The connection moment (dialogScene.js showConnection): the story beat
       // played when this NPC first trusts the player, one per class.
@@ -241,6 +248,7 @@ function parseManuscript(text, fileName) {
   const result = { npc, location, accentColor, portrait, nodes };
   if (Object.keys(reveal).length) result.reveal = reveal;
   if (Object.keys(connect).length) result.connect = connect;
+  if (Object.keys(contactAsk).length) result.contactAsk = contactAsk;
   if (outro.length) result.outro = outro;
   return result;
 }

@@ -1,4 +1,4 @@
-// Persisted player-facing settings (volume/mute). Separate from save.js's
+// Persisted player-facing settings (volume/mute/text speed). Separate from save.js's
 // story progress — this is preference, not progress, and is read once at
 // boot (shell/hud.js) plus every time the settings panel changes something.
 const KEY = 'dreamxtreme:settings';
@@ -6,6 +6,8 @@ const KEY = 'dreamxtreme:settings';
 const defaultSettings = {
   volume: 0.5,
   muted: false,
+  // Typewriter speed: 'normal' | 'fast' | 'instant' (ui/typewriterText.js).
+  textSpeed: 'normal',
 };
 
 export function loadSettings() {

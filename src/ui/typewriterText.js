@@ -27,6 +27,12 @@
 // Callers don't change: finish() on a finished page turns to the next one,
 // and isDone()/onDone only report true after the last page.
 import { emotionColor } from '../engine/loadout.js';
+import { loadSettings } from '../shell/settings.js';
+
+// The player's text speed setting scales every character delay (the
+// authored {slow}/{fast}/{pause} rhythm stays proportional); 'instant'
+// shows each page whole.
+const TEXT_SPEED = { normal: 1, fast: 0.45, instant: 0 };
 
 const DEFAULT_MS_PER_CHAR = 28;
 const SPEED_MULTIPLIER = { slow: 2.6, fast: 0.35, normal: 1 };
@@ -131,9 +137,11 @@ export function paginate(segments) {
 // text immediately — for re-rendering a line that already finished drawing
 // once (e.g. dialogScene rebuilding its screen when the player picks a FEELZ
 // emotion, without replaying the node's prompt from scratch).
-export function createTypewriter(container, text, { onDone, onChar, startRevealed = false } = {}) {
+export function createTypewriter(container, text, { onDone, onChar, startRevealed: revealedArg = false } = {}) {
+  const speed = TEXT_SPEED[loadSettings().textSpeed] ?? 1;
+  const startRevealed = revealedArg || speed === 0;
   const pages = paginate(parseSegments(text));
-  let pageIndex = startRevealed ? pages.length - 1 : 0;
+  let pageIndex = revealedArg ? pages.length - 1 : 0;
   let page = null;
 
   function isLastPage() {
@@ -145,6 +153,7 @@ export function createTypewriter(container, text, { onDone, onChar, startReveale
     page = drawPage(container, pages[pageIndex] ?? [], {
       onChar,
       startRevealed,
+      speed,
       moreAfter: !isLastPage(),
       onDone: () => { if (isLastPage()) onDone?.(); },
     });
@@ -169,7 +178,7 @@ export function createTypewriter(container, text, { onDone, onChar, startReveale
 }
 
 // Draws one page into the container, replacing whatever was there.
-function drawPage(container, segments, { onDone, onChar, startRevealed, moreAfter }) {
+function drawPage(container, segments, { onDone, onChar, startRevealed, moreAfter, speed = 1 }) {
   container.innerHTML = '';
   container.classList.remove('is-new-page');
   void container.offsetWidth; // restart the new-page pop animation
@@ -243,7 +252,7 @@ function drawPage(container, segments, { onDone, onChar, startRevealed, moreAfte
       onChar?.();
       charIndex += 1;
     }
-    timer = setTimeout(step, seg.delayMs);
+    timer = setTimeout(step, seg.delayMs * speed);
   }
 
   if (startRevealed) {
