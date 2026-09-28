@@ -161,6 +161,9 @@ export function createTypewriter(container, text, { onDone, onChar, startReveale
       showPage();
     },
     isDone: () => isLastPage() && page.isDone(),
+    // True while characters are still revealing (a tap now cuts the line
+    // short), false when a page is fully shown (a tap only turns the page).
+    isDrawing: () => !page.isDone(),
     destroy: () => page.destroy(),
   };
 }

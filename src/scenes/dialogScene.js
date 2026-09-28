@@ -14,6 +14,7 @@ import { FLIP_TEXT, encounterSide } from '../engine/itFindings.js';
 import { fillReadings } from '../engine/lake.js';
 import { recordTrust, shouldUnlockTrust, isTrusted } from '../engine/trust.js';
 import { giftFor } from '../engine/unlocks.js';
+import { STALL_MARKS, FAST_MS, STREAK_NEEDED, pressureLine } from '../engine/itPressure.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createFeelzNotification } from '../ui/feelzNotification.js';
 import { createItPopup } from '../ui/itPopup.js';
@@ -111,6 +112,53 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // This NPC just crossed into trusting the player: their connection moment
   // plays after the reaction that tipped it (see showConnection).
   let pendingConnect = false;
+  // Pace pressure (engine/itPressure.js): the stall clock for the current
+  // card, when the card appeared, and the rushing streaks.
+  let stallTimers = [];
+  let cardShownAt = null;
+  let fastStreak = 0;
+  let skimStreak = 0;
+  let fastCommented = false;
+  let skimCommented = false;
+  let pendingPressure = null;
+
+  function clearStall() {
+    stallTimers.forEach(clearTimeout);
+    stallTimers = [];
+  }
+
+  // The card and wheel just appeared: start the clock. The tutorial's very
+  // first question is exempt — people are still learning the wheel.
+  function startStall() {
+    clearStall();
+    cardShownAt = performance.now();
+    if (npc.npc === 'THERAPIST' && beatIndex === 0) return;
+    for (const mark of STALL_MARKS) {
+      stallTimers.push(setTimeout(() => {
+        if (itPopup || stage !== 'prompt') return;
+        itPopup = createItPopup(stageEl, {
+          text: pressureLine(mark.pool),
+          loadout: run.get().loadout,
+          voice: mark.voice,
+          onClose: () => { itPopup?.destroy(); itPopup = null; },
+        });
+      }, mark.ms));
+    }
+  }
+
+  // A tap on a line: cutting it short while it draws counts toward
+  // skimming; a line read to the end resets the streak.
+  function tapLine(tw) {
+    if (tw?.isDrawing()) {
+      skimStreak += 1;
+      if (skimStreak >= STREAK_NEEDED && !skimCommented) pendingPressure = 'skim';
+    }
+    tw?.finish();
+  }
+
+  function lineReadThrough(skippedFlag) {
+    if (!skippedFlag) skimStreak = 0;
+  }
 
   function easeMoodTo(mood) {
     const to = moodHex(mood);
@@ -332,7 +380,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       );
 
       screen.addEventListener('click', () => {
-        if (typewriter && !typewriter.isDone()) typewriter.finish();
+        if (typewriter && !typewriter.isDone()) tapLine(typewriter);
         else continueAfterReaction();
       });
     } else {
@@ -426,6 +474,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
           drama.tension = Math.max(drama.tension, Math.min(1, typed / promptChars));
         },
         onDone: () => {
+          if (!promptRevealed) lineReadThrough(typed >= promptChars);
           promptRevealed = true;
           drama.tension = 1;
           interactive.hidden = false;
@@ -433,6 +482,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
           // not on every re-render a pick triggers.
           if (!wasRevealed) {
             interactive.classList.add('is-entering');
+            startStall();
             // The new slice arrives (feelzDartboard.js `fresh`, ~1.6s): input
             // waits, its own voice rings as it slams in, then the whole chord
             // sounds with it added — the wheel audibly gets bigger.
@@ -451,7 +501,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       });
 
       screen.addEventListener('click', () => {
-        if (typewriter && !typewriter.isDone()) typewriter.finish();
+        if (typewriter && !typewriter.isDone()) tapLine(typewriter);
         else if (pickTypewriter && !pickTypewriter.isDone()) pickTypewriter.finish();
       });
     }
@@ -494,6 +544,13 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
   function handleSwipe(swipeKey) {
+    clearStall();
+    if (cardShownAt !== null) {
+      fastStreak = performance.now() - cardShownAt < FAST_MS ? fastStreak + 1 : 0;
+      if (fastStreak >= STREAK_NEEDED && !fastCommented) pendingPressure = 'fast';
+      cardShownAt = null;
+    }
+
     // The choice just locked in and the wheel is about to disappear (SAY/
     // REACT replaces it below) — the picked feeling's background hum has
     // nothing left to represent once it's no longer "the current pick."
@@ -641,6 +698,14 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (pendingConnect) {
       pendingConnect = false;
       showConnection(continueAfterReaction);
+      return;
+    }
+    if (pendingPressure) {
+      const kind = pendingPressure;
+      pendingPressure = null;
+      if (kind === 'fast') { fastCommented = true; fastStreak = 0; }
+      else { skimCommented = true; skimStreak = 0; }
+      showItThenSo(pressureLine(`${kind}It`), pressureLine(`${kind}So`), continueAfterReaction);
       return;
     }
     const edge = pendingEdge;
@@ -889,6 +954,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // audio bleeds into the next scene.
     audio.stopLeitmotif();
     audio.stopPulse();
+    clearStall();
     stageEl.classList.remove('is-frozen');
     stageEl.innerHTML = '';
   };
