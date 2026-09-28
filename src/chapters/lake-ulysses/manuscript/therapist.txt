@@ -35,14 +35,14 @@ PICK Anxiety: "Braced already, and nothing's even happened yet. Okay."
 
 -- TRUTH
 SAY: Not great. I woke up on the side of the road.
-REACT: "Okay. Thank you." The keys keep going; she types while you talk, the way you learn to with forty people on your caseload. "I keep four little lines on you. You'll see them move. They're not a grade. Weather, not a verdict."
+REACT: "Okay. Thank you." The keys keep going; she types while you talk, the way you learn to with forty people on your caseload. "Look at the top of your screen. Battery's how steady you're holding up. The bars are how connected people feel to you. The Wi-Fi's how clearly you're seeing things. And the clock keeps honest time, as long as you do." A beat. "Weather, not a verdict."
 EFFECTS: trust+1 lucidity+1 stability-1
 DEBT: 0
 NEXT: therapist_intrusive
 
 -- LIE
 SAY: Fine. I'm fine.
-REACT: "Fine." The keys don't stop. "Everyone's fine. My whole caseload is fine." A tired almost-laugh. "I keep four little lines on you. They move whether you tell me the truth or not." A pause. "That reading at the bottom is the lake. FEELZ pulls it off the county sensors. It doesn't care how anybody feels."
+REACT: "Fine." The keys don't stop. "Everyone's fine. My whole caseload is fine." A tired almost-laugh. "Top of your screen. Battery, bars, Wi-Fi: how steady, how connected, how clear. They move whether you tell me the truth or not. And if the clock starts acting funny, that one's on you." A pause. "That reading at the bottom is the lake. FEELZ pulls it off the county sensors. It doesn't care how anybody feels."
 EFFECTS: stability+1 trust-1
 DEBT: +1
 TAGS: Deflection
@@ -121,6 +121,8 @@ LINE [Bible]: "Try getting curious about someone this week. Ask how they're doin
 LINE [Crystals]: "Take an interest in somebody this week. Notice what they're doing and ask about it. Curiosity's a good place to start."
 LINE [therapist_02=truth]: "You told me about the water. It heard you too."
 LINE [therapist_02=lie]: "The dream can wait. Dreams are patient. Lakes are more patient."
+LINE: "One more thing. I'm in your contacts, bottom of the screen. If your bars and Wi-Fi hold up, you can call me. Make a real friend out there and they'll show up next to me. They'll tell you what they think. Doesn't mean they're right."
+LINE: "And if your carrier goes from 5G down to No Service? That's the lake talking, not your phone."
 LINE: "I'll have FEELZ send you a reminder, so you can't pretend you forgot."
 HANGUP: The call ends mid-sentence, the way her calls do. FEELZ goes dark in your hand, and the lake is very quiet.
 NOTIFY: FEELZ · HOMEWORK\nToday's practice: reach out\nSay hello to one neighbor.\nNotice what they care about. Ask about it.\nListen a little longer than feels comfortable.\nYou don't have to fix anything.

@@ -18,7 +18,8 @@ import { STALL_MARKS, FAST_MS, STREAK_NEEDED, pressureLine } from '../engine/itP
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createFeelzNotification } from '../ui/feelzNotification.js';
 import { createItPopup } from '../ui/itPopup.js';
-import { createMeterGroup } from '../ui/meterBar.js';
+import { createStatusBar } from '../ui/statusBar.js';
+import { CONTACTS, contactsFor, therapistReachable, callFor } from '../engine/contacts.js';
 import { createNpcPortrait } from '../ui/npcPortrait.js';
 import { createFeelzDartboard } from '../ui/feelzDartboard.js';
 import { EMOTIONS, emotionColor, emotionsForClass, getDominantEmotion } from '../engine/loadout.js';
@@ -121,10 +122,18 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let fastCommented = false;
   let skimCommented = false;
   let pendingPressure = null;
+  // Phone: the live status bar (rebuilt each render; its clock ticks), and
+  // who's already been called this encounter (one call per contact).
+  let statusBar = null;
+  let itTyping = false;
+  const calledThisEncounter = new Set();
+  // A contact's read, kept glowing on the wheel until the next moment.
+  let hintedEmotion = null;
 
   function clearStall() {
     stallTimers.forEach(clearTimeout);
     stallTimers = [];
+    itTyping = false;
   }
 
   // The card and wheel just appeared: start the clock. The tutorial's very
@@ -135,6 +144,12 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (npc.npc === 'THERAPIST' && beatIndex === 0) return;
     for (const mark of STALL_MARKS) {
       stallTimers.push(setTimeout(() => {
+        itTyping = true;
+        statusBar?.setTyping(true);
+      }, mark.ms - 2500));
+      stallTimers.push(setTimeout(() => {
+        itTyping = false;
+        statusBar?.setTyping(false);
         if (itPopup || stage !== 'prompt') return;
         itPopup = createItPopup(stageEl, {
           text: pressureLine(mark.pool),
@@ -202,6 +217,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     promptRevealed = false;
     drama.tension = 0;
     drama.mismatch = false;
+    hintedEmotion = null;
     easeMoodTo(currentNode().mood);
     audio.startPulse(() => drama.tension);
     audio.strikeChord(emotionsForClass(run.get().loadout, run.get().unlocked), harmonicFunction());
@@ -291,7 +307,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
     content.className = 'dx-game-content dx-game-content--live-bg';
     screen.appendChild(content);
 
-    const meters = createMeterGroup(runState).el;
+    statusBar?.destroy();
+    const shutOut = stage === 'prompt' && /(_shut_down|_closed|_hard)$/.test(currentNodeId ?? '');
+    statusBar = createStatusBar(runState, { typing: itTyping, airplane: shutOut });
+    const meters = statusBar.el;
     if (applyReveal(meters, 'meters')) spotlitHud.push(meters);
     content.appendChild(meters);
 
@@ -462,6 +481,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
         },
       });
       interactive.appendChild(dartboard.el);
+      if (hintedEmotion) dartboard.hint(hintedEmotion);
 
       // Re-renders triggered by picking a FEELZ emotion reuse this same node's
       // prompt — startRevealed skips replaying the draw from scratch.
@@ -510,6 +530,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const lake = createLakeGauge(runState.truthDebt).el;
     if (applyReveal(lake, 'debt')) spotlitHud.push(lake);
     content.appendChild(lake);
+    if (stage === 'prompt' && isRevealed('meters')) content.appendChild(createDock(runState));
     stageEl.appendChild(screen);
 
     // A HUD piece's first appearance is spotlit together with the line
@@ -583,6 +604,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // leitmotif live and moves the confrontation chord's voicing.
     const trustDelta = (patch.trust ?? before.trust) - before.trust;
     const stabilityDelta = (patch.stability ?? before.stability) - before.stability;
+    if (before.stability > 2 && (patch.stability ?? before.stability) <= 2) audio.playLowBattery();
     audio.nudgeLeitmotifMood(trustDelta + stabilityDelta);
 
     // The impact lands on their reaction: how hard is how much their TRU
@@ -656,6 +678,80 @@ export function mount(stageEl, scene, { run, onComplete }) {
     });
     freshFeeling = gift;
     return gift;
+  }
+
+  // Contacts dock (engine/contacts.js): the Therapist always, reachable only
+  // with enough bars (Trust) and Wi-Fi (Lucidity); anyone who trusts you.
+  function createDock(state) {
+    const dock = document.createElement('div');
+    dock.className = 'dx-dock';
+    for (const who of contactsFor(state, npc.npc)) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'dx-dock__contact';
+      btn.textContent = CONTACTS[who].name.charAt(0);
+      btn.setAttribute('aria-label', `Call ${CONTACTS[who].name}`);
+      const offline = who === 'THERAPIST' && !therapistReachable(state);
+      if (offline) btn.classList.add('is-offline');
+      if (calledThisEncounter.has(who)) btn.classList.add('is-used');
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (itPopup || calledThisEncounter.has(who)) return;
+        if (offline) {
+          audio.playCallFailed();
+          btn.classList.add('is-failed');
+          setTimeout(() => btn.classList.remove('is-failed'), 900);
+          return;
+        }
+        calledThisEncounter.add(who);
+        btn.classList.add('is-used');
+        placeCall(who);
+      });
+      dock.appendChild(btn);
+    }
+    return dock;
+  }
+
+  // A call: it rings, then greeting, their read (that slice glows on the
+  // wheel), their advice. Tap through; the wheel and card wait underneath.
+  function placeCall(who) {
+    clearStall();
+    const node = currentNode();
+    const name = npc.npc.charAt(0) + npc.npc.slice(1).toLowerCase();
+    const call = callFor(who, { state: run.get(), currentName: name, mood: node.mood });
+    const overlay = document.createElement('div');
+    overlay.className = 'dx-call';
+    overlay.innerHTML = `<p class="dx-call__who">CALLING ${CONTACTS[who].name.toUpperCase()}…</p>`;
+    stageEl.appendChild(overlay);
+    itPopup = { destroy: () => overlay.remove() };
+    const ringMs = audio.playPhoneRing();
+    let i = 0;
+    let tw = null;
+    const box = document.createElement('div');
+    box.className = 'dx-call__box';
+    const p = document.createElement('p');
+    p.className = 'dx-text';
+    box.appendChild(p);
+    function next() {
+      if (i >= call.lines.length) {
+        overlay.remove();
+        itPopup = null;
+        startStall();
+        return;
+      }
+      if (i === 1) { hintedEmotion = call.read; dartboard?.hint(call.read); }
+      tw = createTypewriter(p, call.lines[i], { onChar: audio.playTypewriterTick });
+      i += 1;
+    }
+    setTimeout(() => {
+      overlay.querySelector('.dx-call__who').textContent = CONTACTS[who].name.toUpperCase();
+      overlay.appendChild(box);
+      next();
+      overlay.addEventListener('click', () => {
+        if (tw && !tw.isDone()) tw.finish();
+        else next();
+      });
+    }, ringMs);
   }
 
   // The connection moment: this person just let you in. The world closes
@@ -955,6 +1051,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     audio.stopLeitmotif();
     audio.stopPulse();
     clearStall();
+    statusBar?.destroy();
     stageEl.classList.remove('is-frozen');
     stageEl.innerHTML = '';
   };

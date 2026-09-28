@@ -293,6 +293,12 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
   return {
     el: wrapper,
     reset,
+    // A contact's read on the other person's mood (engine/contacts.js):
+    // glow that slice, lit or not, without selecting it.
+    hint(emotion) {
+      Object.values(segments).forEach(({ g }) => g.classList.remove('is-hinted'));
+      segments[emotion]?.g.classList.add('is-hinted');
+    },
     // Safety net for an orphaned hover tone — the wheel getting torn down
     // (a re-render, the scene unmounting) mid-hover, before pointerleave
     // ever fires. Deliberately does NOT stop the select drone: a re-render

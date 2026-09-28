@@ -997,6 +997,46 @@ export function silenceThenCrack(silenceMs = 1500) {
   return silenceMs;
 }
 
+// ─── Phone sounds (status bar + contacts) ──────────────────────────────────────
+
+function blip(frequency, at, dur, gainPeak, type = 'square') {
+  const audioCtx = ensureContext();
+  const osc = audioCtx.createOscillator();
+  osc.type = type;
+  osc.frequency.value = frequency;
+  const gain = audioCtx.createGain();
+  gain.gain.setValueAtTime(0, at);
+  gain.gain.linearRampToValueAtTime(gainPeak, at + 0.005);
+  gain.gain.setValueAtTime(gainPeak, at + dur - 0.02);
+  gain.gain.linearRampToValueAtTime(0.0001, at + dur);
+  osc.connect(gain).connect(masterGain);
+  osc.start(at);
+  osc.stop(at + dur + 0.02);
+  osc.onended = () => gain.disconnect();
+}
+
+// Two rings of an old handset: a warbled pair, twice.
+export function playPhoneRing() {
+  const t = ensureContext().currentTime + 0.02;
+  for (const off of [0, 0.9]) {
+    for (let i = 0; i < 8; i++) blip(i % 2 ? 480 : 440, t + off + i * 0.05, 0.05, 0.05, 'sine');
+  }
+  return 1500;
+}
+
+// The three falling tones of a call that won't connect.
+export function playCallFailed() {
+  const t = ensureContext().currentTime + 0.02;
+  [913.8, 1370.6, 1776.7].reverse().forEach((f, i) => blip(f, t + i * 0.3, 0.27, 0.06, 'sine'));
+}
+
+// Low battery: two small descending chirps.
+export function playLowBattery() {
+  const t = ensureContext().currentTime + 0.02;
+  blip(1200, t, 0.08, 0.05);
+  blip(800, t + 0.12, 0.1, 0.05);
+}
+
 // ─── Lake splash ──────────────────────────────────────────────────────────────
 
 // A water splash built from square waves whose pitch follows the lake's
