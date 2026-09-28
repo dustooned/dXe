@@ -131,6 +131,8 @@ const initialRunState = {
   // not `trust`, which is the TRU meter), and the feelings unlocked during
   // the run beyond the class's starting three.
   bonds: {},
+  // { [npc]: emotion } — which feeling each NPC gave (engine/unlocks.js).
+  giftedBy: {},
   unlocked: [],
 };
 

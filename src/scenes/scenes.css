@@ -1000,3 +1000,55 @@
   pointer-events: none;
   filter: contrast(1.25) brightness(1.1);
 }
+
+/* "Bing!" when an NPC gives the player a feeling (dialogScene.js
+   giveFeeling). Sits on the canvas above the stage, then floats away. */
+.dx-unlock-toast {
+  position: absolute;
+  z-index: 50;
+  top: 38%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 18px;
+  background: var(--color-black);
+  border: 2px solid var(--gift);
+  box-shadow: 0 0 18px var(--gift);
+  pointer-events: none;
+  animation: dx-unlock 2.2s steps(12, end) forwards;
+}
+
+.dx-unlock-toast__bing {
+  font-size: calc(14 * var(--fs));
+  color: var(--gift);
+}
+
+.dx-unlock-toast__symbol {
+  font-size: calc(8 * var(--fs));
+}
+
+@keyframes dx-unlock {
+  0%   { opacity: 0; transform: translate(-50%, 12px) scale(0.8); }
+  12%  { opacity: 1; transform: translate(-50%, 0) scale(1.08); }
+  20%  { transform: translate(-50%, 0) scale(1); }
+  75%  { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -24px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-unlock-toast { animation: none; }
+}
+
+.dx-report__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  font-size: calc(7 * var(--fs));
+}
+
+.dx-report__chip.is-missing {
+  opacity: 0.35;
+}

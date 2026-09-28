@@ -85,6 +85,7 @@ export function buildReport(state) {
     truths,
     lies,
     note: caseNote(truths, lies),
+    collected: emotionsForClass(loadout, state.unlocked ?? []),
   };
 }
 
@@ -108,6 +109,19 @@ export function createFeelzReport(state) {
   dx.appendChild(el('p', 'dx-report__diagnosis', `${r.diagnosis.name} (${r.diagnosis.code})`));
   dx.appendChild(el('p', 'dx-report__body', r.diagnosis.summary));
   root.appendChild(dx);
+
+  // The wheel: every feeling the player ended the run able to reach for.
+  const wheel = el('div', 'dx-report__section');
+  wheel.appendChild(el('p', 'dx-report__label', `FEELINGS COLLECTED · ${r.collected.length} / ${EMOTION_ORDER.length}`));
+  const chips = el('div', 'dx-report__chips');
+  for (const name of EMOTION_ORDER) {
+    const has = r.collected.includes(name);
+    const chip = el('span', `dx-report__chip${has ? '' : ' is-missing'}`, has ? `${EMOTIONS[name].symbol} ${name}` : '· ???');
+    if (has) chip.style.color = EMOTIONS[name].color;
+    chips.appendChild(chip);
+  }
+  wheel.appendChild(chips);
+  root.appendChild(wheel);
 
   const emo = el('div', 'dx-report__section');
   emo.appendChild(el('p', 'dx-report__label', 'EMOTIONS REACHED FOR'));
@@ -150,5 +164,5 @@ export function createFeelzReport(state) {
 export function reportSummaryLine(state) {
   const r = buildReport(state);
   const lead = r.dominant ? `led with ${r.dominant}` : 'no dominant emotion';
-  return `${r.diagnosis.name} · ${lead} · ${r.truths} true, ${r.lies} not`;
+  return `${r.diagnosis.name} · ${lead} · ${r.collected.length}/${EMOTION_ORDER.length} feelings · ${r.truths} true, ${r.lies} not`;
 }

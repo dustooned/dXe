@@ -13,6 +13,7 @@ import { SO_BLOOM_TEXT, soEmotionLeanText } from '../engine/soRebuttals.js';
 import { FLIP_TEXT, encounterSide } from '../engine/itFindings.js';
 import { fillReadings } from '../engine/lake.js';
 import { recordTrust, shouldUnlockTrust } from '../engine/trust.js';
+import { giftFor } from '../engine/unlocks.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createFeelzNotification } from '../ui/feelzNotification.js';
 import { createItPopup } from '../ui/itPopup.js';
@@ -559,6 +560,32 @@ export function mount(stageEl, scene, { run, onComplete }) {
     drama.shock = { t0: now, strength, color: moodHex(mood) };
     drama.ripple = turnedToward ? { t0: now + 300 } : drama.ripple;
     fx.shake(strength > 0.6 ? 'strong' : strength > 0.2 ? 'weak' : 'subtle');
+    if (turnedToward) setTimeout(giveFeeling, 450);
+  }
+
+  // A shared moment: the NPC's feeling becomes the player's (engine/
+  // unlocks.js). Lands just after the gold ripple, as a "Bing!" over the
+  // screen, and the slice is live on the wheel from the next moment on.
+  function giveFeeling() {
+    const state = run.get();
+    const gift = giftFor(npc.npc, state);
+    if (!gift) return;
+    run.set({
+      unlocked: [...(state.unlocked ?? []), gift],
+      giftedBy: { ...(state.giftedBy ?? {}), [npc.npc]: gift },
+    });
+    audio.playFeelzBoot();
+    const toast = document.createElement('div');
+    toast.className = 'dx-unlock-toast';
+    toast.style.setProperty('--gift', emotionColor(gift));
+    toast.innerHTML = '<span class="dx-unlock-toast__bing">BING!</span>';
+    const sym = document.createElement('span');
+    sym.className = 'dx-unlock-toast__symbol';
+    sym.textContent = `${EMOTIONS[gift].symbol} unlocked`;
+    toast.appendChild(sym);
+    // On the canvas, not the stage: the stage is wiped on every render.
+    (stageEl.parentElement ?? stageEl).appendChild(toast);
+    setTimeout(() => toast.remove(), 2200);
   }
 
   function continueAfterReaction() {
