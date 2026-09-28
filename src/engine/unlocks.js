@@ -11,6 +11,8 @@
 import { emotionsForClass } from './loadout.js';
 
 export const GIFTS = {
+  // The tutorial demo: a head start, not part of the per-class math above.
+  THERAPIST: ['Surprise', 'Sadness', 'Anxiety'],
   DEBORAH: ['Sadness', 'Disgust', 'Fear'],
   RWANDA: ['Anger', 'Happy'],
   SAMUN: ['Happy', 'Surprise', 'Fear'],

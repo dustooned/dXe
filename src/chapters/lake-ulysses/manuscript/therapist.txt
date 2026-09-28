@@ -51,19 +51,40 @@ NEXT: therapist_intrusive
 
 === therapist_intrusive
 PROMPT: "Quick one, it's on the intake form." Keys. "Some people get thoughts that don't feel like theirs. Uninvited. Loud. Like somebody else got into the room. Ever happen to you?"
+BID: truth
 
 -- TRUTH
 SAY: Yeah. There's... a voice. Maybe two.
 REACT: "Okay. That's more common than people think. You don't have to argue with them. Just notice who's talking."
 EFFECTS: integrity+1 lucidity+1 stability-1
 DEBT: 0
+IF PICK Happy: "A smile, saying that. Okay."
+IF PICK Trust: "You said that like you meant for me to hear it."
+IF PICK Fear: "You whispered that. You don't have to."
+IF PICK Surprise: "You look like you surprised yourself."
+IF PICK Sadness: "That sounded tired. Thank you for saying it anyway."
+IF PICK Disgust: "You said it like it tastes bad. It's allowed to."
+IF PICK Anger: "You're mad at them. That's fair."
+IF PICK Anxiety: "Breathe. You said it. It's out now."
+IF GIFT Surprise: "Keep an eye on your wheel. Something you didn't see coming just came in with that. Everyone you meet is carrying a feeling you don't have yet."
+IF GIFT Sadness: "Keep an eye on your wheel. Something heavy just came in with that. Everyone you meet is carrying a feeling you don't have yet."
+IF GIFT Anxiety: "Keep an eye on your wheel. Something restless just came in with that. Everyone you meet is carrying a feeling you don't have yet."
+IF GIFT none: "Your wheel's fuller than most. Still. Everyone you meet is carrying a feeling you don't have yet."
 IT: Great. Now you've ruined the fun.
 SO: Go ahead, tell her all about us. She won't believe you.
 NEXT: therapist_02
 
 -- LIE
 SAY: No. Never.
-REACT: "Okay. I'll check the box." A pause. "If that changes, it's not a failure. It's information."
+REACT: "Okay. I'll check the box." A pause. "If that changes, it's not a failure. It's information. Some feelings only show up when you let someone see you."
+IF PICK Happy: "Bright answer. Almost too bright."
+IF PICK Trust: "Quick. Like you practiced it."
+IF PICK Fear: "You said that fast. Like it might hear you."
+IF PICK Surprise: "You look surprised I even asked."
+IF PICK Sadness: "That came out heavier than a no usually does."
+IF PICK Disgust: "You say it like it's a dirty question."
+IF PICK Anger: "Okay. No need to bite."
+IF PICK Anxiety: "Mm. Your knee's bouncing, by the way."
 EFFECTS: stability+1 lucidity-1
 DEBT: +1
 TAGS: Denial

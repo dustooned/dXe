@@ -66,6 +66,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let pendingEdge = null;
   let reactionEmotion = null;
   let reactionSwipeKey = null;
+  // What turning toward this answer's bid gave: a feeling, null (turned
+  // toward, nothing left to give), or undefined (no bid met).
+  let reactionGift;
   let typewriter = null;
   let itPopup = null;
   let oscilloscope = null;
@@ -321,7 +324,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
       typewriter = createTypewriter(
         reaction,
-        composeReaction(npc.npc, pendingEdge.npcReaction, reactionEmotion, reactionSwipeKey),
+        composeReaction(npc.npc, varyReaction(pendingEdge), reactionEmotion, reactionSwipeKey),
         { onChar: audio.playTypewriterTick, onDone: () => { tapHint.hidden = false; } },
       );
 
@@ -427,10 +430,16 @@ export function mount(stageEl, scene, { run, onComplete }) {
           // not on every re-render a pick triggers.
           if (!wasRevealed) {
             interactive.classList.add('is-entering');
-            // The new slice's own voice, as it lights up.
+            // The new slice arrives (feelzDartboard.js `fresh`, ~1.6s): input
+            // waits, its own voice rings as it slams in, then the whole chord
+            // sounds with it added — the wheel audibly gets bigger.
             if (freshFeeling) {
               const f = freshFeeling;
-              setTimeout(() => audio.strikeEmotionVoice(f, emotionsForClass(run.get().loadout, run.get().unlocked), harmonicFunction()), 350);
+              const voices = emotionsForClass(run.get().loadout, run.get().unlocked);
+              interactive.classList.add('is-receiving');
+              setTimeout(() => audio.strikeEmotionVoice(f, voices, harmonicFunction()), 650);
+              setTimeout(() => audio.strikeChord(voices, harmonicFunction()), 1050);
+              setTimeout(() => interactive.classList.remove('is-receiving'), 1700);
             }
             spotlightInteractive();
           }
@@ -502,6 +511,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       run.set({ bonds: recordTrust(run.get().bonds ?? {}, npc.npc, { synced, turnedToward }) });
     }
     if (turnedToward) turnedTowardThisEncounter = true;
+    reactionGift = turnedToward ? giveFeeling() : undefined;
 
     // How this specific choice actually landed with the NPC — trust and
     // stability are their rapport/comfort with you, not a right-or-wrong
@@ -569,7 +579,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
     drama.shock = { t0: now, strength, color: moodHex(mood) };
     drama.ripple = turnedToward ? { t0: now + 300 } : drama.ripple;
     fx.shake(strength > 0.6 ? 'strong' : strength > 0.2 ? 'weak' : 'subtle');
-    if (turnedToward) setTimeout(giveFeeling, 450);
   }
 
   // A shared moment: the NPC's feeling becomes the player's (engine/
@@ -578,12 +587,20 @@ export function mount(stageEl, scene, { run, onComplete }) {
   function giveFeeling() {
     const state = run.get();
     const gift = giftFor(npc.npc, state);
-    if (!gift) return;
+    if (!gift) return null;
     run.set({
       unlocked: [...(state.unlocked ?? []), gift],
       giftedBy: { ...(state.giftedBy ?? {}), [npc.npc]: gift },
     });
     freshFeeling = gift;
+    return gift;
+  }
+
+  // Authored variations around the reaction (manuscript IF PICK / IF GIFT).
+  function varyReaction(edge) {
+    const before = edge.byPick?.[reactionEmotion];
+    const after = reactionGift === undefined ? null : edge.byGift?.[reactionGift ?? 'none'];
+    return [before, edge.npcReaction, after].filter(Boolean).join(' ');
   }
 
   function continueAfterReaction() {

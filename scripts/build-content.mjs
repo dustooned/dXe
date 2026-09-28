@@ -202,6 +202,17 @@ function parseManuscript(text, fileName) {
         .split(',')
         .map((s) => s.trim())
         .filter(Boolean);
+    } else if (line.startsWith('IF PICK ') || line.startsWith('IF GIFT ')) {
+      // Variations on this answer's REACT:. IF PICK <Emotion>: a line said
+      // before it when the player picked that feeling. IF GIFT <Emotion|none>:
+      // a line said after it when this answer unlocked that feeling (or, for
+      // "none", when it turned toward a bid but there was nothing to give).
+      const m = line.match(/^IF (PICK|GIFT) (\w+):\s*(.*)$/);
+      if (!m || (m[2] !== 'none' && !EMOTIONS.includes(m[2])) || (m[1] === 'PICK' && m[2] === 'none')) {
+        throw new Error(`${fileName}:${lineNumber}: bad IF line "${raw}"`);
+      }
+      const key = m[1] === 'PICK' ? 'byPick' : 'byGift';
+      currentEdge[key] = { ...currentEdge[key], [m[2]]: parseText(m[3]) };
     } else if (line.startsWith('IT:')) {
       // IT/SO right after this answer's reaction, before the next node.
       currentEdge.itText = parseText(line.slice(3));

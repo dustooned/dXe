@@ -71,12 +71,28 @@
           "tags": [],
           "ledgerEntry": null,
           "nextNodeId": "therapist_02",
+          "byPick": {
+            "Happy": "\"A smile, saying that. Okay.\"",
+            "Trust": "\"You said that like you meant for me to hear it.\"",
+            "Fear": "\"You whispered that. You don't have to.\"",
+            "Surprise": "\"You look like you surprised yourself.\"",
+            "Sadness": "\"That sounded tired. Thank you for saying it anyway.\"",
+            "Disgust": "\"You said it like it tastes bad. It's allowed to.\"",
+            "Anger": "\"You're mad at them. That's fair.\"",
+            "Anxiety": "\"Breathe. You said it. It's out now.\""
+          },
+          "byGift": {
+            "Surprise": "\"Keep an eye on your wheel. Something you didn't see coming just came in with that. Everyone you meet is carrying a feeling you don't have yet.\"",
+            "Sadness": "\"Keep an eye on your wheel. Something heavy just came in with that. Everyone you meet is carrying a feeling you don't have yet.\"",
+            "Anxiety": "\"Keep an eye on your wheel. Something restless just came in with that. Everyone you meet is carrying a feeling you don't have yet.\"",
+            "none": "\"Your wheel's fuller than most. Still. Everyone you meet is carrying a feeling you don't have yet.\""
+          },
           "itText": "Great. Now you've ruined the fun.",
           "soText": "Go ahead, tell her all about us. She won't believe you."
         },
         "lie": {
           "playerText": "No. Never.",
-          "npcReaction": "\"Okay. I'll check the box.\" A pause. \"If that changes, it's not a failure. It's information.\"",
+          "npcReaction": "\"Okay. I'll check the box.\" A pause. \"If that changes, it's not a failure. It's information. Some feelings only show up when you let someone see you.\"",
           "effects": {
             "stability": 1,
             "lucidity": -1
@@ -87,10 +103,23 @@
           ],
           "ledgerEntry": "You told your therapist you don't hear voices.",
           "nextNodeId": "therapist_02",
+          "byPick": {
+            "Happy": "\"Bright answer. Almost too bright.\"",
+            "Trust": "\"Quick. Like you practiced it.\"",
+            "Fear": "\"You said that fast. Like it might hear you.\"",
+            "Surprise": "\"You look surprised I even asked.\"",
+            "Sadness": "\"That came out heavier than a no usually does.\"",
+            "Disgust": "\"You say it like it's a dirty question.\"",
+            "Anger": "\"Okay. No need to bite.\"",
+            "Anxiety": "\"Mm. Your knee's bouncing, by the way.\""
+          },
           "itText": "Are you sure about that?",
           "soText": "Good. Keep quiet about it. We'll keep quiet about you."
         }
-      }
+      },
+      "bid": [
+        "truth"
+      ]
     },
     "therapist_02": {
       "id": "therapist_02",

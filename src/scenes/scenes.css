@@ -1001,21 +1001,70 @@
   filter: contrast(1.25) brightness(1.1);
 }
 
-/* A feeling just unlocked (feelzDartboard.js `fresh`): the slice surfaces
-   out of the dark and glows once, instead of any announcement. */
-.dx-feelz .is-fresh,
-svg .is-fresh {
-  animation: dx-fresh-slice 1.6s ease-out 0.3s both;
+/* A feeling just unlocked (feelzDartboard.js `fresh`), ~1.6s, no text:
+   dim → crack → slam → ring → pulse. Timed with dialogScene.js's tone
+   (650ms) and full-chord strike (1050ms); input waits via .is-receiving. */
+.dx-dialog-interactive.is-receiving {
+  pointer-events: none;
 }
 
-@keyframes dx-fresh-slice {
-  0%   { opacity: 0; filter: brightness(0.3); }
-  45%  { opacity: 1; filter: brightness(1.9) drop-shadow(0 0 6px currentColor); }
-  100% { opacity: 1; filter: none; }
+.has-fresh svg g:not(.is-fresh) {
+  animation: dx-fresh-dim 1.6s ease-in-out both;
+}
+
+.has-fresh svg .is-fresh {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: dx-fresh-slam 1.6s both;
+}
+
+.has-fresh svg {
+  animation: dx-fresh-pulse 1.6s ease-out both;
+}
+
+.dx-fresh-ring {
+  stroke-width: 3;
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  pointer-events: none;
+  animation: dx-fresh-ring 1.6s ease-out both;
+}
+
+@keyframes dx-fresh-dim {
+  0%, 100% { opacity: 1; }
+  15%, 60% { opacity: 0.25; }
+}
+
+@keyframes dx-fresh-slam {
+  0%, 20% { opacity: 0; transform: scale(1); }
+  /* crack: a flicker of it in the gap */
+  26% { opacity: 0.5; filter: brightness(2); }
+  30% { opacity: 0; }
+  34% { opacity: 0.7; transform: scale(1.35); filter: brightness(3); }
+  /* slam */
+  42% { opacity: 1; transform: scale(0.94); filter: brightness(2.2); }
+  50% { transform: scale(1.04); }
+  60%, 100% { opacity: 1; transform: scale(1); filter: none; }
+}
+
+@keyframes dx-fresh-ring {
+  0%, 40% { opacity: 0; transform: scale(0.35); }
+  44% { opacity: 1; }
+  80%, 100% { opacity: 0; transform: scale(1.45); }
+}
+
+@keyframes dx-fresh-pulse {
+  0%, 62% { transform: scale(1); }
+  70% { transform: scale(1.06); }
+  82%, 100% { transform: scale(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  svg .is-fresh { animation: none; }
+  .has-fresh svg,
+  .has-fresh svg g,
+  .dx-fresh-ring { animation: none; }
+  .dx-fresh-ring { display: none; }
 }
 
 .dx-report__chips {

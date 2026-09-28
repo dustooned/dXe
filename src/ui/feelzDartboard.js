@@ -280,6 +280,16 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
     });
   }
 
+  // A fresh feeling's entrance (CSS: scenes.css "fresh slice"): the rest of
+  // the wheel dims, the slice cracks in and slams into place, a ring in its
+  // color rolls out from the hub, the whole wheel pulses once.
+  if (fresh && segments[fresh]) {
+    wrapper.classList.add('has-fresh');
+    const ring = svgEl('circle', { cx: CX, cy: CY, r: OUTER_R, class: 'dx-fresh-ring', fill: 'none' });
+    ring.style.stroke = EMOTIONS[fresh].color;
+    svg.appendChild(ring);
+  }
+
   return {
     el: wrapper,
     reset,
