@@ -117,6 +117,11 @@
           "soText": "Good. Keep quiet about it. We'll keep quiet about you."
         }
       },
+      "byClass": {
+        "Guns": "\"Quick one. Nobody's grading you.\"",
+        "Bible": "\"This one's on the form. No wrong answer, I promise.\"",
+        "Crystals": "\"This one might feel weird. That's fine.\""
+      },
       "bid": [
         "truth"
       ]
@@ -156,6 +161,11 @@
           "ledgerEntry": "You told your therapist you didn't remember the dream.",
           "nextNodeId": null
         }
+      },
+      "byClass": {
+        "Guns": "\"Last one, then you can get back out there.\"",
+        "Bible": "\"One more. Then you can go.\"",
+        "Crystals": "\"Last one. Let whatever comes up come up.\""
       }
     }
   },
@@ -163,10 +173,36 @@
     "meters": "therapist_01",
     "debt": "therapist_02"
   },
+  "opener": {
+    "Guns": "\"You're still standing. Good. Let's keep it that way.\"",
+    "Bible": "\"You made it through. Somebody up there must want you around.\"",
+    "Crystals": "\"Hey. Breathe. Whatever you're picking up on, it's okay to feel it.\""
+  },
   "outro": [
     {
       "kind": "line",
       "text": "\"I give everyone homework. Almost nobody does it. Here's yours anyway.\""
+    },
+    {
+      "kind": "line",
+      "text": "\"You're good at bracing. This week, try listening instead.\"",
+      "when": {
+        "class": "Guns"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"You're good at showing up for people. Let someone show up for you.\"",
+      "when": {
+        "class": "Bible"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"You feel everything in a room. Pick one person and stay with them.\"",
+      "when": {
+        "class": "Crystals"
+      }
     },
     {
       "kind": "line",

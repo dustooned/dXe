@@ -162,6 +162,12 @@ Every node needs exactly two: `-- TRUTH` and `-- LIE`.
   story beat played when this NPC first trusts the player (vignette,
   silence, a crack, then this text). One per class. Put these in the
   file header, before the first node.
+- `OPENER [Guns|Bible|Crystals]: text` — how this NPC sizes up the player's
+  class: said before the first prompt of the encounter, whichever node
+  that is. One per class, in the header.
+- `CLASS [Guns|Bible|Crystals]: text` (inside a node) — a line before this
+  node's prompt for that class only. The Therapist uses it to talk in
+  each class's language.
 - `CONTACT [Guns|Bible|Crystals]: text` — the stay-in-touch moment: the
   last beat of an encounter that ended with this NPC trusting the player
   (their bust, large, then this text); their contact then joins the dock.

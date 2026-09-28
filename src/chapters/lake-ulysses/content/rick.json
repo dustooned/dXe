@@ -341,5 +341,10 @@
     "Guns": "He takes your phone right out of your hand, thumbs his number in, hands it back. \"You didn't see me do that.\"",
     "Bible": "He takes your phone without asking and saves his number under a fake name. \"Nobody from church needs to know.\"",
     "Crystals": "He takes your phone, types, and hands it back without looking at you. \"In case. That's all. In case.\""
+  },
+  "opener": {
+    "Guns": "(He squares up.) \"You looking for trouble or just built like it?\"",
+    "Bible": "\"Church kid. Figures.\"",
+    "Crystals": "(He sneers.) \"What are you, the welcome committee?\""
   }
 }

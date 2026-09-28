@@ -11,6 +11,11 @@ CONTACT [Guns]: "Give me your phone." She types her number in, then holds your e
 CONTACT [Bible]: "If you ever want to see this finished, text me." She puts her number in your phone. "I won't preach at you if you don't preach at me."
 CONTACT [Crystals]: "Here. My number." She hands your phone back. "Text me something that isn't a question sometime."
 
+# How they size up your class, before their first line.
+OPENER [Guns]: "Great. Another guy who looks like he wants to start something."
+OPENER [Bible]: "If you're here to save me, I'm booked."
+OPENER [Crystals]: (She almost relaxes.) "You don't look like you're here to tell me to smile."
+
 === rwanda_01
 PROMPT: Why do I gotta sand myself down just to be {color:Disgust}digestible{/color}?
 MOOD: Anger

@@ -287,5 +287,10 @@
     "Guns": "\"Put my number in. Call me before you swing at somebody.\" He grins. \"I'll talk you down. Somebody should.\"",
     "Bible": "\"My number. Pray for me if you want.\" He shrugs. \"Or just call. Calling works better.\"",
     "Crystals": "\"Yo, gimme your phone.\" He types fast. \"There. Now you got a friend with a whole lot of free time.\""
+  },
+  "opener": {
+    "Guns": "\"Easy, soldier. I'm unarmed. Mostly.\"",
+    "Bible": "\"Don't pray at me, man. I'm working.\"",
+    "Crystals": "\"Ooh, good vibes. Sit, sit.\""
   }
 }

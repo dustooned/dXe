@@ -3695,6 +3695,12 @@ thing this NPC says (the game moves on to whoever&#39;s next).</li>
 story beat played when this NPC first trusts the player (vignette,
 silence, a crack, then this text). One per class. Put these in the
 file header, before the first node.</li>
+<li><code>OPENER [Guns|Bible|Crystals]: text</code> — how this NPC sizes up the player&#39;s
+class: said before the first prompt of the encounter, whichever node
+that is. One per class, in the header.</li>
+<li><code>CLASS [Guns|Bible|Crystals]: text</code> (inside a node) — a line before this
+node&#39;s prompt for that class only. The Therapist uses it to talk in
+each class&#39;s language.</li>
 <li><code>CONTACT [Guns|Bible|Crystals]: text</code> — the stay-in-touch moment: the
 last beat of an encounter that ended with this NPC trusting the player
 (their bust, large, then this text); their contact then joins the dock.

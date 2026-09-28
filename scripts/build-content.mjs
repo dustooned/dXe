@@ -80,6 +80,7 @@ function parseManuscript(text, fileName) {
   const reveal = {};
   const connect = {};
   const contactAsk = {};
+  const opener = {};
   const outro = [];
   let inOutro = false;
 
@@ -118,6 +119,17 @@ function parseManuscript(text, fileName) {
       accentColor = line.slice(7).trim();
     } else if (line.startsWith('PORTRAIT:')) {
       portrait = line.slice(9).trim();
+    } else if (line.startsWith('OPENER')) {
+      // How this NPC sizes up the player's class: a line before the first
+      // prompt of the encounter, whichever node that turns out to be.
+      const m = line.match(/^OPENER \[(Guns|Bible|Crystals)\]:\s*(.*)$/);
+      if (!m) throw new Error(`${fileName}:${lineNumber}: bad OPENER line "${raw}"`);
+      opener[m[1]] = parseText(m[2]);
+    } else if (line.startsWith('CLASS [')) {
+      // A line before this node's prompt, for one class only.
+      const m = line.match(/^CLASS \[(Guns|Bible|Crystals)\]:\s*(.*)$/);
+      if (!m) throw new Error(`${fileName}:${lineNumber}: bad CLASS line "${raw}"`);
+      currentNode.byClass = { ...currentNode.byClass, [m[1]]: parseText(m[2]) };
     } else if (line.startsWith('CONTACT')) {
       // After the connection beat: they ask to stay in touch (one per class),
       // and their contact joins the dock.
@@ -249,6 +261,7 @@ function parseManuscript(text, fileName) {
   if (Object.keys(reveal).length) result.reveal = reveal;
   if (Object.keys(connect).length) result.connect = connect;
   if (Object.keys(contactAsk).length) result.contactAsk = contactAsk;
+  if (Object.keys(opener).length) result.opener = opener;
   if (outro.length) result.outro = outro;
   return result;
 }

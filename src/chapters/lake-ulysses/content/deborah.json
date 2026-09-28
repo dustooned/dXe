@@ -286,5 +286,10 @@
     "Guns": "\"You'll call me if you need anything. I mean it.\" She takes a pen and writes her number on the back of your hand. \"There. So you can't lose it.\"",
     "Bible": "\"Come by Wednesday night, we do a supper.\" She presses a card into your hand. \"And that's my number, for the other six nights.\"",
     "Crystals": "\"Can I have your number?\" She laughs at herself. \"I don't know why. I just want to know you're out there.\""
+  },
+  "opener": {
+    "Guns": "(She steps back half a pace.) \"Oh. You're one of the tough ones.\"",
+    "Bible": "(She brightens.) \"You've got a church face. I can always tell.\"",
+    "Crystals": "(Her smile tightens.) \"You're not from our congregation, are you.\""
   }
 }

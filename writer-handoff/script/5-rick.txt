@@ -11,6 +11,11 @@ CONTACT [Guns]: He takes your phone right out of your hand, thumbs his number in
 CONTACT [Bible]: He takes your phone without asking and saves his number under a fake name. "Nobody from church needs to know."
 CONTACT [Crystals]: He takes your phone, types, and hands it back without looking at you. "In case. That's all. In case."
 
+# How they size up your class, before their first line.
+OPENER [Guns]: (He squares up.) "You looking for trouble or just built like it?"
+OPENER [Bible]: "Church kid. Figures."
+OPENER [Crystals]: (He sneers.) "What are you, the welcome committee?"
+
 === rick_01
 GATE: trust < 3 -> rick_shut_down
 PROMPT: Guy looked at me {color:Anger}wrong{/color} outside. Now he's got a busted jaw and I got my patch back. That's just how it works out here.

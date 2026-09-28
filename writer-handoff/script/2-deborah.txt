@@ -11,6 +11,11 @@ CONTACT [Guns]: "You'll call me if you need anything. I mean it." She takes a pe
 CONTACT [Bible]: "Come by Wednesday night, we do a supper." She presses a card into your hand. "And that's my number, for the other six nights."
 CONTACT [Crystals]: "Can I have your number?" She laughs at herself. "I don't know why. I just want to know you're out there."
 
+# How they size up your class, before their first line.
+OPENER [Guns]: (She steps back half a pace.) "Oh. You're one of the tough ones."
+OPENER [Bible]: (She brightens.) "You've got a church face. I can always tell."
+OPENER [Crystals]: (Her smile tightens.) "You're not from our congregation, are you."
+
 === deborah_01
 PROMPT: God took my boy when He needed him. I just have to {color:Trust}trust{/color} that.
 MOOD: Sadness

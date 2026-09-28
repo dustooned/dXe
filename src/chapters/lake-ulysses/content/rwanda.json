@@ -283,5 +283,10 @@
     "Guns": "\"Give me your phone.\" She types her number in, then holds your eyes a second. \"Don't make me regret that.\"",
     "Bible": "\"If you ever want to see this finished, text me.\" She puts her number in your phone. \"I won't preach at you if you don't preach at me.\"",
     "Crystals": "\"Here. My number.\" She hands your phone back. \"Text me something that isn't a question sometime.\""
+  },
+  "opener": {
+    "Guns": "\"Great. Another guy who looks like he wants to start something.\"",
+    "Bible": "\"If you're here to save me, I'm booked.\"",
+    "Crystals": "(She almost relaxes.) \"You don't look like you're here to tell me to smile.\""
   }
 }

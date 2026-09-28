@@ -11,6 +11,11 @@ CONTACT [Guns]: "Put my number in. Call me before you swing at somebody." He gri
 CONTACT [Bible]: "My number. Pray for me if you want." He shrugs. "Or just call. Calling works better."
 CONTACT [Crystals]: "Yo, gimme your phone." He types fast. "There. Now you got a friend with a whole lot of free time."
 
+# How they size up your class, before their first line.
+OPENER [Guns]: "Easy, soldier. I'm unarmed. Mostly."
+OPENER [Bible]: "Don't pray at me, man. I'm working."
+OPENER [Crystals]: "Ooh, good vibes. Sit, sit."
+
 === samun_01
 PROMPT: Man, everyone's {color:Fear}hooked{/color} on something. Mine's just more honest.
 MOOD: Happy

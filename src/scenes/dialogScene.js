@@ -17,7 +17,8 @@ import { giftFor } from '../engine/unlocks.js';
 import { STALL_MARKS, FAST_MS, FAST_STREAK, SKIM_STREAK, pressureLine } from '../engine/itPressure.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createFeelzNotification } from '../ui/feelzNotification.js';
-import { createItPopup } from '../ui/itPopup.js';
+import { createItPopup, resolveItText } from '../ui/itPopup.js';
+import { sharpen } from '../engine/itSharpen.js';
 import { createStatusBar } from '../ui/statusBar.js';
 import { CONTACTS, contactsFor, therapistReachable, callFor } from '../engine/contacts.js';
 import { createNpcPortrait } from '../ui/npcPortrait.js';
@@ -151,7 +152,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
         itTyping = false;
         statusBar?.setTyping(false);
         if (itPopup || stage !== 'prompt') return;
-        itPopup = createItPopup(stageEl, {
+        itPopup = sayIt({
           text: pressureLine(mark.pool),
           loadout: run.get().loadout,
           voice: mark.voice,
@@ -485,9 +486,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
       // Re-renders triggered by picking a FEELZ emotion reuse this same node's
       // prompt — startRevealed skips replaying the draw from scratch.
-      const promptChars = currentNode().prompt.replace(/{[^}]*}/g, '').length || 1;
+      const promptChars = promptText().replace(/{[^}]*}/g, '').length || 1;
       let typed = 0;
-      typewriter = createTypewriter(prompt, currentNode().prompt, {
+      typewriter = createTypewriter(prompt, promptText(), {
         onChar: () => {
           audio.playTypewriterTick();
           typed += 1;
@@ -823,6 +824,26 @@ export function mount(stageEl, scene, { run, onComplete }) {
     });
   }
 
+  // Every IT/SO popup in an encounter goes through here, so their lines
+  // sharpen as the lake worsens (engine/itSharpen.js).
+  function sayIt(opts) {
+    const text = sharpen(resolveItText(opts.text, run.get().loadout), opts.voice ?? 'it', run.get().truthDebt);
+    return createItPopup(stageEl, { ...opts, text });
+  }
+
+  // The prompt as the player sees it: the NPC's read on their class before
+  // the first line of the encounter (OPENER), and any per-class line for
+  // this node (CLASS), then the authored prompt.
+  function promptText() {
+    const loadout = run.get().loadout;
+    const node = currentNode();
+    const parts = [];
+    if (beatIndex === 0 && npc.opener?.[loadout]) parts.push(npc.opener[loadout]);
+    if (node.byClass?.[loadout]) parts.push(node.byClass[loadout]);
+    parts.push(node.prompt);
+    return parts.join(' ');
+  }
+
   // Authored variations around the reaction (manuscript IF PICK / IF GIFT).
   function varyReaction(edge) {
     const before = edge.byPick?.[reactionEmotion];
@@ -883,13 +904,13 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // involved at all.
   function showItThenSo(itText, soText, onClose) {
     const debt = run.get().truthDebt;
-    itPopup = createItPopup(stageEl, {
+    itPopup = sayIt({
       text: fillReadings(itText, debt),
       loadout: run.get().loadout,
       flashClose: true,
       onClose: () => {
         itPopup?.destroy();
-        itPopup = createItPopup(stageEl, {
+        itPopup = sayIt({
           text: fillReadings(soText, debt),
           loadout: run.get().loadout,
           flashClose: false, // last one in the sequence
@@ -914,7 +935,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (edge.itText && edge.soText) {
       showItThenSo(edge.itText, edge.soText, () => proceedAfterIt(edge));
     } else if (edge.itText || edge.soText) {
-      itPopup = createItPopup(stageEl, {
+      itPopup = sayIt({
         text: fillReadings(edge.itText ?? edge.soText, run.get().truthDebt),
         loadout: run.get().loadout,
         voice: edge.itText ? 'it' : 'so',
@@ -1025,7 +1046,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
     if (beat.kind === 'it' || beat.kind === 'so') {
       const next = outroQueue[0];
-      itPopup = createItPopup(stageEl, {
+      itPopup = sayIt({
         text: beat.text,
         loadout: run.get().loadout,
         voice: beat.kind,
