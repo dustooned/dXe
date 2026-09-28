@@ -12,7 +12,7 @@ import { emotionLeanText } from '../engine/itEmotionLean.js';
 import { SO_BLOOM_TEXT, soEmotionLeanText } from '../engine/soRebuttals.js';
 import { FLIP_TEXT, encounterSide } from '../engine/itFindings.js';
 import { fillReadings } from '../engine/lake.js';
-import { recordTrust, shouldUnlockTrust } from '../engine/trust.js';
+import { recordTrust, shouldUnlockTrust, isTrusted } from '../engine/trust.js';
 import { giftFor } from '../engine/unlocks.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createFeelzNotification } from '../ui/feelzNotification.js';
@@ -108,6 +108,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let pendingImpact = null;
   // A feeling just given, waiting for the wheel to show it (see giveFeeling).
   let freshFeeling = null;
+  // This NPC just crossed into trusting the player: their connection moment
+  // plays after the reaction that tipped it (see showConnection).
+  let pendingConnect = false;
 
   function easeMoodTo(mood) {
     const to = moodHex(mood);
@@ -508,7 +511,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const synced = !!node.mood && activeEmotion === node.mood;
     const turnedToward = !!node.bid?.includes(swipeKey);
     if (synced || turnedToward) {
+      const wasTrusted = isTrusted(run.get().bonds?.[npc.npc]);
       run.set({ bonds: recordTrust(run.get().bonds ?? {}, npc.npc, { synced, turnedToward }) });
+      if (!wasTrusted && isTrusted(run.get().bonds[npc.npc]) && npc.connect) pendingConnect = true;
     }
     if (turnedToward) turnedTowardThisEncounter = true;
     reactionGift = turnedToward ? giveFeeling() : undefined;
@@ -596,6 +601,34 @@ export function mount(stageEl, scene, { run, onComplete }) {
     return gift;
   }
 
+  // The connection moment: this person just let you in. The world closes
+  // to a vignette on them, all sound drops out, then a crack and warmth,
+  // then a story beat written for this NPC and the player's class.
+  function showConnection(onDone) {
+    const text = npc.connect[run.get().loadout] ?? Object.values(npc.connect)[0];
+    const overlay = document.createElement('div');
+    overlay.className = 'dx-connect';
+    stageEl.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add('is-closing'));
+    const silence = audio.silenceThenCrack(1600);
+    setTimeout(() => {
+      overlay.classList.add('is-open');
+      const box = document.createElement('div');
+      box.className = 'dx-connect__beat';
+      const p = document.createElement('p');
+      p.className = 'dx-text';
+      box.appendChild(p);
+      overlay.appendChild(box);
+      const tw = createTypewriter(p, text, { onChar: audio.playTypewriterTick });
+      overlay.addEventListener('click', () => {
+        if (!tw.isDone()) { tw.finish(); return; }
+        tw.destroy();
+        overlay.remove();
+        onDone();
+      });
+    }, silence + 500);
+  }
+
   // Authored variations around the reaction (manuscript IF PICK / IF GIFT).
   function varyReaction(edge) {
     const before = edge.byPick?.[reactionEmotion];
@@ -605,6 +638,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   function continueAfterReaction() {
     if (stage !== 'reaction' || !pendingEdge) return;
+    if (pendingConnect) {
+      pendingConnect = false;
+      showConnection(continueAfterReaction);
+      return;
+    }
     const edge = pendingEdge;
     pendingEdge = null;
     stage = 'prompt';

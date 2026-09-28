@@ -2,6 +2,11 @@ NPC: RWANDA
 LOCATION: 3
 ACCENT: var(--color-rwanda)
 
+# The connection moment: played when this NPC first trusts you.
+CONNECT [Guns]: She finally turns all the way around. "I clocked you as trouble the second you walked up." She sets the cigarette down. "Guess I flinch at the wrong people too."
+CONNECT [Bible]: "My grandmother carried a bible like that. Swore by it. Swore at me with it, too." A small smile, the first real one. "You didn't do either. That's new."
+CONNECT [Crystals]: She leans her head back against the brick and lets the breath all the way out. "You didn't try to fix me. Or save me." Her shoulders come down an inch. "Stay a minute. Don't say anything."
+
 === rwanda_01
 PROMPT: Why do I gotta sand myself down just to be {color:Disgust}digestible{/color}?
 MOOD: Anger

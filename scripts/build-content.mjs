@@ -78,6 +78,7 @@ function parseManuscript(text, fileName) {
   let portrait = null;
   const nodes = {};
   const reveal = {};
+  const connect = {};
   const outro = [];
   let inOutro = false;
 
@@ -116,6 +117,12 @@ function parseManuscript(text, fileName) {
       accentColor = line.slice(7).trim();
     } else if (line.startsWith('PORTRAIT:')) {
       portrait = line.slice(9).trim();
+    } else if (line.startsWith('CONNECT')) {
+      // The connection moment (dialogScene.js showConnection): the story beat
+      // played when this NPC first trusts the player, one per class.
+      const m = line.match(/^CONNECT \[(Guns|Bible|Crystals)\]:\s*(.*)$/);
+      if (!m) throw new Error(`${fileName}:${lineNumber}: bad CONNECT line "${raw}" (CONNECT [Guns|Bible|Crystals]: text)`);
+      connect[m[1]] = parseText(m[2]);
     } else if (line.startsWith('REVEAL:')) {
       const match = line.slice(7).trim().match(REVEAL_PATTERN);
       if (!match) throw new Error(`${fileName}:${lineNumber}: bad REVEAL line "${raw}"`);
@@ -233,6 +240,7 @@ function parseManuscript(text, fileName) {
   // don't use them build byte-identical to before they existed.
   const result = { npc, location, accentColor, portrait, nodes };
   if (Object.keys(reveal).length) result.reveal = reveal;
+  if (Object.keys(connect).length) result.connect = connect;
   if (outro.length) result.outro = outro;
   return result;
 }

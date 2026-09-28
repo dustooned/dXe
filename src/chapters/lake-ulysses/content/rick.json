@@ -331,5 +331,10 @@
         "lie"
       ]
     }
+  },
+  "connect": {
+    "Guns": "He squares up, then doesn't. \"Takes one to know one, huh.\" He rolls his sleeve down over the patch. \"Nobody's ever seen me back down. Keep it that way.\"",
+    "Bible": "\"My old man quoted Leviticus at me till the day I left.\" His jaw works. \"You're the first churchy type who didn't make me feel like the verse.\"",
+    "Crystals": "He looks at you a long time. \"There was a guy. Before the patch.\" He doesn't say more. He doesn't have to. He lets you see it."
   }
 }

@@ -2,6 +2,11 @@ NPC: DEBORAH
 LOCATION: 2
 ACCENT: var(--color-deborah)
 
+# The connection moment: played when this NPC first trusts you.
+CONNECT [Guns]: She holds out her hand, palm up, the way you'd show a dog you're not a threat. "Caleb used to stand like you. Like he was waiting to get hit." She doesn't pull the hand back.
+CONNECT [Bible]: She opens her bible to a page with a pressed petunia in it. "He picked this for me the Easter before. I never told anyone I kept it." She closes it gently, with you still looking.
+CONNECT [Crystals]: She laughs, and it breaks halfway into something else. "You're the first person who hasn't told me he's in a better place." She lets herself cry, and doesn't apologize for it.
+
 === deborah_01
 PROMPT: God took my boy when He needed him. I just have to {color:Trust}trust{/color} that.
 MOOD: Sadness

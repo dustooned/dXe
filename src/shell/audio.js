@@ -938,6 +938,65 @@ export function playGrind() {
   });
 }
 
+// ─── Connection moment (dialogScene.js showConnection) ────────────────────────
+
+// Everything drops out (the whole mix, music included) for `silenceMs`, then
+// one crack — a dry snap like ice giving way — and a warm major chord rings
+// up out of it as the sound comes back. Returns the total ms until it rings.
+export function silenceThenCrack(silenceMs = 1500) {
+  const audioCtx = ensureContext();
+  const now = audioCtx.currentTime;
+  const back = now + silenceMs / 1000;
+  masterGain.gain.cancelScheduledValues(now);
+  masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+  masterGain.gain.linearRampToValueAtTime(0.0001, now + 0.35);
+  masterGain.gain.setValueAtTime(0.0001, back);
+  masterGain.gain.linearRampToValueAtTime(masterVolume, back + 0.02);
+
+  // The crack: a very short burst of bright noise over a low thud.
+  const len = Math.floor(audioCtx.sampleRate * 0.09);
+  const buffer = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+  const noise = audioCtx.createBufferSource();
+  noise.buffer = buffer;
+  const hp = audioCtx.createBiquadFilter();
+  hp.type = 'highpass';
+  hp.frequency.value = 1400;
+  const ng = audioCtx.createGain();
+  ng.gain.value = 0.5;
+  noise.connect(hp).connect(ng).connect(masterGain);
+  noise.start(back + 0.02);
+
+  const thud = audioCtx.createOscillator();
+  thud.type = 'sine';
+  thud.frequency.setValueAtTime(90, back + 0.02);
+  thud.frequency.exponentialRampToValueAtTime(40, back + 0.25);
+  const tg = audioCtx.createGain();
+  tg.gain.setValueAtTime(0.4, back + 0.02);
+  tg.gain.exponentialRampToValueAtTime(0.0001, back + 0.3);
+  thud.connect(tg).connect(masterGain);
+  thud.start(back + 0.02);
+  thud.stop(back + 0.32);
+
+  // The warmth after it: a soft major chord swelling up and ringing out.
+  [261.63, 329.63, 392.0, 523.25].forEach((frequency, i) => {
+    const at = back + 0.18 + i * 0.05;
+    const osc = audioCtx.createOscillator();
+    osc.type = 'triangle';
+    osc.frequency.value = frequency;
+    const gain = audioCtx.createGain();
+    gain.gain.setValueAtTime(0, at);
+    gain.gain.linearRampToValueAtTime(0.07, at + 0.4);
+    gain.gain.exponentialRampToValueAtTime(0.0001, at + 3.2);
+    osc.connect(gain).connect(masterGain);
+    osc.start(at);
+    osc.stop(at + 3.3);
+    osc.onended = () => gain.disconnect();
+  });
+  return silenceMs;
+}
+
 // ─── Lake splash ──────────────────────────────────────────────────────────────
 
 // A water splash built from square waves whose pitch follows the lake's
