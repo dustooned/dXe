@@ -103,6 +103,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
   const drama = { tension: 0, color: null, shock: null, ripple: null, mismatch: false };
   // Set at the swipe, spent when the reaction lands.
   let pendingImpact = null;
+  // A feeling just given, waiting for the wheel to show it (see giveFeeling).
+  let freshFeeling = null;
 
   function easeMoodTo(mood) {
     const to = moodHex(mood);
@@ -383,6 +385,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       dartboard = createFeelzDartboard({
         loadout: run.get().loadout,
         unlocked: run.get().unlocked,
+        fresh: freshFeeling,
         dropTarget: card,
         selected: activeEmotion,
         harmonicFunction: harmonicFunction(),
@@ -391,6 +394,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
         // the callback signature in case a future pass wants to bring back
         // a lighter tap-only treatment; it isn't used for that today.)
         onSelect: (emotion, _source) => {
+          freshFeeling = null;
           activeEmotion = emotion;
           activeEmotionColor = emotionColor(emotion);
           justPicked = true;
@@ -423,6 +427,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
           // not on every re-render a pick triggers.
           if (!wasRevealed) {
             interactive.classList.add('is-entering');
+            // The new slice's own voice, as it lights up.
+            if (freshFeeling) {
+              const f = freshFeeling;
+              setTimeout(() => audio.strikeEmotionVoice(f, emotionsForClass(run.get().loadout, run.get().unlocked), harmonicFunction()), 350);
+            }
             spotlightInteractive();
           }
         },
@@ -564,8 +573,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
   // A shared moment: the NPC's feeling becomes the player's (engine/
-  // unlocks.js). Lands just after the gold ripple, as a "Bing!" over the
-  // screen, and the slice is live on the wheel from the next moment on.
+  // unlocks.js). No announcement: the next time the wheel shows, the new
+  // slice lights up and rings its own tone.
   function giveFeeling() {
     const state = run.get();
     const gift = giftFor(npc.npc, state);
@@ -574,18 +583,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       unlocked: [...(state.unlocked ?? []), gift],
       giftedBy: { ...(state.giftedBy ?? {}), [npc.npc]: gift },
     });
-    audio.playFeelzBoot();
-    const toast = document.createElement('div');
-    toast.className = 'dx-unlock-toast';
-    toast.style.setProperty('--gift', emotionColor(gift));
-    toast.innerHTML = '<span class="dx-unlock-toast__bing">BING!</span>';
-    const sym = document.createElement('span');
-    sym.className = 'dx-unlock-toast__symbol';
-    sym.textContent = `${EMOTIONS[gift].symbol} unlocked`;
-    toast.appendChild(sym);
-    // On the canvas, not the stage: the stage is wiped on every render.
-    (stageEl.parentElement ?? stageEl).appendChild(toast);
-    setTimeout(() => toast.remove(), 2200);
+    freshFeeling = gift;
   }
 
   function continueAfterReaction() {

@@ -81,7 +81,9 @@ function isOverEl(el, x, y) {
   return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
 }
 
-export function createFeelzDartboard({ loadout, unlocked = [], dropTarget, onSelect, selected, harmonicFunction = 'tonic' }) {
+// `fresh` (optional): a feeling just unlocked this run — its slice lights up
+// with a glow the first time the wheel shows it (engine/unlocks.js).
+export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dropTarget, onSelect, selected, harmonicFunction = 'tonic' }) {
   const activeEmotions = new Set([...(CLASSES[loadout]?.emotions ?? []), ...unlocked]);
   // Same order engine/loadout.js's emotionsForClass() returns (Set preserves
   // insertion order) — has to match dialogScene.js's own ordering exactly,
@@ -160,6 +162,7 @@ export function createFeelzDartboard({ loadout, unlocked = [], dropTarget, onSel
 
     applyState(emotion, path, label);
     segments[emotion] = { path, label, g };
+    if (emotion === fresh) g.classList.add('is-fresh');
 
     if (!isActive) return;
 
