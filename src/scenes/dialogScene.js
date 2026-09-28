@@ -951,18 +951,12 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   // Two people trust you: the Trust feeling lights up on the wheel for the
   // rest of the run. Said in FEELZ's flat voice, like the homework ping.
+  // Same as every other feeling: no announcement. It's queued on the run
+  // (the encounter is ending) and surfaces with the full entrance the first
+  // time the wheel shows in the next encounter.
   function showTrustUnlock(onDone) {
-    run.set({ unlocked: [...(run.get().unlocked ?? []), 'Trust'] });
-    audio.playFeelzBoot();
-    stageEl.innerHTML = '';
-    itPopup = createFeelzNotification(stageEl, {
-      text: `FEELZ · NEW FEELING\n${EMOTIONS.Trust.symbol} unlocked\nTwo people let you in.\nIt's on your wheel now. Reach for it when it's real.`,
-      onClose: () => {
-        itPopup?.destroy();
-        itPopup = null;
-        onDone();
-      },
-    });
+    run.set({ unlocked: [...(run.get().unlocked ?? []), 'Trust'], pendingFresh: 'Trust' });
+    onDone();
   }
 
   function finishEncounter() {
@@ -1077,6 +1071,12 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // restart on every node. Must run before the first enterNode() below,
   // which strikes a chord built on this NPC's tonic and needs to know who's
   // playing. See STAT_MATH.md "Per-NPC leitmotif".
+  // A feeling unlocked at the end of the last encounter (Trust) makes its
+  // entrance on this one's first wheel.
+  if (run.get().pendingFresh) {
+    freshFeeling = run.get().pendingFresh;
+    run.set({ pendingFresh: null });
+  }
   audio.startLeitmotif(npc.npc);
   audio.preloadTypewriterTick();
   enterNode();

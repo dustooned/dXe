@@ -144,9 +144,20 @@ The player is never told this is happening. It's a texture, not a puzzle.
 
 ### The four meters + the one that matters
 
-Four thin bars sit at the top of every dialog screen: **INT**
-(Integrity), **TRU** (Trust), **STB** (Stability), **LUC** (Lucidity),
-each 0–10. Truth generally raises Integrity and Lucidity and costs
+The four meters, each 0–10, read as the FEELZ phone's **status bar** at
+the top of every dialog screen (`ui/statusBar.js`):
+
+| Meter | Shown as |
+| :-- | :-- |
+| **STB** Stability | Battery. Red, with a chirp, at 2 or below. |
+| **TRU** Trust | Signal bars. |
+| **LUC** Lucidity | Wi-Fi arcs. |
+| **INT** Integrity | The clock. Below 7 its minutes glitch; near 0 it shows `--:--`. |
+
+The carrier name reads the lake: **FEELZ 5G → LTE → E → No Service** as
+Truth Debt climbs. A red dot blinks just before IT or SO nudges you, and
+the bar goes to ✈ airplane mode when an NPC shuts you out at the door.
+The Therapist explains all of it in her first reaction. Truth generally raises Integrity and Lucidity and costs
 Stability/Trust; a comforting lie usually does the opposite. These are
 mostly *legible texture* right now — visible to the player, shaping which
 line shows up as the closing "epilogue" note on the ending screen, but
@@ -175,6 +186,28 @@ comment after every conversation. They speak up only when they notice
 something new: the player's truth/lie pattern flipped, their go-to
 feeling changed, or the lake crossed into a new status. A tap anywhere
 closes them. Full design: [`IT_DESIGN.md`](IT_DESIGN.md).
+
+### Contacts: dial a friend
+
+A dock under the lake gauge holds your contacts. The **Therapist** is
+always there, but only picks up when your bars and Wi-Fi are both 4 or
+more; otherwise the call fails. Anyone who **trusts** you joins after
+their stay-in-touch moment (below). A call rings, then the caller (their
+avatar on the left of the box) greets you in their own way, reads the
+person you're facing (their mood's slice glows on the wheel; the read is
+more reliable the stronger your bond), and advises truth or lie from
+their own bias (Rick pushes lies, Rwanda pushes truth). The Therapist
+also reads your weakest vital. One call per contact per encounter.
+Content: `engine/contacts.js`.
+
+### IT and SO watch your pace
+
+Sit on a choice and they lean in: IT at 30s, SO at 45s, IT at 60s, SO at
+75s, then silence (the tutorial's first question is exempt). Answer three
+in a row in under 2 seconds, or cut four lines short in a row, and they
+comment once per run; SO's skimming reply points at the **text speed**
+setting (gear → TEXT: NORMAL / FAST / INSTANT). None of it changes a stat.
+Lines: `engine/itPressure.js`.
 
 ### Reading text
 
@@ -272,8 +305,12 @@ whether people can rely on you, and it's built three ways:
 
 Two syncs plus one bid met and that NPC **trusts you**: the screen closes
 to a vignette on them, all sound drops out, a crack, then a short story
-beat of them letting you in (different per NPC and per class). Earn
-trust with 2 NPCs and the **Trust** feeling unlocks on the wheel.
+beat of them letting you in (different per NPC and per class). If the
+encounter ends with them trusting you, a last beat closes it: the room
+goes dark, their bust fades in large, one on one, and they ask to stay in
+touch in their own way (per class). Their contact joins your dock. Earn
+trust with 2 NPCs and the **Trust** feeling unlocks, surfacing on the
+next encounter's wheel like any other.
 
 ### Filling the wheel
 

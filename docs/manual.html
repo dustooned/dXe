@@ -286,9 +286,36 @@ into it; there is no &quot;correct&quot; emotion for a moment.</li>
 </ul>
 <p>The player is never told this is happening. It&#39;s a texture, not a puzzle.</p>
 <h3 id="doc-game_manual--the-four-meters-the-one-that-matters"><a class="anchor" href="#doc-game_manual--the-four-meters-the-one-that-matters" aria-label="Link to this section">#</a>The four meters + the one that matters</h3>
-<p>Four thin bars sit at the top of every dialog screen: <strong>INT</strong>
-(Integrity), <strong>TRU</strong> (Trust), <strong>STB</strong> (Stability), <strong>LUC</strong> (Lucidity),
-each 0–10. Truth generally raises Integrity and Lucidity and costs
+<p>The four meters, each 0–10, read as the FEELZ phone&#39;s <strong>status bar</strong> at
+the top of every dialog screen (<code>ui/statusBar.js</code>):</p>
+<table>
+<thead>
+<tr>
+<th align="left">Meter</th>
+<th align="left">Shown as</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>STB</strong> Stability</td>
+<td align="left">Battery. Red, with a chirp, at 2 or below.</td>
+</tr>
+<tr>
+<td align="left"><strong>TRU</strong> Trust</td>
+<td align="left">Signal bars.</td>
+</tr>
+<tr>
+<td align="left"><strong>LUC</strong> Lucidity</td>
+<td align="left">Wi-Fi arcs.</td>
+</tr>
+<tr>
+<td align="left"><strong>INT</strong> Integrity</td>
+<td align="left">The clock. Below 7 its minutes glitch; near 0 it shows <code>--:--</code>.</td>
+</tr>
+</tbody></table>
+<p>The carrier name reads the lake: <strong>FEELZ 5G → LTE → E → No Service</strong> as
+Truth Debt climbs. A red dot blinks just before IT or SO nudges you, and
+the bar goes to ✈ airplane mode when an NPC shuts you out at the door.
+The Therapist explains all of it in her first reaction. Truth generally raises Integrity and Lucidity and costs
 Stability/Trust; a comforting lie usually does the opposite. These are
 mostly <em>legible texture</em> right now — visible to the player, shaping which
 line shows up as the closing &quot;epilogue&quot; note on the ending screen, but
@@ -314,6 +341,24 @@ comment after every conversation. They speak up only when they notice
 something new: the player&#39;s truth/lie pattern flipped, their go-to
 feeling changed, or the lake crossed into a new status. A tap anywhere
 closes them. Full design: <a href="#doc-it_design" data-doc="doc-it_design"><a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a></a>.</p>
+<h3 id="doc-game_manual--contacts-dial-a-friend"><a class="anchor" href="#doc-game_manual--contacts-dial-a-friend" aria-label="Link to this section">#</a>Contacts: dial a friend</h3>
+<p>A dock under the lake gauge holds your contacts. The <strong>Therapist</strong> is
+always there, but only picks up when your bars and Wi-Fi are both 4 or
+more; otherwise the call fails. Anyone who <strong>trusts</strong> you joins after
+their stay-in-touch moment (below). A call rings, then the caller (their
+avatar on the left of the box) greets you in their own way, reads the
+person you&#39;re facing (their mood&#39;s slice glows on the wheel; the read is
+more reliable the stronger your bond), and advises truth or lie from
+their own bias (Rick pushes lies, Rwanda pushes truth). The Therapist
+also reads your weakest vital. One call per contact per encounter.
+Content: <code>engine/contacts.js</code>.</p>
+<h3 id="doc-game_manual--it-and-so-watch-your-pace"><a class="anchor" href="#doc-game_manual--it-and-so-watch-your-pace" aria-label="Link to this section">#</a>IT and SO watch your pace</h3>
+<p>Sit on a choice and they lean in: IT at 30s, SO at 45s, IT at 60s, SO at
+75s, then silence (the tutorial&#39;s first question is exempt). Answer three
+in a row in under 2 seconds, or cut four lines short in a row, and they
+comment once per run; SO&#39;s skimming reply points at the <strong>text speed</strong>
+setting (gear → TEXT: NORMAL / FAST / INSTANT). None of it changes a stat.
+Lines: <code>engine/itPressure.js</code>.</p>
 <h3 id="doc-game_manual--reading-text"><a class="anchor" href="#doc-game_manual--reading-text" aria-label="Link to this section">#</a>Reading text</h3>
 <p>Every line the player reads (NPC reactions, cutscene narration) draws
 character-by-character, old-JRPG style. <strong>Tap once to finish a line
@@ -420,8 +465,12 @@ too, so a player can build trust while still dirtying the lake.</li>
 </ul>
 <p>Two syncs plus one bid met and that NPC <strong>trusts you</strong>: the screen closes
 to a vignette on them, all sound drops out, a crack, then a short story
-beat of them letting you in (different per NPC and per class). Earn
-trust with 2 NPCs and the <strong>Trust</strong> feeling unlocks on the wheel.</p>
+beat of them letting you in (different per NPC and per class). If the
+encounter ends with them trusting you, a last beat closes it: the room
+goes dark, their bust fades in large, one on one, and they ask to stay in
+touch in their own way (per class). Their contact joins your dock. Earn
+trust with 2 NPCs and the <strong>Trust</strong> feeling unlocks, surfacing on the
+next encounter&#39;s wheel like any other.</p>
 <h3 id="doc-game_manual--filling-the-wheel"><a class="anchor" href="#doc-game_manual--filling-the-wheel" aria-label="Link to this section">#</a>Filling the wheel</h3>
 <p>Each class starts with 3 of the 8 feelings. Meeting a bid also unlocks a
 feeling: the first on that NPC&#39;s list the player doesn&#39;t have yet. No
@@ -1240,6 +1289,18 @@ plus the Therapist demo), the dramatic slice entrance, varied reactions
 (<code>IF PICK</code> / <code>IF GIFT</code>), the connection moment (<code>CONNECT</code>), cleaner HUD,
 homework as advice, and the walk-home cutscene. See GAME_MANUAL &quot;Trust&quot;
 and &quot;Filling the wheel&quot;, SCRIPT_FORMAT for the new lines.</p>
+<p><strong>Then (2026-09-27/28):</strong> phone status bar (<code>ui/statusBar.js</code>), contacts
+(<code>engine/contacts.js</code>, Therapist always, gated on bars + Wi-Fi), IT/SO pace
+pressure (<code>engine/itPressure.js</code>), text speed setting, the stay-in-touch
+bust at the end of a trusted encounter (<code>CONTACT</code>), Trust surfacing on
+the next wheel instead of a pop-up, static lake gauge in encounters.</p>
+<p><strong>Still open from the Sep 27 discussion:</strong> scene moves (Deborah&#39;s garden,
+Rwanda&#39;s commissioned mural, Samun&#39;s crosswalk), the Therapist and NPCs
+speaking to each class, class screen redesign, IT/SO meaner as the lake
+worsens, the consistency check (contradiction pairs), portrait art for
+calls and the bust (letters for now), iPad scaling of the wheel and
+portrait, walk stills, Samun&#39;s layered clothes, Deborah&#39;s jolly-dissonant
+tune.</p>
 <p><strong>Next:</strong> the consistency check (contradiction pairs), scene moves, class
 screen redesign. The connection beats and reaction variants are
 placeholder prose for the writer.</p>
@@ -3634,6 +3695,10 @@ thing this NPC says (the game moves on to whoever&#39;s next).</li>
 story beat played when this NPC first trusts the player (vignette,
 silence, a crack, then this text). One per class. Put these in the
 file header, before the first node.</li>
+<li><code>CONTACT [Guns|Bible|Crystals]: text</code> — the stay-in-touch moment: the
+last beat of an encounter that ended with this NPC trusting the player
+(their bust, large, then this text); their contact then joins the dock.
+One per class, in the header next to <code>CONNECT</code>.</li>
 </ul>
 <h3 id="doc-script_format--tutorial-extras-optional-the-therapist-uses-these"><a class="anchor" href="#doc-script_format--tutorial-extras-optional-the-therapist-uses-these" aria-label="Link to this section">#</a>Tutorial extras (optional — the Therapist uses these)</h3>
 <p>None of these are needed for a normal NPC. Leave them out and nothing

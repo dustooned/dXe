@@ -162,6 +162,10 @@ Every node needs exactly two: `-- TRUTH` and `-- LIE`.
   story beat played when this NPC first trusts the player (vignette,
   silence, a crack, then this text). One per class. Put these in the
   file header, before the first node.
+- `CONTACT [Guns|Bible|Crystals]: text` — the stay-in-touch moment: the
+  last beat of an encounter that ended with this NPC trusting the player
+  (their bust, large, then this text); their contact then joins the dock.
+  One per class, in the header next to `CONNECT`.
 
 ### Tutorial extras (optional — the Therapist uses these)
 

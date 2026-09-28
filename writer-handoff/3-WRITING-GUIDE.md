@@ -62,6 +62,9 @@ only rewrite two things per node, rewrite those.
   sentences: something they've never told anyone, or a gesture instead of
   words. Written three times, once per class, because they're letting in
   a different person each time.
+- **`CONTACT [Class]:`** — how they ask to stay in touch, at the very end
+  if they trust you. One or two sentences, in character: Deborah writes
+  her number on your hand; Rick doesn't ask, he takes your phone.
 
 ### Things that will break the build
 

@@ -139,6 +139,9 @@ const initialRunState = {
   giftedBy: {},
   // Which pace comments IT/SO have already made this run ({ fast, skim }).
   pressureSaid: {},
+  // A feeling unlocked as an encounter ended, waiting to make its entrance
+  // on the next encounter's wheel (dialogScene.js).
+  pendingFresh: null,
   unlocked: [],
 };
 

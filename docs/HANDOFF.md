@@ -505,6 +505,20 @@ plus the Therapist demo), the dramatic slice entrance, varied reactions
 homework as advice, and the walk-home cutscene. See GAME_MANUAL "Trust"
 and "Filling the wheel", SCRIPT_FORMAT for the new lines.
 
+**Then (2026-09-27/28):** phone status bar (`ui/statusBar.js`), contacts
+(`engine/contacts.js`, Therapist always, gated on bars + Wi-Fi), IT/SO pace
+pressure (`engine/itPressure.js`), text speed setting, the stay-in-touch
+bust at the end of a trusted encounter (`CONTACT`), Trust surfacing on
+the next wheel instead of a pop-up, static lake gauge in encounters.
+
+**Still open from the Sep 27 discussion:** scene moves (Deborah's garden,
+Rwanda's commissioned mural, Samun's crosswalk), the Therapist and NPCs
+speaking to each class, class screen redesign, IT/SO meaner as the lake
+worsens, the consistency check (contradiction pairs), portrait art for
+calls and the bust (letters for now), iPad scaling of the wheel and
+portrait, walk stills, Samun's layered clothes, Deborah's jolly-dissonant
+tune.
+
 **Next:** the consistency check (contradiction pairs), scene moves, class
 screen redesign. The connection beats and reaction variants are
 placeholder prose for the writer.
