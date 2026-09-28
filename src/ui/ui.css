@@ -258,36 +258,48 @@
 }
 
 /* ── HUD: settings gear + fast-forward (shell/hud.js) ──────────────────── */
+/* The buttons live in a reserved strip at the top of the canvas (see
+   .dx-stage's margin-top), so nothing a scene draws ever sits under them. */
 .dx-hud-btn {
   position: absolute;
-  top: 8px;
+  top: 6px;
   z-index: 900;
-  width: 22px;
-  height: 22px;
-  padding: 0;
+  width: 36px;
+  height: 36px;
+  padding: 7px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: inherit;
-  font-size: calc(12 * var(--fs));
-  line-height: 1;
-  background: var(--color-black);
+  background: transparent;
   color: var(--color-white);
-  border: 2px solid var(--color-white);
-  opacity: 0.55;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 6px;
+  opacity: 0.75;
   cursor: pointer;
 }
 
+.dx-hud-btn svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+.dx-hud-btn:hover,
 .dx-hud-btn:active {
   opacity: 1;
+  border-color: var(--color-white);
 }
 
 .dx-hud-gear {
-  right: 8px;
+  right: 6px;
 }
 
 .dx-hud-ff {
-  left: 8px;
+  left: 6px;
+}
+
+.dx-canvas > .dx-stage {
+  margin-top: 48px;
 }
 
 .dx-hud-panel {

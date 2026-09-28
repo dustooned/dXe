@@ -121,9 +121,9 @@ LINE [Bible]: "Try getting curious about someone this week. Ask how they're doin
 LINE [Crystals]: "Take an interest in somebody this week. Notice what they're doing and ask about it. Curiosity's a good place to start."
 LINE [therapist_02=truth]: "You told me about the water. It heard you too."
 LINE [therapist_02=lie]: "The dream can wait. Dreams are patient. Lakes are more patient."
-LINE: "I'll have FEELZ send you somebody to start with."
+LINE: "I'll have FEELZ send you a reminder, so you can't pretend you forgot."
 HANGUP: The call ends mid-sentence, the way her calls do. FEELZ goes dark in your hand, and the lake is very quiet.
-NOTIFY: FEELZ · HOMEWORK\nDEBORAH · your neighbor · Unit 3C\nChurch greeter, First Baptist of Lake Ulysses.\nRecently bereaved (son, Caleb).\nLikes: her petunias, being useful.\nSuggested opener: "Those are nice flowers."
+NOTIFY: FEELZ · HOMEWORK\nToday's practice: reach out\nSay hello to one neighbor.\nNotice what they care about. Ask about it.\nListen a little longer than feels comfortable.\nYou don't have to fix anything.
 IT [therapist_02=truth]: She's writing it down. Everything you said. Somewhere a file with your name on it just got thicker.
 SO [therapist_02=truth]: Or she hung up and forgot you already. Which would be worse?
 IT [therapist_02=lie]: She knew. They always know. Four more people to fool now.

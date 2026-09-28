@@ -16,6 +16,10 @@ let skipFn = null;
 let restartFn = null;
 let chapterActive = false;
 
+// Crisp drawn icons instead of font glyphs (which rendered small and blurry).
+const GEAR_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 2h3.4l.5 2.6 1.9.8 2.2-1.5 2.4 2.4-1.5 2.2.8 1.9 2.6.5v3.4l-2.6.5-.8 1.9 1.5 2.2-2.4 2.4-2.2-1.5-1.9.8-.5 2.6h-3.4l-.5-2.6-1.9-.8-2.2 1.5-2.4-2.4 1.5-2.2-.8-1.9L2 13.7v-3.4l2.6-.5.8-1.9-1.5-2.2 2.4-2.4 2.2 1.5 1.9-.8zM12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill-rule="evenodd"/></svg>';
+const SKIP_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5l9 7-9 7zM12 5l9 7-9 7z"/></svg>';
+
 export function initHud(el) {
   hostEl = el;
 
@@ -23,7 +27,7 @@ export function initHud(el) {
   gearBtn.type = 'button';
   gearBtn.className = 'dx-hud-btn dx-hud-gear';
   gearBtn.setAttribute('aria-label', 'Settings');
-  gearBtn.textContent = '⚙';
+  gearBtn.innerHTML = GEAR_SVG;
   gearBtn.hidden = true;
   gearBtn.addEventListener('click', openPanel);
 
@@ -31,7 +35,7 @@ export function initHud(el) {
   ffBtn.type = 'button';
   ffBtn.className = 'dx-hud-btn dx-hud-ff';
   ffBtn.setAttribute('aria-label', 'Skip ahead');
-  ffBtn.textContent = '»';
+  ffBtn.innerHTML = SKIP_SVG;
   ffBtn.hidden = true;
   ffBtn.addEventListener('click', () => skipFn?.());
 

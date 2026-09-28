@@ -14,6 +14,7 @@ import { playStaticTransition } from '../../ui/staticTransition.js';
 import itIntro from './content/it_intro.json';
 import openingQuote from './content/opening_quote.json';
 import bobBaiter from './content/bob_baiter.json';
+import walkHome from './content/walk_home.json';
 import prologue from './content/prologue.json';
 import pastor from './content/pastor.json';
 import feelzLaunch from './content/feelz_launch.json';
@@ -69,6 +70,9 @@ const SCENES = [
   { type: 'cutscene', id: 'feelz-launch', beats: feelzLaunch.beats },
   { type: 'questionnaire', id: 'questionnaire' },
   { type: 'dialog', id: 'therapist', npc: therapist },
+  // The call ends and the player steps out into Lake Ulysses, walking home
+  // to the building where the homework's neighbor lives.
+  { type: 'cutscene', id: 'walk-home', beats: walkHome.beats },
 
   { type: 'minigame', id: 'deborah-hallway', load: () => import('./minigames/deborah-hallway.js') },
   { type: 'cutscene', id: 'deborah-confront', beats: confrontDeborah.beats, opensDialog: 'deborah' },
