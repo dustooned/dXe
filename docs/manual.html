@@ -460,8 +460,9 @@ waves sync.</li>
 <li><strong>Turning toward.</strong> Some lines are &quot;bids&quot; (Deborah saying Caleb&#39;s name).
 Meeting one warms the portrait gold. On some bids a kind lie counts
 too, so a player can build trust while still dirtying the lake.</li>
-<li><strong>Consistency.</strong> Contradicting yourself across characters costs trust
-(planned; needs contradiction pairs authored).</li>
+<li><strong>Consistency.</strong> Word travels in Lake Ulysses. Tell one person one thing
+and a later person the opposite, and IT quotes your earlier line back to
+you (&quot;Funny. You told Samun...&quot;); the second person loses a sync.</li>
 </ul>
 <p>Two syncs plus one bid met and that NPC <strong>trusts you</strong>: the screen closes
 to a vignette on them, all sound drops out, a crack, then a short story
@@ -3682,6 +3683,9 @@ by feeling while <code>REACT:</code> stays the same.</li>
 feeling (or <code>none</code>: turned toward, nothing left to give). The
 Therapist&#39;s intrusive-thoughts question uses both, and every version
 ends on the same closing sentence so the lesson stays recognizable.</li>
+<li><code>CONTRADICTS: node_id=truth|lie</code> (optional, repeatable) — this answer
+contradicts that earlier answer to someone else. If the player gave it,
+IT quotes it back after this reaction and this NPC loses a sync.</li>
 <li><code>IT:</code> / <code>SO:</code> (optional) — an intrusive-thought popup right after this
 answer&#39;s <code>REACT:</code>, before the next node. Use one or both (IT first,
 then SO). Example: the Therapist&#39;s intrusive-thoughts question has IT

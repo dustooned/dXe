@@ -5,8 +5,9 @@
 //   attunement    the player's FEELZ pick matched the node's MOOD
 //   turning toward the player's answer was one of the node's BID sides
 //
-// (Consistency, the third behavior, is planned: it needs contradiction
-// pairs authored across scripts.)
+// Consistency, the third behavior, lives in dialogScene.js: an answer
+// with CONTRADICTS: that matches something said to someone earlier costs
+// this NPC a sync, and IT quotes the earlier line back.
 //
 // run.bonds shape: { [npc]: { syncs: n, bids: n } }. Named bonds, not
 // trust, because run.trust is already the TRU meter (a number).

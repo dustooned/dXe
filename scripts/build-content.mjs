@@ -239,6 +239,13 @@ function parseManuscript(text, fileName) {
       }
       const key = m[1] === 'PICK' ? 'byPick' : 'byGift';
       currentEdge[key] = { ...currentEdge[key], [m[2]]: parseText(m[3]) };
+    } else if (line.startsWith('CONTRADICTS:')) {
+      // This answer contradicts something the player may have said earlier
+      // to someone else (node=side). Word travels: IT quotes it back, and
+      // this NPC's trust takes a hit (dialogScene.js).
+      const m = line.slice(12).trim().match(/^([a-z0-9_]+)=(truth|lie)$/);
+      if (!m) throw new Error(`${fileName}:${lineNumber}: bad CONTRADICTS line "${raw}" (node_id=truth|lie)`);
+      currentEdge.contradicts = [...(currentEdge.contradicts ?? []), { node: m[1], side: m[2] }];
     } else if (line.startsWith('IT:')) {
       // IT/SO right after this answer's reaction, before the next node.
       currentEdge.itText = parseText(line.slice(3));

@@ -149,6 +149,9 @@ Every node needs exactly two: `-- TRUTH` and `-- LIE`.
   feeling (or `none`: turned toward, nothing left to give). The
   Therapist's intrusive-thoughts question uses both, and every version
   ends on the same closing sentence so the lesson stays recognizable.
+- `CONTRADICTS: node_id=truth|lie` (optional, repeatable) — this answer
+  contradicts that earlier answer to someone else. If the player gave it,
+  IT quotes it back after this reaction and this NPC loses a sync.
 - `IT:` / `SO:` (optional) — an intrusive-thought popup right after this
   answer's `REACT:`, before the next node. Use one or both (IT first,
   then SO). Example: the Therapist's intrusive-thoughts question has IT

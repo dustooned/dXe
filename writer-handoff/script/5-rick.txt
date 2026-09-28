@@ -26,6 +26,7 @@ SAY: That's not how it works. You just wanted a reason.
 REACT: His jaw tightens. For a second something moves behind his eyes — then it's gone, replaced by a sneer.
 EFFECTS: integrity+2 lucidity+1 stability-2 trust-2
 DEBT: 0
+CONTRADICTS: samun_01=lie
 NEXT: rick_02_confronted
 
 -- LIE
@@ -170,6 +171,7 @@ SAY: So who's stopping you — them, or you?
 REACT: He doesn't answer for a long time. When he does, his voice has dropped the performance. "Don't know anymore."
 EFFECTS: integrity+3 lucidity+2 stability-1 trust-1
 DEBT: 0
+CONTRADICTS: samun_04=lie
 NEXT: (end)
 
 -- LIE

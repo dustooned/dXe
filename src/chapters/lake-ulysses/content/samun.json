@@ -227,7 +227,13 @@
             "Denial"
           ],
           "ledgerEntry": "You told Samun his addiction wasn't his own responsibility.",
-          "nextNodeId": "samun_04"
+          "nextNodeId": "samun_04",
+          "contradicts": [
+            {
+              "node": "rwanda_03",
+              "side": "lie"
+            }
+          ]
         }
       },
       "mood": "Sadness",

@@ -22,7 +22,13 @@
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
-          "nextNodeId": "rick_02_confronted"
+          "nextNodeId": "rick_02_confronted",
+          "contradicts": [
+            {
+              "node": "samun_01",
+              "side": "lie"
+            }
+          ]
         },
         "lie": {
           "playerText": "You did what you had to. Anybody would've.",
@@ -306,7 +312,13 @@
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
-          "nextNodeId": null
+          "nextNodeId": null,
+          "contradicts": [
+            {
+              "node": "samun_04",
+              "side": "lie"
+            }
+          ]
         },
         "lie": {
           "playerText": "Sounds like they'd miss you too much to let you go.",

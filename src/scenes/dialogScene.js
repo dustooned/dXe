@@ -123,6 +123,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // Rushing comments are once per run, and never in the tutorial.
   const pressureAllowed = (kind) => npc.npc !== 'THERAPIST' && !run.get().pressureSaid?.[kind];
   let pendingPressure = null;
+  // An answer that contradicts something said to someone earlier this run.
+  let pendingContradiction = null;
   // Phone: the live status bar (rebuilt each render; its clock ticks), and
   // who's already been called this encounter (one call per contact).
   let statusBar = null;
@@ -592,6 +594,16 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // Which way each node went, for anything later that reads it back —
     // today an outro beat's [node=truth|lie] condition.
     run.set({ choices: { ...before.choices, [currentNodeId]: swipeKey } });
+    // Every line the player says, for IT to quote back if they contradict it.
+    run.set({ said: { ...(before.said ?? {}), [currentNodeId]: edge.playerText ?? '' } });
+    const caught = (edge.contradicts ?? []).find((c) => before.choices?.[c.node] === c.side);
+    if (caught) {
+      pendingContradiction = { node: caught.node, text: before.said?.[caught.node] ?? '' };
+      // Word travels: this NPC's trust loses a sync.
+      const bonds = run.get().bonds ?? {};
+      const mine = bonds[npc.npc] ?? { syncs: 0, bids: 0 };
+      run.set({ bonds: { ...bonds, [npc.npc]: { ...mine, syncs: Math.max(0, mine.syncs - 1) } } });
+    }
     encounterSwipes.push(swipeKey);
 
     const node = currentNode();
@@ -864,6 +876,23 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (pendingConnect) {
       pendingConnect = false;
       showConnection(continueAfterReaction);
+      return;
+    }
+    if (pendingContradiction) {
+      const { node, text } = pendingContradiction;
+      pendingContradiction = null;
+      const who = node.split('_')[0];
+      const name = who.charAt(0).toUpperCase() + who.slice(1);
+      const lines = [
+        `Funny. You told ${name} "${text}"`,
+        `Word travels. ${name} heard "${text}"`,
+        `That's not what you told ${name}. You said "${text}"`,
+      ];
+      itPopup = sayIt({
+        text: lines[Math.floor(Math.random() * lines.length)],
+        voice: 'it',
+        onClose: () => { itPopup?.destroy(); itPopup = null; continueAfterReaction(); },
+      });
       return;
     }
     if (pendingPressure) {

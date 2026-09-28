@@ -300,8 +300,9 @@ whether people can rely on you, and it's built three ways:
 - **Turning toward.** Some lines are "bids" (Deborah saying Caleb's name).
   Meeting one warms the portrait gold. On some bids a kind lie counts
   too, so a player can build trust while still dirtying the lake.
-- **Consistency.** Contradicting yourself across characters costs trust
-  (planned; needs contradiction pairs authored).
+- **Consistency.** Word travels in Lake Ulysses. Tell one person one thing
+  and a later person the opposite, and IT quotes your earlier line back to
+  you ("Funny. You told Samun..."); the second person loses a sync.
 
 Two syncs plus one bid met and that NPC **trusts you**: the screen closes
 to a vignette on them, all sound drops out, a crack, then a short story

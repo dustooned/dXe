@@ -22,7 +22,13 @@
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
-          "nextNodeId": "rwanda_02_open"
+          "nextNodeId": "rwanda_02_open",
+          "contradicts": [
+            {
+              "node": "deborah_01",
+              "side": "lie"
+            }
+          ]
         },
         "lie": {
           "playerText": "It's not that bad here. You're doing fine.",
@@ -135,7 +141,13 @@
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
-          "nextNodeId": "rwanda_02_open"
+          "nextNodeId": "rwanda_02_open",
+          "contradicts": [
+            {
+              "node": "therapist_01",
+              "side": "lie"
+            }
+          ]
         },
         "lie": {
           "playerText": "There's nothing out there. It's a quiet night.",

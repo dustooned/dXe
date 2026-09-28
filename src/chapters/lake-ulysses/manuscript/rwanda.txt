@@ -25,6 +25,7 @@ SAY: Because people are scared of you being fully real.
 REACT: Rwanda exhales. Not relief — recognition. "Yeah. That's what I thought."
 EFFECTS: integrity+2 lucidity+2 stability-1 trust+1
 DEBT: 0
+CONTRADICTS: deborah_01=lie
 NEXT: rwanda_02_open
 
 -- LIE
@@ -85,6 +86,7 @@ SAY: I see something. I don't know what it is yet.
 REACT: "At least you're not pretending." She makes room at the window.
 EFFECTS: integrity+2 lucidity+1 trust+1
 DEBT: 0
+CONTRADICTS: therapist_01=lie
 NEXT: rwanda_02_open
 
 -- LIE

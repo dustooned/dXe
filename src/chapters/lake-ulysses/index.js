@@ -142,6 +142,8 @@ const initialRunState = {
   // A feeling unlocked as an encounter ended, waiting to make its entrance
   // on the next encounter's wheel (dialogScene.js).
   pendingFresh: null,
+  // { [nodeId]: the line the player said } — IT quotes contradictions back.
+  said: {},
   unlocked: [],
 };
 
