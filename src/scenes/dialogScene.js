@@ -106,6 +106,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // Set once the player turns toward one of this NPC's bids; warms the
   // portrait for the rest of the encounter (engine/trust.js).
   let turnedTowardThisEncounter = false;
+  // Answers this encounter that neither met their mood nor turned toward a
+  // bid — each pushes the oscilloscope's two lines a little further apart.
+  let missesHere = 0;
   // The battle beats (ui/oscilloscope.js reads this every frame): wind-up
   // tension as the NPC's line types, their mood color easing between
   // moments, the impact ring when they react, a gold ripple on a bid.
@@ -299,15 +302,25 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // portrait below already does this — the underlying signals
     // (analyser, run state) are read live regardless of when the canvas
     // itself was created, so there's no continuity to lose.
+    // Its own band across the portrait (a heart monitor running through
+    // their picture), so no text box ever covers it. Placed once the
+    // portrait has laid out; see placeScopeBand().
     const scopeCanvas = document.createElement('canvas');
-    scopeCanvas.className = 'dx-pattern-bg';
+    scopeCanvas.className = 'dx-pattern-bg dx-scope-band';
     screen.appendChild(scopeCanvas);
     const mood = stage === 'prompt' ? currentNode()?.mood : null;
+    const shutOutNow = stage === 'prompt' && /(_shut_down|_closed|_hard)$/.test(currentNodeId ?? '');
     oscilloscope = createOscilloscope(scopeCanvas, {
       getPlayerStats: () => run.get(),
       npcColor: drama.color?.to ?? '#ffffff',
       isSynced: () => !!mood && activeEmotion === mood,
       getDrama: () => drama,
+      getConnection: () => connection(mood, shutOutNow),
+      getPlayerColor: () => {
+        const held = activeEmotion ?? run.get().pickHistory?.at(-1);
+        return held ? moodHex(held) : null;
+      },
+      getHistory: () => (run.get().pickHistory ?? []).map(moodHex),
     });
 
     const content = document.createElement('div');
@@ -560,6 +573,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (stage === 'prompt' && isRevealed('meters')) content.appendChild(createDock(runState));
     content.appendChild(lake);
     stageEl.appendChild(screen);
+    placeScopeBand(screen, scopeCanvas, portrait.el);
 
     // A HUD piece's first appearance is spotlit together with the line
     // introducing it (her reaction), for as long as that beat lasts.
@@ -648,6 +662,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       if (!wasTrusted && isTrusted(run.get().bonds[npc.npc]) && npc.connect) pendingConnect = true;
     }
     if (turnedToward) turnedTowardThisEncounter = true;
+    if (!synced && !turnedToward) missesHere += 1;
     reactionGift = turnedToward ? giveFeeling() : undefined;
 
     // How this specific choice actually landed with the NPC — trust and
@@ -677,6 +692,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // the dominant-emotion IT read at the end of the encounter (proceed()).
     const counts = run.get().emotionCounts;
     run.set({ emotionCounts: { ...counts, [activeEmotion]: (counts[activeEmotion] ?? 0) + 1 } });
+    // In order, for the oscilloscope's history strip.
+    run.set({ pickHistory: [...(run.get().pickHistory ?? []), activeEmotion] });
 
     pendingEdge = edge;
     reactionEmotion = activeEmotion;
@@ -775,6 +792,28 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (!floor.length) return;
     const gap = Math.max(0, stageEl.getBoundingClientRect().bottom - Math.min(...floor));
     overlay.style.paddingBottom = `${gap + 8}px`;
+  }
+
+  // How close this person is to you, for the oscilloscope's gap (0..1):
+  // what you've built with them (engine/trust.js's syncs and bids, scaled
+  // to what trust takes), less each answer here that neither met their
+  // mood nor turned toward a bid. Holding a feeling previews it: theirs
+  // pulls the lines in a little, a different one pushes them apart.
+  function connection(mood, shutOut) {
+    const bond = run.get().bonds?.[npc.npc] ?? { syncs: 0, bids: 0 };
+    if (isTrusted(bond)) return { closeness: 1, merged: true, shutOut };
+    let c = Math.min(1, (bond.syncs / 2) * 0.6 + bond.bids * 0.4) - missesHere * 0.12;
+    if (mood && activeEmotion) c += activeEmotion === mood ? 0.15 : -0.1;
+    return { closeness: Math.max(0, Math.min(0.9, c)), merged: false, shutOut };
+  }
+
+  // The scope band spans the portrait, edge to edge.
+  function placeScopeBand(screen, canvas, portraitEl) {
+    const s = screen.getBoundingClientRect();
+    const p = portraitEl.getBoundingClientRect();
+    if (!p.height) return;
+    canvas.style.top = `${p.top - s.top - 18}px`;
+    canvas.style.height = `${p.height + 26}px`;
   }
 
   // The tutorial's TRYCALL beat: the therapist's own contact pops into the

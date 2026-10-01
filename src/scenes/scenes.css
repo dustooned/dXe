@@ -802,6 +802,16 @@
 .dx-game-screen--hungup .dx-lake,
 .dx-game-screen--hungup .dx-portrait,
 .dx-game-screen--hungup .dx-nameplate,
+/* The oscilloscope as a band across the portrait (dialogScene.js
+   placeScopeBand sets top/height), above the screen's black but under the
+   content, so the portrait box sits on the line like a monitor. */
+.dx-pattern-bg.dx-scope-band {
+  inset: auto 0 auto 0;
+  top: 0;
+  height: 140px;
+  background: transparent;
+}
+
 .dx-game-screen--hungup .dx-pattern-bg {
   opacity: 0.08;
   transition: opacity 1.4s ease;

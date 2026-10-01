@@ -57,10 +57,26 @@ const CLASH_RGB = [255, 64, 64];
 // extremes, never literally becoming the NPC's color or pure alarm-red.
 const MAX_COLOR_BLEND = 0.4;
 
+// Connection (dialogScene.js's getConnection): the two lines start apart —
+// theirs above, yours below — and close the gap as the person comes to
+// trust you; when they do, the lines merge into one. A miss pushes them
+// back apart. The gap eases toward its target so a change reads as motion.
+// Your line wears the feeling you're holding (getPlayerColor), and a strip
+// along the bottom keeps one block per answer you've given this run
+// (getHistory), so the spread of feelings you lean on stays visible.
+// Shut out: your line goes grey and theirs flatlines.
+const MAX_GAP_RATIO = 0.24;
+const GAP_EASE = 0.08;
+const HISTORY_MAX = 24;
+
 export function createOscilloscope(
   canvas,
-  { npcColor = '#ffffff', playerColor = '#4fd6ff', lineWidth = 2, getPlayerStats, isSynced, getDrama } = {}
+  {
+    npcColor = '#ffffff', playerColor = '#4fd6ff', lineWidth = 2, getPlayerStats, isSynced, getDrama,
+    getConnection, getPlayerColor, getHistory,
+  } = {}
 ) {
+  let gapNow = null;
   // The battle beats (dialogScene.js's `drama`), read every frame so they
   // survive the scene rebuilding this canvas between stages:
   //   tension   0..1, the wind-up: the NPC wave grows as their line types
@@ -102,13 +118,16 @@ export function createOscilloscope(
 
   let ampScale = 1;
 
+  let npcMid = 0.5;
+  let npcFlat = 1;
   function traceNpcPath(w, h, xOffset) {
     ctx2d.beginPath();
     const sliceWidth = w / bufferLength;
     let x = xOffset;
+    const reach = h * 0.34;
     for (let i = 0; i < bufferLength; i++) {
       const v = data[i] / 128; // 0..2, 1.0 = silence (midline)
-      const y = h / 2 + ((v - 1) * h * ampScale) / 2;
+      const y = h * npcMid + clamp(((v - 1) * h * ampScale * npcFlat) / 2, -reach, reach);
       if (i === 0) ctx2d.moveTo(x, y);
       else ctx2d.lineTo(x, y);
       x += sliceWidth;
@@ -135,7 +154,7 @@ export function createOscilloscope(
       ctx2d.globalCompositeOperation = 'source-over';
     }
 
-    ctx2d.strokeStyle = npcColorNow;
+    ctx2d.strokeStyle = npcFlat < 1 ? 'rgba(255,255,255,0.3)' : npcColorNow;
     traceNpcPath(w, h, 0);
     ctx2d.filter = 'none';
   }
@@ -186,20 +205,25 @@ export function createOscilloscope(
     const wobble = synced ? 1 : 0.4 + clarity * 0.6; // steadier sine as clarity rises
     const cycles = PLAYER_CYCLES + (1 - coherence) * BEAT_DETUNE_CYCLES;
 
+    const conn = getConnection?.() ?? {};
+    const own = conn.shutOut ? '#5a5a5a' : (getPlayerColor?.() ?? playerColor);
     const target = coherence >= 0.5 ? hexToRgb(npcColorNow) : CLASH_RGB;
-    const blendT = synced ? 0.9 : Math.abs(coherence - 0.5) * 2 * MAX_COLOR_BLEND; // 0..MAX_COLOR_BLEND
-    const [r, g, b] = lerpRgb(hexToRgb(playerColor), target, blendT);
+    const merged = !!conn.merged && !conn.shutOut;
+    const blendT = conn.shutOut ? 0 : merged ? 0.5 : synced ? 0.6 : Math.abs(coherence - 0.5) * 2 * MAX_COLOR_BLEND;
+    const [r, g, b] = lerpRgb(hexToRgb(own), target, blendT);
 
-    ctx2d.lineWidth = synced ? lineWidth + 1 : lineWidth;
-    ctx2d.shadowColor = synced ? `rgb(${r},${g},${b})` : 'transparent';
-    ctx2d.shadowBlur = synced ? 8 : 0;
+    const glow = synced || merged;
+    ctx2d.lineWidth = glow ? lineWidth + 1 : lineWidth;
+    ctx2d.shadowColor = glow ? `rgb(${r},${g},${b})` : 'transparent';
+    ctx2d.shadowBlur = glow ? 8 : 0;
+    const mid = h * (1 - npcMid);
     ctx2d.strokeStyle = `rgb(${r},${g},${b})`;
     ctx2d.beginPath();
     for (let i = 0; i <= PLAYER_STEPS; i++) {
       const x = (i / PLAYER_STEPS) * w;
       const phase = (i / PLAYER_STEPS) * Math.PI * 2 * cycles + timeMs * 0.002;
       const noise = (Math.random() - 0.5) * noiseAmount;
-      const y = h / 2 + Math.sin(phase) * amplitude * wobble + noise;
+      const y = mid + Math.sin(phase) * amplitude * wobble + noise;
       if (i === 0) ctx2d.moveTo(x, y);
       else ctx2d.lineTo(x, y);
     }
@@ -245,6 +269,28 @@ export function createOscilloscope(
     }
   }
 
+  function updateGap() {
+    const conn = getConnection?.();
+    if (!conn) { npcMid = 0.5; npcFlat = 1; return; }
+    const target = conn.merged ? 0 : (1 - clamp(conn.closeness ?? 0, 0, 1)) * MAX_GAP_RATIO;
+    gapNow = gapNow === null ? target : gapNow + (target - gapNow) * GAP_EASE;
+    npcMid = 0.5 - gapNow;
+    npcFlat = conn.shutOut ? 0.04 : 1;
+  }
+
+  function drawHistory(w, h) {
+    const picks = (getHistory?.() ?? []).slice(-HISTORY_MAX);
+    if (!picks.length) return;
+    const segW = Math.min(14, (w - 16) / HISTORY_MAX);
+    const total = segW * picks.length;
+    let x = (w - total) / 2;
+    for (const color of picks) {
+      ctx2d.fillStyle = color;
+      ctx2d.fillRect(Math.round(x) + 1, h - 6, Math.max(1, Math.round(segW) - 2), 4);
+      x += segW;
+    }
+  }
+
   function draw(timeMs) {
     syncSize();
     const w = canvas.width;
@@ -253,9 +299,11 @@ export function createOscilloscope(
     const now = performance.now();
     const drama = applyDrama(now);
     const dissonance = getDissonance();
+    updateGap();
     drawNpcTrace(w, h, dissonance);
     drawPlayerTrace(w, h, timeMs, dissonance);
     drawRings(w, h, now, drama);
+    drawHistory(w, h);
     rafId = requestAnimationFrame(draw);
   }
   rafId = requestAnimationFrame(draw);
