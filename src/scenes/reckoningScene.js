@@ -21,6 +21,7 @@ import { createItPopup } from '../ui/itPopup.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
 import { createPastorBust } from '../ui/pastorBust.js';
+import { emotionColor, emotionsForClass } from '../engine/loadout.js';
 import * as audio from '../shell/audio.js';
 import * as voices from '../shell/voices.js';
 import * as fx from '../shell/fx.js';
@@ -32,6 +33,11 @@ import * as fx from '../shell/fx.js';
 const TICKS = ['11:59:56', '11:59:57', '11:59:58', '11:59:59'];
 const TICK_MS = 1000;
 const TOLLS = [0, 1.7, 3.4]; // seconds after midnight
+// The bells are tuned to you: the first two strike your two most-picked
+// feelings at the pitch each holds in your chord (the same tones the FEELZ
+// wheel plays), the third strikes your top three together. Each flashes
+// its feeling's color; brought down two octaves so they ring like bells.
+const BELL_OCTAVES_DOWN = 2;
 const BUST_FADE_MS = 4200;
 const GREET_AT = TICKS.length * TICK_MS + 5200;
 const ALTAR_AT = GREET_AT + 1500;
@@ -199,6 +205,21 @@ export function mount(stageEl, scene, { run, onComplete }) {
     playLines(pickSection(script.altar, ctx()), () => (deck.length ? renderCard(0) : gate()));
   }
 
+  // Your feelings in the order you leaned on them: most-picked first, from
+  // the ones you can feel; topped up with your class's own if you barely
+  // picked any. Three at most.
+  function activeFeelings() {
+    const s = run.get();
+    return emotionsForClass(s.loadout, s.unlocked ?? []);
+  }
+  function alignment() {
+    const active = activeFeelings();
+    const counts = run.get().emotionCounts ?? {};
+    const ranked = active.filter((e) => counts[e]).sort((x, y) => counts[y] - counts[x]);
+    for (const e of active) if (ranked.length < 3 && !ranked.includes(e)) ranked.push(e);
+    return ranked.slice(0, 3);
+  }
+
   // The clock, the bang, the slow fade, the greeting. A tap skips to him.
   function entrance() {
     stageEl.innerHTML = '';
@@ -216,9 +237,16 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }));
     at(TICKS.length * TICK_MS, () => {
       clock.textContent = '12:00:00';
+      const feelings = alignment();
+      const pitch = (e) => (audio.emotionFrequency(e, activeFeelings()) ?? 392) / 2 ** BELL_OCTAVES_DOWN;
+      const strikes = [[feelings[0]], [feelings[1] ?? feelings[0]], feelings];
       TOLLS.forEach((sec, k) => {
-        audio.playC64Toll(sec, k === TOLLS.length - 1 ? 73 : 98);
-        at(sec * 1000, () => { fx.flash(k === 0 ? 'strong' : 'weak', '#ffffff'); fx.shake(k === 0 ? 'strong' : 'weak'); });
+        const these = strikes[k];
+        audio.playC64Toll(sec, these.map(pitch));
+        at(sec * 1000, () => {
+          fx.flash(k === TOLLS.length - 1 ? 'strong' : 'weak', emotionColor(these[0]));
+          fx.shake(k === 0 ? 'strong' : 'weak');
+        });
       });
       at(900, () => clock.remove());
       const bust = createPastorBust();

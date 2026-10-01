@@ -247,7 +247,9 @@ called down to the water by **Pastor Gabriel** (§5), standing waist-deep
 in the lake. **His entrance:** in the dark, the death clock ticks
 11:59:56 → 11:59:59, then strikes midnight: three C64 bell tolls (after
 Storm Lord's opening; SID-style ring modulation and a 4-bit noise hammer),
-each with a flash. His bust (placeholder pixel sprite: halo, clerical
+tuned to you: the first two strike your two most-picked feelings at the
+pitch each holds in your FEELZ chord, the third strikes your top three
+together, and each flashes its feeling's color. His bust (placeholder pixel sprite: halo, clerical
 collar, dark wings) fades in slow and stepped, and he greets you in his
 SAM voice ("Welcome, child."). His nameplate reads "???" until he says
 his name. A tap skips the entrance. The lake gauge doesn't appear until he

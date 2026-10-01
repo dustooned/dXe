@@ -403,6 +403,14 @@ function emotionTone(emotion, activeEmotions, fn) {
   return { frequency: voices[index], waveform };
 }
 
+// The frequency a feeling occupies in the current chord (null if it isn't
+// one of `activeEmotions`) — for anything outside the wheel that wants to
+// sound in the player's key (reckoningScene.js's bells).
+export function emotionFrequency(emotion, activeEmotions, fn = 'tonic') {
+  ensureContext();
+  return emotionTone(emotion, activeEmotions, fn)?.frequency ?? null;
+}
+
 // Sounds one feeling on its own, at the pitch it currently occupies in the
 // chord — so picking a FEELZ emotion lets the player hear where that
 // feeling sits against this NPC before committing to it.
@@ -1133,8 +1141,13 @@ export function playC64Toll(at = 0, base = 98) {
   const audioCtx = ensureContext();
   const t = audioCtx.currentTime + 0.02 + at;
   const ring = 2.8;
+  // `base` may be a list: one bell per pitch, struck together.
+  const bases = Array.isArray(base) ? base : [base];
+  const level = 1 / Math.sqrt(bases.length);
   // Ring mod: carrier through a gain whose gain is the modulator.
-  [[1, 0.22], [2.76, 0.1], [5.4, 0.05]].forEach(([mult, peak]) => {
+  for (const b of bases) [[1, 0.22], [2.76, 0.1], [5.4, 0.05]].forEach(([mult, peakRaw]) => {
+    const peak = peakRaw * level;
+    const base = b;
     const carrier = audioCtx.createOscillator();
     carrier.type = 'triangle';
     carrier.frequency.value = base * mult;
