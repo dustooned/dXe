@@ -7,6 +7,7 @@
 import { navigate } from './router.js';
 import { loadSettings, updateSettings } from './settings.js';
 import { setMasterVolume } from './audio.js';
+import { jumpTo } from './debug.js';
 
 let hostEl = null;
 let gearBtn = null;
@@ -16,9 +17,47 @@ let skipFn = null;
 let restartFn = null;
 let chapterActive = false;
 
-// Crisp drawn icons instead of font glyphs (which rendered small and blurry).
-const GEAR_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 2h3.4l.5 2.6 1.9.8 2.2-1.5 2.4 2.4-1.5 2.2.8 1.9 2.6.5v3.4l-2.6.5-.8 1.9 1.5 2.2-2.4 2.4-2.2-1.5-1.9.8-.5 2.6h-3.4l-.5-2.6-1.9-.8-2.2 1.5-2.4-2.4 1.5-2.2-.8-1.9L2 13.7v-3.4l2.6-.5.8-1.9-1.5-2.2 2.4-2.4 2.2 1.5 1.9-.8zM12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill-rule="evenodd"/></svg>';
-const SKIP_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5l9 7-9 7zM12 5l9 7-9 7z"/></svg>';
+// Retro pixel icons: hard-edged SVG cells ('#' = lit), same treatment as
+// the status bar's sprites (ui/statusBar.js).
+function pixelIcon(rows) {
+  const w = rows[0].length;
+  let cells = '';
+  rows.forEach((row, y) => {
+    if (row.length !== w) throw new Error(`hud icon row ${y}: ${row.length} != ${w}`);
+    [...row].forEach((ch, x) => { if (ch === '#') cells += `<rect x="${x}" y="${y}" width="1" height="1"/>`; });
+  });
+  return `<svg viewBox="0 0 ${w} ${rows.length}" shape-rendering="crispEdges" aria-hidden="true">${cells}</svg>`;
+}
+const GEAR_SVG = pixelIcon([
+  '.....###.....',
+  '..#..###..#..',
+  '.###.###.###.',
+  '..#########..',
+  '...##...##...',
+  '####.....####',
+  '####.....####',
+  '####.....####',
+  '...##...##...',
+  '..#########..',
+  '.###.###.###.',
+  '..#..###..#..',
+  '.....###.....',
+]);
+const SKIP_SVG = pixelIcon([
+  '.............',
+  '#.....#......',
+  '##....##.....',
+  '###...###....',
+  '####..####...',
+  '#####.#####..',
+  '######.######',
+  '#####.#####..',
+  '####..####...',
+  '###...###....',
+  '##....##.....',
+  '#.....#......',
+  '.............',
+]);
 
 export function initHud(el) {
   hostEl = el;
@@ -95,6 +134,7 @@ function renderSettingsPanel() {
       <button type="button" class="dx-btn dx-hud-speed"></button>
       ${chapterActive ? '<button type="button" class="dx-btn dx-hud-restart">RESTART CHAPTER</button>' : ''}
       <button type="button" class="dx-btn dx-hud-chapters">CHAPTER SELECT</button>
+      <button type="button" class="dx-btn dx-hud-debug">DEBUG</button>
       <button type="button" class="dx-btn dx-hud-resume">RESUME</button>
     </div>
   `;
@@ -134,6 +174,7 @@ function renderSettingsPanel() {
 
   panelEl.querySelector('.dx-hud-panel__scrim').addEventListener('click', closePanel);
   panelEl.querySelector('.dx-hud-resume').addEventListener('click', closePanel);
+  panelEl.querySelector('.dx-hud-debug').addEventListener('click', renderDebugPage);
 
   panelEl.querySelector('.dx-hud-restart')?.addEventListener('click', () => {
     confirmInPanel('Restart this chapter from the beginning?', () => {
@@ -153,6 +194,101 @@ function renderSettingsPanel() {
       navigate('menu');
     }
   });
+}
+
+// The DEBUG page: a starting state (class, lake, feelings, bonds) and a
+// button per scene. Picking a scene restarts the chapter right there with
+// that state (shell/debug.js). Same box, so BACK returns to settings.
+const DEBUG_CHAPTER = 'lake-ulysses';
+const DEBUG_GROUPS = [
+  ['OPENING', ['it-intro', 'opening-quote', 'bob-baiter', 'prologue', 'feelz-launch', 'questionnaire']],
+  ['THERAPIST', ['therapist', 'walk-home']],
+  ['DEBORAH', ['deborah-hallway', 'deborah-confront', 'deborah']],
+  ['RWANDA', ['rwanda-alley', 'rwanda-confront', 'rwanda']],
+  ['SAMUN', ['samun-garage', 'samun-confront', 'samun']],
+  ['RICK', ['rick-barlot', 'rick-confront', 'rick']],
+  ['END', ['reckoning', 'ending']],
+];
+const ALL_FEELINGS = ['Happy', 'Trust', 'Fear', 'Surprise', 'Sadness', 'Disgust', 'Anger', 'Anxiety'];
+const debugState = { loadout: 'Guns', truthDebt: 0, allFeelings: false, trusted: false };
+
+async function renderDebugPage() {
+  const box = panelEl?.querySelector('.dx-hud-panel__box');
+  if (!box) return;
+  // Scenes not in the groups above (new ones) still get a button, at the end.
+  const mod = await import('../chapters/lake-ulysses/index.js');
+  const known = new Set(DEBUG_GROUPS.flatMap(([, ids]) => ids));
+  const extra = (mod.DEBUG_SCENES ?? []).map((s) => s.id).filter((sid) => !known.has(sid));
+  const groups = extra.length ? [...DEBUG_GROUPS, ['OTHER', extra]] : DEBUG_GROUPS;
+
+  box.classList.add('is-debug');
+  box.innerHTML = `
+    <h3 class="dx-hud-panel__title">DEBUG</h3>
+    <div class="dx-debug__row"><span>CLASS</span><span class="dx-debug__seg" data-key="loadout"></span></div>
+    <label class="dx-debug__row"><span>LAKE <b class="dx-debug__debt"></b></span>
+      <input type="range" min="0" max="10" step="1" class="dx-debug__lake"></label>
+    <button type="button" class="dx-btn dx-debug__toggle" data-key="allFeelings"></button>
+    <button type="button" class="dx-btn dx-debug__toggle" data-key="trusted"></button>
+    <div class="dx-debug__scenes"></div>
+    <button type="button" class="dx-btn dx-debug__back">BACK</button>
+  `;
+
+  const seg = box.querySelector('.dx-debug__seg');
+  for (const cls of ['Guns', 'Bible', 'Crystals']) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'dx-debug__chip';
+    b.textContent = cls.toUpperCase();
+    b.addEventListener('click', () => { debugState.loadout = cls; sync(); });
+    seg.appendChild(b);
+  }
+  const lake = box.querySelector('.dx-debug__lake');
+  lake.addEventListener('input', () => { debugState.truthDebt = Number(lake.value); sync(); });
+  box.querySelectorAll('.dx-debug__toggle').forEach((t) => {
+    t.addEventListener('click', () => { debugState[t.dataset.key] = !debugState[t.dataset.key]; sync(); });
+  });
+
+  const scenes = box.querySelector('.dx-debug__scenes');
+  for (const [label, ids] of groups) {
+    const head = document.createElement('p');
+    head.className = 'dx-debug__group';
+    head.textContent = label;
+    scenes.appendChild(head);
+    for (const sid of ids) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'dx-debug__scene';
+      b.textContent = sid;
+      b.addEventListener('click', () => {
+        closePanel();
+        jumpTo(DEBUG_CHAPTER, sid, overridesFor(debugState));
+      });
+      scenes.appendChild(b);
+    }
+  }
+  box.querySelector('.dx-debug__back').addEventListener('click', () => { closePanel(); openPanel(); });
+
+  function sync() {
+    seg.querySelectorAll('.dx-debug__chip').forEach((c) => c.classList.toggle('is-active', c.textContent === debugState.loadout.toUpperCase()));
+    lake.value = String(debugState.truthDebt);
+    box.querySelector('.dx-debug__debt').textContent = String(debugState.truthDebt);
+    box.querySelectorAll('.dx-debug__toggle').forEach((t) => {
+      const on = debugState[t.dataset.key];
+      t.classList.toggle('is-active', on);
+      t.textContent = t.dataset.key === 'allFeelings' ? `ALL FEELINGS: ${on ? 'ON' : 'OFF'}` : `EVERYONE TRUSTS YOU: ${on ? 'ON' : 'OFF'}`;
+    });
+  }
+  sync();
+}
+
+function overridesFor(s) {
+  const o = { loadout: s.loadout, truthDebt: s.truthDebt };
+  if (s.allFeelings) o.unlocked = ALL_FEELINGS;
+  if (s.trusted) {
+    const bond = { syncs: 2, bids: 1 };
+    o.bonds = { DEBORAH: bond, RWANDA: bond, SAMUN: bond, RICK: bond };
+  }
+  return o;
 }
 
 // Swaps the panel's box content for a yes/no prompt — same box, same scrim,

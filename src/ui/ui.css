@@ -920,3 +920,56 @@ svg .is-hinted path {
   .dx-dock.is-introducing .dx-dock__contact,
   .dx-dock__contact.is-beckoning { animation: none; }
 }
+
+/* Settings → DEBUG (shell/hud.js): scene jumps and a starting state. */
+.dx-hud-panel__box.is-debug {
+  max-width: 320px;
+  max-height: calc(100% - 64px);
+  overflow-y: auto;
+  gap: 10px;
+}
+
+.dx-debug__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: calc(7 * var(--fs));
+}
+
+.dx-debug__lake { flex: 1; accent-color: var(--color-white); }
+
+.dx-debug__seg { display: flex; gap: 4px; }
+
+.dx-debug__chip,
+.dx-debug__scene {
+  font-family: inherit;
+  font-size: calc(7 * var(--fs));
+  background: var(--color-black);
+  color: var(--color-white);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 4px 6px;
+  cursor: pointer;
+}
+
+.dx-debug__chip.is-active,
+.dx-debug__toggle.is-active {
+  background: var(--color-white);
+  color: var(--color-black);
+}
+
+.dx-debug__scenes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.dx-debug__group {
+  flex-basis: 100%;
+  margin: 6px 0 0;
+  font-size: calc(7 * var(--fs));
+  opacity: 0.55;
+  letter-spacing: 0.1em;
+}
+
+.dx-debug__scene:active { background: var(--color-white); color: var(--color-black); }

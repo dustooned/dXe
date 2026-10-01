@@ -543,6 +543,7 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
   (`ui/pastorBust.js`), SAM greeting; name hidden until he says it; the
   lake gauge waits for the first confession; SAM "Amen." / "Shame." /
   "Samael." during the reckoning.
+- **Debug menu** (Settings → DEBUG, `shell/debug.js`): pick a class, a lake level (0–10), ALL FEELINGS on/off, EVERYONE TRUSTS YOU on/off, then a scene button (grouped Opening / Therapist / each NPC / End) restarts the chapter right there with that state. New scenes show up under OTHER automatically. The gear and skip buttons are pixel icons now.
 - **FEELZ in logo colors everywhere** (`shell/feelzWord.js` + typewriter).
 - **Contact colors**: each contact in their dominant feeling's color (dock, call box); the read is written in the read feeling's color; misreads project their own feeling (`engine/contacts.js` dominant).
 - **IT and SO**: name plates under the icon; on their last lines with

@@ -5,6 +5,7 @@ import { onRouteChange, navigate, getCurrentRoute } from './shell/router.js';
 import { loadSave } from './shell/save.js';
 import { initFx, fadeToBlack } from './shell/fx.js';
 import { initFeelzWord } from './shell/feelzWord.js';
+import { setJumpHandler } from './shell/debug.js';
 import { initHud, setVisible as setHudVisible } from './shell/hud.js';
 import { startTitleMusic, stopTitleMusic, playStartJingle, playLogoSting, unlockAudio } from './shell/audio.js';
 
@@ -377,6 +378,13 @@ async function renderChapter(chapterId, startAt) {
     startSceneId: startAt || null,
   });
 }
+
+// The settings panel's DEBUG page jumps straight into a scene: the hash
+// follows along without a hashchange re-render.
+setJumpHandler((chapterId, sceneId) => {
+  history.replaceState(null, '', `#/chapter/${chapterId}/${sceneId}`);
+  renderChapter(chapterId, sceneId);
+});
 
 // ─── Router ───────────────────────────────────────────────────────────────────
 

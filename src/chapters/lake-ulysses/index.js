@@ -1,4 +1,5 @@
 import { createStore } from '../../shell/state.js';
+import { takeDebugOverrides } from '../../shell/debug.js';
 import { createSceneSequencer } from '../../engine/sceneSequencer.js';
 import { recordEnding } from '../../shell/save.js';
 import * as hud from '../../shell/hud.js';
@@ -147,8 +148,11 @@ const initialRunState = {
   unlocked: [],
 };
 
+// For the settings panel's DEBUG page: every scene, in order.
+export const DEBUG_SCENES = SCENES.map(({ id, type }) => ({ id, type }));
+
 export function mount(stageEl, { exit, restart, startSceneId }) {
-  const run = createStore(initialRunState);
+  const run = createStore({ ...initialRunState, ...takeDebugOverrides() });
   const sequencer = createSceneSequencer({
     scenes: SCENES,
     handlers: HANDLERS,

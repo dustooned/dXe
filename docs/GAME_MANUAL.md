@@ -308,6 +308,10 @@ scales with how far their TRU and STB moved.
 
 A heart-monitor band runs across the portrait. Their line sits on top, yours underneath, and the gap between them is how close this person is to you: it narrows with every attuned pick and every bid you turn toward, widens with each answer that does neither, and closes completely (the lines merge and glow) once they trust you. Holding a feeling previews it: theirs pulls the lines in a little, another pushes them apart. Your line wears the color of the feeling you hold (or your last one), and a strip under the portrait keeps one colored block per answer in this encounter (newest outlined), so you can see which feelings you lean on with this person. Shut out (airplane mode): your line greys and theirs flatlines.
 
+### Debug menu (for testing)
+
+Settings → DEBUG. Choose a class (GUNS / BIBLE / CRYSTALS), a lake level (0–10 Truth Debt), ALL FEELINGS (every slice unlocked), and EVERYONE TRUSTS YOU (all four NPCs already trust you, so contacts are in the dock), then tap any scene to restart the chapter there with that state. The questionnaire still re-picks the class if you jump to it.
+
 ### The word FEELZ
 
 Wherever FEELZ appears on screen it wears the logo colors, one feeling per letter: F Anger, E Happy, E Trust, L Sadness, Z Anxiety. Typed text gets it from the typewriter; fixed labels (status bar carrier, app bars, report headers) from a page-wide watcher (`shell/feelzWord.js`). A line that colors the word itself keeps its own color.
