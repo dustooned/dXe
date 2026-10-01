@@ -102,6 +102,7 @@ colored-initial placeholder whenever it's unset.
 | `portrait_samun` | 192×192 | ⬜ |
 | `portrait_rick` | 192×192 | ⬜ |
 | `portrait_therapist` | 192×192 | 💬 he's voice-only by design — confirm before drawing |
+| `bust_pastor` | bust | ⬜ placeholder is code-drawn pixel art (`ui/pastorBust.js`: halo, clerical collar, dark wings); replace with a real bust sprite |
 
 ---
 

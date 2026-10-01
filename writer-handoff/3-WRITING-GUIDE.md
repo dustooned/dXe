@@ -65,6 +65,32 @@ only rewrite two things per node, rewrite those.
 - **`CONTACT [Class]:`** — how they ask to stay in touch, at the very end
   if they trust you. One or two sentences, in character: Deborah writes
   her number on your hand; Rick doesn't ask, he takes your phone.
+- **`CONTRADICTS: node_id=truth|lie`** — under an answer that contradicts
+  something the player said earlier. Another character's node: word
+  travels, IT quotes the earlier line. The same character's node: they
+  heard both, and call it out themselves (costs more trust). Only write
+  truth-then-lie pairs; owning up later should never be punished.
+- **`CAUGHT [node_id]: "line"`** — what this character says when they
+  catch the player contradicting what they told *them*. One sentence, in
+  their voice, quoting the earlier answer back if you can ("On my porch you
+  said faith didn't save him. Now he's at peace?"). No CAUGHT line = their
+  stock fallback plays.
+- **`{mark:lake}`** inside a REACT — starts a new page and brings the lake
+  gauge in right there (used once: the therapist pointing at the lake after
+  a lie on the check-in). Ask before inventing new marks; each needs code.
+- **`TRYCALL: "line"`** (OUTRO only) — the speaker's own contact pops into
+  the phone dock and the line waits for the player to tap it. Used once, to
+  teach calling in the therapist's outro.
+
+### Character voices (one word each)
+
+Every character barks a single word in SAM, the 1982 talking-computer
+voice, never a reading of your text. The words live in
+`src/shell/voices.js` (ask the developer to change them). Each character
+has: a reaction for an answer that landed well / badly / neither, a phone
+greeting and goodbye, and (once they trust you) a farewell. Write lines
+that leave room for that bark: a REACT that opens on a sound ("Mm.",
+"Ha!") will double up with it.
 
 ### Things that will break the build
 

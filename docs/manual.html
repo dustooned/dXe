@@ -1935,6 +1935,14 @@ for the rest of the run (<code>engine/loadout.js</code>).</p>
 individual words in that class&#39;s emotion colors — the intent is that it
 reads as character voice, not as a stat screen. Keep it that way if you
 extend this: naming the class turns an atmospheric beat into a menu.</p>
+<p>It&#39;s dressed as part 2 of the FEELZ check-in (the feelz-launch cutscene is
+part 1): an app bar (&quot;FEELZ · EVALUATION&quot;), a 3-step progress bar, the
+question above the card, a wiggle demo on Q1, and tap-to-answer on the
+labels. After Q3: FILE CREATED, a redacted file code, &quot;Results sealed
+until session end&quot;, &quot;Matching you with care...&quot;, then the provider card
+(Charles Browning, LCSW, the only place his name appears), then the
+diagnosis. The swipe card&#39;s lean is one neutral color here so it never
+hints at a class.</p>
 <h3 id="doc-scene_types--reckoning-srcscenesreckoningscenejs"><a class="anchor" href="#doc-scene_types--reckoning-srcscenesreckoningscenejs" aria-label="Link to this section">#</a><code>reckoning</code> (<code>src/scenes/reckoningScene.js</code>)</h3>
 <p>Pastor Gabriel&#39;s baptism. It plays in order: the altar call, the
 confess/double-down deck built from <code>run.get().ledger</code> (he still runs this
@@ -1947,6 +1955,16 @@ alternative whose <code>when</code> matches is the one that plays (<code>engine/
 </code></pre>
 <p>The Reckoning&#39;s old standalone IT line (<code>RECKONING_IT_TEXT</code>) was retired.
 IT and SO appear at the gate instead.</p>
+<p>Before the altar call, his entrance: the death clock ticks 11:59:56 →
+11:59:59 in the dark, then three C64 bell tolls (<code>audio.playC64Toll</code>,
+after Storm Lord&#39;s opening) tuned to the player&#39;s two most-picked feelings
+and then their top three together, each flashing its feeling&#39;s color; his
+placeholder bust (<code>ui/pastorBust.js</code>) fades in stepped; SAM greets
+(&quot;Welcome, child.&quot;). A tap skips it. The nameplate reads &quot;???&quot; until a
+line of his says &quot;Gabriel&quot;. The lake gauge appears only from the first
+confession card. At the gate, IT&#39;s and SO&#39;s last lines pass <code>reveal</code>
+(SHIT / SHOW). Walking into the water plays <code>audio.playHowl</code>, tuned by
+Truth Debt, before the baptism.</p>
 <h3 id="doc-scene_types--ending-srcscenesendingscenejs"><a class="anchor" href="#doc-scene_types--ending-srcscenesendingscenejs" aria-label="Link to this section">#</a><code>ending</code> (<code>src/scenes/endingScene.js</code>)</h3>
 <p>Terminal, two phases. Picks the ending by final Truth Debt and records
 it immediately on mount (not deferred to the end of the beat). Calls
@@ -3173,6 +3191,11 @@ colored-initial placeholder whenever it&#39;s unset.</p>
 <td align="left"><code>portrait_therapist</code></td>
 <td align="left">192×192</td>
 <td align="left">💬 he&#39;s voice-only by design — confirm before drawing</td>
+</tr>
+<tr>
+<td align="left"><code>bust_pastor</code></td>
+<td align="left">bust</td>
+<td align="left">⬜ placeholder is code-drawn pixel art (<code>ui/pastorBust.js</code>: halo, clerical collar, dark wings); replace with a real bust sprite</td>
 </tr>
 </tbody></table>
 <hr>
@@ -4568,6 +4591,23 @@ stays black, with the crosshatch&#39;s own density naturally graduating how
 much color shows through; confirmed <code>updateMood()</code> doesn&#39;t throw against
 a portrait with no image.</p>
 <h2 id="doc-stat_math--confrontation-oscilloscope-built-uioscilloscopejs-audiojs"><a class="anchor" href="#doc-stat_math--confrontation-oscilloscope-built-uioscilloscopejs-audiojs" aria-label="Link to this section">#</a>Confrontation oscilloscope (built — <code>ui/oscilloscope.js</code> + <code>audio.js</code>)</h2>
+<p><strong>2026-09-30 update — it now shows connection.</strong> In dialog it&#39;s a band
+across the portrait (<code>placeScopeBand</code>), not the whole background, so no
+text box covers it. The two traces sit on separate midlines; the gap is
+<code>(1 - closeness) * 0.24h</code>, eased per frame, where (<code>dialogScene.js</code>
+<code>connection()</code>):</p>
+<pre><code>closeness = min(1, syncs/2 * 0.6 + bids * 0.4) - 0.12 * missesThisEncounter
+          + 0.15 if the held feeling matches the mood, -0.10 if it doesn&#39;t
+clamped 0..0.9; trusted (2 syncs + 1 bid) = merged, gap 0
+</code></pre>
+<p>A miss is an answer that neither matched the mood nor met a bid. The
+player trace takes the held feeling&#39;s color (else the last pick&#39;s), and a
+strip of blocks under the band shows this encounter&#39;s picks (newest
+outlined). Shut out: player trace grey, NPC trace flattened to 4%.</p>
+<p><strong>Contradiction costs</strong> (<code>handleSwipe</code>): heard about (another NPC&#39;s node)
+-1 sync; seen (this NPC&#39;s own node) -2 syncs, TRU -1, and the answer&#39;s bid
+doesn&#39;t count. Only truth-then-lie pairs are authored.</p>
+<p>The original design notes follow.</p>
 <p>Confrontation cutscenes have no background art of their own (<code>beats</code> only
 ever set <code>sprite</code>, never <code>bgAnim</code>/<code>image</code>) — a lot of empty real estate
 behind the bust. The goal, stated directly: a live reactive indicator of

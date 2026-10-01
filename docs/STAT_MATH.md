@@ -449,6 +449,29 @@ a portrait with no image.
 
 ## Confrontation oscilloscope (built — `ui/oscilloscope.js` + `audio.js`)
 
+**2026-09-30 update — it now shows connection.** In dialog it's a band
+across the portrait (`placeScopeBand`), not the whole background, so no
+text box covers it. The two traces sit on separate midlines; the gap is
+`(1 - closeness) * 0.24h`, eased per frame, where (`dialogScene.js`
+`connection()`):
+
+```
+closeness = min(1, syncs/2 * 0.6 + bids * 0.4) - 0.12 * missesThisEncounter
+          + 0.15 if the held feeling matches the mood, -0.10 if it doesn't
+clamped 0..0.9; trusted (2 syncs + 1 bid) = merged, gap 0
+```
+
+A miss is an answer that neither matched the mood nor met a bid. The
+player trace takes the held feeling's color (else the last pick's), and a
+strip of blocks under the band shows this encounter's picks (newest
+outlined). Shut out: player trace grey, NPC trace flattened to 4%.
+
+**Contradiction costs** (`handleSwipe`): heard about (another NPC's node)
+-1 sync; seen (this NPC's own node) -2 syncs, TRU -1, and the answer's bid
+doesn't count. Only truth-then-lie pairs are authored.
+
+The original design notes follow.
+
 Confrontation cutscenes have no background art of their own (`beats` only
 ever set `sprite`, never `bgAnim`/`image`) — a lot of empty real estate
 behind the bust. The goal, stated directly: a live reactive indicator of

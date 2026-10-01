@@ -12,6 +12,22 @@ it's the fastest shorthand for who you're writing.
 | 🔵 | **SAMUN** | Royal blue `#4169e1` | The gas station, night shift |
 | 🔴 | **RICK** | Brick red `#b22222` | The biker bar |
 
+**On the phone** (once they're your contact) each wears the color of the
+feeling they live in, and that's the feeling they see in people when they
+misread them: Deborah Sadness, Rwanda Anxiety, Samun Happy, Rick Anger. The
+Therapist stays grey and reads people most accurately.
+
+**Their voices** (SAM, one word at a time):
+
+| Who | Voice | Call: hello / bye | Reaction: good / bad / neither | Farewell |
+| :-- | :-- | :-- | :-- | :-- |
+| Therapist | tired, nasal | "Browning." / "Take care." | "Mmm hmm." / "Hmm." / "Okay." | — |
+| Deborah | bright, wobbly | "Hello, dear!" / "Bless you." | "Oh, honey." / "Well!" / "Mmm." | "God bless you, sweetheart." |
+| Rwanda | dry, unhurried | "Yeah?" / "Later." | "Huh." / "Right." / "Sure." | "Don't be a stranger." |
+| Samun | quick, bouncy | "Yo!" / "Peace!" | "Ha!" / "Oof." / "Yeah yeah." | "Catch you later, man!" |
+| Rick | low, clipped | "What." / "Yep." | "Heh." / "Tsk." / "Uh huh." | "Watch yourself out there." |
+| Pastor Gabriel | slow, deep | "Welcome, child." | "Amen." (confess) / "Shame." (double down) | "Samael." (his name) |
+
 ---
 
 ## ⚪ THERAPIST — the tutorial

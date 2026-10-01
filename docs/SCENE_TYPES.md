@@ -144,6 +144,15 @@ individual words in that class's emotion colors — the intent is that it
 reads as character voice, not as a stat screen. Keep it that way if you
 extend this: naming the class turns an atmospheric beat into a menu.
 
+It's dressed as part 2 of the FEELZ check-in (the feelz-launch cutscene is
+part 1): an app bar ("FEELZ · EVALUATION"), a 3-step progress bar, the
+question above the card, a wiggle demo on Q1, and tap-to-answer on the
+labels. After Q3: FILE CREATED, a redacted file code, "Results sealed
+until session end", "Matching you with care...", then the provider card
+(Charles Browning, LCSW, the only place his name appears), then the
+diagnosis. The swipe card's lean is one neutral color here so it never
+hints at a class.
+
 ### `reckoning` (`src/scenes/reckoningScene.js`)
 
 Pastor Gabriel's baptism. It plays in order: the altar call, the
@@ -160,6 +169,17 @@ alternative whose `when` matches is the one that plays (`engine/pastor.js`).
 
 The Reckoning's old standalone IT line (`RECKONING_IT_TEXT`) was retired.
 IT and SO appear at the gate instead.
+
+Before the altar call, his entrance: the death clock ticks 11:59:56 →
+11:59:59 in the dark, then three C64 bell tolls (`audio.playC64Toll`,
+after Storm Lord's opening) tuned to the player's two most-picked feelings
+and then their top three together, each flashing its feeling's color; his
+placeholder bust (`ui/pastorBust.js`) fades in stepped; SAM greets
+("Welcome, child."). A tap skips it. The nameplate reads "???" until a
+line of his says "Gabriel". The lake gauge appears only from the first
+confession card. At the gate, IT's and SO's last lines pass `reveal`
+(SHIT / SHOW). Walking into the water plays `audio.playHowl`, tuned by
+Truth Debt, before the baptism.
 
 ### `ending` (`src/scenes/endingScene.js`)
 
