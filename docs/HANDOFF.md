@@ -509,7 +509,7 @@ and "Filling the wheel", SCRIPT_FORMAT for the new lines.
 (`engine/contacts.js`, Therapist always, gated on bars + Wi-Fi), IT/SO pace
 pressure (`engine/itPressure.js`), text speed setting, the stay-in-touch
 bust at the end of a trusted encounter (`CONTACT`), Trust surfacing on
-the next wheel instead of a pop-up, static lake gauge in encounters.
+the next wheel instead of a pop-up, lake gauge pinned in place in encounters (fish keep swimming).
 
 **Still open from the Sep 27 discussion:** scene moves (Deborah's garden,
 Rwanda's commissioned mural, Samun's crosswalk), the Therapist and NPCs
