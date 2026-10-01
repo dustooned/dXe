@@ -238,6 +238,7 @@ async function renderDebugPage() {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'dx-debug__chip';
+    b.dataset.cls = cls;
     b.textContent = cls.toUpperCase();
     b.addEventListener('click', () => { debugState.loadout = cls; sync(); });
     seg.appendChild(b);
@@ -260,8 +261,17 @@ async function renderDebugPage() {
       b.className = 'dx-debug__scene';
       b.textContent = sid;
       b.addEventListener('click', () => {
+        // Read the choices off the page itself, so the jump is exactly
+        // what's showing (not a copy that could drift).
+        const shown = {
+          loadout: box.querySelector('.dx-debug__chip.is-active')?.dataset.cls ?? debugState.loadout,
+          truthDebt: Number(lake.value),
+          allFeelings: box.querySelector('.dx-debug__toggle[data-key="allFeelings"]').classList.contains('is-active'),
+          trusted: box.querySelector('.dx-debug__toggle[data-key="trusted"]').classList.contains('is-active'),
+        };
+        Object.assign(debugState, shown);
         closePanel();
-        jumpTo(DEBUG_CHAPTER, sid, overridesFor(debugState));
+        jumpTo(DEBUG_CHAPTER, sid, overridesFor(shown));
       });
       scenes.appendChild(b);
     }

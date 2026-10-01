@@ -145,7 +145,7 @@ NEXT: rwanda_04
 
 === rwanda_04
 PROMPT: (She sets the cigarette down for good this time.) You're the first person tonight I haven't had to {color:Fear}brace{/color} for. That's either good, or it means I'm not paying attention.
-MOOD: Trust
+MOOD: Anxiety
 BID: truth
 
 -- TRUTH

@@ -482,8 +482,7 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 ## What's next
 
 **Open (raised 2026-09-30, not decided):**
-- **Rwanda's Q4 mood is Trust**, which only unlocks after two other NPCs
-  trust you, so that sync is almost unreachable. Likely swap to Anxiety.
+- **Rick's enabled Q2 mood is Trust**, almost unreachable (Trust unlocks only after two NPCs trust you). Rwanda's Q4 had the same problem and is now Anxiety (2026-10-01).
 - **Class decides who's easy to reach.** Guns matches nearly all of Rick's
   moods; Crystals matches few moods anywhere. Rebalance the node MOODs, or
   keep it as each class's natural allies.
