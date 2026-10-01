@@ -481,8 +481,67 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 
 ## What's next
 
-**Queued (decided, not built):**
-- **SAM voices: built** (`shell/voices.js`, `sam-js`). Rendered live (SAM is deterministic, so no audio files needed). License caveat stands: the port reverse-engineers a commercial 1982 product whose holder (SoftVoice) could not be reached; decide before a commercial release.
+**Open (raised 2026-09-30, not decided):**
+- **Rwanda's Q4 mood is Trust**, which only unlocks after two other NPCs
+  trust you, so that sync is almost unreachable. Likely swap to Anxiety.
+- **Class decides who's easy to reach.** Guns matches nearly all of Rick's
+  moods; Crystals matches few moods anywhere. Rebalance the node MOODs, or
+  keep it as each class's natural allies.
+- **FEELZ feeling contradictions** (proposed): TOPIC tags per node; picking
+  the opposite feeling on the same topic with someone else pings a FEELZ
+  note and costs a sync; the ending report counts "incongruent affect."
+  Waiting on a topic list.
+- **Answer speed** only drives IT/SO comments today. Options: speed reads
+  as not listening (widens the scope gap), or a pacing note in the FEELZ
+  report.
+- Still open from before: scene moves (Deborah's garden, Rwanda's mural,
+  Samun's crosswalk), portrait art, walk stills, Samun's layered clothes,
+  Deborah's tune.
+
+**Done in the 2026-09-30 session:**
+- **Gameplay mechanics**
+  - *Same-person contradictions* (CAUGHT): contradict yourself in front of
+    someone and they call it out themselves. -2 syncs, TRU -1, the bid on
+    that answer doesn't count; correcting yourself (lie, then truth) never
+    counts. 8 pairs, two each for Deborah, Rwanda, Samun, Rick. Word-travels
+    contradictions (IT quotes you, -1 sync) are unchanged.
+  - *Oscilloscope as connection*: a band across the portrait. The gap
+    between their line and yours is how close they are (syncs, bids, minus
+    misses this encounter); it merges when they trust you; holding a
+    feeling previews it. Your line wears your feeling's color; a strip of
+    blocks shows this encounter's picks (newest outlined). Shut out: your
+    line greys, theirs flatlines.
+  - *Status bar that teaches itself*: pixel-sprite icons; when a meter
+    moves the icon pulses (up) or flickers (down), its word shows under the
+    bar (honest / connected / clear / steady), and a two-note blip rises or
+    falls, pitched per meter.
+  - *Swipe lean*: the card leans into TRUTH or LIE as you drag, that label
+    grows and takes its color (cool / warm, never green / red), and a stamp
+    fades in.
+  - *Lake on a lie*: lie on the therapist's check-in and he points at the
+    lake mid-reaction, after the bars (new `{mark:name}` text cue).
+  - *Trying his contact* (TRYCALL outro line): his contact pops into the
+    dock and you have to call him while he's on the line; his "Hello?"
+    echoes back with feedback, then he explains calls.
+- **Voices and sound** (SAM via `sam-js`, `shell/voices.js`)
+  - Per-character SAM voices: reaction barks (up / down / flat), call
+    greeting and goodbye, a farewell when a trusted NPC swaps numbers. The
+    tutorial call ends on his "Take ca—" cut off by the hang-up tone.
+  - Per-person ringtones; hang-up tone; disconnect sounds (drift on a
+    miss, signal-lost when shut out). License caveat: the SAM port
+    reverse-engineers a commercial 1982 product whose holder (SoftVoice)
+    couldn't be reached; decide before a commercial release.
+- **Intake and therapist**
+  - The class intake is FEELZ evaluation part 2 (app bar, progress, demo on
+    Q1, tap-to-answer), then FILE CREATED / results sealed / the provider
+    card, then his colored-word read.
+  - The therapist is Charles Browning (he/him). On screen he's only
+    THERAPIST; the name appears once, on the provider card. Accent is
+    clinical grey `#9aa0a6`.
+- **IT and SO**: name plates under the icon; at the end of the chapter they
+  pry open into SHIT and SHOW.
+- **Fixes**: fish swim at all times (the earlier "static" ask meant the
+  gauge's position); contacts dock and call box sit above the water meter.
 
 **Done in the 2026-09-27 session** (from `devnotes/Sep 27 at 12_35 PM.md`):
 - Bigger text that scales with the canvas; the canvas fills the viewport

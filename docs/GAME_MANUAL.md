@@ -181,6 +181,8 @@ Every lie big enough to matter is also logged, quietly, to a running
 
 ### IT and SO
 
+Each popup labels the icon with its name, IT or SO. At the very end of the chapter the missing letters pry their way in: IT becomes SHIT, SO becomes SHOW.
+
 Two intrusive-thought voices that pop up like ads. **IT** states things
 with dread and certainty. **SO** answers IT with doubt. They're
 observers who keep score and never admit they're against you. They don't
