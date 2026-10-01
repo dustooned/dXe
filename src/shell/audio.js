@@ -1268,6 +1268,141 @@ export function playHowl(foul = 0) {
   return Math.round((dur + 0.35) * 1000);
 }
 
+// The class, hinted by ear when the FEELZ evaluation finishes
+// (questionnaireScene.js). Never named, only heard:
+//   Guns      a light gunshot that echoes off something far away
+//   Crystals  a Tibetan singing bowl, struck, beating slowly as it rings
+//   Bible     a soft choir "ah" in a big, reverberant room
+function echoBus(delaySec, feedback, out) {
+  const audioCtx = ensureContext();
+  const input = audioCtx.createGain();
+  const delay = audioCtx.createDelay(2);
+  delay.delayTime.value = delaySec;
+  const fb = audioCtx.createGain();
+  fb.gain.value = feedback;
+  const damp = audioCtx.createBiquadFilter();
+  damp.type = 'lowpass';
+  damp.frequency.value = 2200;
+  input.connect(out);
+  input.connect(delay);
+  delay.connect(damp).connect(fb).connect(delay);
+  damp.connect(out);
+  return input;
+}
+
+function reverbBus(seconds, out) {
+  const audioCtx = ensureContext();
+  const rate = audioCtx.sampleRate;
+  const ir = audioCtx.createBuffer(2, Math.floor(rate * seconds), rate);
+  for (let ch = 0; ch < 2; ch++) {
+    const d = ir.getChannelData(ch);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 2.4);
+  }
+  const conv = audioCtx.createConvolver();
+  conv.buffer = ir;
+  const wet = audioCtx.createGain();
+  wet.gain.value = 0.9;
+  const dry = audioCtx.createGain();
+  dry.gain.value = 0.35;
+  const input = audioCtx.createGain();
+  input.connect(dry).connect(out);
+  input.connect(conv).connect(wet).connect(out);
+  return input;
+}
+
+export function playClassSigil(cls) {
+  const audioCtx = ensureContext();
+  const t = audioCtx.currentTime + 0.03;
+  const out = audioCtx.createGain();
+  out.gain.value = 1;
+  out.connect(masterGain);
+
+  if (cls === 'Guns') {
+    const bus = echoBus(0.32, 0.45, out);
+    const rate = audioCtx.sampleRate;
+    const buf = audioCtx.createBuffer(1, Math.floor(rate * 0.25), rate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 6);
+    const crack = audioCtx.createBufferSource();
+    crack.buffer = buf;
+    const bp = audioCtx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = 1400;
+    bp.Q.value = 0.7;
+    const cg = audioCtx.createGain();
+    cg.gain.value = 0.32;
+    crack.connect(bp).connect(cg).connect(bus);
+    crack.start(t);
+    // The body of the shot: a short low thump.
+    const thump = audioCtx.createOscillator();
+    thump.type = 'sine';
+    thump.frequency.setValueAtTime(140, t);
+    thump.frequency.exponentialRampToValueAtTime(45, t + 0.15);
+    const tg = audioCtx.createGain();
+    tg.gain.setValueAtTime(0.25, t);
+    tg.gain.exponentialRampToValueAtTime(0.0001, t + 0.2);
+    thump.connect(tg).connect(bus);
+    thump.start(t);
+    thump.stop(t + 0.25);
+  } else if (cls === 'Crystals') {
+    const bus = echoBus(0.45, 0.4, out);
+    const base = 220;
+    // Inharmonic bowl partials, each a slightly detuned pair so it beats.
+    [[1, 0.12], [2.71, 0.06], [5.15, 0.03], [8.3, 0.015]].forEach(([mult, peak]) => {
+      for (const detune of [0, 1.6]) {
+        const osc = audioCtx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.value = base * mult + detune;
+        const g = audioCtx.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(peak, t + 0.008);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 5.5 / Math.sqrt(mult));
+        osc.connect(g).connect(bus);
+        osc.start(t);
+        osc.stop(t + 6);
+      }
+    });
+  } else {
+    // Bible: a few soft voices on a major chord, sung "ah" through formants.
+    const bus = reverbBus(4.5, out);
+    const formants = [[800, 6, 1], [1150, 8, 0.5], [2900, 10, 0.2]];
+    [261.6, 329.6, 392, 523.2].forEach((f, i) => {
+      for (const detune of [-4, 4]) {
+        const osc = audioCtx.createOscillator();
+        osc.type = 'sawtooth';
+        osc.frequency.value = f;
+        osc.detune.value = detune;
+        const vib = audioCtx.createOscillator();
+        vib.frequency.value = 4.6 + i * 0.3;
+        const vd = audioCtx.createGain();
+        vd.gain.value = f * 0.006;
+        vib.connect(vd).connect(osc.frequency);
+        const voice = audioCtx.createGain();
+        const start = t + i * 0.08;
+        voice.gain.setValueAtTime(0.0001, start);
+        voice.gain.linearRampToValueAtTime(0.035, start + 0.9);
+        voice.gain.setValueAtTime(0.035, start + 1.8);
+        voice.gain.exponentialRampToValueAtTime(0.0001, start + 3.2);
+        for (const [freq, q, level] of formants) {
+          const bp = audioCtx.createBiquadFilter();
+          bp.type = 'bandpass';
+          bp.frequency.value = freq;
+          bp.Q.value = q;
+          const lv = audioCtx.createGain();
+          lv.gain.value = level;
+          osc.connect(bp).connect(lv).connect(voice);
+        }
+        voice.connect(bus);
+        osc.start(start);
+        vib.start(start);
+        osc.stop(start + 3.4);
+        vib.stop(start + 3.4);
+      }
+    });
+  }
+  setTimeout(() => out.disconnect(), 9000);
+}
+
 // A meter moved (ui/statusBar.js): two square-wave notes a fifth apart,
 // rising when it went up, falling when it went down. Each meter has its
 // own pitch so they're learnable by ear; several changes play in turn.

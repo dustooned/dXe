@@ -8,7 +8,7 @@
 import { CLASSES, emotionsForClass } from '../engine/loadout.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
 import { createFeelzSilhouette } from '../ui/feelzSilhouette.js';
-import { startAmbient, stopAmbient, playTyagl, playFeelzPing, strikeEmotionVoice } from '../shell/audio.js';
+import { startAmbient, stopAmbient, playFeelzPing, strikeEmotionVoice, playClassSigil } from '../shell/audio.js';
 
 // The intake is part 2 of FEELZ's check-in (content/feelz_launch.json is
 // part 1), so it wears the app: header, progress, fine print. After the
@@ -359,6 +359,11 @@ export function mount(stageEl, _scene, { run, onComplete }) {
 
     const body = document.createElement('div');
     body.className = 'dx-intake__filed';
+    const done = document.createElement('p');
+    done.className = 'dx-text dx-intake__line is-stamp';
+    done.textContent = 'EVALUATION COMPLETE';
+    body.appendChild(done);
+    playFeelzPing();
     const wheel = createFeelzSilhouette({ lit: [] });
     body.appendChild(wheel.el);
     screen.appendChild(body);
@@ -375,7 +380,9 @@ export function mount(stageEl, _scene, { run, onComplete }) {
     });
     const afterLights = 700 + feelings.length * 650 + 300;
     filedTimers.push(setTimeout(() => {
-      playTyagl();
+      // Your class, heard and never named: a far-off shot, a singing bowl,
+      // or a choir (audio.js playClassSigil).
+      playClassSigil(cls);
       for (const [text, cls2] of [[`${feelings.length} feelings available.`, ''], ["The rest you'll have to find.", 'is-fine']]) {
         const line = document.createElement('p');
         line.className = `dx-text dx-intake__line ${cls2}`;

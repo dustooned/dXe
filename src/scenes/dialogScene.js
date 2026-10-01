@@ -452,6 +452,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
           onMark: (name) => {
             if (name === 'lake') cueLake(screen, reaction);
             if (name === 'caught') landCaught(screen);
+            // {cue:stability|trust|lucidity|integrity}: flash that icon.
+            statusBar?.flash?.(name);
           },
         },
       );

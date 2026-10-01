@@ -39,8 +39,10 @@ const DEFAULT_MS_PER_CHAR = 28;
 const SPEED_MULTIPLIER = { slow: 2.6, fast: 0.35, normal: 1 };
 // {mark:name} is a cue, not text: it starts a new page, and the caller's
 // onMark(name) fires when that page comes up (dialogScene.js uses it to
-// bring the lake in mid-reaction).
-const TAG_PATTERN = /\{(\/?)(slow|fast)\}|\{color:(\w+)\}|\{(\/)color\}|\{pause:(\d+)\}|\{mark:(\w+)\}/g;
+// bring the lake in mid-reaction). {cue:name} is the same callback without
+// the page break: it fires the moment the draw reaches that spot (the
+// therapist naming each status-bar icon as it flashes).
+const TAG_PATTERN = /\{(\/?)(slow|fast)\}|\{color:(\w+)\}|\{(\/)color\}|\{pause:(\d+)\}|\{mark:(\w+)\}|\{cue:(\w+)\}/g;
 
 export function parseSegments(raw) {
   const segments = [];
@@ -75,7 +77,9 @@ export function parseSegments(raw) {
     pushChars(raw.slice(lastIndex, match.index));
     lastIndex = TAG_PATTERN.lastIndex;
 
-    if (match[6] != null) {
+    if (match[7] != null) {
+      segments.push({ type: 'cue', name: match[7], delayMs: 0 });
+    } else if (match[6] != null) {
       segments.push({ type: 'mark', name: match[6], delayMs: 0 });
     } else if (match[5] != null) {
       segments.push({ type: 'pause', delayMs: Number(match[5]) });
@@ -186,6 +190,7 @@ export function createTypewriter(container, text, { onDone, onChar, onMark, star
     setTimeout(fireMarks, 0);
     page = drawPage(container, pages[pageIndex] ?? [], {
       onChar,
+      onCue: (name) => onMark?.(name),
       startRevealed,
       speed,
       moreAfter: !isLastPage(),
@@ -212,7 +217,23 @@ export function createTypewriter(container, text, { onDone, onChar, onMark, star
 }
 
 // Draws one page into the container, replacing whatever was there.
-function drawPage(container, segments, { onDone, onChar, startRevealed, moreAfter, speed = 1 }) {
+// Cues still pending when a page is revealed all at once fire in a quick
+// run instead of together, so each one still lands.
+const CUE_STAGGER_MS = 260;
+
+function drawPage(container, segments, { onDone, onChar, onCue, startRevealed, moreAfter, speed = 1 }) {
+  const firedCues = new Set();
+  function fireCue(seg) {
+    if (firedCues.has(seg)) return;
+    firedCues.add(seg);
+    onCue?.(seg.name);
+  }
+  function flushCues() {
+    segments.filter((s) => s.type === 'cue' && !firedCues.has(s)).forEach((s, i) => {
+      firedCues.add(s);
+      setTimeout(() => onCue?.(s.name), i * CUE_STAGGER_MS);
+    });
+  }
   container.innerHTML = '';
   container.classList.remove('is-new-page');
   void container.offsetWidth; // restart the new-page pop animation
@@ -270,6 +291,7 @@ function drawPage(container, segments, { onDone, onChar, startRevealed, moreAfte
     charSpans.forEach((span) => span.classList.add('is-visible'));
     done = true;
     more.hidden = false;
+    flushCues();
     onDone?.();
   }
 
@@ -285,6 +307,8 @@ function drawPage(container, segments, { onDone, onChar, startRevealed, moreAfte
       charSpans[charIndex]?.classList.add('is-visible');
       onChar?.();
       charIndex += 1;
+    } else if (seg.type === 'cue') {
+      fireCue(seg);
     }
     timer = setTimeout(step, seg.delayMs * speed);
   }
@@ -293,6 +317,7 @@ function drawPage(container, segments, { onDone, onChar, startRevealed, moreAfte
     charSpans.forEach((span) => span.classList.add('is-visible'));
     done = true;
     more.hidden = false;
+    flushCues();
   } else {
     step();
   }

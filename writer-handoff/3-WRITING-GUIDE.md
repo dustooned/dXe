@@ -75,6 +75,10 @@ only rewrite two things per node, rewrite those.
   their voice, quoting the earlier answer back if you can ("On my porch you
   said faith didn't save him. Now he's at peace?"). No CAUGHT line = their
   stock fallback plays.
+- **`{cue:stability}` / `{cue:trust}` / `{cue:lucidity}` / `{cue:integrity}`**
+  inside a line — as the text reaches it, that phone icon (battery / bars /
+  Wi-Fi / clock) flashes, shows its word and plays its sound. Put it right
+  before the word that names the icon.
 - **`{mark:lake}`** inside a REACT — starts a new page and brings the lake
   gauge in right there (used once: the therapist pointing at the lake after
   a lie on the check-in). Ask before inventing new marks; each needs code.

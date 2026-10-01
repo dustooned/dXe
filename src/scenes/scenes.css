@@ -1412,3 +1412,9 @@
 .dx-game-screen .dx-nameplate {
   padding-top: 8px;
 }
+
+/* The profile's stamp sits on one line above the wheel. */
+.dx-intake--profile .dx-intake__line.is-stamp {
+  font-size: calc(10 * var(--fs));
+  white-space: nowrap;
+}

@@ -167,5 +167,24 @@ export function createStatusBar(stats, { typing = false, airplane = false, quiet
     }
   }
 
-  return { el, setTyping, destroy: () => clearInterval(timer) };
+  // The tutorial pointing at one meter: its icon pulses, its word shows
+  // under the bar, and its own blip plays (rising, as a hello).
+  function flash(meter) {
+    if (!WORDS[meter]) return;
+    const icon = el.querySelector(`[data-meter="${meter}"]`);
+    icon?.classList.remove('is-up', 'is-down');
+    void icon?.offsetWidth;
+    icon?.classList.add('is-up');
+    el.querySelector('.dx-status__words')?.remove();
+    const words = document.createElement('span');
+    words.className = 'dx-status__words';
+    const w = document.createElement('span');
+    w.className = 'is-up';
+    w.textContent = WORDS[meter];
+    words.appendChild(w);
+    el.appendChild(words);
+    playMeterChange([{ meter, up: true }]);
+  }
+
+  return { el, setTyping, flash, destroy: () => clearInterval(timer) };
 }

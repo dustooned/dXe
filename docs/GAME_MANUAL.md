@@ -460,7 +460,7 @@ same character, same wound, different angle of approach.
 
 ### The intake (FEELZ evaluation)
 
-Part 2 of the FEELZ check-in. Three swipe questions in the app's own form (app bar, progress, "PART 2 · Q1 OF 3"); the first question demos the swipe, and tapping an answer works too. Then: FILE CREATED, a redacted file code, "Results sealed until session end" (the class is only named in the ending's FEELZ report), and the provider card, Charles Browning, LCSW. Then FEELZ shows your starting wheel: all slices dark, your three lighting up one at a time with their tones ("3 feelings available. The rest you'll have to find."). The call opens with him reading your intake aloud: the colored-word read on your answers, as his first line.
+Part 2 of the FEELZ check-in. Three swipe questions in the app's own form (app bar, progress, "PART 2 · Q1 OF 3"); the first question demos the swipe, and tapping an answer works too. Then: FILE CREATED, a redacted file code, "Results sealed until session end" (the class is only named in the ending's FEELZ report), and the provider card, Charles Browning, LCSW. Then FEELZ stamps EVALUATION COMPLETE and shows your starting wheel: all slices dark, your three lighting up one at a time with their tones, then a sound that hints at your class without naming it (Guns: a light gunshot echoing far off; Crystals: a Tibetan singing bowl, beating as it rings; Bible: a soft choir "ah" in a big reverberant room), and "3 feelings available. The rest you'll have to find." The call opens with him reading your intake aloud: the colored-word read on your answers, as his first line.
 
 ### Trying his contact
 

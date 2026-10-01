@@ -542,7 +542,10 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
   (`ui/pastorBust.js`), SAM greeting; name hidden until he says it; the
   lake gauge waits for the first confession; SAM "Amen." / "Shame." /
   "Samael." during the reckoning.
-- **Class reveal rework**: the standalone THERAPIST diagnosis screen is gone. FEELZ · PROFILE READY lights your three starting slices on the pixel wheel; the therapist says the class read as his first line, reading your intake ({intake} token). His per-class OPENER lines retired (the read replaces them). Reads are still PLACEHOLDER.
+- **Tutorial points at each meter**: as the therapist names battery, bars,
+  Wi-Fi and clock, that icon flashes, shows its word and plays its blip
+  (`{cue:name}` typewriter cues).
+- **Class reveal rework**: the standalone THERAPIST diagnosis screen is gone. FEELZ · PROFILE READY stamps EVALUATION COMPLETE, lights your three starting slices on the pixel wheel, and plays a class sigil sound (`audio.playClassSigil`: echoing gunshot / singing bowl / reverberant choir); the therapist says the class read as his first line, reading your intake ({intake} token). His per-class OPENER lines retired (the read replaces them). Reads are still PLACEHOLDER.
 - **FEELZ boot logo as pixel art** (`ui/feelzSilhouette.js`): the wheel drawn on a 48×48 canvas scaled up pixelated, with a seamless rainbow wave (a cyclic blend of the eight feelings, no tile seams).
 - **Debug menu** (Settings → DEBUG, `shell/debug.js`): pick a class, a lake level (0–10), ALL FEELINGS on/off, EVERYONE TRUSTS YOU on/off, then a scene button (grouped Opening / Therapist / each NPC / End) restarts the chapter right there with that state. New scenes show up under OTHER automatically. The gear and skip buttons are pixel icons now.
 - **FEELZ in logo colors everywhere** (`shell/feelzWord.js` + typewriter).
