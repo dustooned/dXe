@@ -8,6 +8,8 @@
 // Where they play (dialogScene.js):
 //   up / down / flat  the NPC's reaction to your answer, by how it landed
 //   greet / bye       picking up and hanging up a phone call (phone-filtered)
+//   farewell          sending you off, once they have trusted you and you swap
+//                     numbers (the stay-in-touch bust)
 import SamJs from 'sam-js';
 import { playSamples } from './audio.js';
 
@@ -28,10 +30,10 @@ const VOICES = {
 // What each of them says. Spelled for SAM's ear, not the reader's.
 const LINES = {
   THERAPIST: { greet: 'Browning.', bye: 'Take care.', up: 'Mmm hmm.', down: 'Hmm.', flat: 'Okay.', hello: 'Hello?' },
-  DEBORAH: { greet: 'Hello, dear!', bye: 'Bless you.', up: 'Oh, honey.', down: 'Well!', flat: 'Mmm.' },
-  RWANDA: { greet: 'Yeah?', bye: 'Later.', up: 'Huh.', down: 'Right.', flat: 'Sure.' },
-  SAMUN: { greet: 'Yo!', bye: 'Peace!', up: 'Ha!', down: 'Oof.', flat: 'Yeah yeah.' },
-  RICK: { greet: 'What.', bye: 'Yep.', up: 'Heh.', down: 'Tsk.', flat: 'Uh huh.' },
+  DEBORAH: { farewell: 'God bless you, sweetheart.', greet: 'Hello, dear!', bye: 'Bless you.', up: 'Oh, honey.', down: 'Well!', flat: 'Mmm.' },
+  RWANDA: { farewell: 'Dont be a stranger.', greet: 'Yeah?', bye: 'Later.', up: 'Huh.', down: 'Right.', flat: 'Sure.' },
+  SAMUN: { farewell: 'Catch you later, man!', greet: 'Yo!', bye: 'Peace!', up: 'Ha!', down: 'Oof.', flat: 'Yeah yeah.' },
+  RICK: { farewell: 'Watch yourself out there.', greet: 'What.', bye: 'Yep.', up: 'Heh.', down: 'Tsk.', flat: 'Uh huh.' },
 };
 
 const SAM_RATE = 22050;

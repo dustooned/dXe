@@ -1023,6 +1023,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
       if (!tw.isDone()) { tw.finish(); return; }
       tw.destroy();
       audio.playFeelzPing();
+      // Numbers swapped: they send you off in their own voice.
+      voices.say(npc.npc, 'farewell', { delayMs: 350 });
       overlay.remove();
       onDone();
     });
