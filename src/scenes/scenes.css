@@ -535,6 +535,49 @@
   image-rendering: pixelated;
 }
 
+/* Icon with its name plate underneath, the way a fighting game labels a
+   portrait. The hidden letters (itPopup.js NAMES) sit at zero width until
+   the Ending's reveal pries them open: IT -> SHIT, SO -> SHOW. */
+.dx-it-face {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.dx-it-name {
+  display: inline-flex;
+  font-family: var(--font-pixel);
+  font-size: calc(10 * var(--fs));
+  line-height: 1;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.dx-it-name-hidden {
+  display: inline-block;
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  vertical-align: bottom;
+}
+
+.dx-it-name.is-revealed .dx-it-name-hidden {
+  animation: dx-it-name-pry 0.7s steps(6, end) both;
+}
+
+@keyframes dx-it-name-pry {
+  0% { max-width: 0; opacity: 0; }
+  30% { max-width: 0.6em; opacity: 1; transform: translateY(-2px); color: #c0392b; }
+  55% { max-width: 0.3em; opacity: 0.4; transform: translateX(1px); }
+  100% { max-width: 3em; opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-it-name.is-revealed .dx-it-name-hidden { animation: none; max-width: 3em; opacity: 1; }
+}
+
 .dx-it-close {
   position: absolute;
   top: 6px;

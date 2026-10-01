@@ -40,6 +40,13 @@ also become the hint system (see below — separately still unbuilt).
 
 ---
 
+## Names — IT and SO, until the end (built)
+
+Every IT/SO popup labels the icon with its name, IT or SO. At the very end
+of the chapter (endingScene.js, the last IT and SO popups) the missing
+letters pry their way in: IT becomes SHIT, SO becomes SHOW. The letters
+are in ui/itPopup.js NAMES; the ending passes `reveal: true`.
+
 ## SO — the doubt rebuttal (built)
 
 Grew out of noticing that two of IT's triggers — bloom events and the

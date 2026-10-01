@@ -5,7 +5,17 @@
 // of the interaction choices below — this file is the factored-out render,
 // not a new design.
 import { createTypewriter } from './typewriterText.js';
-import { playTypewriterTick, playItSting } from '../shell/audio.js';
+import { playTypewriterTick, playItSting, playStaticNoise } from '../shell/audio.js';
+import * as fx from '../shell/fx.js';
+
+// The name under the icon, as segments: [text, hiddenUntilReveal]. The
+// hidden letters are what IT and SO were short for all along — the
+// Ending's `reveal` slides them in: SH+IT, S+H+O+W.
+const NAMES = {
+  it: [['SH', true], ['IT', false]],
+  so: [['S', false], ['H', true], ['O', false], ['W', true]],
+};
+const REVEAL_MS = 900;
 
 // `text` is either a plain string (class-neutral — the only option before
 // the player has a loadout) or a { Guns, Bible, Crystals } object, resolved
@@ -36,8 +46,9 @@ export function resolveItText(text, loadout) {
 // SO doesn't need its own visual language, it needs to read as IT's own
 // box turned inside out, since that's literally what it's doing to
 // whatever IT just said.
-export function createItPopup(stageEl, { text, loadout, flashClose = false, onClose, voice = 'it' } = {}) {
+export function createItPopup(stageEl, { text, loadout, flashClose = false, onClose, voice = 'it', reveal = false } = {}) {
   let typewriter = null;
+  let revealTimer = null;
 
   // IT's own sting — distinct from tyagl.mp3, which stays under the
   // Therapist's diagnosis reveal (questionnaireScene.js). Fires the instant
@@ -57,11 +68,37 @@ export function createItPopup(stageEl, { text, loadout, flashClose = false, onCl
   box.className = voice === 'so' ? 'dx-it-box dx-it-box--so' : 'dx-it-box';
   screen.appendChild(box);
 
+  const face = document.createElement('div');
+  face.className = 'dx-it-face';
+  box.appendChild(face);
+
   const icon = document.createElement('img');
   icon.className = 'dx-it-icon';
   icon.src = '/assets/shared/sprites/spr_it_icon.webp';
   icon.alt = '';
-  box.appendChild(icon);
+  face.appendChild(icon);
+
+  const segments = NAMES[voice] ?? NAMES.it;
+  const name = document.createElement('span');
+  name.className = 'dx-it-name';
+  name.setAttribute('aria-label', voice === 'so' ? 'SO' : 'IT');
+  for (const [letters, hidden] of segments) {
+    const seg = document.createElement('span');
+    seg.textContent = letters;
+    if (hidden) seg.className = 'dx-it-name-hidden';
+    seg.setAttribute('aria-hidden', 'true');
+    name.appendChild(seg);
+  }
+  face.appendChild(name);
+
+  if (reveal) {
+    revealTimer = setTimeout(() => {
+      name.classList.add('is-revealed');
+      name.setAttribute('aria-label', segments.map(([l]) => l).join(''));
+      playStaticNoise(260);
+      fx.shake('weak');
+    }, REVEAL_MS);
+  }
 
   const closeBtn = document.createElement('button');
   closeBtn.type = 'button';
@@ -102,6 +139,7 @@ export function createItPopup(stageEl, { text, loadout, flashClose = false, onCl
 
   return {
     destroy() {
+      clearTimeout(revealTimer);
       typewriter?.destroy();
       screen.remove();
     },
