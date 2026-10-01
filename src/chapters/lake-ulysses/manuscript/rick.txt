@@ -40,7 +40,7 @@ NEXT: rick_02_enabled
 
 === rick_02_enabled
 PROMPT: See, that's why I run with guys like you. Most people get {color:Disgust}soft{/color}, start asking questions.
-MOOD: Trust
+MOOD: Anger
 
 -- TRUTH
 SAY: Maybe the questions are the only thing keeping you human.
