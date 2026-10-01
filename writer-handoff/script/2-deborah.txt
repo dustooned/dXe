@@ -135,6 +135,10 @@ EFFECTS: integrity-2 stability+1 trust+1
 DEBT: +3
 TAGS: Faith, Health
 LEDGER: You told Deborah to stop saying her son's name.
+CONTRADICTS: deborah_01=truth
+CAUGHT [deborah_01]: "On my porch you said faith didn't save him. Now he's at peace?"
+CONTRADICTS: deborah_01_hard=truth
+CAUGHT [deborah_01_hard]: "You said you weren't going to say it. Then you said it anyway."
 NEXT: deborah_04
 
 === deborah_04

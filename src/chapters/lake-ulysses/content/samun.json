@@ -232,8 +232,15 @@
             {
               "node": "rwanda_03",
               "side": "lie"
+            },
+            {
+              "node": "samun_01",
+              "side": "truth"
             }
-          ]
+          ],
+          "caught": {
+            "samun_01": "\"First I'm killing myself. Now it ain't me? Pick one, man.\""
+          }
         }
       },
       "mood": "Sadness",
@@ -274,7 +281,16 @@
             "Denial"
           ],
           "ledgerEntry": "You told Samun his brother's call, not his own choice, was why he drank again.",
-          "nextNodeId": null
+          "nextNodeId": null,
+          "contradicts": [
+            {
+              "node": "samun_03",
+              "side": "truth"
+            }
+          ],
+          "caught": {
+            "samun_03": "\"You just said it was me who changed. Now nothing's on me?\""
+          }
         }
       },
       "mood": "Sadness",

@@ -52,6 +52,15 @@ function moodHex(mood) {
   return getComputedStyle(document.documentElement).getPropertyValue(token).trim() || '#ffffff';
 }
 
+// What each NPC says when they catch you contradicting yourself and the
+// answer has no CAUGHT line of its own.
+const CAUGHT_FALLBACK = {
+  DEBORAH: '"That\'s not what you said a minute ago, honey."',
+  RWANDA: '"Huh. That\'s a different answer."',
+  SAMUN: '"Wait, wait. You just said the opposite."',
+  RICK: '"Thought you said different."',
+};
+
 // How long the committed card hangs before the answer plays out.
 const FREEZE_MS = 150;
 
@@ -140,6 +149,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let pendingPressure = null;
   // An answer that contradicts something said to someone earlier this run.
   let pendingContradiction = null;
+  // This NPC's own callout, when they catch you contradicting yourself in
+  // front of them: shown as the last page of their reaction.
+  let pendingCaught = null;
   // Phone: the live status bar (rebuilt each render; its clock ticks), and
   // who's already been called this encounter (one call per contact).
   let statusBar = null;
@@ -432,11 +444,15 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
       typewriter = createTypewriter(
         reaction,
-        composeReaction(npc.npc, varyReaction(pendingEdge), reactionEmotion, reactionSwipeKey),
+        composeReaction(npc.npc, varyReaction(pendingEdge), reactionEmotion, reactionSwipeKey)
+          + (pendingCaught ? ` {mark:caught}${pendingCaught}` : ''),
         {
           onChar: audio.playTypewriterTick,
           onDone: () => { tapHint.hidden = false; },
-          onMark: (name) => { if (name === 'lake') cueLake(screen, reaction); },
+          onMark: (name) => {
+            if (name === 'lake') cueLake(screen, reaction);
+            if (name === 'caught') landCaught(screen);
+          },
         },
       );
 
@@ -600,6 +616,19 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (stage === 'prompt' && promptRevealed) spotlightInteractive();
   }
 
+  // Caught: they stop on it. The warmth goes out of their portrait, the
+  // scope's lines snap apart with a crack of static, and they say it.
+  function landCaught(screen) {
+    pendingCaught = null;
+    turnedTowardThisEncounter = false;
+    screen.querySelector('.dx-portrait')?.classList.remove('is-warm');
+    drama.shock = { t0: performance.now(), strength: 1, color: '#ff4040' };
+    audio.playStaticNoise(260);
+    audio.playGrind();
+    fx.shake('weak');
+    voices.bark(npc.npc, -1, { delayMs: 120 });
+  }
+
   // The lake arrives mid-reaction: the spotlight moves off the bars and
   // onto the lake, with the words that introduce it. Only when it's still
   // hidden and there's actually something in it (debt above 0).
@@ -659,19 +688,33 @@ export function mount(stageEl, scene, { run, onComplete }) {
     run.set({ choices: { ...before.choices, [currentNodeId]: swipeKey } });
     // Every line the player says, for IT to quote back if they contradict it.
     run.set({ said: { ...(before.said ?? {}), [currentNodeId]: edge.playerText ?? '' } });
-    const caught = (edge.contradicts ?? []).find((c) => before.choices?.[c.node] === c.side);
-    if (caught) {
-      pendingContradiction = { node: caught.node, text: before.said?.[caught.node] ?? '' };
-      // Word travels: this NPC's trust loses a sync.
+    // Contradictions. Seen (this NPC heard both lines, earlier in this same
+    // encounter) beats heard-about (word traveled from someone else):
+    //   seen   -2 syncs, -1 TRU, the bid on this answer doesn't count, and
+    //          they call it out themselves (CAUGHT, or a fallback line)
+    //   heard  -1 sync, IT quotes the earlier line back
+    // Only truth-then-lie pairs are authored: correcting yourself (a lie,
+    // then the truth) never counts.
+    const tripped = (edge.contradicts ?? []).filter((c) => before.choices?.[c.node] === c.side);
+    const seen = tripped.find((c) => npc.nodes[c.node]);
+    const heard = tripped.find((c) => !npc.nodes[c.node]);
+    if (seen || heard) {
       const bonds = run.get().bonds ?? {};
       const mine = bonds[npc.npc] ?? { syncs: 0, bids: 0 };
-      run.set({ bonds: { ...bonds, [npc.npc]: { ...mine, syncs: Math.max(0, mine.syncs - 1) } } });
+      run.set({ bonds: { ...bonds, [npc.npc]: { ...mine, syncs: Math.max(0, mine.syncs - (seen ? 2 : 1)) } } });
+    }
+    if (seen) {
+      run.set({ trust: Math.max(0, (run.get().trust ?? 0) - 1) });
+      pendingCaught = edge.caught?.[seen.node] ?? edge.caught?.['*'] ?? CAUGHT_FALLBACK[npc.npc] ?? '"That\'s not what you said."';
+    } else if (heard) {
+      pendingContradiction = { node: heard.node, text: before.said?.[heard.node] ?? '' };
     }
     encounterSwipes.push(swipeKey);
 
     const node = currentNode();
     const synced = !!node.mood && activeEmotion === node.mood;
-    const turnedToward = !!node.bid?.includes(swipeKey);
+    // Caught contradicting yourself cancels the bid: it can't help and hurt.
+    const turnedToward = !seen && !!node.bid?.includes(swipeKey);
     if (synced || turnedToward) {
       const wasTrusted = isTrusted(run.get().bonds?.[npc.npc]);
       run.set({ bonds: recordTrust(run.get().bonds ?? {}, npc.npc, { synced, turnedToward }) });
@@ -692,7 +735,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const stabilityDelta = (patch.stability ?? before.stability) - before.stability;
     if (before.stability > 2 && (patch.stability ?? before.stability) <= 2) audio.playLowBattery();
     audio.nudgeLeitmotifMood(trustDelta + stabilityDelta);
-    reactionDelta = trustDelta + stabilityDelta;
+    reactionDelta = seen ? -1 : trustDelta + stabilityDelta;
 
     // The impact lands on their reaction: how hard is how much their TRU
     // and STB moved; the new color is the mood this answer sends them into

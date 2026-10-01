@@ -241,11 +241,19 @@ function parseManuscript(text, fileName) {
       currentEdge[key] = { ...currentEdge[key], [m[2]]: parseText(m[3]) };
     } else if (line.startsWith('CONTRADICTS:')) {
       // This answer contradicts something the player may have said earlier
-      // to someone else (node=side). Word travels: IT quotes it back, and
-      // this NPC's trust takes a hit (dialogScene.js).
+      // (node=side). Someone else's node: word travels, IT quotes it back.
+      // This NPC's own node: they heard both, and call it out themselves
+      // (CAUGHT below). Costs are in dialogScene.js.
       const m = line.slice(12).trim().match(/^([a-z0-9_]+)=(truth|lie)$/);
       if (!m) throw new Error(`${fileName}:${lineNumber}: bad CONTRADICTS line "${raw}" (node_id=truth|lie)`);
       currentEdge.contradicts = [...(currentEdge.contradicts ?? []), { node: m[1], side: m[2] }];
+    } else if (line.startsWith('CAUGHT')) {
+      // What this NPC says when they catch the player contradicting
+      // something they told them earlier in the same encounter. With
+      // [node], only for the pair that node trips (an edge can have two).
+      const m = line.match(/^CAUGHT(?:\s*\[([a-z0-9_]+)\])?:\s*(.*)$/);
+      if (!m) throw new Error(`${fileName}:${lineNumber}: bad CAUGHT line "${raw}"`);
+      currentEdge.caught = { ...currentEdge.caught, [m[1] ?? '*']: parseText(m[2]) };
     } else if (line.startsWith('IT:')) {
       // IT/SO right after this answer's reaction, before the next node.
       currentEdge.itText = parseText(line.slice(3));

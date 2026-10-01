@@ -227,7 +227,21 @@
             "Health"
           ],
           "ledgerEntry": "You told Deborah to stop saying her son's name.",
-          "nextNodeId": "deborah_04"
+          "nextNodeId": "deborah_04",
+          "contradicts": [
+            {
+              "node": "deborah_01",
+              "side": "truth"
+            },
+            {
+              "node": "deborah_01_hard",
+              "side": "truth"
+            }
+          ],
+          "caught": {
+            "deborah_01": "\"On my porch you said faith didn't save him. Now he's at peace?\"",
+            "deborah_01_hard": "\"You said you weren't going to say it. Then you said it anyway.\""
+          }
         }
       },
       "mood": "Sadness",

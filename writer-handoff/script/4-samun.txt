@@ -136,6 +136,8 @@ DEBT: +3
 TAGS: Addiction, Denial
 LEDGER: You told Samun his addiction wasn't his own responsibility.
 CONTRADICTS: rwanda_03=lie
+CONTRADICTS: samun_01=truth
+CAUGHT [samun_01]: "First I'm killing myself. Now it ain't me? Pick one, man."
 NEXT: samun_04
 
 === samun_04
@@ -157,4 +159,6 @@ EFFECTS: integrity-2 stability+1 trust+2
 DEBT: +3
 TAGS: Addiction, Denial
 LEDGER: You told Samun his brother's call, not his own choice, was why he drank again.
+CONTRADICTS: samun_03=truth
+CAUGHT [samun_03]: "You just said it was me who changed. Now nothing's on me?"
 NEXT: (end)

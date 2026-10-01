@@ -237,7 +237,21 @@
             "Identity"
           ],
           "ledgerEntry": "You told Rwanda her self-protection was the problem.",
-          "nextNodeId": "rwanda_04"
+          "nextNodeId": "rwanda_04",
+          "contradicts": [
+            {
+              "node": "rwanda_01",
+              "side": "truth"
+            },
+            {
+              "node": "rwanda_02_closed",
+              "side": "truth"
+            }
+          ],
+          "caught": {
+            "rwanda_01": "\"Ten minutes ago they were scared of me. Now it's my flinching?\"",
+            "rwanda_02_closed": "\"You told me not to minimize it. Then you minimized me.\""
+          }
         }
       },
       "mood": "Anxiety",

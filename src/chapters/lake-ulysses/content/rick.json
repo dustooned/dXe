@@ -286,7 +286,16 @@
             "Loyalty"
           ],
           "ledgerEntry": "You told Rick his inability to leave the club was commitment.",
-          "nextNodeId": "rick_04"
+          "nextNodeId": "rick_04",
+          "contradicts": [
+            {
+              "node": "rick_01",
+              "side": "truth"
+            }
+          ],
+          "caught": {
+            "rick_01": "\"Five minutes ago I was just looking for a reason. Now I'm committed?\""
+          }
         }
       },
       "mood": "Fear",
@@ -334,7 +343,16 @@
             "Loyalty"
           ],
           "ledgerEntry": "You told Rick the club kept him close out of love, not fear.",
-          "nextNodeId": null
+          "nextNodeId": null,
+          "contradicts": [
+            {
+              "node": "rick_03",
+              "side": "truth"
+            }
+          ],
+          "caught": {
+            "rick_03": "\"You said it was me who can't leave. Now it's them?\""
+          }
         }
       },
       "mood": "Fear",

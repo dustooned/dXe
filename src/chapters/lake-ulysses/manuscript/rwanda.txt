@@ -137,6 +137,10 @@ EFFECTS: integrity-2 stability+1 trust-2
 DEBT: +3
 TAGS: Identity
 LEDGER: You told Rwanda her self-protection was the problem.
+CONTRADICTS: rwanda_01=truth
+CAUGHT [rwanda_01]: "Ten minutes ago they were scared of me. Now it's my flinching?"
+CONTRADICTS: rwanda_02_closed=truth
+CAUGHT [rwanda_02_closed]: "You told me not to minimize it. Then you minimized me."
 NEXT: rwanda_04
 
 === rwanda_04

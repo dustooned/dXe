@@ -323,6 +323,12 @@ whether people can rely on you, and it's built three ways:
 - **Consistency.** Word travels in Lake Ulysses. Tell one person one thing
   and a later person the opposite, and IT quotes your earlier line back to
   you ("Funny. You told Samun..."); the second person loses a sync.
+  Contradict yourself to the same person and they catch it themselves:
+  their callout ("On my porch you said faith didn't save him. Now he's at
+  peace?"), the warmth leaves their portrait, the scope's lines snap apart
+  with static, their SAM "down" bark. Cost: -2 syncs, TRU -1, and a bid on
+  that answer doesn't count. Lying first and telling the truth later is
+  never a catch. 8 pairs: two each for Deborah, Rwanda, Samun, Rick.
 
 Two syncs plus one bid met and that NPC **trusts you**: the screen closes
 to a vignette on them, all sound drops out, a crack, then a short story
