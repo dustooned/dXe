@@ -234,10 +234,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // a lie shouldn't land invisibly. NPCs without `reveal` show everything.
   function isRevealed(kind) {
     const gateNode = npc.reveal?.[kind];
-    if (!gateNode || answered.has(gateNode)) return true;
-    // Not during SAY: the reveal belongs to her reaction, where she's the
-    // one pointing at it.
-    return kind === 'debt' && run.get().truthDebt > 0 && stage !== 'say';
+    // Strictly after its gate node — even if debt is already above 0, the
+    // lake waits its turn so the meters and the lake never land together.
+    return !gateNode || answered.has(gateNode);
   }
 
   // Returns true when this render is the piece's first appearance — the

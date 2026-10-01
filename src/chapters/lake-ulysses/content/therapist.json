@@ -25,7 +25,7 @@
         },
         "lie": {
           "playerText": "Fine. I'm fine.",
-          "npcReaction": "\"Fine.\" The keys don't stop. \"Everyone's fine. My whole caseload is fine.\" A tired almost-laugh. \"Top of your screen. Battery, bars, Wi-Fi: how steady, how connected, how clear. They move whether you tell me the truth or not. And if the clock starts acting funny, that one's on you.\" A pause. \"That reading at the bottom is the lake. FEELZ pulls it off the county sensors. It doesn't care how anybody feels.\"",
+          "npcReaction": "\"Fine.\" The keys don't stop. \"Everyone's fine. My whole caseload is fine.\" A tired almost-laugh. \"Top of your screen. Battery, bars, Wi-Fi: how steady, how connected, how clear. They move whether you tell me the truth or not. And if the clock starts acting funny, that one's on you.\"",
           "effects": {
             "stability": 1,
             "trust": -1
