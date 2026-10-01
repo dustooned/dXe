@@ -1015,6 +1015,108 @@ function blip(frequency, at, dur, gainPeak, type = 'square') {
   osc.onended = () => gain.disconnect();
 }
 
+// Raw samples (shell/voices.js's SAM lines) into the mix. `phone` narrows
+// them to a telephone band; `cut` stops playback partway through.
+export function playSamples(samples, rate, { delayMs = 0, phone = false, cut = 1, gain = 1 } = {}) {
+  const audioCtx = ensureContext();
+  const buffer = audioCtx.createBuffer(1, samples.length, rate);
+  buffer.getChannelData(0).set(samples);
+  const src = audioCtx.createBufferSource();
+  src.buffer = buffer;
+  const g = audioCtx.createGain();
+  g.gain.value = 0.55 * gain;
+  let chain = src;
+  if (phone) {
+    const hp = audioCtx.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 350;
+    const lp = audioCtx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 3200;
+    chain = chain.connect(hp).connect(lp);
+  }
+  chain.connect(g).connect(masterGain);
+  const at = audioCtx.currentTime + delayMs / 1000;
+  src.start(at);
+  if (cut < 1) src.stop(at + buffer.duration * cut);
+  src.onended = () => g.disconnect();
+}
+
+// Each person's phone rings their own way: a short tune, twice. Returns
+// how long before they pick up (ms). Unknown callers get the old handset.
+const RINGTONES = {
+  // Church chimes, one note gone sour: jolly, and off.
+  DEBORAH: { type: 'triangle', notes: [['C5', 160], ['E5', 160], ['G5', 160], ['F#5', 320]] },
+  // A cool minor-seventh, unhurried.
+  RWANDA: { type: 'sine', notes: [['A4', 220], ['C5', 220], ['E5', 220], ['G5', 360]] },
+  // Bright and quick, a little show-off.
+  SAMUN: { type: 'square', notes: [['E5', 90], ['G5', 90], ['E5', 90], ['C6', 220]] },
+  // An old wall phone's bell: a low, rattling buzz.
+  RICK: { type: 'square', notes: [['G3', 50], ['A3', 50], ['G3', 50], ['A3', 50], ['G3', 50], ['A3', 50], ['G3', 50], ['A3', 50]] },
+};
+export function playRingtone(who) {
+  const tune = RINGTONES[who];
+  if (!tune) return playPhoneRing();
+  const t = ensureContext().currentTime + 0.02;
+  const length = tune.notes.reduce((sum, [, ms]) => sum + ms, 0) / 1000;
+  for (const off of [0, length + 0.35]) {
+    let at = t + off;
+    for (const [note, ms] of tune.notes) {
+      blip(noteToFrequency(note), at, (ms / 1000) * 0.9, 0.045, tune.type);
+      at += ms / 1000;
+    }
+  }
+  return Math.round((length * 2 + 0.5) * 1000);
+}
+
+// The call is over: the handset click and the three falling tones of a
+// line gone dead. The end of the tutorial call, and every hang-up.
+export function playHangup() {
+  const t = ensureContext().currentTime + 0.02;
+  blip(1200, t, 0.03, 0.06, 'square');
+  [620, 480, 360].forEach((f, i) => blip(f, t + 0.18 + i * 0.2, 0.16, 0.05, 'sine'));
+}
+
+// Someone shut you out: the signal drops — a burst of static falling away
+// under a sinking tone, like bars draining to nothing.
+export function playSignalLost() {
+  const audioCtx = ensureContext();
+  const t = audioCtx.currentTime + 0.02;
+  playStaticNoise(520);
+  const osc = audioCtx.createOscillator();
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(880, t);
+  osc.frequency.exponentialRampToValueAtTime(110, t + 0.9);
+  const g = audioCtx.createGain();
+  g.gain.setValueAtTime(0.06, t);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.95);
+  osc.connect(g).connect(masterGain);
+  osc.start(t);
+  osc.stop(t + 1);
+  osc.onended = () => g.disconnect();
+}
+
+// An answer that neither met them nor turned toward them: the lines drift
+// apart — two detuned notes sliding away from each other.
+export function playDrift() {
+  const audioCtx = ensureContext();
+  const t = audioCtx.currentTime + 0.02;
+  [[392, 370], [392, 415]].forEach(([from, to]) => {
+    const osc = audioCtx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(from, t);
+    osc.frequency.linearRampToValueAtTime(to, t + 0.6);
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(0.03, t + 0.08);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.7);
+    osc.connect(g).connect(masterGain);
+    osc.start(t);
+    osc.stop(t + 0.75);
+    osc.onended = () => g.disconnect();
+  });
+}
+
 // A meter moved (ui/statusBar.js): two square-wave notes a fifth apart,
 // rising when it went up, falling when it went down. Each meter has its
 // own pitch so they're learnable by ear; several changes play in turn.

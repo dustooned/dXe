@@ -295,6 +295,20 @@ scales with how far their TRU and STB moved.
 
 A heart-monitor band runs across the portrait. Their line sits on top, yours underneath, and the gap between them is how close this person is to you: it narrows with every attuned pick and every bid you turn toward, widens with each answer that does neither, and closes completely (the lines merge and glow) once they trust you. Holding a feeling previews it: theirs pulls the lines in a little, another pushes them apart. Your line wears the color of the feeling you hold (or your last one), and a strip under the portrait keeps one colored block per answer in this encounter (newest outlined), so you can see which feelings you lean on with this person. Shut out (airplane mode): your line greys and theirs flatlines.
 
+### Voices and phone sounds
+
+Every character barks one word in SAM (the 1982 Software Automatic Mouth), never a reading of the text. Voices and words live in `src/shell/voices.js`.
+
+| Who | Voice | Greet / bye (calls) | Reaction up / down / flat |
+| :-- | :-- | :-- | :-- |
+| Therapist | tired, nasal | "Browning." / "Take care." | "Mmm hmm." / "Hmm." / "Okay." |
+| Deborah | bright, wobbly | "Hello, dear!" / "Bless you." | "Oh, honey." / "Well!" / "Mmm." |
+| Rwanda | dry, unhurried | "Yeah?" / "Later." | "Huh." / "Right." / "Sure." |
+| Samun | quick, bouncy | "Yo!" / "Peace!" | "Ha!" / "Oof." / "Yeah yeah." |
+| Rick | low, clipped | "What." / "Yep." | "Heh." / "Tsk." / "Uh huh." |
+
+The reaction bark plays as their reaction lands, chosen by how your answer moved their TRU + STB. Calls go through a telephone band. Each person has their own ringtone (Deborah: church chimes with one sour note; Rwanda: a cool minor seventh; Samun: a quick bright run; Rick: an old wall-phone bell; the therapist: the old handset). Hanging up clicks into three falling tones; the tutorial call ends on his "Take ca—" cut off by that tone. Echo call: his real "Hello?" three times, fainter. Disconnecting: an answer that neither meets them nor turns toward them plays two notes drifting apart; being shut out (airplane mode) drops the signal: static under a sinking tone.
+
 ### Trust
 
 Trust is not Truth. Truth is the lake: did you say what's real. Trust is

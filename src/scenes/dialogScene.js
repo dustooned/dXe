@@ -30,6 +30,7 @@ import { createOscilloscope } from '../ui/oscilloscope.js';
 import { createSpotlight } from '../ui/spotlight.js';
 import * as fx from '../shell/fx.js';
 import * as audio from '../shell/audio.js';
+import * as voices from '../shell/voices.js';
 
 // Weak vs strong hit feedback is derived from how big a swipe's effects
 // are, not from truth/lie — intensity signals weight, not judgment.
@@ -109,6 +110,12 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // Answers this encounter that neither met their mood nor turned toward a
   // bid — each pushes the oscilloscope's two lines a little further apart.
   let missesHere = 0;
+  // How the last answer landed (TRU+STB moved) and whether it missed them
+  // entirely — read by enterReaction for the voice bark and the drift.
+  let reactionDelta = 0;
+  let reactionMissed = false;
+  // Nodes whose shut-out sound already played.
+  const signalLostAt = new Set();
   // Every feeling picked in this encounter, in order: the history strip.
   const encounterPicks = [];
   // The battle beats (ui/oscilloscope.js reads this every frame): wind-up
@@ -268,6 +275,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
     answered.add(currentNodeId);
     stage = 'reaction';
     landImpact();
+    // Their voice answers first: one word, by how your answer landed.
+    voices.bark(npc.npc, reactionDelta, { delayMs: 220 });
+    if (reactionMissed) audio.playDrift();
     // The lake answers too: a splash pitched by its current quality, once
     // the gauge is on screen (audio.js's playLakeSplash).
     if (isRevealed('debt')) audio.playLakeSplash(run.get().truthDebt);
@@ -332,6 +342,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
     statusBar?.destroy();
     const shutOut = stage === 'prompt' && /(_shut_down|_closed|_hard)$/.test(currentNodeId ?? '');
     statusBar = createStatusBar(runState, { typing: itTyping, airplane: shutOut, quiet: !isRevealed('meters') });
+    if (shutOut && !signalLostAt.has(currentNodeId)) {
+      signalLostAt.add(currentNodeId);
+      audio.playSignalLost();
+    }
     const meters = statusBar.el;
     if (applyReveal(meters, 'meters')) spotlitHud.push(meters);
     content.appendChild(meters);
@@ -665,6 +679,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
     if (turnedToward) turnedTowardThisEncounter = true;
     if (!synced && !turnedToward) missesHere += 1;
+    reactionMissed = !synced && !turnedToward;
     reactionGift = turnedToward ? giveFeeling() : undefined;
 
     // How this specific choice actually landed with the NPC — trust and
@@ -677,6 +692,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const stabilityDelta = (patch.stability ?? before.stability) - before.stability;
     if (before.stability > 2 && (patch.stability ?? before.stability) <= 2) audio.playLowBattery();
     audio.nudgeLeitmotifMood(trustDelta + stabilityDelta);
+    reactionDelta = trustDelta + stabilityDelta;
 
     // The impact lands on their reaction: how hard is how much their TRU
     // and STB moved; the new color is the mood this answer sends them into
@@ -861,7 +877,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     overlay.innerHTML = `<p class="dx-call__who">CALLING ${CONTACTS.THERAPIST.name.toUpperCase()}…</p>`;
     stageEl.appendChild(overlay);
     liftAboveLake(overlay);
-    const ringMs = audio.playPhoneRing();
+    const ringMs = audio.playRingtone('THERAPIST');
     let ready = false;
     setTimeout(() => {
       overlay.querySelector('.dx-call__who').textContent = CONTACTS.THERAPIST.name.toUpperCase();
@@ -876,6 +892,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       overlay.appendChild(box);
       p.textContent = ECHO[0];
       audio.playFeedback();
+      [0, 380, 760].forEach((delayMs, k) => voices.say('THERAPIST', 'hello', { phone: k > 0, delayMs, gain: 1 - k * 0.35 }));
       ECHO.slice(1).forEach((word, i) => {
         setTimeout(() => {
           const echo = document.createElement('span');
@@ -890,6 +907,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     overlay.addEventListener('click', (e) => {
       e.stopPropagation();
       if (!ready) return;
+      audio.playHangup();
       overlay.remove();
       onDone();
     });
@@ -908,7 +926,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     stageEl.appendChild(overlay);
     liftAboveLake(overlay);
     itPopup = { destroy: () => overlay.remove() };
-    const ringMs = audio.playPhoneRing();
+    const ringMs = audio.playRingtone(who);
     let i = 0;
     let tw = null;
     const box = document.createElement('div');
@@ -921,6 +939,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     box.append(avatar, p);
     function next() {
       if (i >= call.lines.length) {
+        voices.say(who, 'bye', { phone: true });
+        audio.playHangup();
         overlay.remove();
         itPopup = null;
         startStall();
@@ -933,6 +953,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     setTimeout(() => {
       overlay.querySelector('.dx-call__who').textContent = CONTACTS[who].name.toUpperCase();
       overlay.appendChild(box);
+      voices.say(who, 'greet', { phone: true });
       next();
       overlay.addEventListener('click', () => {
         if (tw && !tw.isDone()) tw.finish();
@@ -1273,6 +1294,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
     if (beat.kind === 'hangup' && !hungUp) {
       hungUp = true;
+      // Mid-sentence, the way his calls end: "Take ca—", click, dead line.
+      const byeMs = voices.say(npc.npc, 'bye', { phone: true, cut: 0.55 });
+      setTimeout(() => audio.playHangup(), byeMs + 40);
       // The call is over — the Therapist's underscore goes with it, so the
       // hang-up (and IT after it) lands in the lake's silence.
       audio.stopLeitmotif();

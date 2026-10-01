@@ -482,7 +482,7 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 ## What's next
 
 **Queued (decided, not built):**
-- **SAM voices.** Character barks (single words: "Hello?", "Hm.", names) in SAM, the 1982 Software Automatic Mouth, via a JS port. Each character gets their own pitch/speed/mouth/throat preset. Plan: render the words once into small audio files so every device sounds the same; first use is the therapist's echo call. Check the JS port's license before a release build.
+- **SAM voices: built** (`shell/voices.js`, `sam-js`). Rendered live (SAM is deterministic, so no audio files needed). License caveat stands: the port reverse-engineers a commercial 1982 product whose holder (SoftVoice) could not be reached; decide before a commercial release.
 
 **Done in the 2026-09-27 session** (from `devnotes/Sep 27 at 12_35 PM.md`):
 - Bigger text that scales with the canvas; the canvas fills the viewport

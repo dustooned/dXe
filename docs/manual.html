@@ -453,6 +453,49 @@ the answer sends them into, their wave shifts to it, and the shake
 scales with how far their TRU and STB moved.</p>
 <h3 id="doc-game_manual--the-oscilloscope-how-close-you-are"><a class="anchor" href="#doc-game_manual--the-oscilloscope-how-close-you-are" aria-label="Link to this section">#</a>The oscilloscope: how close you are</h3>
 <p>A heart-monitor band runs across the portrait. Their line sits on top, yours underneath, and the gap between them is how close this person is to you: it narrows with every attuned pick and every bid you turn toward, widens with each answer that does neither, and closes completely (the lines merge and glow) once they trust you. Holding a feeling previews it: theirs pulls the lines in a little, another pushes them apart. Your line wears the color of the feeling you hold (or your last one), and a strip under the portrait keeps one colored block per answer in this encounter (newest outlined), so you can see which feelings you lean on with this person. Shut out (airplane mode): your line greys and theirs flatlines.</p>
+<h3 id="doc-game_manual--voices-and-phone-sounds"><a class="anchor" href="#doc-game_manual--voices-and-phone-sounds" aria-label="Link to this section">#</a>Voices and phone sounds</h3>
+<p>Every character barks one word in SAM (the 1982 Software Automatic Mouth), never a reading of the text. Voices and words live in <code>src/shell/voices.js</code>.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Who</th>
+<th align="left">Voice</th>
+<th align="left">Greet / bye (calls)</th>
+<th align="left">Reaction up / down / flat</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Therapist</td>
+<td align="left">tired, nasal</td>
+<td align="left">&quot;Browning.&quot; / &quot;Take care.&quot;</td>
+<td align="left">&quot;Mmm hmm.&quot; / &quot;Hmm.&quot; / &quot;Okay.&quot;</td>
+</tr>
+<tr>
+<td align="left">Deborah</td>
+<td align="left">bright, wobbly</td>
+<td align="left">&quot;Hello, dear!&quot; / &quot;Bless you.&quot;</td>
+<td align="left">&quot;Oh, honey.&quot; / &quot;Well!&quot; / &quot;Mmm.&quot;</td>
+</tr>
+<tr>
+<td align="left">Rwanda</td>
+<td align="left">dry, unhurried</td>
+<td align="left">&quot;Yeah?&quot; / &quot;Later.&quot;</td>
+<td align="left">&quot;Huh.&quot; / &quot;Right.&quot; / &quot;Sure.&quot;</td>
+</tr>
+<tr>
+<td align="left">Samun</td>
+<td align="left">quick, bouncy</td>
+<td align="left">&quot;Yo!&quot; / &quot;Peace!&quot;</td>
+<td align="left">&quot;Ha!&quot; / &quot;Oof.&quot; / &quot;Yeah yeah.&quot;</td>
+</tr>
+<tr>
+<td align="left">Rick</td>
+<td align="left">low, clipped</td>
+<td align="left">&quot;What.&quot; / &quot;Yep.&quot;</td>
+<td align="left">&quot;Heh.&quot; / &quot;Tsk.&quot; / &quot;Uh huh.&quot;</td>
+</tr>
+</tbody></table>
+<p>The reaction bark plays as their reaction lands, chosen by how your answer moved their TRU + STB. Calls go through a telephone band. Each person has their own ringtone (Deborah: church chimes with one sour note; Rwanda: a cool minor seventh; Samun: a quick bright run; Rick: an old wall-phone bell; the therapist: the old handset). Hanging up clicks into three falling tones; the tutorial call ends on his &quot;Take ca—&quot; cut off by that tone. Echo call: his real &quot;Hello?&quot; three times, fainter. Disconnecting: an answer that neither meets them nor turns toward them plays two notes drifting apart; being shut out (airplane mode) drops the signal: static under a sinking tone.</p>
 <h3 id="doc-game_manual--trust"><a class="anchor" href="#doc-game_manual--trust" aria-label="Link to this section">#</a>Trust</h3>
 <p>Trust is not Truth. Truth is the lake: did you say what&#39;s real. Trust is
 whether people can rely on you, and it&#39;s built three ways:</p>
@@ -1278,7 +1321,7 @@ falls back when the intersection is empty.</li>
 <h2 id="doc-handoff--what39s-next"><a class="anchor" href="#doc-handoff--what39s-next" aria-label="Link to this section">#</a>What&#39;s next</h2>
 <p><strong>Queued (decided, not built):</strong></p>
 <ul>
-<li><strong>SAM voices.</strong> Character barks (single words: &quot;Hello?&quot;, &quot;Hm.&quot;, names) in SAM, the 1982 Software Automatic Mouth, via a JS port. Each character gets their own pitch/speed/mouth/throat preset. Plan: render the words once into small audio files so every device sounds the same; first use is the therapist&#39;s echo call. Check the JS port&#39;s license before a release build.</li>
+<li><strong>SAM voices: built</strong> (<code>shell/voices.js</code>, <code>sam-js</code>). Rendered live (SAM is deterministic, so no audio files needed). License caveat stands: the port reverse-engineers a commercial 1982 product whose holder (SoftVoice) could not be reached; decide before a commercial release.</li>
 </ul>
 <p><strong>Done in the 2026-09-27 session</strong> (from <code>devnotes/Sep 27 at 12_35 PM.md</code>):</p>
 <ul>

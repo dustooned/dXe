@@ -20,5 +20,8 @@
     "node-wav": "^0.0.2",
     "sharp": "^0.35.4",
     "vite": "^8.1.0"
+  },
+  "dependencies": {
+    "sam-js": "^0.3.1"
   }
 }
