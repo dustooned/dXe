@@ -1318,36 +1318,40 @@ export function playClassSigil(cls) {
   out.connect(masterGain);
 
   if (cls === 'Guns') {
-    // A light pistol shot: a hard click and a bright crack, a low boom
-    // under it, then the shot coming back off far walls (a slapback, then
-    // a fading tail).
-    const bus = echoBus(0.24, 0.5, out);
+    // A retro game gunshot, the way the SID made them: a burst of stepped
+    // noise whose step rate (its pitch) drops fast, so it cracks bright and
+    // falls into a dull thud — then the shot comes back once, softer and
+    // darker, off something far away.
     const rate = audioCtx.sampleRate;
-    const buf = audioCtx.createBuffer(1, Math.floor(rate * 0.18), rate);
+    const dur = 0.55;
+    const buf = audioCtx.createBuffer(1, Math.floor(rate * dur), rate);
     const d = buf.getChannelData(0);
-    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 10);
-    const crack = audioCtx.createBufferSource();
-    crack.buffer = buf;
-    const hp = audioCtx.createBiquadFilter();
-    hp.type = 'highpass';
-    hp.frequency.value = 700;
-    const cg = audioCtx.createGain();
-    cg.gain.value = 0.7;
-    crack.connect(hp).connect(cg).connect(bus);
-    crack.start(t);
-    // The hammer: a 3 ms square click right on the attack.
-    blip(2400, t, 0.004, 0.25, 'square');
-    // The boom.
-    const boom = audioCtx.createOscillator();
-    boom.type = 'sine';
-    boom.frequency.setValueAtTime(110, t);
-    boom.frequency.exponentialRampToValueAtTime(38, t + 0.28);
-    const bg = audioCtx.createGain();
-    bg.gain.setValueAtTime(0.5, t);
-    bg.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
-    boom.connect(bg).connect(bus);
-    boom.start(t);
-    boom.stop(t + 0.4);
+    let v = 0;
+    let next = 0;
+    for (let i = 0; i < d.length; i++) {
+      const p = i / d.length;
+      // Hold rate sweeps ~14 kHz → ~700 Hz (exponential), 4-bit levels.
+      const holdHz = 14000 * Math.pow(700 / 14000, Math.min(1, p * 2.2));
+      if (i >= next) {
+        v = Math.round((Math.random() * 2 - 1) * 8) / 8;
+        next = i + Math.max(1, Math.floor(rate / holdHz));
+      }
+      d[i] = v * Math.pow(1 - p, 3.5);
+    }
+    const shot = (at, gain, cutoff) => {
+      const src = audioCtx.createBufferSource();
+      src.buffer = buf;
+      const lp = audioCtx.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.value = cutoff;
+      const g = audioCtx.createGain();
+      g.gain.value = gain;
+      src.connect(lp).connect(g).connect(out);
+      src.start(at);
+    };
+    shot(t, 0.6, 12000);
+    shot(t + 0.38, 0.22, 2500); // the far echo
+    shot(t + 0.8, 0.08, 1400); // and fainter
   } else if (cls === 'Crystals') {
     const bus = echoBus(0.45, 0.4, out);
     const base = 220;
