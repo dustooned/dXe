@@ -246,8 +246,20 @@
       }
     },
     {
+      "kind": "trycall",
+      "text": "\"One more thing. See the bottom of your screen? That's me. Go on, tap it.\""
+    },
+    {
       "kind": "line",
-      "text": "\"One more thing. I'm in your contacts, bottom of the screen. If your bars and Wi-Fi hold up, you can call me. Make a real friend out there and they'll show up next to me. They'll tell you what they think. Doesn't mean they're right.\""
+      "text": "\"Okay. You're calling me while I'm on the phone with you. Now there's two of me. Nobody needs two of me.\""
+    },
+    {
+      "kind": "line",
+      "text": "\"When you're stuck out there, call. I'll tell you what I'm reading off you, and off them. If your bars and Wi-Fi drop too low, I won't pick up. That's not me ignoring you. That's you not letting anyone in.\""
+    },
+    {
+      "kind": "line",
+      "text": "\"Make a real friend out there and they'll show up next to me. They'll tell you what they think. Doesn't mean they're right.\""
     },
     {
       "kind": "line",

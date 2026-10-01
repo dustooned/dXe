@@ -890,3 +890,39 @@ svg .is-hinted path {
 .dx-swipe-card-wrap[data-side="left"] .dx-swipe-card__stamp { opacity: var(--lean); right: 8px; transform: rotate(8deg); }
 .dx-swipe-card-wrap[data-side="right"] .dx-swipe-card__stamp { opacity: var(--lean); left: 8px; transform: rotate(-8deg); }
 .dx-swipe-card-wrap.has-tap-hints .dx-swipe-card__hint { cursor: pointer; }
+
+/* The tutorial's TRYCALL beat (dialogScene.js createSelfDock): his contact
+   pops into the dock and pulses until you tap it; the call that follows
+   echoes his "Hello?" back at him, each copy fainter and further off. */
+.dx-dock.is-introducing .dx-dock__contact {
+  animation: dx-dock-pop 0.5s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+
+.dx-dock__contact.is-beckoning {
+  box-shadow: 0 0 0 0 rgba(255, 201, 77, 0.6);
+  animation: dx-dock-pop 0.5s cubic-bezier(0.2, 1.6, 0.4, 1) both, dx-dock-beckon 1.2s ease-out 0.6s infinite;
+}
+
+@keyframes dx-dock-pop {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+@keyframes dx-dock-beckon {
+  0% { box-shadow: 0 0 0 0 rgba(255, 201, 77, 0.6); }
+  100% { box-shadow: 0 0 0 12px rgba(255, 201, 77, 0); }
+}
+
+.dx-call__echo-copy {
+  display: inline-block;
+  margin-left: 0.6em;
+  animation: dx-intake-in 0.25s ease-out both;
+}
+
+.dx-call__echo-copy--1 { opacity: 0.55; transform: translateX(4px); }
+.dx-call__echo-copy--2 { opacity: 0.25; transform: translateX(8px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-dock.is-introducing .dx-dock__contact,
+  .dx-dock__contact.is-beckoning { animation: none; }
+}

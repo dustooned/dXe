@@ -1015,6 +1015,38 @@ function blip(frequency, at, dur, gainPeak, type = 'square') {
   osc.onended = () => gain.disconnect();
 }
 
+// Feedback: a phone calling the phone it's already on. A thin squeal
+// that climbs and wobbles, under two quieter echo blips of the voice.
+export function playFeedback(durSec = 1.1) {
+  const audioCtx = ensureContext();
+  const t = audioCtx.currentTime + 0.02;
+  const osc = audioCtx.createOscillator();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(1800, t);
+  osc.frequency.exponentialRampToValueAtTime(3400, t + durSec);
+  const lfo = audioCtx.createOscillator();
+  lfo.frequency.value = 9;
+  const lfoGain = audioCtx.createGain();
+  lfoGain.gain.value = 60;
+  lfo.connect(lfoGain).connect(osc.frequency);
+  const gain = audioCtx.createGain();
+  gain.gain.setValueAtTime(0, t);
+  gain.gain.linearRampToValueAtTime(0.035, t + durSec * 0.7);
+  gain.gain.linearRampToValueAtTime(0.0001, t + durSec);
+  osc.connect(gain).connect(masterGain);
+  osc.start(t);
+  lfo.start(t);
+  osc.stop(t + durSec + 0.05);
+  lfo.stop(t + durSec + 0.05);
+  osc.onended = () => { gain.disconnect(); lfoGain.disconnect(); };
+  // The voice coming back: two smaller copies of a "hello" blip pair.
+  [0.0, 0.35, 0.7].forEach((off, i) => {
+    const peak = 0.05 * (1 - i * 0.35);
+    blip(330, t + off, 0.07, peak, 'triangle');
+    blip(392, t + off + 0.09, 0.09, peak, 'triangle');
+  });
+}
+
 // Two rings of an old handset: a warbled pair, twice.
 export function playPhoneRing() {
   const t = ensureContext().currentTime + 0.02;

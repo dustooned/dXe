@@ -404,6 +404,10 @@ same character, same wound, different angle of approach.
 
 Part 2 of the FEELZ check-in. Three swipe questions in the app's own form (app bar, progress, "PART 2 · Q1 OF 3"); the first question demos the swipe, and tapping an answer works too. Then: FILE CREATED, a redacted file code, "Results sealed until session end" (the class is only named in the ending's FEELZ report), and the provider card, Charles Browning, LCSW, before the therapist's colored-word read.
 
+### Trying his contact
+
+Near the end of the call his own contact pops into the dock and he asks you to tap it. You call him while he is on the line: his "Hello?" echoes back twice with feedback, he jokes that nobody needs two of him, then explains what calls are for (his read on you and the person in front of you), that low bars/Wi-Fi mean he will not pick up, and that friends you make join the dock.
+
 ### Swiping
 
 While you drag, the card leans into a side: that label grows and takes its color (cool for TRUTH, warm for LIE, never green/red), the card's border and wash follow, and a TRUTH / LIE stamp fades in over the card.

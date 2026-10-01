@@ -137,7 +137,12 @@ LINE [Bible]: "Try getting curious about someone this week. Ask how they're doin
 LINE [Crystals]: "Take an interest in somebody this week. Notice what they're doing and ask about it. Curiosity's a good place to start."
 LINE [therapist_02=truth]: "You told me about the water. It heard you too."
 LINE [therapist_02=lie]: "The dream can wait. Dreams are patient. Lakes are more patient."
-LINE: "One more thing. I'm in your contacts, bottom of the screen. If your bars and Wi-Fi hold up, you can call me. Make a real friend out there and they'll show up next to me. They'll tell you what they think. Doesn't mean they're right."
+# TRYCALL: his own contact pops into the dock and waits for a tap. Calling
+# him while he's on the line echoes his "Hello?" back twice (dialogScene.js).
+TRYCALL: "One more thing. See the bottom of your screen? That's me. Go on, tap it."
+LINE: "Okay. You're calling me while I'm on the phone with you. Now there's two of me. Nobody needs two of me."
+LINE: "When you're stuck out there, call. I'll tell you what I'm reading off you, and off them. If your bars and Wi-Fi drop too low, I won't pick up. That's not me ignoring you. That's you not letting anyone in."
+LINE: "Make a real friend out there and they'll show up next to me. They'll tell you what they think. Doesn't mean they're right."
 LINE: "And if your carrier goes from 5G down to No Service? That's the lake talking, not your phone."
 LINE: "I'll have FEELZ send you a reminder, so you can't pretend you forgot."
 HANGUP: The call ends mid-sentence, the way his calls do. FEELZ goes dark in your hand, and the lake is very quiet.

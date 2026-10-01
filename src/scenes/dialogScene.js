@@ -100,6 +100,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let bloomedThisEncounter = false;
   let outroBeat = null;
   let hungUp = false;
+  // Set once a TRYCALL outro beat has put the therapist's own contact in
+  // the dock; it stays on screen for the rest of the call.
+  let dockIntroduced = false;
   // Set once the player turns toward one of this NPC's bids; warms the
   // portrait for the rest of the encounter (engine/trust.js).
   let turnedTowardThisEncounter = false;
@@ -338,6 +341,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
       tapHint.hidden = true;
       content.appendChild(tapHint);
 
+      const tryCall = outroBeat.kind === 'trycall';
+      if (tryCall) tapHint.textContent = '(tap his contact)';
       typewriter = createTypewriter(line, outroBeat.text, {
         onChar: audio.playTypewriterTick,
         onDone: () => { tapHint.hidden = false; },
@@ -345,7 +350,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
       screen.addEventListener('click', () => {
         if (typewriter && !typewriter.isDone()) typewriter.finish();
-        else nextOutroBeat();
+        else if (!tryCall) nextOutroBeat();
       });
     } else if (stage === 'say') {
       // Its own bordered box, in the same screen slot the swipe card and
@@ -546,6 +551,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const lake = createLakeGauge(runState.truthDebt).el;
     if (applyReveal(lake, 'debt')) spotlitHud.push(lake);
     content.appendChild(lake);
+    if (stage === 'outro' && (outroBeat?.kind === 'trycall' || dockIntroduced)) {
+      const dock = createSelfDock(outroBeat.kind === 'trycall');
+      content.appendChild(dock);
+      if (outroBeat.kind === 'trycall') spotlitHud.push(dock);
+    }
     if (stage === 'prompt' && isRevealed('meters')) content.appendChild(createDock(runState));
     stageEl.appendChild(screen);
 
@@ -752,6 +762,82 @@ export function mount(stageEl, scene, { run, onComplete }) {
       dock.appendChild(btn);
     }
     return dock;
+  }
+
+  // The tutorial's TRYCALL beat: the therapist's own contact pops into the
+  // dock while he's still on the line. `live` = this is the beat where you
+  // try it; afterwards the dock just stays, for show.
+  function createSelfDock(live) {
+    const dock = document.createElement('div');
+    dock.className = 'dx-dock';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'dx-dock__contact';
+    btn.textContent = CONTACTS.THERAPIST.name.charAt(0);
+    btn.setAttribute('aria-label', `Call ${CONTACTS.THERAPIST.name}`);
+    dock.appendChild(btn);
+    if (!live) {
+      btn.tabIndex = -1;
+      btn.style.pointerEvents = 'none';
+      return dock;
+    }
+    if (!dockIntroduced) {
+      dock.classList.add('is-introducing');
+      audio.playFeelzPing();
+    }
+    dockIntroduced = true;
+    btn.classList.add('is-beckoning');
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (typewriter && !typewriter.isDone()) typewriter.finish();
+      placeEchoCall(() => nextOutroBeat());
+    }, { once: true });
+    return dock;
+  }
+
+  // Calling him while he's already on the phone with you: it rings, he
+  // answers, and his own "Hello?" comes back at him twice through the
+  // speaker, with feedback. The joke lands in his next LINE.
+  const ECHO = ['Hello?', '…hello?', '…lo?'];
+  function placeEchoCall(onDone) {
+    spotlight?.destroy();
+    spotlight = null;
+    const overlay = document.createElement('div');
+    overlay.className = 'dx-call';
+    overlay.innerHTML = `<p class="dx-call__who">CALLING ${CONTACTS.THERAPIST.name.toUpperCase()}…</p>`;
+    stageEl.appendChild(overlay);
+    const ringMs = audio.playPhoneRing();
+    let ready = false;
+    setTimeout(() => {
+      overlay.querySelector('.dx-call__who').textContent = CONTACTS.THERAPIST.name.toUpperCase();
+      const box = document.createElement('div');
+      box.className = 'dx-call__box';
+      const avatar = document.createElement('div');
+      avatar.className = 'dx-call__avatar';
+      avatar.textContent = CONTACTS.THERAPIST.name.charAt(0);
+      const p = document.createElement('p');
+      p.className = 'dx-text dx-call__echo';
+      box.append(avatar, p);
+      overlay.appendChild(box);
+      p.textContent = ECHO[0];
+      audio.playFeedback();
+      ECHO.slice(1).forEach((word, i) => {
+        setTimeout(() => {
+          const echo = document.createElement('span');
+          echo.className = `dx-call__echo-copy dx-call__echo-copy--${i + 1}`;
+          echo.textContent = word;
+          p.appendChild(echo);
+          fx.shake('subtle');
+          if (i === ECHO.length - 2) ready = true;
+        }, 380 * (i + 1));
+      });
+    }, ringMs);
+    overlay.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!ready) return;
+      overlay.remove();
+      onDone();
+    });
   }
 
   // A call: it rings, then greeting, their read (that slice glows on the
