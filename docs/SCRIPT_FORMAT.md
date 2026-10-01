@@ -150,8 +150,14 @@ Every node needs exactly two: `-- TRUTH` and `-- LIE`.
   Therapist's intrusive-thoughts question uses both, and every version
   ends on the same closing sentence so the lesson stays recognizable.
 - `CONTRADICTS: node_id=truth|lie` (optional, repeatable) — this answer
-  contradicts that earlier answer to someone else. If the player gave it,
-  IT quotes it back after this reaction and this NPC loses a sync.
+  contradicts that earlier answer. Someone else's node (word traveled): IT
+  quotes it back after this reaction and this NPC loses 1 sync. This NPC's
+  own node (they heard both): they call it out as the last page of their
+  reaction, lose 2 syncs, TRU -1, and a bid on this answer doesn't count.
+  Author truth-then-lie only; correcting yourself never counts.
+- `CAUGHT [node_id]: "line"` (optional) — the callout for a same-NPC
+  contradiction; [node_id] picks which CONTRADICTS pair it answers. Without
+  one, the NPC's fallback line plays (dialogScene.js CAUGHT_FALLBACK).
 - `IT:` / `SO:` (optional) — an intrusive-thought popup right after this
   answer's `REACT:`, before the next node. Use one or both (IT first,
   then SO). Example: the Therapist's intrusive-thoughts question has IT

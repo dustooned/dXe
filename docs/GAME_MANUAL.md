@@ -326,6 +326,13 @@ whether people can rely on you, and it's built three ways:
   Contradict yourself to the same person and they catch it themselves:
   their callout ("On my porch you said faith didn't save him. Now he's at
   peace?"), the warmth leaves their portrait, the scope's lines snap apart
+  with static, and their SAM "down" bark plays. Cost: -2 syncs, TRU -1,
+  and a bid on that answer doesn't count. Lying first and telling the
+  truth later is never a catch. 8 pairs: two each for Deborah, Rwanda,
+  Samun and Rick.
+  Contradict yourself to the same person and they catch it themselves:
+  their callout ("On my porch you said faith didn't save him. Now he's at
+  peace?"), the warmth leaves their portrait, the scope's lines snap apart
   with static, their SAM "down" bark. Cost: -2 syncs, TRU -1, and a bid on
   that answer doesn't count. Lying first and telling the truth later is
   never a catch. 8 pairs: two each for Deborah, Rwanda, Samun, Rick.

@@ -508,7 +508,20 @@ Meeting one warms the portrait gold. On some bids a kind lie counts
 too, so a player can build trust while still dirtying the lake.</li>
 <li><strong>Consistency.</strong> Word travels in Lake Ulysses. Tell one person one thing
 and a later person the opposite, and IT quotes your earlier line back to
-you (&quot;Funny. You told Samun...&quot;); the second person loses a sync.</li>
+you (&quot;Funny. You told Samun...&quot;); the second person loses a sync.
+Contradict yourself to the same person and they catch it themselves:
+their callout (&quot;On my porch you said faith didn&#39;t save him. Now he&#39;s at
+peace?&quot;), the warmth leaves their portrait, the scope&#39;s lines snap apart
+with static, and their SAM &quot;down&quot; bark plays. Cost: -2 syncs, TRU -1,
+and a bid on that answer doesn&#39;t count. Lying first and telling the
+truth later is never a catch. 8 pairs: two each for Deborah, Rwanda,
+Samun and Rick.
+Contradict yourself to the same person and they catch it themselves:
+their callout (&quot;On my porch you said faith didn&#39;t save him. Now he&#39;s at
+peace?&quot;), the warmth leaves their portrait, the scope&#39;s lines snap apart
+with static, their SAM &quot;down&quot; bark. Cost: -2 syncs, TRU -1, and a bid on
+that answer doesn&#39;t count. Lying first and telling the truth later is
+never a catch. 8 pairs: two each for Deborah, Rwanda, Samun, Rick.</li>
 </ul>
 <p>Two syncs plus one bid met and that NPC <strong>trusts you</strong>: the screen closes
 to a vignette on them, all sound drops out, a crack, then a short story
@@ -3741,8 +3754,14 @@ feeling (or <code>none</code>: turned toward, nothing left to give). The
 Therapist&#39;s intrusive-thoughts question uses both, and every version
 ends on the same closing sentence so the lesson stays recognizable.</li>
 <li><code>CONTRADICTS: node_id=truth|lie</code> (optional, repeatable) — this answer
-contradicts that earlier answer to someone else. If the player gave it,
-IT quotes it back after this reaction and this NPC loses a sync.</li>
+contradicts that earlier answer. Someone else&#39;s node (word traveled): IT
+quotes it back after this reaction and this NPC loses 1 sync. This NPC&#39;s
+own node (they heard both): they call it out as the last page of their
+reaction, lose 2 syncs, TRU -1, and a bid on this answer doesn&#39;t count.
+Author truth-then-lie only; correcting yourself never counts.</li>
+<li><code>CAUGHT [node_id]: &quot;line&quot;</code> (optional) — the callout for a same-NPC
+contradiction; [node_id] picks which CONTRADICTS pair it answers. Without
+one, the NPC&#39;s fallback line plays (dialogScene.js CAUGHT_FALLBACK).</li>
 <li><code>IT:</code> / <code>SO:</code> (optional) — an intrusive-thought popup right after this
 answer&#39;s <code>REACT:</code>, before the next node. Use one or both (IT first,
 then SO). Example: the Therapist&#39;s intrusive-thoughts question has IT
