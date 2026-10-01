@@ -27,6 +27,7 @@
 // Callers don't change: finish() on a finished page turns to the next one,
 // and isDone()/onDone only report true after the last page.
 import { emotionColor } from '../engine/loadout.js';
+import { FEELZ_COLORS } from '../shell/feelzWord.js';
 import { loadSettings } from '../shell/settings.js';
 
 // The player's text speed setting scales every character delay (the
@@ -50,8 +51,17 @@ export function parseSegments(raw) {
 
   function pushChars(text) {
     const speed = speedStack[speedStack.length - 1];
-    const color = colorStack[colorStack.length - 1];
+    const outer = colorStack[colorStack.length - 1];
+    // FEELZ is always the logo: each letter its feeling's color, unless the
+    // line already colors it (shell/feelzWord.js).
+    const feelzLetter = new Map();
+    for (let i = text.indexOf('FEELZ'); i !== -1; i = text.indexOf('FEELZ', i + 5)) {
+      for (let k = 0; k < 5; k++) feelzLetter.set(i + k, k);
+    }
+    let pos = 0;
     for (const char of text) {
+      const color = !outer && feelzLetter.has(pos) ? FEELZ_COLORS[feelzLetter.get(pos)] : outer;
+      pos += char.length;
       if (char === '\n') {
         segments.push({ type: 'br' });
       } else {

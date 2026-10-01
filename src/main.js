@@ -4,6 +4,7 @@ import './scenes/scenes.css';
 import { onRouteChange, navigate, getCurrentRoute } from './shell/router.js';
 import { loadSave } from './shell/save.js';
 import { initFx, fadeToBlack } from './shell/fx.js';
+import { initFeelzWord } from './shell/feelzWord.js';
 import { initHud, setVisible as setHudVisible } from './shell/hud.js';
 import { startTitleMusic, stopTitleMusic, playStartJingle, playLogoSting, unlockAudio } from './shell/audio.js';
 
@@ -20,6 +21,8 @@ const canvas = document.createElement('div');
 canvas.className = 'dx-canvas';
 app.appendChild(canvas);
 initFx(canvas);
+// Every FEELZ on screen wears the logo colors (shell/feelzWord.js).
+initFeelzWord(canvas);
 
 // Every screen renders into this inner layer, which gets wiped wholesale on
 // every teardown() and every scene's own re-render (cutsceneScene.render()

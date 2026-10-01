@@ -82,6 +82,8 @@ only rewrite two things per node, rewrite those.
   the phone dock and the line waits for the player to tap it. Used once, to
   teach calling in the therapist's outro.
 
+Write **FEELZ** in caps and it shows in the logo colors on its own; no color codes needed.
+
 ### Character voices (one word each)
 
 Every character barks a single word in SAM, the 1982 talking-computer

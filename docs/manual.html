@@ -465,6 +465,8 @@ the answer sends them into, their wave shifts to it, and the shake
 scales with how far their TRU and STB moved.</p>
 <h3 id="doc-game_manual--the-oscilloscope-how-close-you-are"><a class="anchor" href="#doc-game_manual--the-oscilloscope-how-close-you-are" aria-label="Link to this section">#</a>The oscilloscope: how close you are</h3>
 <p>A heart-monitor band runs across the portrait. Their line sits on top, yours underneath, and the gap between them is how close this person is to you: it narrows with every attuned pick and every bid you turn toward, widens with each answer that does neither, and closes completely (the lines merge and glow) once they trust you. Holding a feeling previews it: theirs pulls the lines in a little, another pushes them apart. Your line wears the color of the feeling you hold (or your last one), and a strip under the portrait keeps one colored block per answer in this encounter (newest outlined), so you can see which feelings you lean on with this person. Shut out (airplane mode): your line greys and theirs flatlines.</p>
+<h3 id="doc-game_manual--the-word-feelz"><a class="anchor" href="#doc-game_manual--the-word-feelz" aria-label="Link to this section">#</a>The word FEELZ</h3>
+<p>Wherever FEELZ appears on screen it wears the logo colors, one feeling per letter: F Anger, E Happy, E Trust, L Sadness, Z Anxiety. Typed text gets it from the typewriter; fixed labels (status bar carrier, app bars, report headers) from a page-wide watcher (<code>shell/feelzWord.js</code>). A line that colors the word itself keeps its own color.</p>
 <h3 id="doc-game_manual--contact-colors"><a class="anchor" href="#doc-game_manual--contact-colors" aria-label="Link to this section">#</a>Contact colors</h3>
 <p>Each contact wears the color of the feeling they live in: Deborah Sadness blue, Rwanda Anxiety orange, Samun Happy yellow, Rick Anger red, the Therapist clinical grey. Their dock button and call box are that color, and the feeling they read on the person in front of you is written in that feeling&#39;s color (matching the wheel slice that glows). When they misread someone, they see their own feeling: Deborah sees grief everywhere, Rick sees anger. The Therapist has no lean, so his rare misreads are random. A bond with them still makes their reads more reliable.</p>
 <h3 id="doc-game_manual--voices-and-phone-sounds"><a class="anchor" href="#doc-game_manual--voices-and-phone-sounds" aria-label="Link to this section">#</a>Voices and phone sounds</h3>
@@ -1416,6 +1418,7 @@ clinical grey <code>#9aa0a6</code>.</li>
 (<code>ui/pastorBust.js</code>), SAM greeting; name hidden until he says it; the
 lake gauge waits for the first confession; SAM &quot;Amen.&quot; / &quot;Shame.&quot; /
 &quot;Samael.&quot; during the reckoning.</li>
+<li><strong>FEELZ in logo colors everywhere</strong> (<code>shell/feelzWord.js</code> + typewriter).</li>
 <li><strong>Contact colors</strong>: each contact in their dominant feeling&#39;s color (dock, call box); the read is written in the read feeling&#39;s color; misreads project their own feeling (<code>engine/contacts.js</code> dominant).</li>
 <li><strong>IT and SO</strong>: name plates under the icon; on their last lines with
 Pastor Gabriel they pry open into SHIT and SHOW (plain again on the final

@@ -543,6 +543,7 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
   (`ui/pastorBust.js`), SAM greeting; name hidden until he says it; the
   lake gauge waits for the first confession; SAM "Amen." / "Shame." /
   "Samael." during the reckoning.
+- **FEELZ in logo colors everywhere** (`shell/feelzWord.js` + typewriter).
 - **Contact colors**: each contact in their dominant feeling's color (dock, call box); the read is written in the read feeling's color; misreads project their own feeling (`engine/contacts.js` dominant).
 - **IT and SO**: name plates under the icon; on their last lines with
   Pastor Gabriel they pry open into SHIT and SHOW (plain again on the final
