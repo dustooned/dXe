@@ -181,7 +181,7 @@ Every lie big enough to matter is also logged, quietly, to a running
 
 ### IT and SO
 
-Each popup labels the icon with its name, IT or SO. At the very end of the chapter the missing letters pry their way in: IT becomes SHIT, SO becomes SHOW.
+Each popup labels the icon with its name, IT or SO. On their last lines with Pastor Gabriel the missing letters pry their way in: IT becomes SHIT, SO becomes SHOW. On the ending's final screen they're plain IT and SO again. When they walk you into the water they howl together, tuned by the lake: two clean hounds a fifth apart over clear water; lower, detuned to a tritone, seasick and distorted over a fouled one.
 
 Two intrusive-thought voices that pop up like ads. **IT** states things
 with dread and certainty. **SO** answers IT with doubt. They're

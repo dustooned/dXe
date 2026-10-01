@@ -203,15 +203,12 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
       text: ENDING_IT_TEXT,
       loadout: run.get().loadout,
       flashClose: true,
-      // Last appearance: the names finally spell out what they were.
-      reveal: true,
       onClose: () => {
         itPopup?.destroy();
         itPopup = createItPopup(stageEl, {
           text: ENDING_SO_TEXT,
           loadout: run.get().loadout,
           voice: 'so',
-          reveal: true,
           onClose: () => {
             itPopup?.destroy();
             itPopup = null;

@@ -42,10 +42,13 @@ also become the hint system (see below — separately still unbuilt).
 
 ## Names — IT and SO, until the end (built)
 
-Every IT/SO popup labels the icon with its name, IT or SO. At the very end
-of the chapter (endingScene.js, the last IT and SO popups) the missing
-letters pry their way in: IT becomes SHIT, SO becomes SHOW. The letters
-are in ui/itPopup.js NAMES; the ending passes `reveal: true`.
+Every IT/SO popup labels the icon with its name, IT or SO. On their last
+lines with Pastor Gabriel (the Reckoning's gate, reckoningScene.js) the
+missing letters pry their way in: IT becomes SHIT, SO becomes SHOW. On the
+ending's final screen they're plain IT and SO again. The letters are in
+ui/itPopup.js NAMES; the gate passes `reveal: true`. As they walk you into
+the water they howl together (audio.js playHowl): a clean fifth over clear
+water, sinking to a detuned, distorted tritone as the lake fouls.
 
 ## SO — the doubt rebuttal (built)
 

@@ -543,8 +543,10 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
   (`ui/pastorBust.js`), SAM greeting; name hidden until he says it; the
   lake gauge waits for the first confession; SAM "Amen." / "Shame." /
   "Samael." during the reckoning.
-- **IT and SO**: name plates under the icon; at the end of the chapter they
-  pry open into SHIT and SHOW.
+- **IT and SO**: name plates under the icon; on their last lines with
+  Pastor Gabriel they pry open into SHIT and SHOW (plain again on the final
+  screen); a howl duet as they walk you into the water, from clean to
+  disturbing with the lake.
 - **Fixes**: fish swim at all times (the earlier "static" ask meant the
   gauge's position); contacts dock and call box sit above the water meter.
 

@@ -16,7 +16,7 @@
 // scene shape: { type: 'reckoning', id: string, pastor: <pastor.json> }
 import { buildReckoningDeck, resolveReckoningCard } from '../engine/reckoning.js';
 import { pastorContext, pickSection, pickLine } from '../engine/pastor.js';
-import { colorFor, fishStageFor } from '../engine/lake.js';
+import { colorFor, fishStageFor, LAKE_MAX_DEBT } from '../engine/lake.js';
 import { createItPopup } from '../ui/itPopup.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
@@ -135,6 +135,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
           text: line.text,
           loadout: run.get().loadout,
           voice: line.voice,
+          reveal: Boolean(line.reveal),
           flashClose: Boolean(queue[0]?.voice),
           onClose: () => { itPopup?.destroy(); itPopup = null; next(); },
         });
@@ -188,8 +189,24 @@ export function mount(stageEl, scene, { run, onComplete }) {
     else next();
   }
 
+  // IT and SO's last words to you: their final IT line and final SO line
+  // here pry their names open (SHIT, SHOW). By the ending's last screen
+  // they're back to plain IT and SO, as if nothing was said.
   function gate() {
-    playLines(pickSection(script.gate, ctx()), baptism);
+    const lines = pickSection(script.gate, ctx());
+    for (const voice of ['it', 'so']) {
+      const last = lines.map((l) => l.voice).lastIndexOf(voice);
+      if (last >= 0) lines[last] = { ...lines[last], reveal: true };
+    }
+    playLines(lines, walkDown);
+  }
+
+  // They walk you into the water, howling together: clean hounds over
+  // clear water, something wrong over a fouled one.
+  function walkDown() {
+    const ms = audio.playHowl(run.get().truthDebt / LAKE_MAX_DEBT);
+    fx.shake('weak');
+    setTimeout(baptism, Math.min(ms, 2600));
   }
 
   function baptism() {

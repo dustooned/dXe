@@ -1187,6 +1187,87 @@ export function playC64Toll(at = 0, base = 98) {
   noise.onended = () => ng.disconnect();
 }
 
+// IT and SO howl together as they walk you into the water. `foul` (0..1,
+// the lake's Truth Debt over its max) turns it from a clean pair of hounds
+// a fifth apart into something wrong: the pitch sinks, the interval slides
+// to a tritone, the vibrato goes seasick, a growl of distortion and noise
+// creeps in, and the "oo-ah" mouth (a swept band-pass) closes to a choke.
+export function playHowl(foul = 0) {
+  const audioCtx = ensureContext();
+  const t = audioCtx.currentTime + 0.05;
+  const f = clamp(foul, 0, 1);
+  const dur = 3.2 + f * 1.2;
+  const root = 330 * (1 - f * 0.35);
+  const interval = 1.5 - f * 0.086; // a fifth (1.5) down to a tritone (~1.414)
+  const shaper = audioCtx.createWaveShaper();
+  const curve = new Float32Array(1024);
+  const drive = 1 + f * 30;
+  for (let i = 0; i < curve.length; i++) {
+    const x = (i / (curve.length - 1)) * 2 - 1;
+    curve[i] = Math.tanh(x * drive) / Math.tanh(drive);
+  }
+  shaper.curve = curve;
+  const out = audioCtx.createGain();
+  out.gain.value = 0.9;
+  shaper.connect(out).connect(masterGain);
+
+  [[1, 0, 'it'], [interval, 0.35, 'so']].forEach(([ratio, offset]) => {
+    const start = t + offset;
+    const base = root * ratio;
+    const osc = audioCtx.createOscillator();
+    osc.type = 'sawtooth';
+    // The howl's shape: rise, hold, fall away.
+    osc.frequency.setValueAtTime(base * 0.7, start);
+    osc.frequency.exponentialRampToValueAtTime(base, start + dur * 0.25);
+    osc.frequency.setValueAtTime(base, start + dur * 0.6);
+    osc.frequency.exponentialRampToValueAtTime(base * (0.55 - f * 0.2), start + dur);
+    const vib = audioCtx.createOscillator();
+    vib.frequency.value = 5 - f * 3.2;
+    const vibDepth = audioCtx.createGain();
+    vibDepth.gain.value = base * (0.012 + f * 0.06);
+    vib.connect(vibDepth).connect(osc.frequency);
+    const mouth = audioCtx.createBiquadFilter();
+    mouth.type = 'bandpass';
+    mouth.Q.value = 6 + f * 6;
+    mouth.frequency.setValueAtTime(500, start);
+    mouth.frequency.exponentialRampToValueAtTime(1300 - f * 700, start + dur * 0.3);
+    mouth.frequency.exponentialRampToValueAtTime(400 - f * 150, start + dur);
+    const env = audioCtx.createGain();
+    env.gain.setValueAtTime(0.0001, start);
+    env.gain.exponentialRampToValueAtTime(0.16, start + 0.4);
+    env.gain.setValueAtTime(0.16, start + dur * 0.65);
+    env.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+    osc.connect(mouth).connect(env).connect(shaper);
+    osc.start(start);
+    vib.start(start);
+    osc.stop(start + dur + 0.05);
+    vib.stop(start + dur + 0.05);
+    osc.onended = () => env.disconnect();
+  });
+
+  // The worse the water, the more breath and grit under them.
+  if (f > 0.2) {
+    const rate = audioCtx.sampleRate;
+    const buffer = audioCtx.createBuffer(1, Math.floor(rate * dur), rate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = buffer;
+    const bp = audioCtx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = 900;
+    bp.Q.value = 1.2;
+    const ng = audioCtx.createGain();
+    ng.gain.setValueAtTime(0.0001, t);
+    ng.gain.linearRampToValueAtTime(0.05 * f, t + 0.6);
+    ng.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    noise.connect(bp).connect(ng).connect(out);
+    noise.start(t);
+    noise.onended = () => ng.disconnect();
+  }
+  return Math.round((dur + 0.35) * 1000);
+}
+
 // A meter moved (ui/statusBar.js): two square-wave notes a fifth apart,
 // rising when it went up, falling when it went down. Each meter has its
 // own pitch so they're learnable by ear; several changes play in turn.

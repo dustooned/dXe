@@ -335,7 +335,7 @@ straight to the Reckoning — no more encounters, no matter who&#39;s left.
 Every lie big enough to matter is also logged, quietly, to a running
 <strong>Truth Ledger</strong> the player never sees until it comes due.</p>
 <h3 id="doc-game_manual--it-and-so"><a class="anchor" href="#doc-game_manual--it-and-so" aria-label="Link to this section">#</a>IT and SO</h3>
-<p>Each popup labels the icon with its name, IT or SO. At the very end of the chapter the missing letters pry their way in: IT becomes SHIT, SO becomes SHOW.</p>
+<p>Each popup labels the icon with its name, IT or SO. On their last lines with Pastor Gabriel the missing letters pry their way in: IT becomes SHIT, SO becomes SHOW. On the ending&#39;s final screen they&#39;re plain IT and SO again. When they walk you into the water they howl together, tuned by the lake: two clean hounds a fifth apart over clear water; lower, detuned to a tritone, seasick and distorted over a fouled one.</p>
 <p>Two intrusive-thought voices that pop up like ads. <strong>IT</strong> states things
 with dread and certainty. <strong>SO</strong> answers IT with doubt. They&#39;re
 observers who keep score and never admit they&#39;re against you. They don&#39;t
@@ -1414,8 +1414,10 @@ clinical grey <code>#9aa0a6</code>.</li>
 (<code>ui/pastorBust.js</code>), SAM greeting; name hidden until he says it; the
 lake gauge waits for the first confession; SAM &quot;Amen.&quot; / &quot;Shame.&quot; /
 &quot;Samael.&quot; during the reckoning.</li>
-<li><strong>IT and SO</strong>: name plates under the icon; at the end of the chapter they
-pry open into SHIT and SHOW.</li>
+<li><strong>IT and SO</strong>: name plates under the icon; on their last lines with
+Pastor Gabriel they pry open into SHIT and SHOW (plain again on the final
+screen); a howl duet as they walk you into the water, from clean to
+disturbing with the lake.</li>
 <li><strong>Fixes</strong>: fish swim at all times (the earlier &quot;static&quot; ask meant the
 gauge&#39;s position); contacts dock and call box sit above the water meter.</li>
 </ul>
@@ -5201,10 +5203,13 @@ prose in place of every placeholder line, and deciding whether IT should
 also become the hint system (see below — separately still unbuilt).</p>
 <hr>
 <h2 id="doc-it_design--names-it-and-so-until-the-end-built"><a class="anchor" href="#doc-it_design--names-it-and-so-until-the-end-built" aria-label="Link to this section">#</a>Names — IT and SO, until the end (built)</h2>
-<p>Every IT/SO popup labels the icon with its name, IT or SO. At the very end
-of the chapter (endingScene.js, the last IT and SO popups) the missing
-letters pry their way in: IT becomes SHIT, SO becomes SHOW. The letters
-are in ui/itPopup.js NAMES; the ending passes <code>reveal: true</code>.</p>
+<p>Every IT/SO popup labels the icon with its name, IT or SO. On their last
+lines with Pastor Gabriel (the Reckoning&#39;s gate, reckoningScene.js) the
+missing letters pry their way in: IT becomes SHIT, SO becomes SHOW. On the
+ending&#39;s final screen they&#39;re plain IT and SO again. The letters are in
+ui/itPopup.js NAMES; the gate passes <code>reveal: true</code>. As they walk you into
+the water they howl together (audio.js playHowl): a clean fifth over clear
+water, sinking to a detuned, distorted tritone as the lake fouls.</p>
 <h2 id="doc-it_design--so-the-doubt-rebuttal-built"><a class="anchor" href="#doc-it_design--so-the-doubt-rebuttal-built" aria-label="Link to this section">#</a>SO — the doubt rebuttal (built)</h2>
 <p>Grew out of noticing that two of IT&#39;s triggers — bloom events and the
 post-swipe dominant-emotion read — read as repetitive over a real

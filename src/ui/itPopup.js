@@ -9,8 +9,9 @@ import { playTypewriterTick, playItSting, playStaticNoise } from '../shell/audio
 import * as fx from '../shell/fx.js';
 
 // The name under the icon, as segments: [text, hiddenUntilReveal]. The
-// hidden letters are what IT and SO were short for all along — the
-// Ending's `reveal` slides them in: SH+IT, S+H+O+W.
+// hidden letters are what IT and SO were short for all along — their last
+// lines with Pastor Gabriel (reckoningScene.js) pass `reveal` and slide
+// them in: SH+IT, S+H+O+W.
 const NAMES = {
   it: [['SH', true], ['IT', false]],
   so: [['S', false], ['H', true], ['O', false], ['W', true]],
