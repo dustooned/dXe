@@ -308,6 +308,10 @@ scales with how far their TRU and STB moved.
 
 A heart-monitor band runs across the portrait. Their line sits on top, yours underneath, and the gap between them is how close this person is to you: it narrows with every attuned pick and every bid you turn toward, widens with each answer that does neither, and closes completely (the lines merge and glow) once they trust you. Holding a feeling previews it: theirs pulls the lines in a little, another pushes them apart. Your line wears the color of the feeling you hold (or your last one), and a strip under the portrait keeps one colored block per answer in this encounter (newest outlined), so you can see which feelings you lean on with this person. Shut out (airplane mode): your line greys and theirs flatlines.
 
+### Contact colors
+
+Each contact wears the color of the feeling they live in: Deborah Sadness blue, Rwanda Anxiety orange, Samun Happy yellow, Rick Anger red, the Therapist clinical grey. Their dock button and call box are that color, and the feeling they read on the person in front of you is written in that feeling's color (matching the wheel slice that glows). When they misread someone, they see their own feeling: Deborah sees grief everywhere, Rick sees anger. The Therapist has no lean, so his rare misreads are random. A bond with them still makes their reads more reliable.
+
 ### Voices and phone sounds
 
 Every character barks one word in SAM (the 1982 Software Automatic Mouth), never a reading of the text. Voices and words live in `src/shell/voices.js`.

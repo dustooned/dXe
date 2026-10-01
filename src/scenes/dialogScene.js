@@ -823,6 +823,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       btn.className = 'dx-dock__contact';
       btn.textContent = CONTACTS[who].name.charAt(0);
       btn.setAttribute('aria-label', `Call ${CONTACTS[who].name}`);
+      btn.style.setProperty('--contact', contactColor(who));
       const offline = who === 'THERAPIST' && !therapistReachable(state);
       if (offline) btn.classList.add('is-offline');
       if (calledThisEncounter.has(who)) btn.classList.add('is-used');
@@ -877,6 +878,12 @@ export function mount(stageEl, scene, { run, onComplete }) {
     canvas.style.height = `${p.height + 34}px`;
   }
 
+  // A contact's color: their dominant feeling's, or the Therapist's grey.
+  function contactColor(who) {
+    const dominant = CONTACTS[who]?.dominant;
+    return dominant ? emotionColor(dominant) : 'var(--color-therapist)';
+  }
+
   // The tutorial's TRYCALL beat: the therapist's own contact pops into the
   // dock while he's still on the line. `live` = this is the beat where you
   // try it; afterwards the dock just stays, for show.
@@ -888,6 +895,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     btn.className = 'dx-dock__contact';
     btn.textContent = CONTACTS.THERAPIST.name.charAt(0);
     btn.setAttribute('aria-label', `Call ${CONTACTS.THERAPIST.name}`);
+    btn.style.setProperty('--contact', contactColor('THERAPIST'));
     dock.appendChild(btn);
     if (!live) {
       btn.tabIndex = -1;
@@ -917,6 +925,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     spotlight = null;
     const overlay = document.createElement('div');
     overlay.className = 'dx-call';
+    overlay.style.setProperty('--contact', contactColor('THERAPIST'));
     overlay.innerHTML = `<p class="dx-call__who">CALLING ${CONTACTS.THERAPIST.name.toUpperCase()}…</p>`;
     stageEl.appendChild(overlay);
     liftAboveLake(overlay);
@@ -965,6 +974,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const call = callFor(who, { state: run.get(), currentName: name, mood: node.mood });
     const overlay = document.createElement('div');
     overlay.className = 'dx-call';
+    overlay.style.setProperty('--contact', contactColor(who));
     overlay.innerHTML = `<p class="dx-call__who">CALLING ${CONTACTS[who].name.toUpperCase()}…</p>`;
     stageEl.appendChild(overlay);
     liftAboveLake(overlay);

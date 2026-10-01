@@ -59,10 +59,14 @@ const MOOD_IMAGES = {
 };
 
 // bias: chance they tell you to lie. sight: how reliably they read a mood
-// before your bond adds to it.
+// before your bond adds to it. dominant: the feeling they live in — their
+// color in the dock and on calls, and what they see in people when they
+// misread them (Deborah sees grief everywhere). The Therapist has none:
+// clinical grey, and his misreads are just noise.
 export const CONTACTS = {
   THERAPIST: {
     name: 'Therapist',
+    dominant: null,
     bias: 0.25,
     sight: 0.85,
     greet: ["Hi. I've got a minute between clients.", "Hey. You called. That's good.", "I'm here. Talk to me."],
@@ -73,6 +77,7 @@ export const CONTACTS = {
   },
   DEBORAH: {
     name: 'Deborah',
+    dominant: 'Sadness',
     bias: 0.65,
     sight: 0.55,
     greet: ["Oh honey, I was just thinking about you.", "Well, look who remembered my number.", "Bless you for calling. What's wrong?"],
@@ -83,6 +88,7 @@ export const CONTACTS = {
   },
   RWANDA: {
     name: 'Rwanda',
+    dominant: 'Anxiety',
     bias: 0.2,
     sight: 0.6,
     greet: ["You actually called. Huh.", "Talk fast, I've got paint drying.", "What's up. And don't say nothing."],
@@ -93,6 +99,7 @@ export const CONTACTS = {
   },
   SAMUN: {
     name: 'Samun',
+    dominant: 'Happy',
     bias: 0.55,
     sight: 0.6,
     greet: ["Yo yo yo, you calling ME? Somebody's having a day.", "Talk to me, talk to me.", "Ayy. What'd you do now?"],
@@ -103,6 +110,7 @@ export const CONTACTS = {
   },
   RICK: {
     name: 'Rick',
+    dominant: 'Anger',
     bias: 0.75,
     sight: 0.5,
     greet: ["Yeah.", "Make it quick.", "...You calling me? Alright. What."],
@@ -138,11 +146,16 @@ export function callFor(contact, { state, currentName, mood }) {
   const bond = state.bonds?.[contact];
   const reliability = Math.min(0.95, c.sight + ((bond?.syncs ?? 0) + (bond?.bids ?? 0)) * 0.08);
   const moods = Object.keys(MOOD_IMAGES);
-  const read = mood && Math.random() < reliability ? mood : pick(moods.filter((m) => m !== mood));
+  // A misread is their own feeling, projected (unless that's the real
+  // mood, or they have none: then any wrong one).
+  const misread = c.dominant && c.dominant !== mood ? c.dominant : pick(moods.filter((m) => m !== mood));
+  const read = mood && Math.random() < reliability ? mood : misread;
   const lean = Math.random() < c.bias ? 'lie' : 'truth';
   const lines = [
     pick(c.greet),
-    `${c.read.replace('{who}', currentName)} ${MOOD_IMAGES[read]}.`,
+    // The image is colored the feeling it describes, matching the slice
+    // that glows on the wheel.
+    `${c.read.replace('{who}', currentName)} {color:${read}}${MOOD_IMAGES[read]}{/color}.`,
   ];
   // The Therapist always checks your vitals; friends only notice when
   // you're visibly running low.
