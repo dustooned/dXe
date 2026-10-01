@@ -1303,7 +1303,7 @@ function reverbBus(seconds, out) {
   const wet = audioCtx.createGain();
   wet.gain.value = 0.9;
   const dry = audioCtx.createGain();
-  dry.gain.value = 0.35;
+  dry.gain.value = 0.6;
   const input = audioCtx.createGain();
   input.connect(dry).connect(out);
   input.connect(conv).connect(wet).connect(out);
@@ -1318,32 +1318,36 @@ export function playClassSigil(cls) {
   out.connect(masterGain);
 
   if (cls === 'Guns') {
-    const bus = echoBus(0.32, 0.45, out);
+    // A light pistol shot: a hard click and a bright crack, a low boom
+    // under it, then the shot coming back off far walls (a slapback, then
+    // a fading tail).
+    const bus = echoBus(0.24, 0.5, out);
     const rate = audioCtx.sampleRate;
-    const buf = audioCtx.createBuffer(1, Math.floor(rate * 0.25), rate);
+    const buf = audioCtx.createBuffer(1, Math.floor(rate * 0.18), rate);
     const d = buf.getChannelData(0);
-    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 6);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 10);
     const crack = audioCtx.createBufferSource();
     crack.buffer = buf;
-    const bp = audioCtx.createBiquadFilter();
-    bp.type = 'bandpass';
-    bp.frequency.value = 1400;
-    bp.Q.value = 0.7;
+    const hp = audioCtx.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 700;
     const cg = audioCtx.createGain();
-    cg.gain.value = 0.32;
-    crack.connect(bp).connect(cg).connect(bus);
+    cg.gain.value = 0.7;
+    crack.connect(hp).connect(cg).connect(bus);
     crack.start(t);
-    // The body of the shot: a short low thump.
-    const thump = audioCtx.createOscillator();
-    thump.type = 'sine';
-    thump.frequency.setValueAtTime(140, t);
-    thump.frequency.exponentialRampToValueAtTime(45, t + 0.15);
-    const tg = audioCtx.createGain();
-    tg.gain.setValueAtTime(0.25, t);
-    tg.gain.exponentialRampToValueAtTime(0.0001, t + 0.2);
-    thump.connect(tg).connect(bus);
-    thump.start(t);
-    thump.stop(t + 0.25);
+    // The hammer: a 3 ms square click right on the attack.
+    blip(2400, t, 0.004, 0.25, 'square');
+    // The boom.
+    const boom = audioCtx.createOscillator();
+    boom.type = 'sine';
+    boom.frequency.setValueAtTime(110, t);
+    boom.frequency.exponentialRampToValueAtTime(38, t + 0.28);
+    const bg = audioCtx.createGain();
+    bg.gain.setValueAtTime(0.5, t);
+    bg.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+    boom.connect(bg).connect(bus);
+    boom.start(t);
+    boom.stop(t + 0.4);
   } else if (cls === 'Crystals') {
     const bus = echoBus(0.45, 0.4, out);
     const base = 220;
@@ -1363,26 +1367,28 @@ export function playClassSigil(cls) {
       }
     });
   } else {
-    // Bible: a few soft voices on a major chord, sung "ah" through formants.
-    const bus = reverbBus(4.5, out);
-    const formants = [[800, 6, 1], [1150, 8, 0.5], [2900, 10, 0.2]];
-    [261.6, 329.6, 392, 523.2].forEach((f, i) => {
-      for (const detune of [-4, 4]) {
+    // Bible: a soprano choir holding a major chord on a clear "ah", in a
+    // big stone room. Voices swell in one after another, hold, and let go
+    // into the reverb. Brighter and louder than a pad so it reads as voices.
+    const bus = reverbBus(5, out);
+    const formants = [[1000, 5, 1], [1400, 7, 0.7], [2800, 9, 0.35], [3400, 12, 0.15]];
+    [523.3, 659.3, 784, 1046.5].forEach((f, i) => {
+      for (const detune of [-7, 0, 7]) {
         const osc = audioCtx.createOscillator();
         osc.type = 'sawtooth';
         osc.frequency.value = f;
         osc.detune.value = detune;
         const vib = audioCtx.createOscillator();
-        vib.frequency.value = 4.6 + i * 0.3;
+        vib.frequency.value = 5 + i * 0.25 + detune * 0.02;
         const vd = audioCtx.createGain();
-        vd.gain.value = f * 0.006;
+        vd.gain.value = f * 0.007;
         vib.connect(vd).connect(osc.frequency);
         const voice = audioCtx.createGain();
-        const start = t + i * 0.08;
+        const start = t + i * 0.18;
         voice.gain.setValueAtTime(0.0001, start);
-        voice.gain.linearRampToValueAtTime(0.035, start + 0.9);
-        voice.gain.setValueAtTime(0.035, start + 1.8);
-        voice.gain.exponentialRampToValueAtTime(0.0001, start + 3.2);
+        voice.gain.linearRampToValueAtTime(0.07, start + 0.7);
+        voice.gain.setValueAtTime(0.07, start + 2.4);
+        voice.gain.exponentialRampToValueAtTime(0.0001, start + 3.8);
         for (const [freq, q, level] of formants) {
           const bp = audioCtx.createBiquadFilter();
           bp.type = 'bandpass';
@@ -1395,8 +1401,8 @@ export function playClassSigil(cls) {
         voice.connect(bus);
         osc.start(start);
         vib.start(start);
-        osc.stop(start + 3.4);
-        vib.stop(start + 3.4);
+        osc.stop(start + 4);
+        vib.stop(start + 4);
       }
     });
   }
