@@ -1117,6 +1117,63 @@ export function playDrift() {
   });
 }
 
+// The death clock ticking: a heavy, low escapement — a clunk with a
+// short metallic ring, alternating tick / tock.
+export function playClockTick(tock = false) {
+  const t = ensureContext().currentTime + 0.01;
+  blip(tock ? 520 : 660, t, 0.03, 0.08, 'square');
+  blip(tock ? 82 : 98, t, 0.09, 0.1, 'triangle');
+}
+
+// One strike of a C64 clock bell, after Storm Lord's opening: SID-style
+// ring modulation (a triangle multiplied by a square at an inharmonic
+// ratio) gives the clangy, metallic partials; a 4-bit noise click is the
+// hammer; it rings out for seconds. `at` is seconds from now.
+export function playC64Toll(at = 0, base = 98) {
+  const audioCtx = ensureContext();
+  const t = audioCtx.currentTime + 0.02 + at;
+  const ring = 2.8;
+  // Ring mod: carrier through a gain whose gain is the modulator.
+  [[1, 0.22], [2.76, 0.1], [5.4, 0.05]].forEach(([mult, peak]) => {
+    const carrier = audioCtx.createOscillator();
+    carrier.type = 'triangle';
+    carrier.frequency.value = base * mult;
+    const mod = audioCtx.createOscillator();
+    mod.type = 'square';
+    mod.frequency.value = base * mult * 1.414;
+    const rm = audioCtx.createGain();
+    rm.gain.value = 0;
+    mod.connect(rm.gain);
+    const env = audioCtx.createGain();
+    env.gain.setValueAtTime(0.0001, t);
+    env.gain.linearRampToValueAtTime(peak, t + 0.004);
+    env.gain.exponentialRampToValueAtTime(0.0001, t + ring / mult ** 0.3);
+    carrier.connect(rm).connect(env).connect(masterGain);
+    carrier.start(t);
+    mod.start(t);
+    carrier.stop(t + ring + 0.1);
+    mod.stop(t + ring + 0.1);
+    carrier.onended = () => env.disconnect();
+  });
+  // The hammer: a burst of stepped 4-bit noise.
+  const rate = audioCtx.sampleRate;
+  const buffer = audioCtx.createBuffer(1, Math.floor(rate * 0.12), rate);
+  const data = buffer.getChannelData(0);
+  const hold = Math.floor(rate / 4000);
+  let v = 0;
+  for (let i = 0; i < data.length; i++) {
+    if (i % hold === 0) v = Math.round((Math.random() * 2 - 1) * 8) / 8;
+    data[i] = v * (1 - i / data.length);
+  }
+  const noise = audioCtx.createBufferSource();
+  noise.buffer = buffer;
+  const ng = audioCtx.createGain();
+  ng.gain.value = 0.25;
+  noise.connect(ng).connect(masterGain);
+  noise.start(t);
+  noise.onended = () => ng.disconnect();
+}
+
 // A meter moved (ui/statusBar.js): two square-wave notes a fifth apart,
 // rising when it went up, falling when it went down. Each meter has its
 // own pitch so they're learnable by ear; several changes play in turn.

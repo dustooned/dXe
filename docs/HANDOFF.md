@@ -538,6 +538,11 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
   - The therapist is Charles Browning (he/him). On screen he's only
     THERAPIST; the name appears once, on the provider card. Accent is
     clinical grey `#9aa0a6`.
+- **Pastor Gabriel's entrance**: death-clock ticks, three C64 bell tolls
+  (Storm Lord style), a slow stepped fade-in of his placeholder bust
+  (`ui/pastorBust.js`), SAM greeting; name hidden until he says it; the
+  lake gauge waits for the first confession; SAM "Amen." / "Shame." /
+  "Samael." during the reckoning.
 - **IT and SO**: name plates under the icon; at the end of the chapter they
   pry open into SHIT and SHOW.
 - **Fixes**: fish swim at all times (the earlier "static" ask meant the

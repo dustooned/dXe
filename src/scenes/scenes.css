@@ -954,6 +954,44 @@
   cursor: pointer;
 }
 
+/* His bust (ui/pastorBust.js, placeholder pixel art) above the nameplate.
+   On arrival it fades in slow and stepped, like a C64 palette fade. */
+.dx-pastor-bust {
+  width: calc(120 * var(--px));
+  margin: 0 auto;
+}
+
+.dx-pastor-bust svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.dx-pastor-bust.is-arriving,
+.dx-pastor-nameplate.is-arriving {
+  animation: dx-pastor-arrive var(--fade, 3200ms) steps(10, end) both;
+}
+
+@keyframes dx-pastor-arrive {
+  from { opacity: 0; filter: brightness(2.2) contrast(0.4); }
+  to { opacity: 1; filter: none; }
+}
+
+.dx-pastor-entrance {
+  justify-content: center;
+}
+
+.dx-pastor-clock {
+  text-align: center;
+  font-size: calc(18 * var(--fs));
+  letter-spacing: 0.15em;
+  color: #c9c9c9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-pastor-bust.is-arriving, .dx-pastor-nameplate.is-arriving { animation: none; }
+}
+
 .dx-pastor-nameplate {
   font-size: calc(8 * var(--fs));
   letter-spacing: 0.25em;

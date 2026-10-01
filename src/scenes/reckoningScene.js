@@ -20,7 +20,21 @@ import { colorFor, fishStageFor } from '../engine/lake.js';
 import { createItPopup } from '../ui/itPopup.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
+import { createPastorBust } from '../ui/pastorBust.js';
 import * as audio from '../shell/audio.js';
+import * as voices from '../shell/voices.js';
+import * as fx from '../shell/fx.js';
+
+// The entrance: the death clock ticks down to midnight in the dark, then
+// strikes — three C64 bell tolls, after Storm Lord's opening — while his
+// bust fades in slow, and he greets you in his own voice. His name stays
+// "???" until he says it. Times are ms from the start.
+const TICKS = ['11:59:56', '11:59:57', '11:59:58', '11:59:59'];
+const TICK_MS = 1000;
+const TOLLS = [0, 1.7, 3.4]; // seconds after midnight
+const BUST_FADE_MS = 4200;
+const GREET_AT = TICKS.length * TICK_MS + 5200;
+const ALTAR_AT = GREET_AT + 1500;
 
 export function mount(stageEl, scene, { run, onComplete }) {
   const script = scene.pastor;
@@ -29,6 +43,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let itPopup = null;
   let queue = [];
   let revealedName = false;
+  // His name shows only once he's said it (the first line with "Gabriel").
+  let nameKnown = false;
+  // The lake gauge waits until he asks for your first confession.
+  let showLake = false;
+  let entranceTimers = [];
 
   const ctx = () => pastorContext(run.get());
 
@@ -45,10 +64,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
     const nameplate = document.createElement('p');
     nameplate.className = 'dx-text dx-pastor-nameplate';
-    nameplate.textContent = revealedName ? 'SAMAEL' : 'PASTOR GABRIEL';
+    nameplate.textContent = revealedName ? 'SAMAEL' : nameKnown ? 'PASTOR GABRIEL' : '???';
+    screen.appendChild(createPastorBust());
     screen.appendChild(nameplate);
 
-    screen.appendChild(createLakeGauge(debt).el);
+    if (showLake) screen.appendChild(createLakeGauge(debt).el);
 
     if (line.underwater) {
       const water = document.createElement('div');
@@ -72,9 +92,18 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (onTap) screen.appendChild(hint);
 
     stageEl.appendChild(screen);
+    const saysName = !nameKnown && /Gabriel/.test(line.text);
     typewriter = createTypewriter(text, line.text, {
       onChar: audio.playTypewriterTick,
-      onDone: () => { hint.hidden = false; },
+      onDone: () => {
+        hint.hidden = false;
+        if (saysName) {
+          nameKnown = true;
+          nameplate.textContent = 'PASTOR GABRIEL';
+          nameplate.classList.add('is-arriving');
+          nameplate.style.setProperty('--fade', '900ms');
+        }
+      },
     });
     if (onTap) {
       screen.addEventListener('click', () => {
@@ -105,6 +134,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
         });
         return;
       }
+      if (line.revealsName && !revealedName) voices.say('PASTOR', 'name', { delayMs: 600 });
       if (line.revealsName) revealedName = true;
       renderLine(line, { onTap: next });
     };
@@ -113,6 +143,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   function renderCard(i) {
     const card = deck[i];
+    if (!showLake) {
+      showLake = true;
+      audio.playLakeSplash(run.get().truthDebt);
+    }
     const choices = document.createElement('div');
     choices.className = 'dx-reckoning-card';
     choices.innerHTML = `
@@ -140,6 +174,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const { patch } = resolveReckoningCard(run.get(), deck[i], choice);
     run.set(patch);
     audio.playLakeSplash(run.get().truthDebt);
+    voices.say('PASTOR', choice === 'confess' ? 'up' : 'down', { delayMs: 200 });
     const slots = script[choice];
     const line = pickLine(slots[Math.min(i, slots.length - 1)], ctx());
     const next = () => (i + 1 < deck.length ? renderCard(i + 1) : gate());
@@ -158,9 +193,52 @@ export function mount(stageEl, scene, { run, onComplete }) {
     playLines(lines, () => onComplete());
   }
 
-  playLines(pickSection(script.altar, ctx()), () => (deck.length ? renderCard(0) : gate()));
+  function altar() {
+    entranceTimers.forEach(clearTimeout);
+    entranceTimers = [];
+    playLines(pickSection(script.altar, ctx()), () => (deck.length ? renderCard(0) : gate()));
+  }
+
+  // The clock, the bang, the slow fade, the greeting. A tap skips to him.
+  function entrance() {
+    stageEl.innerHTML = '';
+    const screen = document.createElement('div');
+    screen.className = 'dx-screen dx-reckoning-screen dx-pastor-entrance';
+    const clock = document.createElement('p');
+    clock.className = 'dx-text dx-pastor-clock';
+    screen.appendChild(clock);
+    stageEl.appendChild(screen);
+    const at = (ms, fn) => entranceTimers.push(setTimeout(fn, ms));
+
+    TICKS.forEach((time, i) => at(i * TICK_MS, () => {
+      clock.textContent = time;
+      audio.playClockTick(i % 2 === 1);
+    }));
+    at(TICKS.length * TICK_MS, () => {
+      clock.textContent = '12:00:00';
+      TOLLS.forEach((sec, k) => {
+        audio.playC64Toll(sec, k === TOLLS.length - 1 ? 73 : 98);
+        at(sec * 1000, () => { fx.flash(k === 0 ? 'strong' : 'weak', '#ffffff'); fx.shake(k === 0 ? 'strong' : 'weak'); });
+      });
+      at(900, () => clock.remove());
+      const bust = createPastorBust();
+      bust.classList.add('is-arriving');
+      bust.style.setProperty('--fade', `${BUST_FADE_MS}ms`);
+      const nameplate = document.createElement('p');
+      nameplate.className = 'dx-text dx-pastor-nameplate is-arriving';
+      nameplate.style.setProperty('--fade', `${BUST_FADE_MS}ms`);
+      nameplate.textContent = '???';
+      screen.append(bust, nameplate);
+    });
+    at(GREET_AT, () => voices.say('PASTOR', 'greet'));
+    at(ALTAR_AT, altar);
+    screen.addEventListener('click', altar, { once: true });
+  }
+
+  entrance();
 
   return function unmount() {
+    entranceTimers.forEach(clearTimeout);
     typewriter?.destroy();
     itPopup?.destroy();
     stageEl.innerHTML = '';

@@ -387,7 +387,16 @@ section.</p>
 <h3 id="doc-game_manual--the-reckoning"><a class="anchor" href="#doc-game_manual--the-reckoning" aria-label="Link to this section">#</a>The Reckoning</h3>
 <p>Once Truth Debt maxes out (or the four NPCs are done), the player is
 called down to the water by <strong>Pastor Gabriel</strong> (§5), standing waist-deep
-in the lake. He puts up to three of their most recent logged lies to
+in the lake. <strong>His entrance:</strong> in the dark, the death clock ticks
+11:59:56 → 11:59:59, then strikes midnight: three C64 bell tolls (after
+Storm Lord&#39;s opening; SID-style ring modulation and a 4-bit noise hammer),
+each with a flash. His bust (placeholder pixel sprite: halo, clerical
+collar, dark wings) fades in slow and stepped, and he greets you in his
+SAM voice (&quot;Welcome, child.&quot;). His nameplate reads &quot;???&quot; until he says
+his name. A tap skips the entrance. The lake gauge doesn&#39;t appear until he
+asks for your first confession. During the confessions he answers in his
+voice: &quot;Amen.&quot; on a confession, &quot;Shame.&quot; on a double-down, and &quot;Samael.&quot;
+when his real name comes out. He puts up to three of their most recent logged lies to
 them. Each one: <strong>Confess</strong> (that lie&#39;s debt comes back off, and the
 lake clears live on screen) or <strong>Double Down</strong> (a flat +3, every time,
 regardless of the lie&#39;s size). Confession is never quite enough for him.
@@ -1398,6 +1407,11 @@ THERAPIST; the name appears once, on the provider card. Accent is
 clinical grey <code>#9aa0a6</code>.</li>
 </ul>
 </li>
+<li><strong>Pastor Gabriel&#39;s entrance</strong>: death-clock ticks, three C64 bell tolls
+(Storm Lord style), a slow stepped fade-in of his placeholder bust
+(<code>ui/pastorBust.js</code>), SAM greeting; name hidden until he says it; the
+lake gauge waits for the first confession; SAM &quot;Amen.&quot; / &quot;Shame.&quot; /
+&quot;Samael.&quot; during the reckoning.</li>
 <li><strong>IT and SO</strong>: name plates under the icon; at the end of the chapter they
 pry open into SHIT and SHOW.</li>
 <li><strong>Fixes</strong>: fish swim at all times (the earlier &quot;static&quot; ask meant the

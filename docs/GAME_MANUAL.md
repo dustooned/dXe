@@ -244,7 +244,16 @@ section.
 
 Once Truth Debt maxes out (or the four NPCs are done), the player is
 called down to the water by **Pastor Gabriel** (§5), standing waist-deep
-in the lake. He puts up to three of their most recent logged lies to
+in the lake. **His entrance:** in the dark, the death clock ticks
+11:59:56 → 11:59:59, then strikes midnight: three C64 bell tolls (after
+Storm Lord's opening; SID-style ring modulation and a 4-bit noise hammer),
+each with a flash. His bust (placeholder pixel sprite: halo, clerical
+collar, dark wings) fades in slow and stepped, and he greets you in his
+SAM voice ("Welcome, child."). His nameplate reads "???" until he says
+his name. A tap skips the entrance. The lake gauge doesn't appear until he
+asks for your first confession. During the confessions he answers in his
+voice: "Amen." on a confession, "Shame." on a double-down, and "Samael."
+when his real name comes out. He puts up to three of their most recent logged lies to
 them. Each one: **Confess** (that lie's debt comes back off, and the
 lake clears live on screen) or **Double Down** (a flat +3, every time,
 regardless of the lie's size). Confession is never quite enough for him.

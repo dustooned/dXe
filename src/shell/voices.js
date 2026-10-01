@@ -25,6 +25,8 @@ const VOICES = {
   SAMUN: { speed: 62, pitch: 58, throat: 150, mouth: 178 },
   // Low and clipped, proving something.
   RICK: { speed: 88, pitch: 92, throat: 100, mouth: 112 },
+  // Slow, deep, pulpit-warm, and wrong underneath.
+  PASTOR: { speed: 100, pitch: 104, throat: 90, mouth: 120 },
 };
 
 // What each of them says. Spelled for SAM's ear, not the reader's.
@@ -33,6 +35,7 @@ const LINES = {
   DEBORAH: { farewell: 'God bless you, sweetheart.', greet: 'Hello, dear!', bye: 'Bless you.', up: 'Oh, honey.', down: 'Well!', flat: 'Mmm.' },
   RWANDA: { farewell: 'Dont be a stranger.', greet: 'Yeah?', bye: 'Later.', up: 'Huh.', down: 'Right.', flat: 'Sure.' },
   SAMUN: { farewell: 'Catch you later, man!', greet: 'Yo!', bye: 'Peace!', up: 'Ha!', down: 'Oof.', flat: 'Yeah yeah.' },
+  PASTOR: { greet: 'Welcome, child.', up: 'Amen.', down: 'Shame.', name: 'Samael.' },
   RICK: { farewell: 'Watch yourself out there.', greet: 'What.', bye: 'Yep.', up: 'Heh.', down: 'Tsk.', flat: 'Uh huh.' },
 };
 
