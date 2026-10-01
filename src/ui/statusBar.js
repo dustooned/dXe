@@ -11,12 +11,70 @@
 // Extras: `typing` shows a notification dot (IT/SO about to say something),
 // `airplane` greys everything out with ✈ (an NPC has shut you out).
 // Same contract as the old meter group: { el, destroy }.
+//
+// The icons are lo-fi pixel sprites (hard-edged SVG cells, no curves).
+// When a meter moves, its icon pops (up: a bright pulse; down: a flicker),
+// a word under the bar says what moved ("▲ connected"), and a two-note
+// blip rises or falls, pitched per meter so each is learnable by ear.
+// `quiet` (meters not revealed yet) records the values without any of it.
+import { playMeterChange } from '../shell/audio.js';
 
-function bars(level, max) {
-  return Array.from({ length: max }, (_, i) =>
-    `<span class="dx-status__bar${i < level ? ' is-on' : ''}" style="height:${((i + 1) / max) * 100}%"></span>`
-  ).join('');
+// What each meter means, in the therapist's words.
+const WORDS = { integrity: 'honest', trust: 'connected', lucidity: 'clear', stability: 'steady' };
+// The values the last status bar showed — this bar is rebuilt every render,
+// so change is measured against whatever the previous one displayed.
+let lastSeen = null;
+
+// A pixel sprite from rows of characters: '.' is empty, a digit is a cell
+// that lights when the level is at least that digit (0 = always lit).
+function sprite(rows, level, cls) {
+  const h = rows.length;
+  const w = rows[0].length;
+  let cells = '';
+  rows.forEach((row, y) => {
+    [...row].forEach((ch, x) => {
+      if (ch === '.') return;
+      const on = level >= Number(ch);
+      cells += `<rect x="${x}" y="${y}" width="1" height="1" class="${on ? 'is-on' : 'is-off'}"/>`;
+    });
+  });
+  return `<svg class="dx-status__px ${cls}" viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" aria-hidden="true">${cells}</svg>`;
 }
+
+// Four stepped bars.
+const SIGNAL = [
+  '.........44',
+  '.........44',
+  '......33.44',
+  '......33.44',
+  '...22.33.44',
+  '...22.33.44',
+  '11.22.33.44',
+  '11.22.33.44',
+];
+// Three stepped arcs and a dot.
+const WIFI = [
+  '..3333333..',
+  '.3.......3.',
+  '3..22222..3',
+  '..2.....2..',
+  '...11111...',
+  '..1.....1..',
+  '.....1.....',
+  '.....1.....',
+];
+// Outline and nub always lit; five cells of charge.
+const BATTERY = [
+  '00000000000000.',
+  '0............00',
+  '0.11.22.33.4.00',
+  '0.11.22.33.4.00',
+  '0.11.22.33.4.00',
+  '0.11.22.33.4.00',
+  '0............00',
+  '00000000000000.',
+];
+// Four cells of charge; the level runs 0..4 from stability 0..10.
 
 function carrierFor(debt) {
   if (debt <= 2) return 'FEELZ 5G';
@@ -25,22 +83,11 @@ function carrierFor(debt) {
   return 'No Service';
 }
 
-function wifiSvg(level) {
-  // Three arcs + dot; lit from the dot outward.
-  const on = (n) => (level >= n ? 'is-on' : '');
-  return `<svg class="dx-status__wifi" viewBox="0 0 24 18" aria-hidden="true">
-    <path class="${on(3)}" d="M1 6.5a16 16 0 0 1 22 0" />
-    <path class="${on(2)}" d="M4.5 10a11 11 0 0 1 15 0" />
-    <path class="${on(1)}" d="M8 13.5a6 6 0 0 1 8 0" />
-    <circle class="${level > 0 ? 'is-on' : ''}" cx="12" cy="16.5" r="1.4" />
-  </svg>`;
-}
-
 function pad(n) {
   return String(n).padStart(2, '0');
 }
 
-export function createStatusBar(stats, { typing = false, airplane = false } = {}) {
+export function createStatusBar(stats, { typing = false, airplane = false, quiet = false } = {}) {
   const integrity = stats.integrity ?? 0;
   const trust = stats.trust ?? 0;
   const lucidity = stats.lucidity ?? 0;
@@ -52,19 +99,40 @@ export function createStatusBar(stats, { typing = false, airplane = false } = {}
   el.setAttribute('role', 'img');
   el.setAttribute('aria-label', `Integrity ${integrity}, trust ${trust}, lucidity ${lucidity}, stability ${stability} of 10`);
 
-  const batteryPct = Math.max(0, Math.min(100, stability * 10));
   el.innerHTML = `
     <span class="dx-status__carrier">${airplane ? '✈' : carrierFor(debt)}</span>
-    <span class="dx-status__clock"></span>
+    <span class="dx-status__clock" data-meter="integrity"></span>
     <span class="dx-status__right">
       ${typing ? '<span class="dx-status__dot"></span>' : ''}
-      <span class="dx-status__signal">${bars(airplane ? 0 : Math.ceil(trust / 2.5), 4)}</span>
-      ${wifiSvg(airplane ? 0 : Math.ceil(lucidity / 3.4))}
-      <span class="dx-status__battery${stability <= 2 ? ' is-low' : ''}">
-        <span class="dx-status__charge" style="width:${batteryPct}%"></span>
-      </span>
+      <span class="dx-status__icon" data-meter="trust">${sprite(SIGNAL, airplane ? 0 : Math.ceil(trust / 2.5), 'dx-status__signal')}</span>
+      <span class="dx-status__icon" data-meter="lucidity">${sprite(WIFI, airplane ? 0 : Math.ceil(lucidity / 3.4), 'dx-status__wifi')}</span>
+      <span class="dx-status__icon${stability <= 2 ? ' is-low' : ''}" data-meter="stability">${sprite(BATTERY, Math.ceil(Math.max(0, Math.min(10, stability)) / 2.5), 'dx-status__battery')}</span>
     </span>
   `;
+
+  // What moved since the last bar: pop the icon, say the word, play it.
+  const now = { integrity, trust, lucidity, stability };
+  const changes = [];
+  if (lastSeen && !quiet) {
+    for (const meter of Object.keys(WORDS)) {
+      const d = now[meter] - lastSeen[meter];
+      if (d) changes.push({ meter, up: d > 0 });
+    }
+  }
+  lastSeen = now;
+  if (changes.length) {
+    const words = document.createElement('span');
+    words.className = 'dx-status__words';
+    for (const { meter, up } of changes) {
+      el.querySelector(`[data-meter="${meter}"]`)?.classList.add(up ? 'is-up' : 'is-down');
+      const w = document.createElement('span');
+      w.className = up ? 'is-up' : 'is-down';
+      w.textContent = `${up ? '▲' : '▼'} ${WORDS[meter]}`;
+      words.appendChild(w);
+    }
+    el.appendChild(words);
+    playMeterChange(changes);
+  }
 
   // The clock keeps real time while you're honest. Below 7 Integrity it
   // starts to slip: some ticks show the wrong minutes; near the bottom it

@@ -157,6 +157,8 @@ the top of every dialog screen (`ui/statusBar.js`):
 The carrier name reads the lake: **FEELZ 5G → LTE → E → No Service** as
 Truth Debt climbs. A red dot blinks just before IT or SO nudges you, and
 the bar goes to ✈ airplane mode when an NPC shuts you out at the door.
+
+The icons are lo-fi pixel sprites. When a meter moves, its icon pulses bright (up) or flickers (down), the word for it shows under the bar ("▲ connected", "▼ steady": honest / connected / clear / steady), and a two-note square blip rises or falls, pitched per meter (battery lowest, clock highest) so each is learnable by ear. Nothing plays before the therapist reveals the meters.
 The Therapist explains all of it in his first reaction. Truth generally raises Integrity and Lucidity and costs
 Stability/Trust; a comforting lie usually does the opposite. These are
 mostly *legible texture* right now — visible to the player, shaping which
@@ -291,7 +293,7 @@ scales with how far their TRU and STB moved.
 
 ### The oscilloscope: how close you are
 
-A heart-monitor band runs across the portrait. Their line sits on top, yours underneath, and the gap between them is how close this person is to you: it narrows with every attuned pick and every bid you turn toward, widens with each answer that does neither, and closes completely (the lines merge and glow) once they trust you. Holding a feeling previews it: theirs pulls the lines in a little, another pushes them apart. Your line wears the color of the feeling you hold (or your last one), and a strip under the portrait keeps one colored block per answer this run, so you can see which feelings you lean on. Shut out (airplane mode): your line greys and theirs flatlines.
+A heart-monitor band runs across the portrait. Their line sits on top, yours underneath, and the gap between them is how close this person is to you: it narrows with every attuned pick and every bid you turn toward, widens with each answer that does neither, and closes completely (the lines merge and glow) once they trust you. Holding a feeling previews it: theirs pulls the lines in a little, another pushes them apart. Your line wears the color of the feeling you hold (or your last one), and a strip under the portrait keeps one colored block per answer in this encounter (newest outlined), so you can see which feelings you lean on with this person. Shut out (airplane mode): your line greys and theirs flatlines.
 
 ### Trust
 

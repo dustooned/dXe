@@ -109,6 +109,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // Answers this encounter that neither met their mood nor turned toward a
   // bid — each pushes the oscilloscope's two lines a little further apart.
   let missesHere = 0;
+  // Every feeling picked in this encounter, in order: the history strip.
+  const encounterPicks = [];
   // The battle beats (ui/oscilloscope.js reads this every frame): wind-up
   // tension as the NPC's line types, their mood color easing between
   // moments, the impact ring when they react, a gold ripple on a bid.
@@ -317,10 +319,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
       getDrama: () => drama,
       getConnection: () => connection(mood, shutOutNow),
       getPlayerColor: () => {
-        const held = activeEmotion ?? run.get().pickHistory?.at(-1);
+        const held = activeEmotion ?? encounterPicks.at(-1);
         return held ? moodHex(held) : null;
       },
-      getHistory: () => (run.get().pickHistory ?? []).map(moodHex),
+      getHistory: () => encounterPicks.map(moodHex),
     });
 
     const content = document.createElement('div');
@@ -329,7 +331,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
     statusBar?.destroy();
     const shutOut = stage === 'prompt' && /(_shut_down|_closed|_hard)$/.test(currentNodeId ?? '');
-    statusBar = createStatusBar(runState, { typing: itTyping, airplane: shutOut });
+    statusBar = createStatusBar(runState, { typing: itTyping, airplane: shutOut, quiet: !isRevealed('meters') });
     const meters = statusBar.el;
     if (applyReveal(meters, 'meters')) spotlitHud.push(meters);
     content.appendChild(meters);
@@ -692,8 +694,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // the dominant-emotion IT read at the end of the encounter (proceed()).
     const counts = run.get().emotionCounts;
     run.set({ emotionCounts: { ...counts, [activeEmotion]: (counts[activeEmotion] ?? 0) + 1 } });
-    // In order, for the oscilloscope's history strip.
-    run.set({ pickHistory: [...(run.get().pickHistory ?? []), activeEmotion] });
+    // In order, for the oscilloscope's history strip (this encounter only).
+    encounterPicks.push(activeEmotion);
 
     pendingEdge = edge;
     reactionEmotion = activeEmotion;
@@ -813,7 +815,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const p = portraitEl.getBoundingClientRect();
     if (!p.height) return;
     canvas.style.top = `${p.top - s.top - 18}px`;
-    canvas.style.height = `${p.height + 26}px`;
+    canvas.style.height = `${p.height + 34}px`;
   }
 
   // The tutorial's TRYCALL beat: the therapist's own contact pops into the

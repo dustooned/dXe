@@ -119,8 +119,6 @@ const initialRunState = {
   // emotion name. Drives the dominant-emotion IT interrupt at the end of
   // each NPC encounter (engine/loadout.js's getDominantEmotion()).
   emotionCounts: {},
-  // Every FEELZ pick in order — the oscilloscope's history strip.
-  pickHistory: [],
   // { [nodeId]: 'truth' | 'lie' } — how each dialog node was answered.
   // Read by npc.outro conditions (the Therapist's homework sign-off).
   choices: {},

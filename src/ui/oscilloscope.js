@@ -62,12 +62,12 @@ const MAX_COLOR_BLEND = 0.4;
 // trust you; when they do, the lines merge into one. A miss pushes them
 // back apart. The gap eases toward its target so a change reads as motion.
 // Your line wears the feeling you're holding (getPlayerColor), and a strip
-// along the bottom keeps one block per answer you've given this run
+// along the bottom keeps one block per answer in this encounter
 // (getHistory), so the spread of feelings you lean on stays visible.
 // Shut out: your line goes grey and theirs flatlines.
 const MAX_GAP_RATIO = 0.24;
 const GAP_EASE = 0.08;
-const HISTORY_MAX = 24;
+const HISTORY_MAX = 10;
 
 export function createOscilloscope(
   canvas,
@@ -281,14 +281,22 @@ export function createOscilloscope(
   function drawHistory(w, h) {
     const picks = (getHistory?.() ?? []).slice(-HISTORY_MAX);
     if (!picks.length) return;
-    const segW = Math.min(14, (w - 16) / HISTORY_MAX);
+    // Chunky blocks, one per answer this encounter, newest outlined.
+    const segW = Math.min(24, (w - 16) / HISTORY_MAX);
     const total = segW * picks.length;
     let x = (w - total) / 2;
-    for (const color of picks) {
+    picks.forEach((color, i) => {
+      const bx = Math.round(x) + 2;
+      const bw = Math.max(2, Math.round(segW) - 4);
       ctx2d.fillStyle = color;
-      ctx2d.fillRect(Math.round(x) + 1, h - 6, Math.max(1, Math.round(segW) - 2), 4);
+      ctx2d.fillRect(bx, h - 10, bw, 8);
+      if (i === picks.length - 1) {
+        ctx2d.strokeStyle = '#ffffff';
+        ctx2d.lineWidth = 1;
+        ctx2d.strokeRect(bx - 1.5, h - 11.5, bw + 3, 11);
+      }
       x += segW;
-    }
+    });
   }
 
   function draw(timeMs) {

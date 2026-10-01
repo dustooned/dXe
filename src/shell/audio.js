@@ -1015,6 +1015,21 @@ function blip(frequency, at, dur, gainPeak, type = 'square') {
   osc.onended = () => gain.disconnect();
 }
 
+// A meter moved (ui/statusBar.js): two square-wave notes a fifth apart,
+// rising when it went up, falling when it went down. Each meter has its
+// own pitch so they're learnable by ear; several changes play in turn.
+const METER_PITCH = { stability: 262, trust: 330, lucidity: 392, integrity: 523 };
+export function playMeterChange(changes) {
+  const t = ensureContext().currentTime + 0.05;
+  changes.forEach(({ meter, up }, i) => {
+    const base = METER_PITCH[meter] ?? 330;
+    const [a, b] = up ? [base, base * 1.5] : [base * 1.5, base];
+    const at = t + i * 0.18;
+    blip(a, at, 0.07, 0.04, 'square');
+    blip(b, at + 0.08, 0.1, 0.04, 'square');
+  });
+}
+
 // Feedback: a phone calling the phone it's already on. A thin squeal
 // that climbs and wobbles, under two quieter echo blips of the voice.
 export function playFeedback(durSec = 1.1) {

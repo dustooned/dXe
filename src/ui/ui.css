@@ -639,77 +639,72 @@
   gap: 6px;
 }
 
-.dx-status__signal {
-  display: flex;
+/* Pixel sprites: each SVG cell is one "pixel"; dim cells show the empty
+   part of the meter. Height sets the pixel size (8 rows). */
+.dx-status__icon {
+  display: inline-flex;
   align-items: flex-end;
-  gap: 1.5px;
-  height: 11px;
 }
 
-.dx-status__bar {
-  width: 3px;
-  background: rgba(255, 255, 255, 0.22);
+.dx-status__px {
+  height: calc(16 * var(--px));
+  width: auto;
 }
 
-.dx-status__bar.is-on {
-  background: var(--color-white);
+.dx-status__px .is-on { fill: var(--color-white); }
+.dx-status__px .is-off { fill: rgba(255, 255, 255, 0.18); }
+.dx-status__icon.is-low .is-on { fill: #ff4d4d; }
+
+/* A meter moved: up pulses bright, down flickers. */
+.dx-status__icon.is-up,
+.dx-status__clock.is-up {
+  animation: dx-meter-up 0.9s ease-out;
 }
 
-.dx-status__wifi {
-  width: 15px;
-  height: 11px;
+.dx-status__icon.is-down,
+.dx-status__clock.is-down {
+  animation: dx-meter-down 0.9s steps(1, end);
 }
 
-.dx-status__wifi path {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.22);
-  stroke-width: 2.2;
-  stroke-linecap: round;
+@keyframes dx-meter-up {
+  0% { transform: scale(1); filter: none; }
+  20% { transform: scale(1.45); filter: drop-shadow(0 0 4px #ffffff); }
+  100% { transform: scale(1); filter: none; }
 }
 
-.dx-status__wifi circle {
-  fill: rgba(255, 255, 255, 0.22);
+@keyframes dx-meter-down {
+  0%, 30%, 60% { opacity: 0.15; }
+  15%, 45%, 100% { opacity: 1; }
 }
 
-.dx-status__wifi .is-on {
-  stroke: var(--color-white);
-}
-
-.dx-status__wifi circle.is-on {
-  fill: var(--color-white);
-}
-
-.dx-status__battery {
+/* The word for what moved, under the bar, then gone. */
+.dx-status {
   position: relative;
-  width: 22px;
-  height: 10px;
-  border: 1.5px solid var(--color-white);
-  border-radius: 2px;
-  padding: 1px;
 }
 
-.dx-status__battery::after {
-  content: '';
+.dx-status__words {
   position: absolute;
-  right: -4px;
-  top: 2.5px;
-  width: 2px;
-  height: 3px;
-  background: var(--color-white);
+  right: 2px;
+  top: 100%;
+  display: flex;
+  gap: 8px;
+  font-size: calc(7 * var(--fs));
+  letter-spacing: 0.06em;
+  pointer-events: none;
+  animation: dx-meter-words 2.2s ease-out both;
 }
 
-.dx-status__charge {
-  display: block;
-  height: 100%;
-  background: var(--color-white);
+.dx-status__words .is-down { opacity: 0.75; }
+
+@keyframes dx-meter-words {
+  0% { opacity: 0; transform: translateY(-3px); }
+  12%, 75% { opacity: 1; transform: none; }
+  100% { opacity: 0; }
 }
 
-.dx-status__battery.is-low {
-  border-color: #ff4d4d;
-}
-
-.dx-status__battery.is-low .dx-status__charge {
-  background: #ff4d4d;
+@media (prefers-reduced-motion: reduce) {
+  .dx-status__icon.is-up, .dx-status__icon.is-down,
+  .dx-status__clock.is-up, .dx-status__clock.is-down { animation: none; }
 }
 
 .dx-status__dot {

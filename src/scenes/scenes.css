@@ -1376,3 +1376,8 @@
   .dx-receive-dim,
   .dx-dialog-interactive.is-receiving .dx-dartboard { animation: none; }
 }
+
+/* Room under the portrait for the oscilloscope's history strip. */
+.dx-game-screen .dx-nameplate {
+  padding-top: 8px;
+}
