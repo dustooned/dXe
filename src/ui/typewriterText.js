@@ -36,7 +36,10 @@ const TEXT_SPEED = { normal: 1, fast: 0.45, instant: 0 };
 
 const DEFAULT_MS_PER_CHAR = 28;
 const SPEED_MULTIPLIER = { slow: 2.6, fast: 0.35, normal: 1 };
-const TAG_PATTERN = /\{(\/?)(slow|fast)\}|\{color:(\w+)\}|\{(\/)color\}|\{pause:(\d+)\}/g;
+// {mark:name} is a cue, not text: it starts a new page, and the caller's
+// onMark(name) fires when that page comes up (dialogScene.js uses it to
+// bring the lake in mid-reaction).
+const TAG_PATTERN = /\{(\/?)(slow|fast)\}|\{color:(\w+)\}|\{(\/)color\}|\{pause:(\d+)\}|\{mark:(\w+)\}/g;
 
 export function parseSegments(raw) {
   const segments = [];
@@ -62,7 +65,9 @@ export function parseSegments(raw) {
     pushChars(raw.slice(lastIndex, match.index));
     lastIndex = TAG_PATTERN.lastIndex;
 
-    if (match[5] != null) {
+    if (match[6] != null) {
+      segments.push({ type: 'mark', name: match[6], delayMs: 0 });
+    } else if (match[5] != null) {
       segments.push({ type: 'pause', delayMs: Number(match[5]) });
     } else if (match[3] != null) {
       colorStack.push(match[3]);
@@ -90,6 +95,11 @@ const CLOSERS = /["')\]”’]/;
 // on segments rather than raw text keeps {slow}/{color} spans intact across
 // a page break, since each char segment already carries its own speed/color.
 export function paginate(segments) {
+  // A mark always opens a new page: paginate each stretch between marks on
+  // its own, keeping the mark at the head of the stretch it opens.
+  const markAt = segments.findIndex((s, i) => i > 0 && s.type === 'mark');
+  if (markAt > 0) return [...paginate(segments.slice(0, markAt)), ...paginate(segments.slice(markAt))];
+
   const breaks = [];
   for (let i = 0; i < segments.length; i++) {
     const seg = segments[i];
@@ -127,8 +137,9 @@ export function paginate(segments) {
   return pages
     .map((page) => {
       let k = 0;
-      while (page[k] && (page[k].type === 'br' || page[k].char === ' ')) k++;
-      return page.slice(k);
+      while (page[k] && (page[k].type === 'br' || page[k].char === ' ' || page[k].type === 'mark')) k++;
+      const marks = page.slice(0, k).filter((s) => s.type === 'mark');
+      return [...marks, ...page.slice(k)];
     })
     .filter((page) => page.length);
 }
@@ -137,7 +148,7 @@ export function paginate(segments) {
 // text immediately — for re-rendering a line that already finished drawing
 // once (e.g. dialogScene rebuilding its screen when the player picks a FEELZ
 // emotion, without replaying the node's prompt from scratch).
-export function createTypewriter(container, text, { onDone, onChar, startRevealed: revealedArg = false } = {}) {
+export function createTypewriter(container, text, { onDone, onChar, onMark, startRevealed: revealedArg = false } = {}) {
   const speed = TEXT_SPEED[loadSettings().textSpeed] ?? 1;
   const startRevealed = revealedArg || speed === 0;
   const pages = paginate(parseSegments(text));
@@ -148,8 +159,21 @@ export function createTypewriter(container, text, { onDone, onChar, startReveale
     return pageIndex >= pages.length - 1;
   }
 
+  // Marks fire once each, for every page up to the one now showing (so
+  // jumping straight to the last page still fires the ones it skipped).
+  let markedThrough = -1;
+  function fireMarks() {
+    for (let p = markedThrough + 1; p <= pageIndex; p++) {
+      for (const seg of pages[p] ?? []) if (seg.type === 'mark') onMark?.(seg.name);
+    }
+    markedThrough = Math.max(markedThrough, pageIndex);
+  }
+
   function showPage() {
     page?.destroy();
+    // Deferred a tick so a mark on the opening page still reaches a
+    // caller that finishes building the screen after this call.
+    setTimeout(fireMarks, 0);
     page = drawPage(container, pages[pageIndex] ?? [], {
       onChar,
       startRevealed,

@@ -232,11 +232,13 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // first-time player isn't handed every readout at once with nothing
   // pointing at any of it. Debt also shows early the moment it's non-zero —
   // a lie shouldn't land invisibly. NPCs without `reveal` show everything.
+  let lakeCued = false;
   function isRevealed(kind) {
     const gateNode = npc.reveal?.[kind];
-    // Strictly after its gate node — even if debt is already above 0, the
-    // lake waits its turn so the meters and the lake never land together.
-    return !gateNode || answered.has(gateNode);
+    // After its gate node — or earlier, when a reaction reaches a
+    // {mark:lake} cue (a lie put debt on the lake before its turn: the
+    // therapist finishes the bars first, then points at the lake).
+    return !gateNode || answered.has(gateNode) || (kind === 'debt' && lakeCued);
   }
 
   // Returns true when this render is the piece's first appearance — the
@@ -397,7 +399,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
       typewriter = createTypewriter(
         reaction,
         composeReaction(npc.npc, varyReaction(pendingEdge), reactionEmotion, reactionSwipeKey),
-        { onChar: audio.playTypewriterTick, onDone: () => { tapHint.hidden = false; } },
+        {
+          onChar: audio.playTypewriterTick,
+          onDone: () => { tapHint.hidden = false; },
+          onMark: (name) => { if (name === 'lake') cueLake(screen, reaction); },
+        },
       );
 
       screen.addEventListener('click', () => {
@@ -550,6 +556,22 @@ export function mount(stageEl, scene, { run, onComplete }) {
       spotlight = createSpotlight(screen, [...spotlitHud, words]);
     }
     if (stage === 'prompt' && promptRevealed) spotlightInteractive();
+  }
+
+  // The lake arrives mid-reaction: the spotlight moves off the bars and
+  // onto the lake, with the words that introduce it. Only when it's still
+  // hidden and there's actually something in it (debt above 0).
+  function cueLake(screen, words) {
+    if (lakeCued || isRevealed('debt') || run.get().truthDebt <= 0) return;
+    lakeCued = true;
+    revealAnimated.add('debt');
+    const lake = screen.querySelector('.dx-lake');
+    if (!lake) return;
+    lake.classList.remove('is-concealed');
+    lake.classList.add('is-revealing');
+    audio.playLakeSplash(run.get().truthDebt);
+    spotlight?.destroy();
+    spotlight = createSpotlight(screen, [lake, words]);
   }
 
   // SPOTLIGHT: on a node — before a pick, the wheel (plus her prompt, so

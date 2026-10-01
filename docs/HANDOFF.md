@@ -103,8 +103,8 @@ first time:
    symbol in an image (`PICK` lines). **Feelings are symbols only, never
    named**, in the UI or by him. After this node the four meters fade in
    ("four little lines").
-2. *"What happened in the dream?"* → after it, the lake gauge fades in (always
-   here, never earlier, so it never lands with the meters), and he hints at what it
+2. *"What happened in the dream?"* → after it, the lake gauge fades in (or earlier: lie on
+   the check-in and he points at it mid-reaction, after the bars, via {mark:lake}), and he hints at what it
    counts.
 3. Outro: homework by class (surreal, not literal), a closing line by
    dream answer, HANGUP (screen dims, his music stops), then IT → SO,

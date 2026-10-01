@@ -890,8 +890,8 @@ feeling → the card wiggles (<code>swipeCard.nudge()</code>) → he describes t
 symbol in an image (<code>PICK</code> lines). <strong>Feelings are symbols only, never
 named</strong>, in the UI or by him. After this node the four meters fade in
 (&quot;four little lines&quot;).</li>
-<li><em>&quot;What happened in the dream?&quot;</em> → after it, the lake gauge fades in (always
-here, never earlier, so it never lands with the meters), and he hints at what it
+<li><em>&quot;What happened in the dream?&quot;</em> → after it, the lake gauge fades in (or earlier: lie on
+the check-in and he points at it mid-reaction, after the bars, via {mark:lake}), and he hints at what it
 counts.</li>
 <li>Outro: homework by class (surreal, not literal), a closing line by
 dream answer, HANGUP (screen dims, his music stops), then IT → SO,
@@ -3553,7 +3553,7 @@ mini-games are structured, if you&#39;re writing one of those.</li>
     </article>
 <article class="doc" id="doc-script_format" data-title="Script Format" data-file="SCRIPT_FORMAT.md" hidden>
       <p class="doc-source">Authoring · <code>docs/SCRIPT_FORMAT.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-script_format--where-files-go">Where files go</a></li><li><a href="#doc-script_format--building-it">Building it</a></li><li><a href="#doc-script_format--the-format">The format</a></li><li><a href="#doc-script_format--rules-that-will-make-the-build-fail-on-purpose">Rules that will make the build fail (on purpose)</a></li><li><a href="#doc-script_format--what-this-format-doesn39t-cover-yet">What this format doesn&amp;#39;t cover yet</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-script_format--where-files-go">Where files go</a></li><li><a href="#doc-script_format--building-it">Building it</a></li><li><a href="#doc-script_format--the-format">The format</a></li><li><a href="#doc-script_format--rules-that-will-make-the-build-fail-on-purpose">Rules that will make the build fail (on purpose)</a></li><li><a href="#doc-script_format--what-this-format-doesn39t-cover-yet">What this format doesn&amp;#39;t cover yet</a></li><li><a href="#doc-script_format--cues-inside-text-markname">Cues inside text: {mark:name}</a></li></ul></nav>
       <h1 id="doc-script_format--script-format-for-writers"><a class="anchor" href="#doc-script_format--script-format-for-writers" aria-label="Link to this section">#</a>Script Format (for writers)</h1>
 <p>This is for anyone writing dialog content who doesn&#39;t want to touch JSON —
 a collaborator, a co-writer, anyone. Write a plain <code>.txt</code> file in this
@@ -3782,6 +3782,8 @@ the confrontation silently falls back to the NPC&#39;s first node instead of
 failing the build — so rename them in step. If the NPC has a <code>GATE:</code> on
 their opening node, every alternate opener needs the same line, or
 choosing one quietly bypasses the gate.</p>
+<h2 id="doc-script_format--cues-inside-text-markname"><a class="anchor" href="#doc-script_format--cues-inside-text-markname" aria-label="Link to this section">#</a>Cues inside text: {mark:name}</h2>
+<p>A <code>{mark:name}</code> tag inside a REACT starts a new page and fires a cue when that page comes up. Today: <code>{mark:lake}</code> brings the lake gauge in mid-reaction (with the spotlight moving to it) if a lie already put debt on the lake before its REVEAL turn. Used in the therapist&#39;s check-in lie reaction: he finishes the phone bars, then points at the lake.</p>
 
       <nav class="pager">
         <a href="#doc-script_key" data-doc="doc-script_key"><span>Previous</span>Script Key (writer quick reference)</a>

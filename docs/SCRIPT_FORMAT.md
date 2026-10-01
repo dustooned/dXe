@@ -241,3 +241,8 @@ the confrontation silently falls back to the NPC's first node instead of
 failing the build — so rename them in step. If the NPC has a `GATE:` on
 their opening node, every alternate opener needs the same line, or
 choosing one quietly bypasses the gate.
+
+
+## Cues inside text: {mark:name}
+
+A `{mark:name}` tag inside a REACT starts a new page and fires a cue when that page comes up. Today: `{mark:lake}` brings the lake gauge in mid-reaction (with the spotlight moving to it) if a lie already put debt on the lake before its REVEAL turn. Used in the therapist's check-in lie reaction: he finishes the phone bars, then points at the lake.
