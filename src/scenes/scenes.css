@@ -1279,6 +1279,17 @@
   margin-top: auto;
 }
 
+/* Dock above the lake: the dock takes the push to the bottom, the lake
+   sits right under it. */
+.dx-game-content > .dx-dock {
+  margin-top: auto;
+  padding-bottom: 6px;
+}
+
+.dx-game-content > .dx-dock + .dx-lake {
+  margin-top: 0;
+}
+
 /* Connection moment, second beat: their portrait large and centered. */
 .dx-connect.is-asking {
   justify-content: center;

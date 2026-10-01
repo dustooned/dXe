@@ -550,13 +550,15 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // Truth Debt, shown as the lake's water quality (ui/lakeGauge.js).
     const lake = createLakeGauge(runState.truthDebt).el;
     if (applyReveal(lake, 'debt')) spotlitHud.push(lake);
-    content.appendChild(lake);
+    // The contacts dock sits just above the lake gauge; the lake stays the
+    // floor of the screen.
     if (stage === 'outro' && (outroBeat?.kind === 'trycall' || dockIntroduced)) {
       const dock = createSelfDock(outroBeat.kind === 'trycall');
       content.appendChild(dock);
       if (outroBeat.kind === 'trycall') spotlitHud.push(dock);
     }
     if (stage === 'prompt' && isRevealed('meters')) content.appendChild(createDock(runState));
+    content.appendChild(lake);
     stageEl.appendChild(screen);
 
     // A HUD piece's first appearance is spotlit together with the line
@@ -764,6 +766,17 @@ export function mount(stageEl, scene, { run, onComplete }) {
     return dock;
   }
 
+  // Calls open above the water meter and the dock, not over them: the
+  // overlay's bottom padding grows to clear whichever sits highest.
+  function liftAboveLake(overlay) {
+    const floor = [...stageEl.querySelectorAll('.dx-game-content > .dx-dock, .dx-game-content > .dx-lake')]
+      .filter((el) => !el.classList.contains('is-concealed'))
+      .map((el) => el.getBoundingClientRect().top);
+    if (!floor.length) return;
+    const gap = Math.max(0, stageEl.getBoundingClientRect().bottom - Math.min(...floor));
+    overlay.style.paddingBottom = `${gap + 8}px`;
+  }
+
   // The tutorial's TRYCALL beat: the therapist's own contact pops into the
   // dock while he's still on the line. `live` = this is the beat where you
   // try it; afterwards the dock just stays, for show.
@@ -806,6 +819,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     overlay.className = 'dx-call';
     overlay.innerHTML = `<p class="dx-call__who">CALLING ${CONTACTS.THERAPIST.name.toUpperCase()}…</p>`;
     stageEl.appendChild(overlay);
+    liftAboveLake(overlay);
     const ringMs = audio.playPhoneRing();
     let ready = false;
     setTimeout(() => {
@@ -851,6 +865,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     overlay.className = 'dx-call';
     overlay.innerHTML = `<p class="dx-call__who">CALLING ${CONTACTS[who].name.toUpperCase()}…</p>`;
     stageEl.appendChild(overlay);
+    liftAboveLake(overlay);
     itPopup = { destroy: () => overlay.remove() };
     const ringMs = audio.playPhoneRing();
     let i = 0;
