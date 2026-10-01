@@ -6,7 +6,7 @@ it's the fastest shorthand for who you're writing.
 
 | | Character | Color | Where |
 | :-- | :-- | :-- | :-- |
-| 🟣 | **THERAPIST** | Violet `#9370db` | A voice on the phone |
+| ⚪ | **THERAPIST** | Clinical grey `#9aa0a6` | A voice on the phone |
 | 🟡 | **DEBORAH** | Gold `#ffd700` | Her condo, third floor |
 | 🟦 | **RWANDA** | Teal `#00ced1` | The alley behind the bar |
 | 🔵 | **SAMUN** | Royal blue `#4169e1` | The gas station, night shift |
@@ -14,7 +14,7 @@ it's the fastest shorthand for who you're writing.
 
 ---
 
-## 🟣 THERAPIST — the tutorial
+## ⚪ THERAPIST — the tutorial
 
 **Charles Browning.** The game only calls him THERAPIST; his name
 appears once, on the FEELZ provider card. **Never seen.** A voice

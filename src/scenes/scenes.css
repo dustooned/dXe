@@ -1023,7 +1023,7 @@
 .dx-notify__header {
   font-size: calc(7 * var(--fs));
   letter-spacing: 0.08em;
-  color: var(--color-therapist, #9370db);
+  color: var(--color-therapist, #9aa0a6);
 }
 
 .dx-notify__headline {

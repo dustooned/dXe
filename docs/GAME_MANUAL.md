@@ -416,7 +416,7 @@ While you drag, the card leans into a side: that label grows and takes its color
 
 - **Name:** Charles Browning (male). On screen he is only ever THERAPIST; the name appears once, on the FEELZ provider card.
 - **Where:** never seen. A voice on the phone, through FEELZ.
-- **Accent:** `--color-therapist` (`#9370db`, soft violet).
+- **Accent:** `--color-therapist` (`#9aa0a6`, clinical grey: an office, a chart, a waiting room).
 - **Leitmotif:** the ambient track already scoring the Questionnaire
   (`heavens_waiting_room.mp3`), not a synthesized phrase like the other
   four — he's the one character whose "theme" is the room tone itself.
