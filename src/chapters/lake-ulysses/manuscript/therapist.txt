@@ -23,14 +23,13 @@ ACCENT: var(--color-therapist)
 REVEAL: meters after therapist_01
 REVEAL: debt after therapist_02
 
-# How they size up your class, before their first line.
-OPENER [Guns]: "You're still standing. Good. Let's keep it that way."
-OPENER [Bible]: "You made it through. Somebody up there must want you around."
-OPENER [Crystals]: "Hey. Breathe. Whatever you're picking up on, it's okay to feel it."
+# His read on your class is the intake: {intake} below is replaced with
+# the read the FEELZ evaluation produced (questionnaireScene.js DIAGNOSES),
+# so he says it as he looks over your file. PLACEHOLDER reads, to rewrite.
 
 === therapist_01
 SPOTLIGHT: wheel, card
-PROMPT: The screen lights up. A voice, tired but warm, cuts through the ringing in your ears. Keys clacking somewhere behind it. "You're still there? Okay. Good. I've got you until the top of the hour."\n"See the three lighting up? Those are the ones you reach for. The rest are still there. You just don't pick them up much."\n"So. How are you walking in today? Don't think about it. Just point."
+PROMPT: The screen lights up. A voice, tired but warm, cuts through the ringing in your ears. Keys clacking somewhere behind it. "Got your intake up." A pause while he reads. {intake}\n"You're still there? Good. I've got you until the top of the hour."\n"See the three lighting up? Those are the ones you reach for. The rest are still there. You just don't pick them up much."\n"So. How are you walking in today? Don't think about it. Just point."
 PICK Happy: "Bright. The sun doesn't ask permission either. Okay."
 PICK Trust: "Open hands. Hard to hold anything that way. Hard to drop anything, too."
 PICK Fear: "Small and quick. Like something under a porch. It can stay there a while."

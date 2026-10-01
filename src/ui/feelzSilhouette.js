@@ -23,8 +23,14 @@ function hexToRgb(hex) {
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
 
+// The wheel's slices in screen order (clockwise from the top), matching the
+// real FEELZ wheel (ui/feelzDartboard.js, engine/loadout.js EMOTION_ORDER).
+const SLICE_EMOTIONS = ['happy', 'trust', 'fear', 'surprise', 'sadness', 'disgust', 'anger', 'anxiety'];
+const DARK = [42, 42, 48];
+
 // Which cells are inside a slice: annulus, minus a thin gap at each of the
 // eight slice boundaries (the wheel's first slice is centered at the top).
+// Each cell holds its slice number + 1 (0 = outside).
 function wheelMask() {
   const mask = new Uint8Array(GRID * GRID);
   const c = (GRID - 1) / 2;
@@ -42,13 +48,16 @@ function wheelMask() {
       // The gap is an arc length, so it narrows toward the center.
       const gap = GAP * (OUTER / Math.max(r, INNER)) * 0.6;
       if (within < gap || within > step - gap) continue;
-      mask[y * GRID + x] = 1;
+      mask[y * GRID + x] = 1 + Math.floor(a / step);
     }
   }
   return mask;
 }
 
-export function createFeelzSilhouette() {
+// `lit`: instead of the rainbow wave, draw each slice in its own feeling's
+// color if it's lit, dark if not. Starts with the feelings in `lit`;
+// light(name) turns one more on (questionnaireScene.js's profile reveal).
+export function createFeelzSilhouette({ lit = null } = {}) {
   const el = document.createElement('div');
   el.className = 'dx-feelz-sil';
   el.setAttribute('aria-hidden', 'true');
@@ -65,6 +74,31 @@ export function createFeelzSilhouette() {
   const css = getComputedStyle(document.documentElement);
   const colors = ORDER.map((name) => hexToRgb(css.getPropertyValue(`--color-feelz-${name}`) || '#ffffff'));
   const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const litSet = lit ? new Set(lit.map((e) => e.toLowerCase())) : null;
+  const sliceColors = SLICE_EMOTIONS.map((name) => hexToRgb(css.getPropertyValue(`--color-feelz-${name}`) || '#ffffff'));
+
+  function drawLit() {
+    for (let i = 0; i < GRID * GRID; i++) {
+      const o = i * 4;
+      const slice = mask[i] - 1;
+      if (slice < 0) { img.data[o + 3] = 0; continue; }
+      const c = litSet.has(SLICE_EMOTIONS[slice]) ? sliceColors[slice] : DARK;
+      img.data[o] = c[0];
+      img.data[o + 1] = c[1];
+      img.data[o + 2] = c[2];
+      img.data[o + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+  if (litSet) {
+    el.classList.add('is-lit-mode');
+    drawLit();
+    return {
+      el,
+      light(name) { litSet.add(name.toLowerCase()); drawLit(); },
+      destroy() { el.remove(); },
+    };
+  }
 
   let raf = null;
   function draw(now) {

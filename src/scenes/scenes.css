@@ -116,6 +116,12 @@
 .dx-intake__line.is-code { letter-spacing: 0.2em; opacity: 0.8; }
 .dx-intake__line.is-fine { font-size: calc(8 * var(--fs)); opacity: 0.55; }
 
+.dx-intake--profile .dx-feelz-sil {
+  width: min(48vw, 170px);
+  margin: 0 auto 6px;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.25));
+}
+
 .dx-intake__provider {
   display: flex;
   flex-direction: column;

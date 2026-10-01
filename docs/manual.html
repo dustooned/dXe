@@ -701,7 +701,7 @@ ending the encounter. Every opening node also has two alternate versions
 (<code>_soft</code>, <code>_hard</code>) selected by how the player opened the confrontation —
 same character, same wound, different angle of approach.</p>
 <h3 id="doc-game_manual--the-intake-feelz-evaluation"><a class="anchor" href="#doc-game_manual--the-intake-feelz-evaluation" aria-label="Link to this section">#</a>The intake (FEELZ evaluation)</h3>
-<p>Part 2 of the FEELZ check-in. Three swipe questions in the app&#39;s own form (app bar, progress, &quot;PART 2 · Q1 OF 3&quot;); the first question demos the swipe, and tapping an answer works too. Then: FILE CREATED, a redacted file code, &quot;Results sealed until session end&quot; (the class is only named in the ending&#39;s FEELZ report), and the provider card, Charles Browning, LCSW, before the therapist&#39;s colored-word read.</p>
+<p>Part 2 of the FEELZ check-in. Three swipe questions in the app&#39;s own form (app bar, progress, &quot;PART 2 · Q1 OF 3&quot;); the first question demos the swipe, and tapping an answer works too. Then: FILE CREATED, a redacted file code, &quot;Results sealed until session end&quot; (the class is only named in the ending&#39;s FEELZ report), and the provider card, Charles Browning, LCSW. Then FEELZ shows your starting wheel: all slices dark, your three lighting up one at a time with their tones (&quot;3 feelings available. The rest you&#39;ll have to find.&quot;). The call opens with him reading your intake aloud: the colored-word read on your answers, as his first line.</p>
 <h3 id="doc-game_manual--trying-his-contact"><a class="anchor" href="#doc-game_manual--trying-his-contact" aria-label="Link to this section">#</a>Trying his contact</h3>
 <p>Near the end of the call his own contact pops into the dock and he asks you to tap it. You call him while he is on the line: his &quot;Hello?&quot; echoes back twice with feedback, he jokes that nobody needs two of him, then explains what calls are for (his read on you and the person in front of you), that low bars/Wi-Fi mean he will not pick up, and that friends you make join the dock.</p>
 <h3 id="doc-game_manual--swiping"><a class="anchor" href="#doc-game_manual--swiping" aria-label="Link to this section">#</a>Swiping</h3>
@@ -1419,6 +1419,7 @@ clinical grey <code>#9aa0a6</code>.</li>
 (<code>ui/pastorBust.js</code>), SAM greeting; name hidden until he says it; the
 lake gauge waits for the first confession; SAM &quot;Amen.&quot; / &quot;Shame.&quot; /
 &quot;Samael.&quot; during the reckoning.</li>
+<li><strong>Class reveal rework</strong>: the standalone THERAPIST diagnosis screen is gone. FEELZ · PROFILE READY lights your three starting slices on the pixel wheel; the therapist says the class read as his first line, reading your intake ({intake} token). His per-class OPENER lines retired (the read replaces them). Reads are still PLACEHOLDER.</li>
 <li><strong>FEELZ boot logo as pixel art</strong> (<code>ui/feelzSilhouette.js</code>): the wheel drawn on a 48×48 canvas scaled up pixelated, with a seamless rainbow wave (a cyclic blend of the eight feelings, no tile seams).</li>
 <li><strong>Debug menu</strong> (Settings → DEBUG, <code>shell/debug.js</code>): pick a class, a lake level (0–10), ALL FEELINGS on/off, EVERYONE TRUSTS YOU on/off, then a scene button (grouped Opening / Therapist / each NPC / End) restarts the chapter right there with that state. New scenes show up under OTHER automatically. The gear and skip buttons are pixel icons now.</li>
 <li><strong>FEELZ in logo colors everywhere</strong> (<code>shell/feelzWord.js</code> + typewriter).</li>
@@ -1946,8 +1947,12 @@ part 1): an app bar (&quot;FEELZ · EVALUATION&quot;), a 3-step progress bar, th
 question above the card, a wiggle demo on Q1, and tap-to-answer on the
 labels. After Q3: FILE CREATED, a redacted file code, &quot;Results sealed
 until session end&quot;, &quot;Matching you with care...&quot;, then the provider card
-(Charles Browning, LCSW, the only place his name appears), then the
-diagnosis. The swipe card&#39;s lean is one neutral color here so it never
+(Charles Browning, LCSW, the only place his name appears), then FEELZ ·
+PROFILE READY: the pixel wheel with every slice dark, your three lighting
+up one by one with their tones, &quot;3 feelings available. The rest you&#39;ll
+have to find.&quot; The class read (DIAGNOSES) is saved as run.intakeRead and
+the therapist says it as his first line, reading your intake ({intake} in
+therapist_01&#39;s PROMPT). The old standalone diagnosis screen is gone. The swipe card&#39;s lean is one neutral color here so it never
 hints at a class.</p>
 <h3 id="doc-scene_types--reckoning-srcscenesreckoningscenejs"><a class="anchor" href="#doc-scene_types--reckoning-srcscenesreckoningscenejs" aria-label="Link to this section">#</a><code>reckoning</code> (<code>src/scenes/reckoningScene.js</code>)</h3>
 <p>Pastor Gabriel&#39;s baptism. It plays in order: the altar call, the

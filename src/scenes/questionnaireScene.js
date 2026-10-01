@@ -5,10 +5,10 @@
 // palette — before handing off to the prologue. No class name is revealed.
 //
 // scene shape: { type: 'questionnaire', id: 'questionnaire' }
-import { emotionColor } from '../engine/loadout.js';
+import { CLASSES, emotionsForClass } from '../engine/loadout.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
-import { drawEmotionPattern } from '../ui/emotionPattern.js';
-import { startAmbient, stopAmbient, playTyagl, playFeelzPing } from '../shell/audio.js';
+import { createFeelzSilhouette } from '../ui/feelzSilhouette.js';
+import { startAmbient, stopAmbient, playTyagl, playFeelzPing, strikeEmotionVoice } from '../shell/audio.js';
 
 // The intake is part 2 of FEELZ's check-in (content/feelz_launch.json is
 // part 1), so it wears the app: header, progress, fine print. After the
@@ -99,8 +99,6 @@ function pickQuestions() {
   return QUESTION_SLOTS.map((slot) => slot[Math.floor(Math.random() * slot.length)]);
 }
 
-// Dominant emotion per class drives the background pattern on the diagnosis.
-const CLASS_ANCHOR = { Guns: 'Anger', Bible: 'Disgust', Crystals: 'Happy' };
 
 // Diagnosis text: each segment is either plain text or a colored word.
 // Colored words use one of the class's three emotion colors — the player
@@ -181,6 +179,11 @@ const DIAGNOSES = {
 // Returns both the winning class and how the vote landed, so the diagnosis
 // can be picked by whether the player's three answers actually agreed
 // instead of always showing the same line for a given class.
+// The read's colored words as typewriter text ({color:Feeling}…{/color}).
+function readAsText(segments) {
+  return segments.map((s) => (s.emotion ? `{color:${s.emotion}}${s.text}{/color}` : s.text)).join('');
+}
+
 // "← feel it" → "feel it", for the card's stamp.
 function stripArrow(label) {
   return label.replace(/[←→]/g, '').trim();
@@ -330,63 +333,65 @@ export function mount(stageEl, _scene, { run, onComplete }) {
     });
 
     screen.addEventListener('click', () => {
-      if (ready) renderDiagnosis(cls, variant);
+      if (ready) renderProfile(cls, variant);
     });
   }
 
-  function renderDiagnosis(cls, variant) {
+  // FEELZ shows the wheel you start with: the pixel wheel from the boot
+  // logo, every slice dark, then your three light up one at a time, each
+  // with its tone. The class is never named. His read on your answers is
+  // saved for the call: the therapist says it as his first line, reading
+  // your intake (the {intake} token in therapist_01's PROMPT).
+  function renderProfile(cls, variant) {
     filedTimers.forEach(clearTimeout);
     filedTimers = [];
     activeCard?.destroy();
     activeCard = null;
     stageEl.innerHTML = '';
+    run.set({ intakeRead: readAsText(DIAGNOSES[cls][variant]) });
 
     const screen = document.createElement('div');
-    screen.className = 'dx-screen dx-game-screen dx-questionnaire-diagnosis';
+    screen.className = 'dx-screen dx-questionnaire-screen dx-intake dx-intake--profile';
+    const header = document.createElement('div');
+    header.className = 'dx-intake__bar';
+    header.innerHTML = '<span class="dx-intake__app">FEELZ</span><span class="dx-intake__form">PROFILE READY</span>';
+    screen.appendChild(header);
 
-    const patternCanvas = document.createElement('canvas');
-    patternCanvas.className = 'dx-pattern-bg';
-    screen.appendChild(patternCanvas);
-
-    const content = document.createElement('div');
-    content.className = 'dx-game-content';
-
-    const npcLabel = document.createElement('p');
-    npcLabel.className = 'dx-text dx-questionnaire-npc';
-    npcLabel.textContent = 'THERAPIST';
-    content.appendChild(npcLabel);
-
-    const diagnosisEl = document.createElement('p');
-    diagnosisEl.className = 'dx-text dx-questionnaire-diagnosis-text';
-    DIAGNOSES[cls][variant].forEach((seg) => {
-      if (seg.emotion) {
-        const span = document.createElement('span');
-        span.textContent = seg.text;
-        span.style.color = emotionColor(seg.emotion);
-        diagnosisEl.appendChild(span);
-      } else {
-        diagnosisEl.appendChild(document.createTextNode(seg.text));
-      }
-    });
-    content.appendChild(diagnosisEl);
-
-    const hint = document.createElement('p');
-    hint.className = 'dx-text dx-tap-hint';
-    hint.textContent = '(tap to continue)';
-    content.appendChild(hint);
-
-    screen.appendChild(content);
+    const body = document.createElement('div');
+    body.className = 'dx-intake__filed';
+    const wheel = createFeelzSilhouette({ lit: [] });
+    body.appendChild(wheel.el);
+    screen.appendChild(body);
     stageEl.appendChild(screen);
 
-    playTyagl();
-    requestAnimationFrame(() => {
-      drawEmotionPattern(patternCanvas, {
-        seedStr: `therapist:assessment:${cls}`,
-        key: CLASS_ANCHOR[cls],
-      });
+    const feelings = CLASSES[cls]?.emotions ?? [];
+    const chord = emotionsForClass(cls, []);
+    let ready = false;
+    feelings.forEach((feeling, i) => {
+      filedTimers.push(setTimeout(() => {
+        wheel.light(feeling);
+        strikeEmotionVoice(feeling, chord);
+      }, 700 + i * 650));
     });
+    const afterLights = 700 + feelings.length * 650 + 300;
+    filedTimers.push(setTimeout(() => {
+      playTyagl();
+      for (const [text, cls2] of [[`${feelings.length} feelings available.`, ''], ["The rest you'll have to find.", 'is-fine']]) {
+        const line = document.createElement('p');
+        line.className = `dx-text dx-intake__line ${cls2}`;
+        line.textContent = text;
+        body.appendChild(line);
+      }
+    }, afterLights));
+    filedTimers.push(setTimeout(() => {
+      ready = true;
+      const hint = document.createElement('p');
+      hint.className = 'dx-text dx-tap-hint';
+      hint.textContent = '(tap to continue)';
+      body.appendChild(hint);
+    }, afterLights + 900));
 
-    screen.addEventListener('click', () => onComplete(), { once: true });
+    screen.addEventListener('click', () => { if (ready) onComplete(); });
   }
 
   startAmbient(THERAPIST_AMBIENT);

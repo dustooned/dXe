@@ -146,6 +146,9 @@ const initialRunState = {
   // { [nodeId]: the line the player said } — IT quotes contradictions back.
   said: {},
   unlocked: [],
+  // The FEELZ evaluation's read on the player (questionnaireScene.js), said
+  // by the therapist as he looks over the intake (therapist_01 {intake}).
+  intakeRead: null,
 };
 
 // For the settings panel's DEBUG page: every scene, in order.

@@ -149,8 +149,12 @@ part 1): an app bar ("FEELZ · EVALUATION"), a 3-step progress bar, the
 question above the card, a wiggle demo on Q1, and tap-to-answer on the
 labels. After Q3: FILE CREATED, a redacted file code, "Results sealed
 until session end", "Matching you with care...", then the provider card
-(Charles Browning, LCSW, the only place his name appears), then the
-diagnosis. The swipe card's lean is one neutral color here so it never
+(Charles Browning, LCSW, the only place his name appears), then FEELZ ·
+PROFILE READY: the pixel wheel with every slice dark, your three lighting
+up one by one with their tones, "3 feelings available. The rest you'll
+have to find." The class read (DIAGNOSES) is saved as run.intakeRead and
+the therapist says it as his first line, reading your intake ({intake} in
+therapist_01's PROMPT). The old standalone diagnosis screen is gone. The swipe card's lean is one neutral color here so it never
 hints at a class.
 
 ### `reckoning` (`src/scenes/reckoningScene.js`)

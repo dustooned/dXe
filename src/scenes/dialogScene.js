@@ -1099,7 +1099,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const parts = [];
     if (beatIndex === 0 && npc.opener?.[loadout]) parts.push(npc.opener[loadout]);
     if (node.byClass?.[loadout]) parts.push(node.byClass[loadout]);
-    parts.push(node.prompt);
+    // {intake}: the intake read saved by the questionnaire, quoted as his
+    // own words (therapist_01). Nothing saved (a debug jump) = dropped.
+    const read = run.get().intakeRead;
+    parts.push(node.prompt.replace('{intake}', read ? `"${read}"` : ''));
     return parts.join(' ');
   }
 
