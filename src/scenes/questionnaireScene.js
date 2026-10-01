@@ -8,7 +8,25 @@
 import { emotionColor } from '../engine/loadout.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
 import { drawEmotionPattern } from '../ui/emotionPattern.js';
-import { startAmbient, stopAmbient, playTyagl } from '../shell/audio.js';
+import { startAmbient, stopAmbient, playTyagl, playFeelzPing } from '../shell/audio.js';
+
+// The intake is part 2 of FEELZ's check-in (content/feelz_launch.json is
+// part 1), so it wears the app: header, progress, fine print. After the
+// third answer the file is created and sealed (the class is only named at
+// the very end, in the FEELZ report), then FEELZ matches you with a
+// provider — Charles Browning, the only place his name appears — and the
+// call connects into his read on you.
+const PROVIDER = { name: 'CHARLES BROWNING, LCSW', clinic: 'Lake Ulysses Community Clinic' };
+// Each line of the "file created" screen, with its delay (ms) after the last.
+const FILED_STEPS = [
+  { text: 'FILE CREATED', cls: 'is-stamp', at: 200, ping: true },
+  { text: 'FP-0█', cls: 'is-code', at: 500 },
+  { text: 'Results sealed until session end.', cls: 'is-fine', at: 700 },
+  { text: 'Matching you with care...', cls: 'is-fine', at: 1300 },
+  { text: '1 provider available.', cls: '', at: 1200 },
+  { provider: true, at: 500, ping: true },
+  { text: 'Connecting.', cls: 'is-fine', at: 900 },
+];
 
 const THERAPIST_AMBIENT = '/assets/lake-ulysses/audio/heavens_waiting_room.mp3';
 
@@ -163,6 +181,11 @@ const DIAGNOSES = {
 // Returns both the winning class and how the vote landed, so the diagnosis
 // can be picked by whether the player's three answers actually agreed
 // instead of always showing the same line for a given class.
+// "← feel it" → "feel it", for the card's stamp.
+function stripArrow(label) {
+  return label.replace(/[←→]/g, '').trim();
+}
+
 function tallyClass(answers) {
   const scores = { Guns: 0, Bible: 0, Crystals: 0 };
   answers.forEach((cls) => { scores[cls]++; });
@@ -182,34 +205,52 @@ export function mount(stageEl, _scene, { run, onComplete }) {
   let questionIndex = 0;
   let activeCard = null;
 
+  let filedTimers = [];
+
+  function appBar() {
+    const header = document.createElement('div');
+    header.className = 'dx-intake__bar';
+    header.innerHTML = '<span class="dx-intake__app">FEELZ</span><span class="dx-intake__form">EVALUATION</span>';
+    return header;
+  }
+
   function renderQuestion() {
     activeCard?.destroy();
     stageEl.innerHTML = '';
 
     const q = questions[questionIndex];
     const screen = document.createElement('div');
-    screen.className = 'dx-screen dx-questionnaire-screen';
+    screen.className = 'dx-screen dx-questionnaire-screen dx-intake';
+    screen.appendChild(appBar());
 
-    const header = document.createElement('div');
-    header.className = 'dx-questionnaire-header';
-
-    const npcLabel = document.createElement('p');
-    npcLabel.className = 'dx-text dx-questionnaire-npc';
-    npcLabel.textContent = 'THERAPIST';
-    header.appendChild(npcLabel);
+    const progress = document.createElement('div');
+    progress.className = 'dx-intake__progress';
+    for (let i = 0; i < questions.length; i++) {
+      const seg = document.createElement('span');
+      if (i < questionIndex) seg.className = 'is-done';
+      else if (i === questionIndex) seg.className = 'is-now';
+      progress.appendChild(seg);
+    }
+    screen.appendChild(progress);
 
     const counter = document.createElement('p');
-    counter.className = 'dx-text dx-questionnaire-counter';
-    // This is the FEELZ app's intake form (the feelz-launch cutscene just
-    // opened the app), so it's labeled like one.
-    counter.textContent = `INTAKE ${questionIndex + 1} / ${questions.length}`;
-    header.appendChild(counter);
+    counter.className = 'dx-text dx-intake__counter';
+    counter.textContent = `PART 2 · Q${questionIndex + 1} OF ${questions.length}`;
+    screen.appendChild(counter);
 
-    screen.appendChild(header);
+    const ask = document.createElement('p');
+    ask.className = 'dx-text dx-intake__prompt';
+    ask.textContent = q.prompt;
+    screen.appendChild(ask);
 
     activeCard = createSwipeCard({
-      promptText: q.prompt,
+      promptText: 'drag me',
       hints: { left: q.left.label, right: q.right.label },
+      // The stamp is the answer's own words; one neutral color both ways
+      // so leaning never hints at a class.
+      stamps: { left: stripArrow(q.left.label), right: stripArrow(q.right.label) },
+      colors: { left: '#ffffff', right: '#ffffff' },
+      tapHints: true,
       onSwipe: (direction) => {
         const answer = direction === 'truth' ? q.left.scores : q.right.scores;
         answers.push(answer);
@@ -219,16 +260,83 @@ export function mount(stageEl, _scene, { run, onComplete }) {
         } else {
           const { cls, variant } = tallyClass(answers);
           run.set({ loadout: cls });
-          renderDiagnosis(cls, variant);
+          renderFiled(cls, variant);
         }
       },
     });
 
     screen.appendChild(activeCard.el);
+
+    // First question only: show how it works, once — the card wiggles
+    // under a plain instruction.
+    if (questionIndex === 0) {
+      const how = document.createElement('p');
+      how.className = 'dx-text dx-intake__how';
+      how.textContent = 'swipe toward your answer, or tap it';
+      screen.appendChild(how);
+      setTimeout(() => activeCard?.nudge(), 700);
+      setTimeout(() => activeCard?.nudge(), 1900);
+    }
+
+    const fine = document.createElement('p');
+    fine.className = 'dx-text dx-intake__fine';
+    fine.textContent = 'No right answers. Results sealed until session end.';
+    screen.appendChild(fine);
+
     stageEl.appendChild(screen);
   }
 
+  // The file is created and sealed, then FEELZ finds your provider.
+  function renderFiled(cls, variant) {
+    activeCard?.destroy();
+    activeCard = null;
+    stageEl.innerHTML = '';
+
+    const screen = document.createElement('div');
+    screen.className = 'dx-screen dx-questionnaire-screen dx-intake dx-intake--filed';
+    screen.appendChild(appBar());
+    const body = document.createElement('div');
+    body.className = 'dx-intake__filed';
+    screen.appendChild(body);
+    stageEl.appendChild(screen);
+
+    let t = 0;
+    let ready = false;
+    FILED_STEPS.forEach((step, i) => {
+      t += step.at;
+      filedTimers.push(setTimeout(() => {
+        let el;
+        if (step.provider) {
+          el = document.createElement('div');
+          el.className = 'dx-intake__provider';
+          el.innerHTML = '<span class="dx-intake__provider-name"></span><span class="dx-intake__provider-clinic"></span>';
+          el.querySelector('.dx-intake__provider-name').textContent = PROVIDER.name;
+          el.querySelector('.dx-intake__provider-clinic').textContent = PROVIDER.clinic;
+        } else {
+          el = document.createElement('p');
+          el.className = `dx-text dx-intake__line ${step.cls}`;
+          el.textContent = step.text;
+        }
+        body.appendChild(el);
+        if (step.ping) playFeelzPing();
+        if (i === FILED_STEPS.length - 1) {
+          ready = true;
+          const hint = document.createElement('p');
+          hint.className = 'dx-text dx-tap-hint';
+          hint.textContent = '(tap to continue)';
+          body.appendChild(hint);
+        }
+      }, t));
+    });
+
+    screen.addEventListener('click', () => {
+      if (ready) renderDiagnosis(cls, variant);
+    });
+  }
+
   function renderDiagnosis(cls, variant) {
+    filedTimers.forEach(clearTimeout);
+    filedTimers = [];
     activeCard?.destroy();
     activeCard = null;
     stageEl.innerHTML = '';
@@ -285,6 +393,7 @@ export function mount(stageEl, _scene, { run, onComplete }) {
   renderQuestion();
 
   return function unmount() {
+    filedTimers.forEach(clearTimeout);
     activeCard?.destroy();
     stopAmbient();
     stageEl.innerHTML = '';

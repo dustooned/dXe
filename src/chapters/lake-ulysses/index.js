@@ -47,8 +47,8 @@ export const title = 'Truth Debt: Lake Ulysses';
 // questionnaire reads as answering that call and the therapist dialog as the
 // same call continuing. Running questionnaire before prologue (as it did
 // originally) fired the Therapist's diagnosis before the story established
-// why she'd be talking to you at all. This shape is meant to be the routine
-// chapter opener: you're on site, she buzzes in, she evaluates you.
+// why he'd be talking to you at all. This shape is meant to be the routine
+// chapter opener: you're on site, he buzzes in, he evaluates you.
 //
 // Each NPC now runs as explore -> confront -> encounter:
 //   minigame   the walk to their door (art/captions still PLACEHOLDER,
@@ -58,7 +58,7 @@ export const title = 'Truth Debt: Lake Ulysses';
 //              dialog scene starts on, so the choice shapes the encounter
 //              instead of just decorating it (see cutsceneScene.js).
 //   dialog     the encounter itself
-// Therapist is exempt from all of it — she belongs to the opening call.
+// Therapist is exempt from all of it — he belongs to the opening call.
 const SCENES = [
   { type: 'cutscene', id: 'it-intro', beats: itIntro.beats },
   { type: 'cutscene', id: 'opening-quote', beats: openingQuote.beats, anims: ANIMS },

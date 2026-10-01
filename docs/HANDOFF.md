@@ -94,32 +94,32 @@ Rebuilt 2026-09-24 after playtest feedback: the tester liked the wheel
 and swiping but didn't know what the colors, the meters, Truth Debt or
 the goal were, and found the IT popup's X-only dismiss clunky. The fix
 is guided discovery (the CBT technique: the therapist asks questions so
-the client finds the answer, instead of telling them). She never explains
+the client finds the answer, instead of telling them). He never explains
 a mechanic. Each question makes the player use one new thing for the
 first time:
 
 1. *"How are you walking in today? Just point."* → the player picks a
-   feeling → the card wiggles (`swipeCard.nudge()`) → she describes the
+   feeling → the card wiggles (`swipeCard.nudge()`) → he describes the
    symbol in an image (`PICK` lines). **Feelings are symbols only, never
-   named**, in the UI or by her. After this node the four meters fade in
+   named**, in the UI or by him. After this node the four meters fade in
    ("four little lines").
 2. *"What happened in the dream?"* → after it, the lake gauge fades in (or
-   earlier, the moment debt goes above 0), and she hints at what it
+   earlier, the moment debt goes above 0), and he hints at what it
    counts.
 3. Outro: homework by class (surreal, not literal), a closing line by
-   dream answer, HANGUP (screen dims, her music stops), then IT → SO,
+   dream answer, HANGUP (screen dims, his music stops), then IT → SO,
    also by dream answer.
 
 Each piece is **spotlit** as it's introduced: a black vignette mask
 (`ui/spotlight.js`, a blurred SVG mask with holes) dims everything except
-the thing she's talking about plus her line about it. The order is wheel,
+the thing he's talking about plus his line about it. The order is wheel,
 then card, then meters, then debt. It's visual only
 (`pointer-events: none`), so it never blocks input.
 
-**Who she is:** an LCSW (licensed clinical social worker) at a community
+**Who he is:** an LCSW (licensed clinical social worker) at a community
 clinic: a 40+ caseload, back-to-back telehealth, typing notes while you
-talk. She's also somehow a guru who speaks in small aphorisms ("Weather,
-not a verdict"), then gets pulled back by her actual day ("then I have to
+talk. He's also somehow a guru who speaks in small aphorisms ("Weather,
+not a verdict"), then gets pulled back by his actual day ("then I have to
 take my two o'clock"). The wisdom is real, and so is the caseload. The
 voice notes are at the top of `manuscript/therapist.txt`.
 
@@ -130,13 +130,13 @@ its tone without picking it (`feelzDartboard.js`'s `HOLD_MS`).
 
 Prologue / Questionnaire / Therapist are deliberately one continuous
 unit — **the chapter's opening call**, and the intended routine opener for
-future chapters too: you're on site, the Therapist buzzes in, she evaluates
+future chapters too: you're on site, the Therapist buzzes in, he evaluates
 you. The order is load-bearing and the existing writing already assumed it.
 Prologue's final beat is the phone buzzing; the Therapist dialog's opening
 line is "The screen lights up... cuts through the ringing in your ears,"
 which answers both that buzz and Prologue's earlier "Ears ringing" beat.
 Questionnaire originally ran *before* Prologue, which fired the Therapist's
-diagnosis before the story had established why she'd be talking to you —
+diagnosis before the story had established why he'd be talking to you —
 swapping the two fixed a pre-existing content/order mismatch rather than
 imposing a new one. Don't reorder these three without re-reading the copy.
 `localStorage` persists endings seen and chapters completed; the latter
@@ -536,7 +536,7 @@ of these are decided or at least scoped; see the linked sections:
   and SO rebuttal tables (~50 lines) still use the earlier voice.
   Rewriting them would also drop IT's per-class voices, so it's **waiting
   on the designer's OK**.
-- **Therapist reads the check-in back.** One line in her call ("You put
+- **Therapist reads the check-in back.** One line in his call ("You put
   'nearly every day.' Okay."). This was proposed but not built. Only the
   ending comparison was chosen.
 - **More ways to clean the lake** (proposed, not chosen yet): the lake

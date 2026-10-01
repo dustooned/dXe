@@ -462,7 +462,7 @@ through this wrapper.
 **Placement.** One mini-game precedes each NPC, with the confrontation
 cutscene between the two, so a chapter reads as explore -> confront ->
 encounter, repeating. In `lake-ulysses` that's Deborah / Rwanda / Samun /
-Rick — four slots. Therapist is exempt: she belongs to the chapter's opening
+Rick — four slots. Therapist is exempt: he belongs to the chapter's opening
 call (Prologue -> Questionnaire -> Therapist), not to this pattern.
 
 #### The step system (`engine/walkSequencer.js`)

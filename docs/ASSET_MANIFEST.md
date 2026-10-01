@@ -101,7 +101,7 @@ colored-initial placeholder whenever it's unset.
 | `portrait_rwanda` | 192×192 | ⬜ |
 | `portrait_samun` | 192×192 | ⬜ |
 | `portrait_rick` | 192×192 | ⬜ |
-| `portrait_therapist` | 192×192 | 💬 she's voice-only by design — confirm before drawing |
+| `portrait_therapist` | 192×192 | 💬 he's voice-only by design — confirm before drawing |
 
 ---
 

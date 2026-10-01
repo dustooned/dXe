@@ -16,28 +16,30 @@ it's the fastest shorthand for who you're writing.
 
 ## 🟣 THERAPIST — the tutorial
 
-**Never seen.** A voice through the app on your phone. She's an LCSW
+**Charles Browning.** The game only calls him THERAPIST; his name
+appears once, on the FEELZ provider card. **Never seen.** A voice
+through the app on your phone. He's an LCSW
 (licensed clinical social worker) at a community clinic: 40+ clients,
-back-to-back calls, typing her notes while you talk. She's also somehow
-a guru. She speaks in small aphorisms, like something off a meditation
-retreat ("Weather, not a verdict"), then her actual day pulls her back
+back-to-back calls, typing his notes while you talk. He's also somehow
+a guru. He speaks in small aphorisms, like something off a meditation
+retreat ("Weather, not a verdict"), then his actual day pulls him back
 ("then I have to take my two o'clock"). Tired but warm, never cruel. The
 wisdom is real, and so is the caseload.
 
-She teaches the whole game without explaining any of it — you learn what
-swiping left does by feeling how she takes it. **Never let her explain a
+He teaches the whole game without explaining any of it — you learn what
+swiping left does by feeling how he takes it. **Never let him explain a
 mechanic.**
 
-She's the tutorial, and she's also the FEELZ app the player opens when
+He's the tutorial, and he's also the FEELZ app the player opens when
 their phone buzzes at the lake. Two exchanges, and each one makes the
 player use one new thing for the first time:
 
 1. *"How are you walking in today? Just point."* The player picks a
-   feeling, and she describes it back in an image. **Feelings are
-   symbols only. She never names one.** After this, the four meters
+   feeling, and he describes it back in an image. **Feelings are
+   symbols only. He never names one.** After this, the four meters
    appear ("four little lines").
 2. *"What happened in the dream?"* After this, the lake gauge (Truth Debt as water quality, with fish) appears, and
-   she hints at what it counts without saying "lies."
+   he hints at what it counts without saying "lies."
 
 Then homework (one surreal line per class), a closing line that depends
 on how the dream question went, the call ends, and IT and SO get the last

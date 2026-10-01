@@ -12,7 +12,7 @@
       "swipes": {
         "truth": {
           "playerText": "Not great. I woke up on the side of the road.",
-          "npcReaction": "\"Okay. Thank you.\" The keys keep going; she types while you talk, the way you learn to with forty people on your caseload. \"Look at the top of your screen. Battery's how steady you're holding up. The bars are how connected people feel to you. The Wi-Fi's how clearly you're seeing things. And the clock keeps honest time, as long as you do.\" A beat. \"Weather, not a verdict.\"",
+          "npcReaction": "\"Okay. Thank you.\" The keys keep going; he types while you talk, the way you learn to with forty people on your caseload. \"Look at the top of your screen. Battery's how steady you're holding up. The bars are how connected people feel to you. The Wi-Fi's how clearly you're seeing things. And the clock keeps honest time, as long as you do.\" A beat. \"Weather, not a verdict.\"",
           "effects": {
             "trust": 1,
             "lucidity": 1,
@@ -88,7 +88,7 @@
             "none": "\"Your wheel's fuller than most. Still. Everyone you meet is carrying a feeling you don't have yet.\""
           },
           "itText": "Great. Now you've ruined the fun.",
-          "soText": "Go ahead, tell her all about us. She won't believe you."
+          "soText": "Go ahead, tell him all about us. He won't believe you."
         },
         "lie": {
           "playerText": "No. Never.",
@@ -259,7 +259,7 @@
     },
     {
       "kind": "hangup",
-      "text": "The call ends mid-sentence, the way her calls do. FEELZ goes dark in your hand, and the lake is very quiet."
+      "text": "The call ends mid-sentence, the way his calls do. FEELZ goes dark in your hand, and the lake is very quiet."
     },
     {
       "kind": "notify",
@@ -267,7 +267,7 @@
     },
     {
       "kind": "it",
-      "text": "She's writing it down. Everything you said. Somewhere a file with your name on it just got thicker.",
+      "text": "He's writing it down. Everything you said. Somewhere a file with your name on it just got thicker.",
       "when": {
         "choice": {
           "node": "therapist_02",
@@ -277,7 +277,7 @@
     },
     {
       "kind": "so",
-      "text": "Or she hung up and forgot you already. Which would be worse?",
+      "text": "Or he hung up and forgot you already. Which would be worse?",
       "when": {
         "choice": {
           "node": "therapist_02",
@@ -287,7 +287,7 @@
     },
     {
       "kind": "it",
-      "text": "She knew. They always know. Four more people to fool now.",
+      "text": "He knew. They always know. Four more people to fool now.",
       "when": {
         "choice": {
           "node": "therapist_02",
@@ -297,7 +297,7 @@
     },
     {
       "kind": "so",
-      "text": "Did she? Did you even lie? What was the dream again?",
+      "text": "Did he? Did you even lie? What was the dream again?",
       "when": {
         "choice": {
           "node": "therapist_02",

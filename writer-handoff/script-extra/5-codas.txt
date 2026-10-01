@@ -176,26 +176,26 @@
 
 # --- Happy ---
 [coda / Happy / truth] It came out lighter than you expected, into a line that’s heard heavier.
-[coda / Happy / lie] It went down easy — easy enough that she didn’t reach for the chart at all.
+[coda / Happy / lie] It went down easy — easy enough that he didn’t reach for the chart at all.
 
 # --- Trust ---
-[coda / Trust / truth] You gave her the real version and let her hold it, the way her job asks people to.
+[coda / Trust / truth] You gave him the real version and let him hold it, the way his job asks people to.
 [coda / Trust / lie] You said it the way you say something to someone paid to believe you either way.
 
 # --- Fear ---
-[coda / Fear / truth] You got it out before the silence on her end could ask you to try again.
-[coda / Fear / lie] You heard the smaller version leave you, and heard her not push past it.
+[coda / Fear / truth] You got it out before the silence on his end could ask you to try again.
+[coda / Fear / lie] You heard the smaller version leave you, and heard him not push past it.
 
 # --- Surprise ---
 [coda / Surprise / truth] You didn’t mean to say that much. It was already out before the next question came.
-[coda / Surprise / lie] The lie came out smooth as every short version she’s ever been handed on this line.
+[coda / Surprise / lie] The lie came out smooth as every short version he’s ever been handed on this line.
 
 # --- Sadness ---
 [coda / Sadness / truth] Quiet, the way things get right before you say the true one.
-[coda / Sadness / lie] You said it gently, and she let the gentleness stand in for an answer.
+[coda / Sadness / lie] You said it gently, and he let the gentleness stand in for an answer.
 
 # --- Disgust ---
-[coda / Disgust / truth] You said it plainly and let the discomfort be hers to sit with, not yours to manage.
+[coda / Disgust / truth] You said it plainly and let the discomfort be his to sit with, not yours to manage.
 [coda / Disgust / lie] You kept your voice even while the rest of you wanted the call to end.
 
 # --- Anger ---
@@ -203,6 +203,6 @@
 [coda / Anger / lie] You put an edge on it so the pause after wouldn’t turn into a real question.
 
 # --- Anxiety ---
-[coda / Anxiety / truth] You were already bracing for her next question before you’d finished this answer.
-[coda / Anxiety / lie] You knew which answer would end the call fastest, and gave her that one.
+[coda / Anxiety / truth] You were already bracing for his next question before you’d finished this answer.
+[coda / Anxiety / lie] You knew which answer would end the call fastest, and gave him that one.
 

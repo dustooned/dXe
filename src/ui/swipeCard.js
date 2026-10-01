@@ -9,9 +9,25 @@ import { attachSwipe } from '../shell/input.js';
 // wrap into, and — since it's outside the card — doesn't move or rotate
 // with it during a drag, reading as a static direction legend rather than
 // part of the thing being dragged.
-export function createSwipeCard({ promptText, onSwipe, hints }) {
+// While dragging, the card leans into the side it's heading for: that
+// side's label grows and takes its color, the card's border and wash blend
+// toward it, and a stamp of the choice (TRUTH / LIE, or the hint's own
+// words) fades in over the card. `--lean` (0..1) drives all of it in CSS.
+// The two colors are a pair, not a verdict: cool for truth, warm for lie,
+// neither green nor red (feedback stays atmospheric, never right/wrong).
+const SIDE_COLORS = { left: '#8fe3ff', right: '#ff8fc8' };
+const LEAN_PX = 90; // same as attachSwipe's commit threshold
+
+// `stamps` overrides the word stamped on the card per side; `colors`
+// overrides the pair (the intake uses one neutral color for both, so the
+// lean never hints at a class). `tapHints` makes the labels tappable as a
+// second way to answer.
+export function createSwipeCard({ promptText, onSwipe, hints, stamps, colors, tapHints = false }) {
   const leftLabel  = hints?.left  ?? '← TRUTH';
   const rightLabel = hints?.right ?? 'LIE →';
+  const leftStamp  = stamps?.left  ?? 'TRUTH';
+  const rightStamp = stamps?.right ?? 'LIE';
+  const sideColors = { ...SIDE_COLORS, ...colors };
 
   const el = document.createElement('div');
   el.className = 'dx-swipe-card-wrap';
@@ -22,8 +38,11 @@ export function createSwipeCard({ promptText, onSwipe, hints }) {
     </div>
     <div class="dx-swipe-card">
       <p class="dx-swipe-card__text"></p>
+      <span class="dx-swipe-card__stamp" aria-hidden="true"></span>
     </div>
   `;
+  el.style.setProperty('--side-left', sideColors.left);
+  el.style.setProperty('--side-right', sideColors.right);
   el.querySelector('.dx-swipe-card__hint--truth').textContent = leftLabel;
   el.querySelector('.dx-swipe-card__hint--lie').textContent   = rightLabel;
   el.querySelector('.dx-swipe-card__text').textContent = promptText;
@@ -31,12 +50,28 @@ export function createSwipeCard({ promptText, onSwipe, hints }) {
   // The card itself — what actually drags/rotates and carries the border.
   // `el` (the wrap) is what callers insert into the DOM and read state off.
   const card = el.querySelector('.dx-swipe-card');
+  const stamp = el.querySelector('.dx-swipe-card__stamp');
+
+  function lean(dx) {
+    const side = dx < 0 ? 'left' : 'right';
+    const t = Math.min(1, Math.abs(dx) / LEAN_PX);
+    el.style.setProperty('--lean', t.toFixed(3));
+    el.style.setProperty('--lean-color', sideColors[side]);
+    el.dataset.side = dx === 0 ? '' : side;
+    stamp.textContent = side === 'left' ? leftStamp : rightStamp;
+    el.classList.toggle('is-truth', dx <= -40);
+    el.classList.toggle('is-lie', dx >= 40);
+  }
+
+  function clearLean() {
+    el.style.setProperty('--lean', '0');
+    el.dataset.side = '';
+  }
 
   const detach = attachSwipe(card, {
     onDrag(dx) {
       card.style.transform = `translateX(${dx}px) rotate(${dx / 20}deg)`;
-      el.classList.toggle('is-truth', dx <= -40);
-      el.classList.toggle('is-lie', dx >= 40);
+      lean(dx);
     },
     onEnd(direction) {
       if (direction === 'left') onSwipe?.('truth');
@@ -44,9 +79,22 @@ export function createSwipeCard({ promptText, onSwipe, hints }) {
       else {
         card.style.transform = '';
         el.classList.remove('is-truth', 'is-lie');
+        clearLean();
       }
     },
   });
+
+  if (tapHints) {
+    el.classList.add('has-tap-hints');
+    const pick = (side) => (e) => {
+      e.stopPropagation();
+      lean(side === 'left' ? -LEAN_PX : LEAN_PX);
+      card.style.transform = `translateX(${side === 'left' ? -40 : 40}px) rotate(${side === 'left' ? -2 : 2}deg)`;
+      setTimeout(() => onSwipe?.(side === 'left' ? 'truth' : 'lie'), 180);
+    };
+    el.querySelector('.dx-swipe-card__hint--truth').addEventListener('click', pick('left'));
+    el.querySelector('.dx-swipe-card__hint--lie').addEventListener('click', pick('right'));
+  }
 
   // Live drag-hover tint — shows while a FEELZ bubble is hovering over
   // this card. Cleared on drag end regardless of outcome.
@@ -81,6 +129,7 @@ export function createSwipeCard({ promptText, onSwipe, hints }) {
   function reset() {
     card.style.transform = '';
     el.classList.remove('is-truth', 'is-lie');
+    clearLean();
   }
 
   // One short side-to-side wiggle — "this is the next thing to touch."

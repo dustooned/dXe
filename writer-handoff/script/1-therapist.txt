@@ -2,17 +2,18 @@ NPC: THERAPIST
 LOCATION: 1
 ACCENT: var(--color-therapist)
 
-# WHO SHE IS: an LCSW (licensed clinical social worker) at a community
-# clinic. Forty-plus clients, back-to-back telehealth, types her notes while
-# you talk. Also, somehow, a guru: she speaks in small aphorisms that sound
+# WHO HE IS: Charles Browning, "your therapist" (the UI only ever says
+# THERAPIST; the name surfaces on the FEELZ provider card). An LCSW (licensed clinical social worker) at a community
+# clinic. Forty-plus clients, back-to-back telehealth, types his notes while
+# you talk. Also, somehow, a guru: he speaks in small aphorisms that sound
 # like they came off a meditation retreat, then gets pulled back by the
-# admin of her actual day (the next call, the chart, the clock). Warm,
+# admin of his actual day (the next call, the chart, the clock). Warm,
 # tired, never cruel. The wisdom is real; so is the caseload.
 #
-# The tutorial. She never explains a mechanic — every question makes the
-# player use one new piece of the FEELZ app for the first time, and her
+# The tutorial. He never explains a mechanic — every question makes the
+# player use one new piece of the FEELZ app for the first time, and his
 # reply reflects back what it did (guided discovery, not instruction).
-# Feelings are symbols only: she describes a pick, never names it.
+# Feelings are symbols only: he describes a pick, never names it.
 
 # The four meters stay hidden until the check-in is answered; the lake
 # gauge (Truth Debt, shown as water quality) until the dream is (or earlier,
@@ -40,7 +41,7 @@ PICK Anxiety: "Braced already, and nothing's even happened yet. Okay."
 
 -- TRUTH
 SAY: Not great. I woke up on the side of the road.
-REACT: "Okay. Thank you." The keys keep going; she types while you talk, the way you learn to with forty people on your caseload. "Look at the top of your screen. Battery's how steady you're holding up. The bars are how connected people feel to you. The Wi-Fi's how clearly you're seeing things. And the clock keeps honest time, as long as you do." A beat. "Weather, not a verdict."
+REACT: "Okay. Thank you." The keys keep going; he types while you talk, the way you learn to with forty people on your caseload. "Look at the top of your screen. Battery's how steady you're holding up. The bars are how connected people feel to you. The Wi-Fi's how clearly you're seeing things. And the clock keeps honest time, as long as you do." A beat. "Weather, not a verdict."
 EFFECTS: trust+1 lucidity+1 stability-1
 DEBT: 0
 NEXT: therapist_intrusive
@@ -79,7 +80,7 @@ IF GIFT Sadness: "Keep an eye on your wheel. Something heavy just came in with t
 IF GIFT Anxiety: "Keep an eye on your wheel. Something restless just came in with that. Everyone you meet is carrying a feeling you don't have yet."
 IF GIFT none: "Your wheel's fuller than most. Still. Everyone you meet is carrying a feeling you don't have yet."
 IT: Great. Now you've ruined the fun.
-SO: Go ahead, tell her all about us. She won't believe you.
+SO: Go ahead, tell him all about us. He won't believe you.
 NEXT: therapist_02
 
 -- LIE
@@ -138,9 +139,9 @@ LINE [therapist_02=lie]: "The dream can wait. Dreams are patient. Lakes are more
 LINE: "One more thing. I'm in your contacts, bottom of the screen. If your bars and Wi-Fi hold up, you can call me. Make a real friend out there and they'll show up next to me. They'll tell you what they think. Doesn't mean they're right."
 LINE: "And if your carrier goes from 5G down to No Service? That's the lake talking, not your phone."
 LINE: "I'll have FEELZ send you a reminder, so you can't pretend you forgot."
-HANGUP: The call ends mid-sentence, the way her calls do. FEELZ goes dark in your hand, and the lake is very quiet.
+HANGUP: The call ends mid-sentence, the way his calls do. FEELZ goes dark in your hand, and the lake is very quiet.
 NOTIFY: FEELZ · HOMEWORK\nToday's practice: reach out\nSay hello to one neighbor.\nNotice what they care about. Ask about it.\nListen a little longer than feels comfortable.\nYou don't have to fix anything.
-IT [therapist_02=truth]: She's writing it down. Everything you said. Somewhere a file with your name on it just got thicker.
-SO [therapist_02=truth]: Or she hung up and forgot you already. Which would be worse?
-IT [therapist_02=lie]: She knew. They always know. Four more people to fool now.
-SO [therapist_02=lie]: Did she? Did you even lie? What was the dream again?
+IT [therapist_02=truth]: He's writing it down. Everything you said. Somewhere a file with your name on it just got thicker.
+SO [therapist_02=truth]: Or he hung up and forgot you already. Which would be worse?
+IT [therapist_02=lie]: He knew. They always know. Four more people to fool now.
+SO [therapist_02=lie]: Did he? Did you even lie? What was the dream again?

@@ -1,6 +1,6 @@
 // Tutorial spotlight: a black vignette over the whole screen with soft-edged
 // holes cut around the elements being talked about right now (the wheel as
-// the Therapist asks you to point, the meters as she mentions "four little
+// the Therapist asks you to point, the meters as he mentions "four little
 // lines"). Everything else sinks into the dark until the moment passes.
 //
 // Purely visual — pointer-events: none — so nothing under the mask is ever

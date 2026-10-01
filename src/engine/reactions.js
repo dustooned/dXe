@@ -200,32 +200,32 @@ const SAMUN = {
   },
 };
 
-// One node, a phone line, a chart clicking open somewhere on her end.
+// One node, a phone line, a chart clicking open somewhere on his end.
 // Therapist's coda set stays this short and quiet on purpose — there's
 // only ever one exchange to color.
 const THERAPIST = {
   Happy: {
     truth: 'It came out lighter than you expected, into a line that’s heard heavier.',
-    lie: 'It went down easy — easy enough that she didn’t reach for the chart at all.',
+    lie: 'It went down easy — easy enough that he didn’t reach for the chart at all.',
   },
   Trust: {
-    truth: 'You gave her the real version and let her hold it, the way her job asks people to.',
+    truth: 'You gave him the real version and let him hold it, the way his job asks people to.',
     lie: 'You said it the way you say something to someone paid to believe you either way.',
   },
   Fear: {
-    truth: 'You got it out before the silence on her end could ask you to try again.',
-    lie: 'You heard the smaller version leave you, and heard her not push past it.',
+    truth: 'You got it out before the silence on his end could ask you to try again.',
+    lie: 'You heard the smaller version leave you, and heard him not push past it.',
   },
   Surprise: {
     truth: 'You didn’t mean to say that much. It was already out before the next question came.',
-    lie: 'The lie came out smooth as every short version she’s ever been handed on this line.',
+    lie: 'The lie came out smooth as every short version he’s ever been handed on this line.',
   },
   Sadness: {
     truth: 'Quiet, the way things get right before you say the true one.',
-    lie: 'You said it gently, and she let the gentleness stand in for an answer.',
+    lie: 'You said it gently, and he let the gentleness stand in for an answer.',
   },
   Disgust: {
-    truth: 'You said it plainly and let the discomfort be hers to sit with, not yours to manage.',
+    truth: 'You said it plainly and let the discomfort be his to sit with, not yours to manage.',
     lie: 'You kept your voice even while the rest of you wanted the call to end.',
   },
   Anger: {
@@ -233,8 +233,8 @@ const THERAPIST = {
     lie: 'You put an edge on it so the pause after wouldn’t turn into a real question.',
   },
   Anxiety: {
-    truth: 'You were already bracing for her next question before you’d finished this answer.',
-    lie: 'You knew which answer would end the call fastest, and gave her that one.',
+    truth: 'You were already bracing for his next question before you’d finished this answer.',
+    lie: 'You knew which answer would end the call fastest, and gave him that one.',
   },
 };
 

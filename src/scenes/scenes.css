@@ -25,6 +25,119 @@
   margin: 0;
 }
 
+/* The intake as a FEELZ form (questionnaireScene.js): app bar, progress,
+   the question above the card, fine print at the bottom. */
+.dx-intake {
+  justify-content: flex-start;
+  gap: 14px;
+  padding-top: 8px;
+}
+
+.dx-intake__bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid #444;
+  padding-bottom: 8px;
+  font-size: calc(9 * var(--fs));
+}
+
+.dx-intake__app { letter-spacing: 0.3em; }
+.dx-intake__form { opacity: 0.5; letter-spacing: 0.08em; }
+
+.dx-intake__progress {
+  display: flex;
+  gap: 5px;
+}
+
+.dx-intake__progress span {
+  flex: 1;
+  height: 4px;
+  background: #333;
+}
+
+.dx-intake__progress .is-done { background: #888; }
+.dx-intake__progress .is-now { background: var(--color-white); }
+
+.dx-intake__counter {
+  margin: 10px 0 0;
+  font-size: calc(8 * var(--fs));
+  opacity: 0.5;
+  letter-spacing: 0.08em;
+}
+
+.dx-intake__prompt {
+  margin: 0 0 18px;
+  font-size: calc(13 * var(--fs));
+  line-height: 1.6;
+}
+
+.dx-intake .dx-swipe-card__text {
+  opacity: 0.35;
+  letter-spacing: 0.1em;
+}
+
+.dx-intake__how {
+  margin: 4px 0 0;
+  text-align: center;
+  font-size: calc(8 * var(--fs));
+  opacity: 0.6;
+}
+
+.dx-intake__fine {
+  margin: auto 0 0;
+  text-align: center;
+  font-size: calc(7 * var(--fs));
+  opacity: 0.4;
+}
+
+.dx-intake__filed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin: auto 0;
+  text-align: center;
+}
+
+.dx-intake__line {
+  margin: 0;
+  animation: dx-intake-in 0.4s ease-out both;
+}
+
+.dx-intake__line.is-stamp {
+  font-size: calc(14 * var(--fs));
+  letter-spacing: 0.2em;
+  border: 2px solid var(--color-white);
+  padding: 6px 12px;
+  animation: dx-intake-stamp 0.35s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+
+.dx-intake__line.is-code { letter-spacing: 0.2em; opacity: 0.8; }
+.dx-intake__line.is-fine { font-size: calc(8 * var(--fs)); opacity: 0.55; }
+
+.dx-intake__provider {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 2px solid var(--color-therapist);
+  padding: 12px 16px;
+  animation: dx-intake-in 0.4s ease-out both;
+}
+
+.dx-intake__provider-name { font-size: calc(10 * var(--fs)); color: var(--color-therapist); }
+.dx-intake__provider-clinic { font-size: calc(7 * var(--fs)); opacity: 0.6; }
+
+@keyframes dx-intake-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes dx-intake-stamp {
+  from { opacity: 0; transform: scale(1.8) rotate(-6deg); }
+  to { opacity: 1; transform: rotate(-3deg); }
+}
+
 .dx-questionnaire-diagnosis {
   cursor: pointer;
 }

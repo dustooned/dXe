@@ -315,7 +315,7 @@ the top of every dialog screen (<code>ui/statusBar.js</code>):</p>
 <p>The carrier name reads the lake: <strong>FEELZ 5G → LTE → E → No Service</strong> as
 Truth Debt climbs. A red dot blinks just before IT or SO nudges you, and
 the bar goes to ✈ airplane mode when an NPC shuts you out at the door.
-The Therapist explains all of it in her first reaction. Truth generally raises Integrity and Lucidity and costs
+The Therapist explains all of it in his first reaction. Truth generally raises Integrity and Lucidity and costs
 Stability/Trust; a comforting lie usually does the opposite. These are
 mostly <em>legible texture</em> right now — visible to the player, shaping which
 line shows up as the closing &quot;epilogue&quot; note on the ending screen, but
@@ -623,25 +623,30 @@ they aren&#39;t necessarily dramatized on-page yet, and are marked as such.</p>
 ending the encounter. Every opening node also has two alternate versions
 (<code>_soft</code>, <code>_hard</code>) selected by how the player opened the confrontation —
 same character, same wound, different angle of approach.</p>
+<h3 id="doc-game_manual--the-intake-feelz-evaluation"><a class="anchor" href="#doc-game_manual--the-intake-feelz-evaluation" aria-label="Link to this section">#</a>The intake (FEELZ evaluation)</h3>
+<p>Part 2 of the FEELZ check-in. Three swipe questions in the app&#39;s own form (app bar, progress, &quot;PART 2 · Q1 OF 3&quot;); the first question demos the swipe, and tapping an answer works too. Then: FILE CREATED, a redacted file code, &quot;Results sealed until session end&quot; (the class is only named in the ending&#39;s FEELZ report), and the provider card, Charles Browning, LCSW, before the therapist&#39;s colored-word read.</p>
+<h3 id="doc-game_manual--swiping"><a class="anchor" href="#doc-game_manual--swiping" aria-label="Link to this section">#</a>Swiping</h3>
+<p>While you drag, the card leans into a side: that label grows and takes its color (cool for TRUTH, warm for LIE, never green/red), the card&#39;s border and wash follow, and a TRUTH / LIE stamp fades in over the card.</p>
 <h3 id="doc-game_manual--therapist-location-1"><a class="anchor" href="#doc-game_manual--therapist-location-1" aria-label="Link to this section">#</a>THERAPIST — Location 1</h3>
 <ul>
+<li><strong>Name:</strong> Charles Browning (male). On screen he is only ever THERAPIST; the name appears once, on the FEELZ provider card.</li>
 <li><strong>Where:</strong> never seen. A voice on the phone, through FEELZ.</li>
 <li><strong>Accent:</strong> <code>--color-therapist</code> (<code>#9370db</code>, soft violet).</li>
 <li><strong>Leitmotif:</strong> the ambient track already scoring the Questionnaire
 (<code>heavens_waiting_room.mp3</code>), not a synthesized phrase like the other
-four — she&#39;s the one character whose &quot;theme&quot; is the room tone itself.</li>
+four — he&#39;s the one character whose &quot;theme&quot; is the room tone itself.</li>
 <li><strong>Voice:</strong> an LCSW (licensed clinical social worker) at a community
-clinic with a 40+ caseload, typing notes while you talk. She&#39;s also
+clinic with a 40+ caseload, typing notes while you talk. He&#39;s also
 somehow a guru who speaks in small aphorisms (&quot;Weather, not a
 verdict&quot;), then gets pulled back by the clock (&quot;then I have to take my
 two o&#39;clock&quot;). Tired but warm, never cruel.</li>
 <li><strong>Role:</strong> the tutorial, done as guided discovery (the CBT technique of
-asking so the client finds the answer). She never explains a mechanic.
+asking so the client finds the answer). He never explains a mechanic.
 Each question makes the player use one new piece of the app for the
-first time, and it&#39;s spotlit (everything else dims) as she reaches it:
+first time, and it&#39;s spotlit (everything else dims) as he reaches it:
 wheel, card, meters, lake. Keep any future Therapist writing
 mechanic-silent.</li>
-<li><strong>Two exchanges:</strong> &quot;How are you walking in today? Just point.&quot; (she
+<li><strong>Two exchanges:</strong> &quot;How are you walking in today? Just point.&quot; (he
 describes the picked symbol in an image, never by name; the meters
 appear), then &quot;What happened in the dream?&quot; (the lake gauge appears:
 &quot;FEELZ reads it off the county sensors. It doesn&#39;t care how you feel&quot;).</li>
@@ -876,31 +881,31 @@ under: &quot;Even the clean ones go under.&quot;</p>
 and swiping but didn&#39;t know what the colors, the meters, Truth Debt or
 the goal were, and found the IT popup&#39;s X-only dismiss clunky. The fix
 is guided discovery (the CBT technique: the therapist asks questions so
-the client finds the answer, instead of telling them). She never explains
+the client finds the answer, instead of telling them). He never explains
 a mechanic. Each question makes the player use one new thing for the
 first time:</p>
 <ol>
 <li><em>&quot;How are you walking in today? Just point.&quot;</em> → the player picks a
-feeling → the card wiggles (<code>swipeCard.nudge()</code>) → she describes the
+feeling → the card wiggles (<code>swipeCard.nudge()</code>) → he describes the
 symbol in an image (<code>PICK</code> lines). <strong>Feelings are symbols only, never
-named</strong>, in the UI or by her. After this node the four meters fade in
+named</strong>, in the UI or by him. After this node the four meters fade in
 (&quot;four little lines&quot;).</li>
 <li><em>&quot;What happened in the dream?&quot;</em> → after it, the lake gauge fades in (or
-earlier, the moment debt goes above 0), and she hints at what it
+earlier, the moment debt goes above 0), and he hints at what it
 counts.</li>
 <li>Outro: homework by class (surreal, not literal), a closing line by
-dream answer, HANGUP (screen dims, her music stops), then IT → SO,
+dream answer, HANGUP (screen dims, his music stops), then IT → SO,
 also by dream answer.</li>
 </ol>
 <p>Each piece is <strong>spotlit</strong> as it&#39;s introduced: a black vignette mask
 (<code>ui/spotlight.js</code>, a blurred SVG mask with holes) dims everything except
-the thing she&#39;s talking about plus her line about it. The order is wheel,
+the thing he&#39;s talking about plus his line about it. The order is wheel,
 then card, then meters, then debt. It&#39;s visual only
 (<code>pointer-events: none</code>), so it never blocks input.</p>
-<p><strong>Who she is:</strong> an LCSW (licensed clinical social worker) at a community
+<p><strong>Who he is:</strong> an LCSW (licensed clinical social worker) at a community
 clinic: a 40+ caseload, back-to-back telehealth, typing notes while you
-talk. She&#39;s also somehow a guru who speaks in small aphorisms (&quot;Weather,
-not a verdict&quot;), then gets pulled back by her actual day (&quot;then I have to
+talk. He&#39;s also somehow a guru who speaks in small aphorisms (&quot;Weather,
+not a verdict&quot;), then gets pulled back by his actual day (&quot;then I have to
 take my two o&#39;clock&quot;). The wisdom is real, and so is the caseload. The
 voice notes are at the top of <code>manuscript/therapist.txt</code>.</p>
 <p>Engine pieces, all generic and opt-in per NPC: <code>PICK</code>/<code>REVEAL</code>/<code>SPOTLIGHT</code>/<code>=== OUTRO</code>
@@ -909,13 +914,13 @@ IT popups dismiss on any tap, and touch-and-hold on a wheel wedge to hear
 its tone without picking it (<code>feelzDartboard.js</code>&#39;s <code>HOLD_MS</code>).</p>
 <p>Prologue / Questionnaire / Therapist are deliberately one continuous
 unit — <strong>the chapter&#39;s opening call</strong>, and the intended routine opener for
-future chapters too: you&#39;re on site, the Therapist buzzes in, she evaluates
+future chapters too: you&#39;re on site, the Therapist buzzes in, he evaluates
 you. The order is load-bearing and the existing writing already assumed it.
 Prologue&#39;s final beat is the phone buzzing; the Therapist dialog&#39;s opening
 line is &quot;The screen lights up... cuts through the ringing in your ears,&quot;
 which answers both that buzz and Prologue&#39;s earlier &quot;Ears ringing&quot; beat.
 Questionnaire originally ran <em>before</em> Prologue, which fired the Therapist&#39;s
-diagnosis before the story had established why she&#39;d be talking to you —
+diagnosis before the story had established why he&#39;d be talking to you —
 swapping the two fixed a pre-existing content/order mismatch rather than
 imposing a new one. Don&#39;t reorder these three without re-reading the copy.
 <code>localStorage</code> persists endings seen and chapters completed; the latter
@@ -1294,7 +1299,7 @@ and &quot;Filling the wheel&quot;, SCRIPT_FORMAT for the new lines.</p>
 (<code>engine/contacts.js</code>, Therapist always, gated on bars + Wi-Fi), IT/SO pace
 pressure (<code>engine/itPressure.js</code>), text speed setting, the stay-in-touch
 bust at the end of a trusted encounter (<code>CONTACT</code>), Trust surfacing on
-the next wheel instead of a pop-up, static lake gauge in encounters.</p>
+the next wheel instead of a pop-up, lake gauge pinned in place in encounters (fish keep swimming).</p>
 <p><strong>Still open from the Sep 27 discussion:</strong> scene moves (Deborah&#39;s garden,
 Rwanda&#39;s commissioned mural, Samun&#39;s crosswalk), the Therapist and NPCs
 speaking to each class, class screen redesign, IT/SO meaner as the lake
@@ -1318,7 +1323,7 @@ countdown grim reapers who never admit they&#39;re against you&quot; voice
 and SO rebuttal tables (~50 lines) still use the earlier voice.
 Rewriting them would also drop IT&#39;s per-class voices, so it&#39;s <strong>waiting
 on the designer&#39;s OK</strong>.</li>
-<li><strong>Therapist reads the check-in back.</strong> One line in her call (&quot;You put
+<li><strong>Therapist reads the check-in back.</strong> One line in his call (&quot;You put
 &#39;nearly every day.&#39; Okay.&quot;). This was proposed but not built. Only the
 ending comparison was chosen.</li>
 <li><strong>More ways to clean the lake</strong> (proposed, not chosen yet): the lake
@@ -2061,7 +2066,7 @@ through this wrapper.</p>
 <p><strong>Placement.</strong> One mini-game precedes each NPC, with the confrontation
 cutscene between the two, so a chapter reads as explore -&gt; confront -&gt;
 encounter, repeating. In <code>lake-ulysses</code> that&#39;s Deborah / Rwanda / Samun /
-Rick — four slots. Therapist is exempt: she belongs to the chapter&#39;s opening
+Rick — four slots. Therapist is exempt: he belongs to the chapter&#39;s opening
 call (Prologue -&gt; Questionnaire -&gt; Therapist), not to this pattern.</p>
 <h4 id="doc-scene_types--the-step-system-enginewalksequencerjs"><a class="anchor" href="#doc-scene_types--the-step-system-enginewalksequencerjs" aria-label="Link to this section">#</a>The step system (<code>engine/walkSequencer.js</code>)</h4>
 <p>A mini-game module runs its own ordered <code>STEPS</code> list — a second, smaller
@@ -3014,7 +3019,7 @@ colored-initial placeholder whenever it&#39;s unset.</p>
 <tr>
 <td align="left"><code>portrait_therapist</code></td>
 <td align="left">192×192</td>
-<td align="left">💬 she&#39;s voice-only by design — confirm before drawing</td>
+<td align="left">💬 he&#39;s voice-only by design — confirm before drawing</td>
 </tr>
 </tbody></table>
 <hr>
@@ -4998,7 +5003,7 @@ End) need the same mapping decision before they can be assigned to scenes.</p>
     </article>
 <article class="doc" id="doc-it_design" data-title="IT — Design Document" data-file="IT_DESIGN.md" hidden>
       <p class="doc-source">Planning · <code>docs/IT_DESIGN.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-it_design--so-the-doubt-rebuttal-built">SO — the doubt rebuttal (built)</a></li><li><a href="#doc-it_design--what-it-is">What IT Is</a></li><li><a href="#doc-it_design--how-it-works">How IT Works</a></li><li><a href="#doc-it_design--voice-profile-by-class">Voice Profile by Class</a></li><li><a href="#doc-it_design--where-it-appears">Where IT Appears</a></li><li><a href="#doc-it_design--it-is-the-hint-system">IT is the hint system</a></li><li><a href="#doc-it_design--visual-identity">Visual Identity</a></li><li><a href="#doc-it_design--the-mk2-intro-lines-it39s-first-appearance">The MK2 Intro Lines (IT&amp;#39;s First Appearance)</a></li><li><a href="#doc-it_design--what-was-built">What Was Built</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-it_design--names-it-and-so-until-the-end-built">Names — IT and SO, until the end (built)</a></li><li><a href="#doc-it_design--so-the-doubt-rebuttal-built">SO — the doubt rebuttal (built)</a></li><li><a href="#doc-it_design--what-it-is">What IT Is</a></li><li><a href="#doc-it_design--how-it-works">How IT Works</a></li><li><a href="#doc-it_design--voice-profile-by-class">Voice Profile by Class</a></li><li><a href="#doc-it_design--where-it-appears">Where IT Appears</a></li><li><a href="#doc-it_design--it-is-the-hint-system">IT is the hint system</a></li><li><a href="#doc-it_design--visual-identity">Visual Identity</a></li><li><a href="#doc-it_design--the-mk2-intro-lines-it39s-first-appearance">The MK2 Intro Lines (IT&amp;#39;s First Appearance)</a></li><li><a href="#doc-it_design--what-was-built">What Was Built</a></li></ul></nav>
       <h1 id="doc-it_design--it-design-document"><a class="anchor" href="#doc-it_design--it-design-document" aria-label="Link to this section">#</a>IT — Design Document</h1>
 <p>Last updated: 2026-08-04.</p>
 <p><strong>Status (2026-09-06): every trigger this doc originally listed is built.</strong>
@@ -5037,6 +5042,11 @@ left, and it&#39;s a content job now, not an engineering one: writing real
 prose in place of every placeholder line, and deciding whether IT should
 also become the hint system (see below — separately still unbuilt).</p>
 <hr>
+<h2 id="doc-it_design--names-it-and-so-until-the-end-built"><a class="anchor" href="#doc-it_design--names-it-and-so-until-the-end-built" aria-label="Link to this section">#</a>Names — IT and SO, until the end (built)</h2>
+<p>Every IT/SO popup labels the icon with its name, IT or SO. At the very end
+of the chapter (endingScene.js, the last IT and SO popups) the missing
+letters pry their way in: IT becomes SHIT, SO becomes SHOW. The letters
+are in ui/itPopup.js NAMES; the ending passes <code>reveal: true</code>.</p>
 <h2 id="doc-it_design--so-the-doubt-rebuttal-built"><a class="anchor" href="#doc-it_design--so-the-doubt-rebuttal-built" aria-label="Link to this section">#</a>SO — the doubt rebuttal (built)</h2>
 <p>Grew out of noticing that two of IT&#39;s triggers — bloom events and the
 post-swipe dominant-emotion read — read as repetitive over a real

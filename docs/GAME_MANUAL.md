@@ -157,7 +157,7 @@ the top of every dialog screen (`ui/statusBar.js`):
 The carrier name reads the lake: **FEELZ 5G → LTE → E → No Service** as
 Truth Debt climbs. A red dot blinks just before IT or SO nudges you, and
 the bar goes to ✈ airplane mode when an NPC shuts you out at the door.
-The Therapist explains all of it in her first reaction. Truth generally raises Integrity and Lucidity and costs
+The Therapist explains all of it in his first reaction. Truth generally raises Integrity and Lucidity and costs
 Stability/Trust; a comforting lie usually does the opposite. These are
 mostly *legible texture* right now — visible to the player, shaping which
 line shows up as the closing "epilogue" note on the ending screen, but
@@ -400,25 +400,34 @@ ending the encounter. Every opening node also has two alternate versions
 (`_soft`, `_hard`) selected by how the player opened the confrontation —
 same character, same wound, different angle of approach.
 
+### The intake (FEELZ evaluation)
+
+Part 2 of the FEELZ check-in. Three swipe questions in the app's own form (app bar, progress, "PART 2 · Q1 OF 3"); the first question demos the swipe, and tapping an answer works too. Then: FILE CREATED, a redacted file code, "Results sealed until session end" (the class is only named in the ending's FEELZ report), and the provider card, Charles Browning, LCSW, before the therapist's colored-word read.
+
+### Swiping
+
+While you drag, the card leans into a side: that label grows and takes its color (cool for TRUTH, warm for LIE, never green/red), the card's border and wash follow, and a TRUTH / LIE stamp fades in over the card.
+
 ### THERAPIST — Location 1
 
+- **Name:** Charles Browning (male). On screen he is only ever THERAPIST; the name appears once, on the FEELZ provider card.
 - **Where:** never seen. A voice on the phone, through FEELZ.
 - **Accent:** `--color-therapist` (`#9370db`, soft violet).
 - **Leitmotif:** the ambient track already scoring the Questionnaire
   (`heavens_waiting_room.mp3`), not a synthesized phrase like the other
-  four — she's the one character whose "theme" is the room tone itself.
+  four — he's the one character whose "theme" is the room tone itself.
 - **Voice:** an LCSW (licensed clinical social worker) at a community
-  clinic with a 40+ caseload, typing notes while you talk. She's also
+  clinic with a 40+ caseload, typing notes while you talk. He's also
   somehow a guru who speaks in small aphorisms ("Weather, not a
   verdict"), then gets pulled back by the clock ("then I have to take my
   two o'clock"). Tired but warm, never cruel.
 - **Role:** the tutorial, done as guided discovery (the CBT technique of
-  asking so the client finds the answer). She never explains a mechanic.
+  asking so the client finds the answer). He never explains a mechanic.
   Each question makes the player use one new piece of the app for the
-  first time, and it's spotlit (everything else dims) as she reaches it:
+  first time, and it's spotlit (everything else dims) as he reaches it:
   wheel, card, meters, lake. Keep any future Therapist writing
   mechanic-silent.
-- **Two exchanges:** "How are you walking in today? Just point." (she
+- **Two exchanges:** "How are you walking in today? Just point." (he
   describes the picked symbol in an image, never by name; the meters
   appear), then "What happened in the dream?" (the lake gauge appears:
   "FEELZ reads it off the county sensors. It doesn't care how you feel").

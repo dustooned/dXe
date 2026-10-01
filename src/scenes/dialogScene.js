@@ -76,7 +76,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let itPopup = null;
   let oscilloscope = null;
   let dartboard = null;
-  // The Therapist's PICK: line for the current feeling, drawn under her
+  // The Therapist's PICK: line for the current feeling, drawn under his
   // prompt the moment a wedge is picked (see the prompt branch of render()).
   let pickTypewriter = null;
   // Set by a wedge pick, consumed by the next render — makes the swipe card
