@@ -9,9 +9,8 @@ import { drawEmotionPattern } from '../ui/emotionPattern.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createItPopup } from '../ui/itPopup.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
-import { ppmFor, statusFor } from '../engine/lake.js';
 import { ENDING_IT_TEXT, ENDING_SO_TEXT } from '../engine/itEndgame.js';
-import { createFeelzReport, reportSummaryLine } from '../ui/feelzReport.js';
+import { buildRecord, createFaxPrintout, downloadRecordPng } from '../ui/feelzRecord.js';
 import * as fx from '../shell/fx.js';
 import * as audio from '../shell/audio.js';
 
@@ -25,48 +24,6 @@ const ENDING_INTENSITY = {
 };
 
 const JUDGMENT_BEAT_MS = 900;
-
-// What the player said about themselves in the FEELZ check-in, set flat
-// against what FEELZ actually recorded. No verdict, no commentary: two
-// columns of data, and the gap between them is the player's to read.
-function createCheckInRecord(state, finalDebt) {
-  const said = state.checkIn ?? {};
-  const lieNodes = Object.entries(state.choices ?? {}).filter(([, side]) => side === 'lie');
-  const people = new Set(lieNodes.map(([nodeId]) => nodeId.split('_')[0])).size;
-  const liesLine = lieNodes.length
-    ? `${lieNodes.length}, to ${people} ${people === 1 ? 'person' : 'people'}`
-    : '0';
-
-  const rows = [
-    ['SELF-REPORTED', null],
-    ['Water higher than it should be', said.water ?? '—'],
-    ['Told someone you were fine', said.fine ?? '—'],
-    ['RECORDED', null],
-    ['Lies told', liesLine],
-    ['Final reading', `${ppmFor(finalDebt)} ppm · ${statusFor(finalDebt)}`],
-  ];
-
-  const el = document.createElement('dl');
-  el.className = 'dx-checkin-record';
-  for (const [label, value] of rows) {
-    if (value === null) {
-      const head = document.createElement('dt');
-      head.className = 'dx-checkin-record__head';
-      head.textContent = label;
-      el.appendChild(head);
-      continue;
-    }
-    const row = document.createElement('div');
-    row.className = 'dx-checkin-record__row';
-    const dt = document.createElement('dt');
-    dt.textContent = label;
-    const dd = document.createElement('dd');
-    dd.textContent = value;
-    row.append(dt, dd);
-    el.appendChild(row);
-  }
-  return el;
-}
 
 export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
   const endingKey = getEndingKey(run.get().truthDebt);
@@ -107,11 +64,15 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
     showText();
   }
 
-  // The ending is three pages, so no one screen is a wall of data:
-  //   1. the water  — the science: final reading, self-report vs. record
-  //   2. the report — FEELZ's clinical read, where the class is revealed
-  //   3. the story  — the ending text, then all of it compact on one page
-  //      (screenshot-ready), then IT and SO get the last word.
+  // The ending, one thing per screen:
+  //   1. the final reading  — the lake gauge, full size
+  //   2. the story          — each line of the ending its own slide, with
+  //                           an image (placeholder frames until art lands)
+  //   3. the epilogue       — the stat that broke, as its own slide
+  //   4. a closing quote, then the ending's name as a title card
+  //   5. the record         — everything consolidated, printed like a fax,
+  //                           with SAVE AS PNG (an official FEELZ document)
+  // then IT and SO get the last word.
   function newPage(className) {
     stageEl.innerHTML = '';
     const screen = document.createElement('div');
@@ -120,80 +81,131 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
     return screen;
   }
 
-  function appendNext(screen, onNext) {
-    const btn = document.createElement('button');
-    btn.className = 'dx-btn dx-ending-next';
-    btn.textContent = 'NEXT ▶';
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      onNext();
-    });
-    screen.appendChild(btn);
-  }
-
   function showText() {
     clearTimeout(judgmentTimer);
     const screen = newPage('dx-ending-page--water');
-
-    // The payoff for the gauge the player's watched all chapter: the
-    // lake's final reading, full size, with whatever's left in the tank.
-    const finalReading = document.createElement('p');
-    finalReading.className = 'dx-text dx-ending-reading-label';
-    finalReading.textContent = 'FINAL READING';
-    screen.appendChild(finalReading);
+    const label = document.createElement('p');
+    label.className = 'dx-text dx-ending-reading-label';
+    label.textContent = 'FINAL READING';
+    screen.appendChild(label);
     screen.appendChild(createLakeGauge(finalDebt, { large: true }).el);
     audio.playLakeSplash(finalDebt);
-    screen.appendChild(createCheckInRecord(run.get(), finalDebt));
-    appendNext(screen, showReport);
+    tapHint(screen);
+    screen.addEventListener('click', () => showSlide(0), { once: true });
   }
 
-  function showReport() {
-    const screen = newPage('dx-ending-page--report');
-    screen.appendChild(createFeelzReport(run.get()));
-    appendNext(screen, showStory);
+  function tapHint(screen) {
+    const hint = document.createElement('p');
+    hint.className = 'dx-text dx-tap-hint';
+    hint.textContent = '(tap to continue)';
+    screen.appendChild(hint);
   }
 
-  function showStory() {
-    const screen = newPage('dx-ending-page--story');
-    screen.addEventListener('click', handleTextTap);
+  // The story's slides: every line of the ending, then the epilogue.
+  const slides = [
+    ...ending.text.map((line, i) => ({ text: line, image: ending.images?.[i] ?? null, n: i + 1 })),
+    ...(epilogueLine ? [{ text: epilogueLine, epilogue: true }] : []),
+  ];
 
-    const title = document.createElement('h2');
-    title.className = 'dx-title';
-    title.textContent = ending.title;
-    screen.appendChild(title);
-
-    const textEl = document.createElement('p');
-    textEl.className = 'dx-text dx-ending-body';
-    screen.appendChild(textEl);
-
-    stageEl.appendChild(screen);
-
-    const fullText = [...ending.text, epilogueLine].filter(Boolean).join('\n\n');
-    typewriter = createTypewriter(textEl, fullText, {
-      onDone: () => {
-        appendSummary(screen);
-        showEndingIt(screen);
-      },
+  function showSlide(i) {
+    if (i >= slides.length) { showQuote(); return; }
+    const slide = slides[i];
+    const screen = newPage('dx-ending-page--slide');
+    const frame = document.createElement('div');
+    frame.className = 'dx-ending-frame';
+    if (slide.image) {
+      const img = document.createElement('img');
+      img.src = slide.image;
+      img.alt = '';
+      frame.appendChild(img);
+    } else {
+      // Placeholder until art: the ending and slide number, and the line
+      // it illustrates, for whoever draws it.
+      frame.classList.add('is-placeholder');
+      frame.innerHTML = `<span class="dx-ending-frame__tag">${slide.epilogue ? 'EPILOGUE' : `${ending.title} · ${slide.n}`}</span><span class="dx-ending-frame__ph">IMAGE</span>`;
+    }
+    screen.appendChild(frame);
+    if (slide.epilogue) {
+      const tag = document.createElement('p');
+      tag.className = 'dx-text dx-ending-reading-label';
+      tag.textContent = 'EPILOGUE';
+      screen.appendChild(tag);
+    }
+    const text = document.createElement('p');
+    text.className = 'dx-text dx-ending-slide-text';
+    screen.appendChild(text);
+    typewriter?.destroy();
+    typewriter = createTypewriter(text, slide.text, { onChar: audio.playTypewriterTick });
+    screen.addEventListener('click', () => {
+      if (typewriter && !typewriter.isDone()) { typewriter.finish(); return; }
+      showSlide(i + 1);
     });
   }
 
-  // Everything on one page once the story's drawn: small gauge, the
-  // diagnosis line, the tally. Left in place so the player can screenshot it.
-  function appendSummary(screen) {
-    const box = document.createElement('div');
-    box.className = 'dx-ending-summary';
-    box.appendChild(createLakeGauge(finalDebt).el);
-    const line = document.createElement('p');
-    line.className = 'dx-ending-summary__line';
-    line.textContent = reportSummaryLine(run.get());
-    box.appendChild(line);
-    screen.appendChild(box);
+  function showQuote() {
+    const screen = newPage('dx-ending-page--quote');
+    if (ending.quote) {
+      const q = document.createElement('p');
+      q.className = 'dx-text dx-ending-quote';
+      screen.appendChild(q);
+      const by = document.createElement('p');
+      by.className = 'dx-text dx-ending-quote-by';
+      by.textContent = `— ${ending.quoteBy}`;
+      by.hidden = true;
+      screen.appendChild(by);
+      typewriter?.destroy();
+      typewriter = createTypewriter(q, `\u201c${ending.quote}\u201d`, { onChar: audio.playTypewriterTick, onDone: () => { by.hidden = false; } });
+    }
+    screen.addEventListener('click', () => {
+      if (typewriter && !typewriter.isDone()) { typewriter.finish(); return; }
+      showCard();
+    });
   }
 
-  function handleTextTap() {
-    if (typewriter && !typewriter.isDone()) {
-      typewriter.finish();
-    }
+  function showCard() {
+    const screen = newPage('dx-ending-page--card');
+    const kicker = document.createElement('p');
+    kicker.className = 'dx-text dx-ending-reading-label';
+    kicker.textContent = 'ENDING';
+    const title = document.createElement('h2');
+    title.className = 'dx-title dx-ending-card-title';
+    title.textContent = ending.title;
+    screen.append(kicker, title);
+    fx.flash(intensity);
+    audio.playHit(intensity);
+    tapHint(screen);
+    screen.addEventListener('click', showRecord, { once: true });
+  }
+
+  let fax = null;
+  function showRecord() {
+    const screen = newPage('dx-ending-page--record');
+    const record = buildRecord(run.get(), ending);
+    const actions = document.createElement('div');
+    actions.className = 'dx-ending-actions';
+    actions.hidden = true;
+    const save = document.createElement('button');
+    save.className = 'dx-btn';
+    save.textContent = 'SAVE AS PNG';
+    save.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      save.disabled = true;
+      save.textContent = 'PRINTING…';
+      await downloadRecordPng(record);
+      save.disabled = false;
+      save.textContent = 'SAVE AS PNG';
+    });
+    actions.appendChild(save);
+    fax = createFaxPrintout(record, {
+      onDone: () => {
+        if (!actions.hidden) return;
+        actions.hidden = false;
+        showEndingIt(actions);
+      },
+    });
+    screen.append(fax.el, actions);
+    // A tap pulls the paper: it rushes (and jams) rather than vanishing.
+    fax.el.addEventListener('click', () => fax.rush());
   }
 
   // IT and SO get the actual last word of the chapter — once the body text
@@ -235,6 +247,7 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
   return function unmount() {
     clearTimeout(judgmentTimer);
     typewriter?.destroy();
+    fax?.destroy();
     itPopup?.destroy();
     stageEl.innerHTML = '';
   };

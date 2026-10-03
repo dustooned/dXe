@@ -1413,6 +1413,42 @@ export function playClassSigil(cls) {
   setTimeout(() => out.disconnect(), 9000);
 }
 
+// A fax coming in (ui/feelzRecord.js): the handshake (two tones and a
+// screech of modem noise), returning how long it takes, then a dot-matrix
+// chirp per printed line (a thunk for the stamp).
+export function playFaxHandshake() {
+  const t = ensureContext().currentTime + 0.02;
+  blip(2100, t, 0.35, 0.03, 'sine');
+  blip(1300, t + 0.45, 0.3, 0.03, 'sine');
+  playStaticNoise(700);
+  blip(1800, t + 1.1, 0.12, 0.025, 'square');
+  blip(1200, t + 1.25, 0.12, 0.025, 'square');
+  return 1500;
+}
+
+// The paper yanked through too fast: the feed motor stutters and grinds
+// against it, a few scraping bursts, then it catches up.
+export function playFaxJam() {
+  const t = ensureContext().currentTime + 0.01;
+  let at = t;
+  for (let i = 0; i < 9; i++) {
+    const f = 70 + Math.random() * 50;
+    blip(f, at, 0.05 + Math.random() * 0.04, 0.09, 'square');
+    if (i % 3 === 1) blip(2400 + Math.random() * 800, at + 0.02, 0.03, 0.015, 'square');
+    at += 0.06 + Math.random() * 0.07;
+  }
+  playStaticNoise(380);
+}
+
+export function playFaxLine(stamp = false) {
+  const t = ensureContext().currentTime + 0.01;
+  if (stamp) {
+    blip(90, t, 0.12, 0.12, 'square');
+    return;
+  }
+  for (let i = 0; i < 4; i++) blip(1600 + Math.random() * 600, t + i * 0.025, 0.012, 0.02, 'square');
+}
+
 // A meter moved (ui/statusBar.js): two square-wave notes a fifth apart,
 // rising when it went up, falling when it went down. Each meter has its
 // own pitch so they're learnable by ear; several changes play in turn.

@@ -1545,3 +1545,260 @@
   width: 38%;
   margin: 0 auto 10px;
 }
+
+/* ── Ending (endingScene.js): one thing per screen ── */
+.dx-ending-page--water,
+.dx-ending-page--slide,
+.dx-ending-page--quote,
+.dx-ending-page--card {
+  justify-content: center;
+  align-items: stretch;
+  gap: 18px;
+  cursor: pointer;
+}
+
+.dx-ending-frame {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border: 2px solid var(--color-white);
+  overflow: hidden;
+  position: relative;
+  animation: dx-intake-in 0.6s ease-out both;
+}
+
+.dx-ending-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+
+.dx-ending-frame.is-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.04) 0 2px, transparent 2px 4px),
+    linear-gradient(135deg, #15151a, #24242c);
+}
+
+.dx-ending-frame__tag {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-size: calc(7 * var(--fs));
+  letter-spacing: 0.15em;
+  opacity: 0.5;
+}
+
+.dx-ending-frame__ph {
+  font-size: calc(10 * var(--fs));
+  letter-spacing: 0.4em;
+  opacity: 0.25;
+}
+
+.dx-ending-slide-text {
+  line-height: 1.9;
+  min-height: 4.5em;
+}
+
+.dx-ending-quote {
+  font-size: calc(11 * var(--fs));
+  line-height: 2;
+  text-align: center;
+}
+
+.dx-ending-quote-by {
+  text-align: center;
+  font-size: calc(8 * var(--fs));
+  opacity: 0.6;
+}
+
+.dx-ending-card-title {
+  text-align: center;
+  font-size: calc(18 * var(--fs));
+  letter-spacing: 0.15em;
+  animation: dx-intake-stamp 0.5s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+
+.dx-ending-page--card .dx-ending-reading-label { text-align: center; }
+
+/* The record: a fax machine slot, thermal paper feeding out of it. */
+.dx-ending-page--record {
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.dx-fax {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-height: 0;
+}
+
+/* The pixel printer the paper feeds out of. */
+.dx-fax__printer {
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.dx-fax__printer svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.dx-fax .dx-fax__led { opacity: 0.35; }
+.dx-fax.is-printing .dx-fax__led { animation: dx-fax-led 0.5s steps(1, end) infinite; }
+.dx-fax.is-jammed.is-printing .dx-fax__led { fill: #e0483e; animation-duration: 0.18s; }
+
+@keyframes dx-fax-led {
+  0% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+/* A little shudder while it jams. */
+.dx-fax.is-jammed .dx-fax__printer { animation: dx-fax-shudder 0.5s steps(2, end) 2; }
+
+@keyframes dx-fax-shudder {
+  0%, 100% { transform: none; }
+  25% { transform: translate(-1px, 1px); }
+  75% { transform: translate(1px, 0); }
+}
+
+.dx-fax__paper {
+  margin-top: -3px;
+  width: 92%;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  background: #f4f1e8;
+  color: #1d1d22;
+  box-shadow: inset 0 8px 10px -6px rgba(0, 0, 0, 0.45);
+  font-family: 'VT323', 'Courier New', monospace;
+  font-size: calc(15 * var(--fs));
+  text-align: left;
+  line-height: 1.15;
+}
+
+.dx-fax__feed {
+  position: relative;
+  padding: 10px 12px 18px;
+}
+
+/* Each line prints left to right in pixel steps, with the print head (a
+   small dark block) riding the leading edge. */
+.dx-fax__feed > .is-printing {
+  position: relative;
+  animation: dx-fax-line var(--print-ms, 340ms) steps(10, end) both;
+}
+
+.dx-fax__feed > .is-printing::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: #2b2b33;
+  animation: dx-fax-head var(--print-ms, 340ms) steps(10, end) both;
+  pointer-events: none;
+}
+
+@keyframes dx-fax-head {
+  from { left: 0; opacity: 1; }
+  99% { left: calc(100% - 6px); opacity: 1; }
+  to { left: calc(100% - 6px); opacity: 0; }
+}
+
+/* Pulled too fast: the line comes out dragged and a little faint. */
+.dx-fax__feed > .is-smeared {
+  transform: translateX(2px) skewX(-6deg);
+  opacity: 0.82;
+  filter: blur(0.3px);
+}
+
+/* The scratch the jam leaves: faint diagonal drag streaks across the paper,
+   under the text, never covering it. */
+.dx-fax__scratch {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 70px;
+  pointer-events: none;
+  background: repeating-linear-gradient(-14deg, rgba(60, 60, 70, 0.10) 0 2px, transparent 2px 9px);
+  mask-image: linear-gradient(90deg, transparent, #000 15%, #000 70%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 15%, #000 70%, transparent);
+  z-index: 0;
+}
+
+.dx-fax__feed > *:not(.dx-fax__scratch) { position: relative; z-index: 1; }
+
+@keyframes dx-fax-line {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+.dx-fax__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 2px solid #1d1d22;
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+}
+
+.dx-fax__logo {
+  font-family: var(--font-pixel);
+  font-size: calc(11 * var(--fs));
+  letter-spacing: 0.15em;
+}
+
+.dx-fax__kind { letter-spacing: 0.1em; }
+
+.dx-fax__row {
+  display: grid;
+  grid-template-columns: 34% 1fr;
+  gap: 6px;
+}
+
+.dx-fax__label { opacity: 0.7; }
+
+.dx-fax__rule {
+  border-top: 1px dashed #8e897d;
+  margin: 5px 0;
+}
+
+.dx-fax__icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  padding-left: calc(34% + 6px);
+}
+
+.dx-fax__chip { display: inline-flex; align-items: center; gap: 2px; }
+.dx-fax__chip.is-missing { opacity: 0.35; }
+
+.dx-fax__fine {
+  margin: 10px 0 0;
+  font-size: calc(12 * var(--fs));
+  opacity: 0.7;
+}
+
+.dx-fax__stamp {
+  display: inline-block;
+  margin: 10px 0 0 auto;
+  float: right;
+  padding: 3px 8px;
+  border: 3px double #b3261e;
+  color: #b3261e;
+  transform: rotate(-8deg);
+  letter-spacing: 0.1em;
+}
+
+.dx-ending-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

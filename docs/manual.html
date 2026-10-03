@@ -588,6 +588,33 @@ scales with how far their TRU and STB moved.</p>
 </tbody></table>
 <p>The body line shows (just under the wheel) on every hold (a long hover with a mouse) and on the first 3 picks of each feeling, then picks show only the icon and the screen&#39;s reaction.</p>
 <p><strong>Tap burst:</strong> every pick also fires a one-shot burst of chunky pixels from the slice, in the feeling&#39;s color and its own motion: sparks rising and flickering (red), a ring closing like a blink (indigo), drops falling (blue), rays out (yellow), a jittering swarm (orange), a wobbling drip (green), a fast wide burst (pink), a slow soft ring (teal). The names appear only in the ending&#39;s FEELZ report. (Body lines draw on research mapping where people feel emotions: Nummenmaa et al., 2014.)</p>
+<h3 id="doc-game_manual--the-ending-rebuilt-2026-10-02"><a class="anchor" href="#doc-game_manual--the-ending-rebuilt-2026-10-02" aria-label="Link to this section">#</a>The ending (rebuilt 2026-10-02)</h3>
+<p>One thing per screen, then the record:</p>
+<ol>
+<li><strong>Final reading</strong>: the lake gauge, full size.</li>
+<li><strong>The story</strong>: each line of the ending is its own slide over an image
+frame (placeholders, labeled ending · number, until art lands; add art
+as an <code>images</code> list in endings.json).</li>
+<li><strong>Epilogue</strong>: the stat that broke, its own slide.</li>
+<li><strong>A closing quote</strong> per ending (public domain): CLEAN CUT, John 8:32;
+FUNCTIONAL MASK, Heraclitus; COLLAPSE, Ecclesiastes 1:7; LIVING LIE,
+Jonathan Swift (1710).</li>
+<li><strong>The ending&#39;s name</strong> as a title card.</li>
+<li><strong>The record</strong>: everything consolidated (file number, the class finally
+named as a profile, the lake, self-report vs. record, feelings collected
+and led with, disclosure per person, who trusted you, the case note, the
+outcome), printed out of a pixel-art fax: a handshake screech, then line
+by line, a print head riding each line, the status light blinking, a
+dot-matrix chirp per line, a RECEIVED stamp. Tap to pull the paper: the
+motor jams and grinds, the rest rips out fast and comes out smeared, and
+a faint drag scratch stays on the paper.</li>
+<li><strong>SAVE AS PNG</strong>: a letter-size &quot;certified copy&quot;: FEELZ letterhead (the
+wheel with your collected slices, the rainbow wordmark), the record,
+signature lines for C. Browning, LCSW and B. Baiter, City Council, a red
+City of Lake Ulysses APPROVED seal, and lore small print about Halberd &amp;
+Lowe Affective Systems and Municipal Wellness Agreement LU-77 (&quot;The lake
+remembers.&quot;). Then IT and SO get the last word.</li>
+</ol>
 <h3 id="doc-game_manual--the-closing-line-after-each-reaction"><a class="anchor" href="#doc-game_manual--the-closing-line-after-each-reaction" aria-label="Link to this section">#</a>The closing line after each reaction</h3>
 <p>After a character reacts, one short line says how your answer left you, keyed by the feeling you picked and whether you told the truth (<code>engine/reactions.js</code>). Each character has their own set in their own imagery (Deborah&#39;s kitchen, Rick&#39;s bar). Each class also has its own set, the same delivery told through the class lens (Guns: force and bracing; Bible: conscience and confession; Crystals: energy moving through). The game alternates the two, so the same pick never closes the same way twice in a row. Example, Anger and truth with Rick as Bible: &quot;It came out like a verdict. You let it stand.&quot; then next time Rick&#39;s own &quot;Harder than you meant it, and for a second his jaw matched yours.&quot;</p>
 <h3 id="doc-game_manual--the-word-feelz"><a class="anchor" href="#doc-game_manual--the-word-feelz" aria-label="Link to this section">#</a>The word FEELZ</h3>
@@ -1493,6 +1520,7 @@ falls back when the intersection is empty.</li>
 <p><strong>Open (raised 2026-09-30, not decided):</strong></p>
 <ul>
 <li><strong>No node MOOD is Trust any more</strong> (2026-10-01): Rwanda Q4 → Anxiety, Rick&#39;s enabled Q2 → Anger. Trust is earn-only, so a Trust mood could almost never be matched.</li>
+<li><strong>Ending rebuilt</strong> (<code>endingScene.js</code>, <code>ui/feelzRecord.js</code>): final reading → story slides with image placeholders (endings.json <code>images</code> for art) → epilogue → closing quote (endings.json <code>quote</code>/<code>quoteBy</code>) → ending card → the record printed by a pixel fax (handshake, per-line print head and chirp; tap rushes it with a jam sound and a smear scratch) → SAVE AS PNG, an official FEELZ certified copy with letterhead, seal, signatures and company lore (Halberd &amp; Lowe Affective Systems, Agreement LU-77; PLACEHOLDER lore). The old water/report pages are folded into the record.</li>
 <li><strong>Masks</strong> (MASK lines; Samun ×4, Rick ×3, first two questions): the shown feeling differs from the real MOOD; tells are the prompt&#39;s colored word, a blink of the real color on the oscilloscope, the grind on picking the mask, and contacts&#39; reads. Therapist outro plants it. Difficulty is now reading, not reachability (balance script still shows every route possible).</li>
 <li><strong>Earned stories</strong> (STORY lines, <code>showConnection</code>): connecting plays a five-beat first-person cutscene of each NPC&#39;s trauma (one per character). Rick&#39;s ties to Gabriel; hearing it puts Rick on the bank at the Reckoning&#39;s gate (<code>run.storiesHeard</code>).</li>
 <li><strong>Dialogue always in quotes</strong> (2026-10-02): every NPC PROMPT (58 lines across manuscript + handoff copies), every speaker cutscene beat (Bob Baiter, the confrontations), the epigraph; calls, the player&#39;s SAY and future speaker beats are quoted at render (<code>ui/speech.js</code>). IT/SO stay unquoted (thoughts).</li>

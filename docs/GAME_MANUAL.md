@@ -344,6 +344,33 @@ The body line shows (just under the wheel) on every hold (a long hover with a mo
 
 **Tap burst:** every pick also fires a one-shot burst of chunky pixels from the slice, in the feeling's color and its own motion: sparks rising and flickering (red), a ring closing like a blink (indigo), drops falling (blue), rays out (yellow), a jittering swarm (orange), a wobbling drip (green), a fast wide burst (pink), a slow soft ring (teal). The names appear only in the ending's FEELZ report. (Body lines draw on research mapping where people feel emotions: Nummenmaa et al., 2014.)
 
+### The ending (rebuilt 2026-10-02)
+
+One thing per screen, then the record:
+1. **Final reading**: the lake gauge, full size.
+2. **The story**: each line of the ending is its own slide over an image
+   frame (placeholders, labeled ending · number, until art lands; add art
+   as an `images` list in endings.json).
+3. **Epilogue**: the stat that broke, its own slide.
+4. **A closing quote** per ending (public domain): CLEAN CUT, John 8:32;
+   FUNCTIONAL MASK, Heraclitus; COLLAPSE, Ecclesiastes 1:7; LIVING LIE,
+   Jonathan Swift (1710).
+5. **The ending's name** as a title card.
+6. **The record**: everything consolidated (file number, the class finally
+   named as a profile, the lake, self-report vs. record, feelings collected
+   and led with, disclosure per person, who trusted you, the case note, the
+   outcome), printed out of a pixel-art fax: a handshake screech, then line
+   by line, a print head riding each line, the status light blinking, a
+   dot-matrix chirp per line, a RECEIVED stamp. Tap to pull the paper: the
+   motor jams and grinds, the rest rips out fast and comes out smeared, and
+   a faint drag scratch stays on the paper.
+7. **SAVE AS PNG**: a letter-size "certified copy": FEELZ letterhead (the
+   wheel with your collected slices, the rainbow wordmark), the record,
+   signature lines for C. Browning, LCSW and B. Baiter, City Council, a red
+   City of Lake Ulysses APPROVED seal, and lore small print about Halberd &
+   Lowe Affective Systems and Municipal Wellness Agreement LU-77 ("The lake
+   remembers."). Then IT and SO get the last word.
+
 ### The closing line after each reaction
 
 After a character reacts, one short line says how your answer left you, keyed by the feeling you picked and whether you told the truth (`engine/reactions.js`). Each character has their own set in their own imagery (Deborah's kitchen, Rick's bar). Each class also has its own set, the same delivery told through the class lens (Guns: force and bracing; Bible: conscience and confession; Crystals: energy moving through). The game alternates the two, so the same pick never closes the same way twice in a row. Example, Anger and truth with Rick as Bible: "It came out like a verdict. You let it stand." then next time Rick's own "Harder than you meant it, and for a second his jaw matched yours."
