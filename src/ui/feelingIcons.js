@@ -11,7 +11,7 @@
 // The names stay hidden until the ending's FEELZ report.
 
 // 9x9 pixel pictures; '#' is lit.
-const ICONS = {
+export const ICONS = {
   Anger: [ // a flame
     '....#....',
     '...##....',

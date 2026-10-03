@@ -5,6 +5,12 @@ needs, the size to draw it at, how it's shown, the file format, and which
 template to start from. Templates live in [`art-templates/`](../art-templates/)
 (regenerate with `node scripts/make-art-templates.mjs`).
 
+**To send to artists:** `node scripts/make-artist-kit.mjs` builds
+`deliverables/DreamXtreme_ArtistKit/` (an HTML guide with search, collapsible
+asset rows, previews, template downloads and the palette, plus the templates
+and reference images) and zips it to `deliverables/DreamXtreme_ArtistKit.zip`.
+The deliverables folder is git-ignored; rebuild it whenever the guide changes.
+
 Deeper detail lives in [`ASSET_GUIDELINES.md`](ASSET_GUIDELINES.md) (naming,
 budgets, animation registration, video and audio gotchas) and
 [`ASSET_MANIFEST.md`](ASSET_MANIFEST.md) (per-object room sizes).

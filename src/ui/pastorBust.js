@@ -1,7 +1,7 @@
 // Pastor Gabriel's bust — a PLACEHOLDER pixel sprite until real art lands:
 // halo, a pale face, a clerical collar, and dark wings folded behind the
 // shoulders. The angel of death in shirtsleeves. Hard-edged SVG cells.
-const ROWS = [
+export const ROWS = [
   '......HHHHHHHH......',
   '.....H........H.....',
   '......HHHHHHHH......',
@@ -19,7 +19,7 @@ const ROWS = [
   '...WCCCCCCCCCCCCW...',
   '....CCCCCCCCCCCC....',
 ];
-const COLORS = { H: '#ffd54a', F: '#d9cfc4', K: '#111111', W: '#3a3a46', C: '#e8e8e8' };
+export const COLORS = { H: '#ffd54a', F: '#d9cfc4', K: '#111111', W: '#3a3a46', C: '#e8e8e8' };
 
 export function createPastorBust() {
   const w = ROWS[0].length;
