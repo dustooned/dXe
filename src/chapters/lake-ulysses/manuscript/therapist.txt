@@ -25,7 +25,7 @@ REVEAL: debt after therapist_02
 
 # His read on your class is the intake: {intake} below is replaced with
 # the read the FEELZ evaluation produced (questionnaireScene.js DIAGNOSES),
-# so he says it as he looks over your file. PLACEHOLDER reads, to rewrite.
+# so he says it as he looks over your file, quoting one of your answers.
 
 === therapist_01
 SPOTLIGHT: wheel, card

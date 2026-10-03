@@ -115,63 +115,68 @@ function pickQuestions() {
 //   majority   2 of 3 — the plainer diagnosis
 //   split      a real 3-way tie — the read acknowledges the player wasn't
 //              sure either, instead of pretending the read was clean
+//
+// The therapist reads these aloud on the call, looking over your intake,
+// so each opens by quoting one of your own answers back ({ answer: true }:
+// the first answer that scored this class). Each carries one quiet nod to
+// the class's lens without naming it: a trigger and a safety for Guns,
+// chapter and verse and doubting Thomas for Bible, energy and a prism for
+// Crystals.
 const DIAGNOSES = {
   Guns: {
     majority: [
-      { text: 'You ' },
-      { text: 'already know', emotion: 'Anger' },
-      { text: ' what you’re going to do. You’re just ' },
-      { text: 'waiting', emotion: 'Fear' },
-      { text: ' to see if I’ll ' },
-      { text: 'tell you not to', emotion: 'Sadness' },
+      { text: 'You put ‘' }, { answer: true }, { text: '.’ Quick on the trigger, too. People who ' },
+      { text: 'move first', emotion: 'Anger' },
+      { text: ' are usually ' },
+      { text: 'bracing', emotion: 'Fear' },
+      { text: ' for something. Bracing gets ' },
+      { text: 'heavy', emotion: 'Sadness' },
       { text: '.' },
     ],
     split: [
-      { text: 'Some of you ' },
-      { text: 'already knows', emotion: 'Anger' },
-      { text: ' what you’re going to do. The rest of you is still ' },
+      { text: 'You put ‘' }, { answer: true }, { text: ',’ and then you didn\u2019t. Safety on, safety off. Part of you wants to ' },
+      { text: 'swing', emotion: 'Anger' },
+      { text: '. Part of you is ' },
       { text: 'waiting', emotion: 'Fear' },
-      { text: ' to be told not to.' },
+      { text: ' to see who swings first.' },
     ],
   },
   Bible: {
     majority: [
-      { text: 'You ' },
-      { text: 'hold', emotion: 'Fear' },
-      { text: ' to things most people let go. That’s either ' },
-      { text: 'faith', emotion: 'Anxiety' },
-      { text: ' or a ' },
-      { text: 'fist', emotion: 'Disgust' },
-      { text: ' — I’m not sure yet.' },
+      { text: 'You put ‘' }, { answer: true }, { text: '.’ Chapter and verse. You like having something to ' },
+      { text: 'hold onto', emotion: 'Fear' },
+      { text: '. Just check, now and then, whether it\u2019s ' },
+      { text: 'holding you', emotion: 'Anxiety' },
+      { text: ', or ' },
+      { text: 'holding people off', emotion: 'Disgust' },
+      { text: '.' },
     ],
     split: [
-      { text: 'You ' },
-      { text: 'hold on', emotion: 'Fear' },
-      { text: ' when it’s ' },
-      { text: 'faith', emotion: 'Anxiety' },
-      { text: ', and let go when it’s a ' },
-      { text: 'fist', emotion: 'Disgust' },
-      { text: '. Convenient, that you always know which is which.' },
+      { text: 'You put ‘' }, { answer: true }, { text: ',’ then went the other way. A little Thomas in you. You know the ' },
+      { text: 'rules', emotion: 'Anxiety' },
+      { text: ' by heart. You\u2019re just not sure they ' },
+      { text: 'know you', emotion: 'Fear' },
+      { text: '.' },
     ],
   },
   Crystals: {
     majority: [
-      { text: 'You ' },
+      { text: 'You put ‘' }, { answer: true }, { text: '.’ You ' },
+      { text: 'pick up', emotion: 'Happy' },
+      { text: ' everyone\u2019s energy, don\u2019t you. Even the parts that ' },
+      { text: 'aren\u2019t yours', emotion: 'Surprise' },
+      { text: '. That\u2019s a lot to ' },
       { text: 'carry', emotion: 'Anxiety' },
-      { text: ' a lot for someone who doesn’t ' },
-      { text: 'say so', emotion: 'Happy' },
-      { text: '. Most of it probably ' },
-      { text: 'isn’t even yours', emotion: 'Surprise' },
-      { text: '.' },
+      { text: ' quietly.' },
     ],
     split: [
-      { text: 'You ' },
-      { text: 'carry', emotion: 'Anxiety' },
-      { text: ' a lot for someone who doesn’t ' },
-      { text: 'say so', emotion: 'Happy' },
-      { text: ' — though for a second there, you almost ' },
-      { text: 'put some of it down', emotion: 'Surprise' },
-      { text: '.' },
+      { text: 'You put ‘' }, { answer: true }, { text: ',’ then pulled it back. You ' },
+      { text: 'caught yourself', emotion: 'Surprise' },
+      { text: '. Open, then ' },
+      { text: 'careful', emotion: 'Anxiety' },
+      { text: '. Light does that through a prism: it ' },
+      { text: 'bends', emotion: 'Happy' },
+      { text: ', it doesn\u2019t break.' },
     ],
   },
 };
@@ -180,8 +185,10 @@ const DIAGNOSES = {
 // can be picked by whether the player's three answers actually agreed
 // instead of always showing the same line for a given class.
 // The read's colored words as typewriter text ({color:Feeling}…{/color}).
-function readAsText(segments) {
-  return segments.map((s) => (s.emotion ? `{color:${s.emotion}}${s.text}{/color}` : s.text)).join('');
+// `quoted`: the player's own answer, dropped in where a segment says
+// { answer: true }.
+function readAsText(segments, quoted = '') {
+  return segments.map((s) => (s.answer ? quoted : s.emotion ? `{color:${s.emotion}}${s.text}{/color}` : s.text)).join('');
 }
 
 // "← feel it" → "feel it", for the card's stamp.
@@ -205,6 +212,8 @@ function tallyClass(answers) {
 export function mount(stageEl, _scene, { run, onComplete }) {
   const questions = pickQuestions();
   const answers = [];
+  // The label of each answer given (for the read to quote back).
+  const answerLabels = [];
   let questionIndex = 0;
   let activeCard = null;
 
@@ -255,8 +264,10 @@ export function mount(stageEl, _scene, { run, onComplete }) {
       colors: { left: '#ffffff', right: '#ffffff' },
       tapHints: true,
       onSwipe: (direction) => {
-        const answer = direction === 'truth' ? q.left.scores : q.right.scores;
+        const side = direction === 'truth' ? q.left : q.right;
+        const answer = side.scores;
         answers.push(answer);
+        answerLabels.push(stripArrow(side.label));
         questionIndex++;
         if (questionIndex < questions.length) {
           renderQuestion();
@@ -348,7 +359,8 @@ export function mount(stageEl, _scene, { run, onComplete }) {
     activeCard?.destroy();
     activeCard = null;
     stageEl.innerHTML = '';
-    run.set({ intakeRead: readAsText(DIAGNOSES[cls][variant]) });
+    const quoted = answerLabels[answers.indexOf(cls)] ?? answerLabels[0] ?? '';
+    run.set({ intakeRead: readAsText(DIAGNOSES[cls][variant], quoted) });
 
     const screen = document.createElement('div');
     screen.className = 'dx-screen dx-questionnaire-screen dx-intake dx-intake--profile';
