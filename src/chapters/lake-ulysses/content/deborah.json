@@ -202,7 +202,7 @@
       "swipes": {
         "truth": {
           "playerText": "Say it as much as you need to. I'm listening.",
-          "npcReaction": "She says it three more times, quiet, like she's checking it still works.",
+          "npcReaction": "She says it three more times, quiet, like she's checking that it still works.",
           "effects": {
             "integrity": 2,
             "lucidity": 1,

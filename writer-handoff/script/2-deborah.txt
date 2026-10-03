@@ -123,7 +123,7 @@ BID: truth
 
 -- TRUTH
 SAY: Say it as much as you need to. I'm listening.
-REACT: She says it three more times, quiet, like she's checking it still works.
+REACT: She says it three more times, quiet, like she's checking that it still works.
 EFFECTS: integrity+2 lucidity+1 trust+2
 DEBT: 0
 NEXT: deborah_04
