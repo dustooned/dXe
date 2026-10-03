@@ -483,9 +483,7 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 
 **Open (raised 2026-09-30, not decided):**
 - **No node MOOD is Trust any more** (2026-10-01): Rwanda Q4 → Anxiety, Rick's enabled Q2 → Anger. Trust is earn-only, so a Trust mood could almost never be matched.
-- **Class decides who's easy to reach.** Guns matches nearly all of Rick's
-  moods; Crystals matches few moods anywhere. Rebalance the node MOODs, or
-  keep it as each class's natural allies.
+- **Class balance** (2026-10-02, `scripts/balance-check.mjs`): Bible could never earn Deborah's trust and Guns had a narrow route with Rwanda. Fixed with two mood swaps: Deborah's soft opener Sadness → Anxiety, Rwanda's soft opener Anxiety → Fear. Every class can now reach every NPC (Bible × Deborah only via the soft opener). Samun and Rick are reachable on every route for every class: maybe too easy, a difficulty question for later. Rerun the script after any MOOD/BID change.
 - **FEELZ feeling contradictions** (proposed): TOPIC tags per node; picking
   the opposite feeling on the same topic with someone else pings a FEELZ
   note and costs a sync; the ending report counts "incongruent affect."

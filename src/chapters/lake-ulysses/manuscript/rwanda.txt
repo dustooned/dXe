@@ -79,7 +79,7 @@ NEXT: rwanda_03
 
 === rwanda_01_soft
 PROMPT: (She doesn't turn around.) You {color:Anxiety}see{/color} it too, right. Whatever's out there tonight.
-MOOD: Anxiety
+MOOD: Fear
 
 -- TRUTH
 SAY: I see something. I don't know what it is yet.

@@ -52,6 +52,7 @@ only rewrite two things per node, rewrite those.
   lie often *raises* it.
 - **`MOOD:`** — how they feel *right now*, as one of the 8 feelings. The
   screen turns that color. Think of it as the stage lighting for the line.
+- After changing any `MOOD:` or `BID:`, ask the developer to run `node scripts/balance-check.mjs`: it shows whether every class can still earn each character's trust.
 - **`BID:`** — mark the moment they hand you something fragile. Which
   answer meets it: `truth`, `lie`, or `both` (a kind lie can meet
   someone). Meeting a bid is how the player earns their trust and a new
