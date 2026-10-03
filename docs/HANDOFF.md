@@ -1,6 +1,6 @@
 # Handoff / Project Status
 
-Last updated: 2026-08-09. Read this first if you're picking this project
+Last updated: 2026-10-03. Read this first if you're picking this project
 up cold — it's the "why," not the "what" (the code and the other docs in
 this folder cover the what).
 
@@ -27,13 +27,13 @@ Boot plays the inkflo Graphics intro (loading phase -> logo, skippable),
 then lands on the title screen for new players or chapter select for
 returning ones.
 
-Shell chrome around it: title screen, chapter select, About/Contact. A
-returning player who hits ENTER on the title gets a "You've been here
-before — skip the story?" prompt; SKIP jumps straight to the FEELZ
-app launch, REPLAY starts the chapter from the top
-(`showSkipDialog()` in `main.js`). SKIP bypasses the three story
-cutscenes and drops you at FEELZ -> intake quiz -> Therapist call. The
-Therapist call is never skipped, because it's the tutorial.
+Shell chrome around it: title screen, chapter select, About/Contact. ENTER
+on the title goes straight into the story the first time and to chapter
+select after that; a returning player picking a chapter is asked SKIP
+STORY / FROM THE START (`askReady()` in `main.js`). SKIP STORY bypasses
+the three story cutscenes and drops you at FEELZ -> intake quiz ->
+Therapist call. The Therapist call is never skipped, because it's the
+tutorial.
 
 One chapter: **Truth Debt: Lake Ulysses**, in scene order: Opening quote
 (cutscene) -> Bob Baiter (cutscene, the councilman's lake-reopening pitch)
@@ -480,6 +480,52 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
   falls back when the intersection is empty.
 
 ## What's next
+
+**Done in the 2026-10-03 QA session** (screen sizes, plus a bot that plays the game):
+- **Layout units, the rule:** every layout size in CSS (gap, padding, margin,
+  width, height, top/left/right/bottom) is `calc(N * var(--px))`, never raw
+  px. `--px` is 1 at the 390-wide reference and scales with the canvas, so
+  the reference layout is unchanged and every other size is the same layout
+  shrunk or grown. Before this, text scaled but boxes did not, so on phones
+  under ~800px tall (320x568, 360x640, any iPhone in Safari) the dialog
+  scenes overflowed and pushed the lake gauge off the bottom. Hairlines and
+  borders (1-2px) stay px. Anything attached to `<body>` (the drag ghost,
+  `.dx-feelz__ghost`) is outside `.dx-canvas` and has no `--px`, so it keeps
+  raw px. The fish and bubble keyframes scale too.
+- **Instant text speed was a softlock:** the typewriter never reported done
+  in INSTANT mode, so cutscene choices, the wheel and card in every dialog,
+  and the ending quote credit never appeared (`ui/typewriterText.js`,
+  `notifyDone`). A line a caller starts revealed (a re-render) stays quiet.
+- **Skim pressure never fired:** `lineReadThrough` reset the skim streak on
+  lines cut short instead of lines read to the end, so IT's "you're
+  skimming" could not trigger. Instant text counts as read.
+- Storage writes (`save.js`, `settings.js`) no longer throw when storage is
+  blocked or full (private windows); progress just won't persist.
+- The ending button says BACK TO TITLE (it always went to the title).
+- **Sideways pause** (`shell/orientationPause.js`): a touch phone held
+  sideways (`orientation: landscape`, `max-height: 520px`, `pointer:
+  coarse`) pauses the game into silence and IT says "Sideways. You can't
+  see it like that. Turn it back." on black, outside the canvas at real
+  pixel size. Turning it upright resumes where it was. Paused = audio faded
+  and frozen (`pauseAudio`/`resumeAudio`), animations stopped, canvas
+  `inert`, and every timer that moves the story or paces the player held:
+  those use `later()`/`cancelLater()` from `shell/pauseBus.js` (cutscene
+  auto-advance, ending judgment, reckoning entrance, class-reveal sequence,
+  IT's stall popups, the leitmotif/pulse loops). New timers that advance
+  the story should use them too, not `setTimeout`. In dev,
+  `window.__turnPause(true/false)` forces it without a phone. `.dx-btn` has a
+  10px padding floor for small canvases.
+  `100vh` fallback sits under the `100dvh` canvas width.
+- **Checked:** all 22 scenes swept for overflow, clipped and tiny text at
+  320x568, 360x640, 390x844, 412x915, 768x1024, 1440x900, 1920x1080 and
+  844x390; a bot played Deborah to the ending at 320x568, 844x390 and
+  1920x1080, and the whole chapter at 390x844 (instant and normal text).
+  No JS errors, no softlocks. **Not testable there:** real touch feel,
+  audio on devices, iOS Safari toolbar behavior.
+- **Known, left alone:** lake gauge scale labels are ~6.7px at the reference
+  size (4.5px at 320 wide); the chapter "ready" sheet overlaps the ABOUT
+  button by ~11px; a prompt split across pages shows a closing quote on its
+  last page with no opening one.
 
 **Open (raised 2026-09-30, not decided):**
 - **No node MOOD is Trust any more** (2026-10-01): Rwanda Q4 → Anxiety, Rick's enabled Q2 → Anger. Trust is earn-only, so a Trust mood could almost never be matched.

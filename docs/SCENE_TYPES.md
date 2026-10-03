@@ -189,7 +189,7 @@ Truth Debt, before the baptism.
 
 Terminal, two phases. Picks the ending by final Truth Debt and records
 it immediately on mount (not deferred to the end of the beat). Calls
-`exit` (not `onComplete`) when the player taps back to menu — the only
+`exit` (not `onComplete`) when the player taps back to title — the only
 scene that does, since there's nothing after it.
 
 ```json
@@ -216,7 +216,7 @@ reading). Then the ending's body text plus the epilogue line (see
 (`ui/typewriterText.js`). A tap while drawing finishes it instantly. Once
 the text is fully drawn, one IT popup appears — the actual last word of
 the chapter, one line per class (`engine/itEndgame.js`'s `ENDING_IT_TEXT`)
-— and only once *that's* closed does "BACK TO MENU" appear. No premature
+— and only once *that's* closed does "BACK TO TITLE" appear. No premature
 exit mid-reveal, and now none mid-IT either.
 
 Resolved open questions from the original plan: real ending art still

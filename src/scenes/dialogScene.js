@@ -4,6 +4,7 @@
 //
 // scene shape: { type: 'dialog', id: string, npc: <NPC content JSON> }
 import { resolveCard, resolveGatedNode } from '../engine/cardEngine.js';
+import { later, cancelLater, onPauseChange } from '../shell/pauseBus.js';
 import { composeReaction } from '../engine/reactions.js';
 import { composeSay } from '../engine/sayTone.js';
 import { checkBloomTriggers } from '../engine/debtEngine.js';
@@ -28,6 +29,7 @@ import { createSwipeCard } from '../ui/swipeCard.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
 import { createOscilloscope } from '../ui/oscilloscope.js';
 import { createSpotlight } from '../ui/spotlight.js';
+import { loadSettings } from '../shell/settings.js';
 import * as fx from '../shell/fx.js';
 import * as audio from '../shell/audio.js';
 import * as voices from '../shell/voices.js';
@@ -162,7 +164,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let hintedEmotion = null;
 
   function clearStall() {
-    stallTimers.forEach(clearTimeout);
+    stallTimers.forEach(cancelLater);
     stallTimers = [];
     itTyping = false;
   }
@@ -174,11 +176,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
     cardShownAt = performance.now();
     if (npc.npc === 'THERAPIST' && beatIndex === 0) return;
     for (const mark of STALL_MARKS) {
-      stallTimers.push(setTimeout(() => {
+      stallTimers.push(later(() => {
         itTyping = true;
         statusBar?.setTyping(true);
       }, mark.ms - 2500));
-      stallTimers.push(setTimeout(() => {
+      stallTimers.push(later(() => {
         itTyping = false;
         statusBar?.setTyping(false);
         if (itPopup || stage !== 'prompt') return;
@@ -202,8 +204,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     tw?.finish();
   }
 
-  function lineReadThrough(skippedFlag) {
-    if (!skippedFlag) skimStreak = 0;
+  function lineReadThrough(readToEnd) {
+    if (readToEnd) skimStreak = 0;
   }
 
   function easeMoodTo(mood) {
@@ -564,7 +566,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
           drama.tension = Math.max(drama.tension, Math.min(1, typed / promptChars));
         },
         onDone: () => {
-          if (!promptRevealed) lineReadThrough(typed >= promptChars);
+          // Instant text draws nothing to cut short, so it always counts as read.
+          if (!promptRevealed) lineReadThrough(typed >= promptChars || loadSettings().textSpeed === 'instant');
           promptRevealed = true;
           drama.tension = 1;
           interactive.hidden = false;
@@ -1419,11 +1422,16 @@ export function mount(stageEl, scene, { run, onComplete }) {
     freshFeeling = run.get().pendingFresh;
     run.set({ pendingFresh: null });
   }
+  // Time spent paused (a phone held sideways) isn't time spent hesitating.
+  const offPause = onPauseChange((paused, forMs) => {
+    if (!paused && cardShownAt !== null) cardShownAt += forMs;
+  });
   audio.startLeitmotif(npc.npc);
   audio.preloadTypewriterTick();
   enterNode();
 
   return function unmount() {
+    offPause();
     typewriter?.destroy();
     pickTypewriter?.destroy();
     spotlight?.destroy();

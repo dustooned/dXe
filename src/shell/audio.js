@@ -12,6 +12,7 @@
 // A known simplification: LEITMOTIFS below is hardcoded per-NPC-name rather
 // than loaded per-chapter, same as the rest of this file — there's only one
 // chapter so far. Revisit if a second chapter ever needs its own NPCs here.
+import { later, cancelLater } from './pauseBus.js';
 import leitmotifNotes from '../chapters/lake-ulysses/content/leitmotifs.json';
 import {
   MAX_HOPS,
@@ -167,7 +168,7 @@ function ensureContext() {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     ctx = new AudioCtx();
     masterGain = ctx.createGain();
-    masterGain.gain.value = masterVolume;
+    masterGain.gain.value = turnPaused ? 0 : masterVolume;
     masterGain.connect(ctx.destination);
     // A parallel tap, not part of the output chain — masterGain still goes
     // straight to ctx.destination above regardless of whether anything
@@ -178,7 +179,7 @@ function ensureContext() {
     analyser.fftSize = 2048;
     masterGain.connect(analyser);
   }
-  if (ctx.state === 'suspended') ctx.resume();
+  if (ctx.state === 'suspended' && !turnPaused) ctx.resume();
   return ctx;
 }
 
@@ -196,7 +197,31 @@ export function getAnalyser() {
 // something actually creates one.
 export function setMasterVolume(volume) {
   masterVolume = Math.min(1, Math.max(0, volume));
-  if (masterGain) masterGain.gain.setTargetAtTime(masterVolume, ctx.currentTime, 0.01);
+  if (masterGain && !turnPaused) masterGain.gain.setTargetAtTime(masterVolume, ctx.currentTime, 0.01);
+}
+
+// The game pauses into silence when a phone is held sideways (shell/
+// orientationPause.js): fade out, then freeze the audio clock so nothing
+// scheduled keeps sounding. On the way back the clock restarts with the
+// master gain still down, so anything queued while frozen plays out silent
+// before the volume returns.
+let turnPaused = false;
+let turnTimer = null;
+export function pauseAudio() {
+  turnPaused = true;
+  clearTimeout(turnTimer);
+  if (!ctx) return;
+  masterGain.gain.setTargetAtTime(0, ctx.currentTime, 0.02);
+  turnTimer = setTimeout(() => { if (turnPaused) ctx.suspend(); }, 150);
+}
+export function resumeAudio() {
+  turnPaused = false;
+  clearTimeout(turnTimer);
+  if (!ctx) return;
+  const restore = () => setTimeout(() => {
+    if (!turnPaused) masterGain.gain.setTargetAtTime(masterVolume, ctx.currentTime, 0.08);
+  }, 250);
+  ctx.resume().then(restore, restore);
 }
 
 async function loadAudio(url) {
@@ -609,7 +634,7 @@ export async function startLeitmotif(npcKey) {
     osc.start();
     osc.stop(audioCtx.currentTime + durationMs / 1000);
     index = (index + 1) % config.notes.length;
-    timer = setTimeout(playNote, durationMs);
+    timer = later(playNote, durationMs);
   }
 
   playNote();
@@ -617,7 +642,7 @@ export async function startLeitmotif(npcKey) {
   activeLeitmotif = {
     stop() {
       stopped = true;
-      clearTimeout(timer);
+      cancelLater(timer);
       gain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05);
       setTimeout(() => gain.disconnect(), 200);
     },
@@ -896,13 +921,13 @@ export function startPulse(getTension) {
     const at = ensureContext().currentTime + 0.01;
     thumpAt(at, PULSE_GAIN * (0.6 + tension * 0.4));
     thumpAt(at + 0.14, PULSE_GAIN * 0.6 * (0.6 + tension * 0.4)); // lub-dub
-    pulseTimer = setTimeout(beat, 860 - tension * 460);
+    pulseTimer = later(beat, 860 - tension * 460);
   };
   beat();
 }
 
 export function stopPulse() {
-  clearTimeout(pulseTimer);
+  cancelLater(pulseTimer);
   pulseTimer = null;
 }
 

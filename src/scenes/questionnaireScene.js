@@ -6,6 +6,7 @@
 //
 // scene shape: { type: 'questionnaire', id: 'questionnaire' }
 import { CLASSES, emotionsForClass } from '../engine/loadout.js';
+import { later, cancelLater } from '../shell/pauseBus.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
 import { createFeelzSilhouette } from '../ui/feelzSilhouette.js';
 import { startAmbient, stopAmbient, playFeelzPing, strikeEmotionVoice, playClassSigil } from '../shell/audio.js';
@@ -318,7 +319,7 @@ export function mount(stageEl, _scene, { run, onComplete }) {
     let ready = false;
     FILED_STEPS.forEach((step, i) => {
       t += step.at;
-      filedTimers.push(setTimeout(() => {
+      filedTimers.push(later(() => {
         let el;
         if (step.provider) {
           el = document.createElement('div');
@@ -354,7 +355,7 @@ export function mount(stageEl, _scene, { run, onComplete }) {
   // saved for the call: the therapist says it as his first line, reading
   // your intake (the {intake} token in therapist_01's PROMPT).
   function renderProfile(cls, variant) {
-    filedTimers.forEach(clearTimeout);
+    filedTimers.forEach(cancelLater);
     filedTimers = [];
     activeCard?.destroy();
     activeCard = null;
@@ -385,13 +386,13 @@ export function mount(stageEl, _scene, { run, onComplete }) {
     const chord = emotionsForClass(cls, []);
     let ready = false;
     feelings.forEach((feeling, i) => {
-      filedTimers.push(setTimeout(() => {
+      filedTimers.push(later(() => {
         wheel.light(feeling);
         strikeEmotionVoice(feeling, chord);
       }, 700 + i * 650));
     });
     const afterLights = 700 + feelings.length * 650 + 300;
-    filedTimers.push(setTimeout(() => {
+    filedTimers.push(later(() => {
       // Your class, heard and never named: a far-off shot, a singing bowl,
       // or a choir (audio.js playClassSigil).
       playClassSigil(cls);
@@ -402,7 +403,7 @@ export function mount(stageEl, _scene, { run, onComplete }) {
         body.appendChild(line);
       }
     }, afterLights));
-    filedTimers.push(setTimeout(() => {
+    filedTimers.push(later(() => {
       ready = true;
       const hint = document.createElement('p');
       hint.className = 'dx-text dx-tap-hint';
@@ -417,7 +418,7 @@ export function mount(stageEl, _scene, { run, onComplete }) {
   renderQuestion();
 
   return function unmount() {
-    filedTimers.forEach(clearTimeout);
+    filedTimers.forEach(cancelLater);
     activeCard?.destroy();
     stopAmbient();
     stageEl.innerHTML = '';

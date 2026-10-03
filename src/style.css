@@ -57,12 +57,34 @@ body {
   padding: 0;
 }
 
+/* Paused sideways (shell/orientationPause.js). IT's screen lives outside the
+   canvas, so it sets its own scale: one design pixel is one real pixel. */
+.dx-turn {
+  --px: 1px;
+  --fs: 1.35px;
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  background: var(--color-black);
+}
+
+.dx-turn .dx-it-scrim { background: var(--color-black); }
+.dx-turn .dx-it-close { display: none; }
+
+.dx-canvas.is-turn-paused *,
+.dx-canvas.is-turn-paused *::before,
+.dx-canvas.is-turn-paused *::after {
+  animation-play-state: paused !important;
+}
+
 .dx-canvas {
   position: relative;
   width: 100%;
   /* Scale to fill viewport height — whichever dimension is the tighter constraint */
   /* Fills the viewport height on every device (iPad, desktop included);
      the width follows from the phone aspect ratio. */
+  max-width: calc(100vh * 390 / 844); /* browsers without dvh */
   max-width: calc(100dvh * 390 / 844);
   container-type: inline-size;
   /* --px is one design pixel at the 390-wide reference size, so text grows
@@ -96,8 +118,8 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  gap: 12px;
+  padding: calc(16 * var(--px));
+  gap: calc(12 * var(--px));
   overflow-y: auto;
 }
 
@@ -127,7 +149,8 @@ body {
   background: var(--color-black);
   color: var(--color-white);
   border: 2px solid var(--color-white);
-  padding: 10px;
+  /* Floor keeps a fingertip-sized target on small canvases. */
+  padding: max(10px, calc(10 * var(--px)));
   cursor: pointer;
   text-align: center;
 }
@@ -145,7 +168,7 @@ body {
 .dx-menu {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: calc(10 * var(--px));
   margin-top: auto;
   margin-bottom: auto;
 }
@@ -155,7 +178,7 @@ body {
   justify-content: center;
   align-items: center;
   background: var(--color-black);
-  padding: 24px;
+  padding: calc(24 * var(--px));
   gap: 0;
   transition: opacity 0.6s ease;
 }
@@ -169,12 +192,12 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: calc(24 * var(--px));
 }
 
 .dx-preloader-spinner {
-  width: 28px;
-  height: 28px;
+  width: calc(28 * var(--px));
+  height: calc(28 * var(--px));
   border: 2px solid rgba(255, 255, 255, 0.15);
   border-top-color: var(--color-white);
   border-radius: 50%;
@@ -212,7 +235,7 @@ body {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  gap: 20px;
+  gap: calc(20 * var(--px));
 }
 
 .dx-preloader-video {

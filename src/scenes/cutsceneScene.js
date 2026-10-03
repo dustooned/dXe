@@ -37,6 +37,7 @@
 // saved to run.checkIn[key] (the FEELZ check-in answers, read back at the
 // ending; see endingScene.js).
 import { createTypewriter } from '../ui/typewriterText.js';
+import { later, cancelLater } from '../shell/pauseBus.js';
 import { quoteSpeech } from '../ui/speech.js';
 import { preloadTypewriterTick, playTypewriterTick, startAmbient, stopAmbient, startLeitmotif, playFeelzBoot } from '../shell/audio.js';
 import { createFeelzSilhouette } from '../ui/feelzSilhouette.js';
@@ -88,7 +89,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   function render() {
     destroyAnimators();
-    clearTimeout(autoAdvanceTimer);
+    cancelLater(autoAdvanceTimer);
     itPopup?.destroy();
     itPopup = null;
     oscilloscope?.destroy();
@@ -211,7 +212,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     } else {
       showContinueArrow(currentTextBox);
       if (beat.autoAdvanceMs != null) {
-        autoAdvanceTimer = setTimeout(advance, beat.autoAdvanceMs);
+        autoAdvanceTimer = later(advance, beat.autoAdvanceMs);
       }
     }
   }
@@ -277,7 +278,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
   function advance() {
-    clearTimeout(autoAdvanceTimer);
+    cancelLater(autoAdvanceTimer);
     beatIndex += 1;
     if (beatIndex >= scene.beats.length) {
       onComplete();
@@ -314,7 +315,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   return function unmount() {
     destroyAnimators();
-    clearTimeout(autoAdvanceTimer);
+    cancelLater(autoAdvanceTimer);
     typewriter?.destroy();
     itPopup?.destroy();
     oscilloscope?.destroy();

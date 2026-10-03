@@ -26,7 +26,7 @@ The render is `ui/itPopup.js`'s `createItPopup()`, usable from anywhere
   (`content/pastor.json`'s `gate`, lines keyed by final lake status). The
   old standalone Reckoning line (`RECKONING_IT_TEXT`) was retired.
 - **Ending** — one class-variant line once the body text finishes drawing,
-  before "BACK TO MENU" — the actual last word of the chapter
+  before "BACK TO TITLE" — the actual last word of the chapter
   (`ENDING_IT_TEXT`, same file).
 
 Every popup also plays `audio.playTyagl()` on mount — the same sting

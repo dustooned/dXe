@@ -3,15 +3,15 @@
 
 .dx-questionnaire-screen {
   justify-content: center;
-  gap: 20px;
+  gap: calc(20 * var(--px));
 }
 
 /* The intake as a FEELZ form (questionnaireScene.js): app bar, progress,
    the question above the card, fine print at the bottom. */
 .dx-intake {
   justify-content: flex-start;
-  gap: 14px;
-  padding-top: 8px;
+  gap: calc(14 * var(--px));
+  padding-top: calc(8 * var(--px));
 }
 
 .dx-intake__bar {
@@ -19,7 +19,7 @@
   justify-content: space-between;
   align-items: baseline;
   border-bottom: 1px solid #444;
-  padding-bottom: 8px;
+  padding-bottom: calc(8 * var(--px));
   font-size: calc(9 * var(--fs));
 }
 
@@ -28,12 +28,12 @@
 
 .dx-intake__progress {
   display: flex;
-  gap: 5px;
+  gap: calc(5 * var(--px));
 }
 
 .dx-intake__progress span {
   flex: 1;
-  height: 4px;
+  height: calc(4 * var(--px));
   background: #333;
 }
 
@@ -41,14 +41,14 @@
 .dx-intake__progress .is-now { background: var(--color-white); }
 
 .dx-intake__counter {
-  margin: 10px 0 0;
+  margin: calc(10 * var(--px)) 0 0;
   font-size: calc(8 * var(--fs));
   opacity: 0.5;
   letter-spacing: 0.08em;
 }
 
 .dx-intake__prompt {
-  margin: 0 0 18px;
+  margin: 0 0 calc(18 * var(--px));
   font-size: calc(13 * var(--fs));
   line-height: 1.6;
 }
@@ -59,7 +59,7 @@
 }
 
 .dx-intake__how {
-  margin: 4px 0 0;
+  margin: calc(4 * var(--px)) 0 0;
   text-align: center;
   font-size: calc(8 * var(--fs));
   opacity: 0.6;
@@ -76,7 +76,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: calc(14 * var(--px));
   margin: auto 0;
   text-align: center;
 }
@@ -90,7 +90,7 @@
   font-size: calc(14 * var(--fs));
   letter-spacing: 0.2em;
   border: 2px solid var(--color-white);
-  padding: 6px 12px;
+  padding: calc(6 * var(--px)) calc(12 * var(--px));
   animation: dx-intake-stamp 0.35s cubic-bezier(0.2, 1.6, 0.4, 1) both;
 }
 
@@ -98,17 +98,17 @@
 .dx-intake__line.is-fine { font-size: calc(8 * var(--fs)); opacity: 0.55; }
 
 .dx-intake--profile .dx-feelz-sil {
-  width: min(48vw, 170px);
-  margin: 0 auto 6px;
+  width: calc(170 * var(--px));
+  margin: 0 auto calc(6 * var(--px));
   filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.25));
 }
 
 .dx-intake__provider {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: calc(6 * var(--px));
   border: 2px solid var(--color-therapist);
-  padding: 12px 16px;
+  padding: calc(12 * var(--px)) calc(16 * var(--px));
   animation: dx-intake-in 0.4s ease-out both;
 }
 
@@ -156,9 +156,9 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: calc(12 * var(--px));
   flex: 1;
-  padding: 16px;
+  padding: calc(16 * var(--px));
   background: var(--color-black);
 }
 
@@ -176,7 +176,7 @@
    oscilloscope background); a harmless no-op everywhere else, since
    there's nothing but the same solid black behind them anyway. */
 .dx-game-screen .dx-reaction {
-  min-height: 40px;
+  min-height: calc(40 * var(--px));
   background: var(--color-black);
 }
 
@@ -190,12 +190,12 @@
    exchange from the NPC's left-aligned reaction. */
 .dx-say-box {
   border: 2px solid var(--color-white);
-  padding: 16px 14px;
-  min-height: 90px;
+  padding: calc(16 * var(--px)) calc(14 * var(--px));
+  min-height: calc(90 * var(--px));
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 6px;
+  gap: calc(6 * var(--px));
   background: var(--color-black);
 }
 
@@ -219,8 +219,8 @@
 }
 
 .dx-minigame-spinner {
-  width: 24px;
-  height: 24px;
+  width: calc(24 * var(--px));
+  height: calc(24 * var(--px));
   border: 2px solid rgba(255, 255, 255, 0.15);
   border-top-color: var(--color-white);
   border-radius: 50%;
@@ -307,8 +307,8 @@
 
 .dx-room__closeup-text {
   border-top: 2px solid var(--color-white);
-  padding: 16px;
-  min-height: 96px;
+  padding: calc(16 * var(--px));
+  min-height: calc(96 * var(--px));
 }
 
 /* Entry caption — the line you read on stepping into a room. It scrims the
@@ -328,8 +328,8 @@
   width: 100%;
   background: var(--color-black);
   border-top: 2px solid var(--color-white);
-  padding: 16px;
-  min-height: 96px;
+  padding: calc(16 * var(--px));
+  min-height: calc(96 * var(--px));
 }
 
 /* ── Mini-game: Quick Beat gimmick ─────────────────────────── */
@@ -347,7 +347,7 @@
 .dx-beat__prompt {
   font-size: calc(14 * var(--fs));
   text-align: center;
-  margin: 0 24px;
+  margin: 0 calc(24 * var(--px));
   letter-spacing: 0.08em;
   animation: dx-beat-in 0.18s steps(2, end);
 }
@@ -454,15 +454,15 @@
   border: none;
   background: transparent;
   text-align: center;
-  margin: 32px;
+  margin: calc(32 * var(--px));
   min-height: 0;
-  width: calc(100% - 64px);
+  width: calc(100% - 64 * var(--px));
 }
 
 .dx-cutscene-screen--narration .dx-continue-arrow {
   position: static;
   display: block;
-  margin-top: 20px;
+  margin-top: calc(20 * var(--px));
   animation: dx-bob 0.9s ease-in-out infinite;
 }
 
@@ -510,8 +510,8 @@
   position: absolute;
   z-index: 3;
   top: 9%;
-  left: 16px;
-  right: 16px;
+  left: calc(16 * var(--px));
+  right: calc(16 * var(--px));
   background: var(--color-black);
 }
 
@@ -538,9 +538,9 @@
   z-index: 2;
   border: 2px solid var(--color-white);
   background: var(--color-black);
-  padding: 16px;
-  margin: 16px;
-  min-height: 90px;
+  padding: calc(16 * var(--px));
+  margin: calc(16 * var(--px));
+  min-height: calc(90 * var(--px));
   max-width: 100%;
   box-sizing: border-box;
   overflow-wrap: break-word;
@@ -549,7 +549,7 @@
 .dx-cutscene-speaker {
   font-size: calc(7 * var(--fs));
   opacity: 0.5;
-  margin: 0 0 8px 0;
+  margin: 0 0 calc(8 * var(--px)) 0;
   letter-spacing: 0.08em;
 }
 
@@ -562,8 +562,8 @@
 .dx-cutscene-choices {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 12px;
+  gap: calc(8 * var(--px));
+  margin-top: calc(12 * var(--px));
 }
 
 /* ── IT — an uninvited thought, styled to feel like a popup ad, not a
@@ -599,14 +599,14 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 280px;
+  max-width: calc(280 * var(--px));
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: calc(14 * var(--px));
   background: var(--color-white);
   color: var(--color-black);
   border: 3px solid var(--color-black);
-  padding: 18px 30px 18px 16px;
+  padding: calc(18 * var(--px)) calc(30 * var(--px)) calc(18 * var(--px)) calc(16 * var(--px));
   cursor: pointer;
 }
 
@@ -619,8 +619,8 @@
    scale. */
 .dx-it-icon {
   flex-shrink: 0;
-  width: 56px;
-  height: 56px;
+  width: calc(56 * var(--px));
+  height: calc(56 * var(--px));
   border: 2px solid var(--color-black);
   background: var(--color-white);
   object-fit: contain;
@@ -635,7 +635,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: calc(5 * var(--px));
 }
 
 .dx-it-name {
@@ -672,10 +672,10 @@
 
 .dx-it-close {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 22px;
-  height: 22px;
+  top: calc(6 * var(--px));
+  right: calc(6 * var(--px));
+  width: calc(22 * var(--px));
+  height: calc(22 * var(--px));
   padding: 0;
   border: 2px solid var(--color-black);
   background: var(--color-white);
@@ -738,8 +738,8 @@
 
 .dx-continue-arrow {
   position: absolute;
-  right: 12px;
-  bottom: 8px;
+  right: calc(12 * var(--px));
+  bottom: calc(8 * var(--px));
   animation: dx-bob 0.9s ease-in-out infinite;
 }
 
@@ -787,7 +787,7 @@
 .dx-pattern-bg.dx-scope-band {
   inset: auto 0 auto 0;
   top: 0;
-  height: 140px;
+  height: calc(140 * var(--px));
   background: transparent;
 }
 
@@ -813,9 +813,9 @@
   border: none;
   background: transparent;
   text-align: center;
-  margin: 32px;
+  margin: calc(32 * var(--px));
   min-height: 0;
-  width: calc(100% - 64px);
+  width: calc(100% - 64 * var(--px));
 }
 
 .dx-cutscene-screen--feelz .dx-cutscene-text {
@@ -832,7 +832,7 @@
 .dx-cutscene-screen--feelz-logo .dx-continue-arrow {
   position: static;
   display: block;
-  margin-top: 20px;
+  margin-top: calc(20 * var(--px));
   animation: dx-bob 0.9s ease-in-out infinite;
 }
 
@@ -846,7 +846,7 @@
   font-size: calc(7 * var(--fs));
   letter-spacing: 0.2em;
   opacity: 0.7;
-  margin-bottom: -6px;
+  margin-bottom: calc(-6 * var(--px));
 }
 
 /* FEELZ boot silhouette (ui/feelzSilhouette.js). The wrapper carries the
@@ -854,9 +854,9 @@
 .dx-feelz-sil {
   position: relative;
   z-index: 2;
-  width: min(52vw, 190px);
+  width: calc(190 * var(--px));
   aspect-ratio: 1;
-  margin: 0 auto 16px;
+  margin: 0 auto calc(16 * var(--px));
   filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.55)) drop-shadow(0 0 14px rgba(170, 120, 255, 0.45));
   animation: dx-sil-in 1.2s ease-out both;
 }
@@ -883,7 +883,7 @@
 .dx-reckoning-screen {
   position: relative;
   overflow: hidden;
-  gap: 16px;
+  gap: calc(16 * var(--px));
   cursor: pointer;
 }
 
@@ -941,9 +941,9 @@
 .dx-reckoning-card {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: calc(10 * var(--px));
   border: 1px solid var(--color-white);
-  padding: 12px;
+  padding: calc(12 * var(--px));
   cursor: default;
 }
 
@@ -990,10 +990,10 @@
 .dx-notify {
   border: 2px solid var(--color-white);
   background: var(--color-black);
-  padding: 14px;
+  padding: calc(14 * var(--px));
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: calc(8 * var(--px));
   animation: dx-notify-in 0.35s steps(5, end) both;
 }
 
@@ -1020,7 +1020,7 @@
   font-size: calc(7 * var(--fs));
   text-align: center;
   opacity: 0.5;
-  margin-top: 6px !important;
+  margin-top: calc(6 * var(--px)) !important;
 }
 
 @keyframes dx-notify-in {
@@ -1118,7 +1118,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 16px;
+  padding: calc(16 * var(--px));
   cursor: pointer;
 }
 
@@ -1134,7 +1134,7 @@
 .dx-connect__beat {
   border: 2px solid #ffc94d;
   background: var(--color-black);
-  padding: 14px;
+  padding: calc(14 * var(--px));
   margin-bottom: 8%;
   animation: dx-new-page 0.5s steps(4, end);
 }
@@ -1154,7 +1154,7 @@
    sits right under it. */
 .dx-game-content > .dx-dock {
   margin-top: auto;
-  padding-bottom: 6px;
+  padding-bottom: calc(6 * var(--px));
 }
 
 .dx-game-content > .dx-dock + .dx-lake {
@@ -1165,7 +1165,7 @@
 .dx-connect.is-asking {
   justify-content: center;
   align-items: center;
-  gap: 24px;
+  gap: calc(24 * var(--px));
   background: rgba(0, 0, 0, 0.96);
 }
 
@@ -1198,7 +1198,7 @@
 }
 
 .dx-connect__name {
-  margin: -12px 0 0;
+  margin: calc(-12 * var(--px)) 0 0;
   font-size: calc(10 * var(--fs));
   letter-spacing: 0.1em;
   animation: dx-bust-in 1.4s ease-out 0.3s both;
@@ -1240,7 +1240,7 @@
 
 /* Room under the portrait for the oscilloscope's history strip. */
 .dx-game-screen .dx-nameplate {
-  padding-top: 8px;
+  padding-top: calc(8 * var(--px));
 }
 
 /* The profile's stamp sits on one line above the wheel. */
@@ -1261,8 +1261,8 @@
 /* The body line: floats over the lower screen in the feeling's color. */
 .dx-feel-body {
   position: absolute;
-  left: 16px;
-  right: 16px;
+  left: calc(16 * var(--px));
+  right: calc(16 * var(--px));
   bottom: 23%;
   z-index: 880;
   margin: 0;
@@ -1373,7 +1373,7 @@
 .dx-portrait.dx-connect__bust--story {
   align-self: center;
   width: 38%;
-  margin: 0 auto 10px;
+  margin: 0 auto calc(10 * var(--px));
 }
 
 /* ── Ending (endingScene.js): one thing per screen ── */
@@ -1383,7 +1383,7 @@
 .dx-ending-page--card {
   justify-content: center;
   align-items: stretch;
-  gap: 18px;
+  gap: calc(18 * var(--px));
   cursor: pointer;
 }
 
@@ -1414,8 +1414,8 @@
 
 .dx-ending-frame__tag {
   position: absolute;
-  top: 8px;
-  left: 10px;
+  top: calc(8 * var(--px));
+  left: calc(10 * var(--px));
   font-size: calc(7 * var(--fs));
   letter-spacing: 0.15em;
   opacity: 0.5;
@@ -1456,7 +1456,7 @@
 /* The record: a fax machine slot, thermal paper feeding out of it. */
 .dx-ending-page--record {
   justify-content: flex-start;
-  gap: 10px;
+  gap: calc(10 * var(--px));
 }
 
 .dx-fax {
@@ -1499,7 +1499,7 @@
 }
 
 .dx-fax__paper {
-  margin-top: -3px;
+  margin-top: calc(-3 * var(--px));
   width: 92%;
   flex: 1;
   min-height: 0;
@@ -1518,7 +1518,7 @@
 
 .dx-fax__feed {
   position: relative;
-  padding: 10px 12px 18px;
+  padding: calc(10 * var(--px)) calc(12 * var(--px)) calc(18 * var(--px));
 }
 
 /* Each line prints left to right in pixel steps, with the print head (a
@@ -1533,7 +1533,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 6px;
+  width: calc(6 * var(--px));
   background: #2b2b33;
   animation: dx-fax-head var(--print-ms, 340ms) steps(10, end) both;
   pointer-events: none;
@@ -1558,7 +1558,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  height: 70px;
+  height: calc(70 * var(--px));
   pointer-events: none;
   background: repeating-linear-gradient(-14deg, rgba(60, 60, 70, 0.10) 0 2px, transparent 2px 9px);
   mask-image: linear-gradient(90deg, transparent, #000 15%, #000 70%, transparent);
@@ -1578,8 +1578,8 @@
   justify-content: space-between;
   align-items: baseline;
   border-bottom: 2px solid #1d1d22;
-  padding-bottom: 4px;
-  margin-bottom: 6px;
+  padding-bottom: calc(4 * var(--px));
+  margin-bottom: calc(6 * var(--px));
 }
 
 .dx-fax__logo {
@@ -1593,37 +1593,37 @@
 .dx-fax__row {
   display: grid;
   grid-template-columns: 34% 1fr;
-  gap: 6px;
+  gap: calc(6 * var(--px));
 }
 
 .dx-fax__label { opacity: 0.7; }
 
 .dx-fax__rule {
   border-top: 1px dashed #8e897d;
-  margin: 5px 0;
+  margin: calc(5 * var(--px)) 0;
 }
 
 .dx-fax__icons {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 8px;
-  padding-left: calc(34% + 6px);
+  gap: calc(4 * var(--px)) calc(8 * var(--px));
+  padding-left: calc(34% + 6 * var(--px));
 }
 
 .dx-fax__chip { display: inline-flex; align-items: center; gap: 2px; }
 .dx-fax__chip.is-missing { opacity: 0.35; }
 
 .dx-fax__fine {
-  margin: 10px 0 0;
+  margin: calc(10 * var(--px)) 0 0;
   font-size: calc(12 * var(--fs));
   opacity: 0.7;
 }
 
 .dx-fax__stamp {
   display: inline-block;
-  margin: 10px 0 0 auto;
+  margin: calc(10 * var(--px)) 0 0 auto;
   float: right;
-  padding: 3px 8px;
+  padding: calc(3 * var(--px)) calc(8 * var(--px));
   border: 3px double #b3261e;
   color: #b3261e;
   transform: rotate(-8deg);
@@ -1633,7 +1633,7 @@
 .dx-ending-actions {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: calc(8 * var(--px));
 }
 
 .dx-fax__paper::-webkit-scrollbar { display: none; }
@@ -1646,7 +1646,7 @@
 
 .dx-fax__more {
   position: absolute;
-  bottom: 8px;
+  bottom: calc(8 * var(--px));
   right: 6%;
   width: calc(26 * var(--px));
   height: calc(22 * var(--px));

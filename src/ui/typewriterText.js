@@ -224,6 +224,10 @@ export function createTypewriter(container, text, { onDone, onChar, onMark, narr
       startRevealed,
       speed,
       moreAfter: !isLastPage(),
+      // Instant text speed draws nothing, so nothing would ever report done —
+      // and choices, arrows and wheels wait on that report. A line the caller
+      // asked to start revealed (a re-render of a finished line) stays quiet.
+      notifyDone: !revealedArg,
       onDone: () => { if (isLastPage()) onDone?.(); },
     });
   }
@@ -251,7 +255,7 @@ export function createTypewriter(container, text, { onDone, onChar, onMark, narr
 // run instead of together, so each one still lands.
 const CUE_STAGGER_MS = 260;
 
-function drawPage(container, segments, { onDone, onChar, onCue, startRevealed, moreAfter, speed = 1 }) {
+function drawPage(container, segments, { onDone, onChar, onCue, startRevealed, notifyDone = false, moreAfter, speed = 1 }) {
   const firedCues = new Set();
   function fireCue(seg) {
     if (firedCues.has(seg)) return;
@@ -348,6 +352,8 @@ function drawPage(container, segments, { onDone, onChar, onCue, startRevealed, m
     done = true;
     more.hidden = false;
     flushCues();
+    // Deferred a tick: the caller is still assigning the typewriter it gets back.
+    if (notifyDone) timer = setTimeout(() => onDone?.(), 0);
   } else {
     step();
   }

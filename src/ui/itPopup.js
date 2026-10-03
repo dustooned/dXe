@@ -47,15 +47,16 @@ export function resolveItText(text, loadout) {
 // SO doesn't need its own visual language, it needs to read as IT's own
 // box turned inside out, since that's literally what it's doing to
 // whatever IT just said.
-export function createItPopup(stageEl, { text, loadout, flashClose = false, onClose, voice = 'it', reveal = false } = {}) {
+export function createItPopup(stageEl, { text, loadout, flashClose = false, onClose, voice = 'it', reveal = false, silent = false } = {}) {
   let typewriter = null;
   let revealTimer = null;
 
   // IT's own sting — distinct from tyagl.mp3, which stays under the
   // Therapist's diagnosis reveal (questionnaireScene.js). Fires the instant
   // the popup mounts, ahead of the typewriter draw, to land with the
-  // appearance.
-  playItSting();
+  // appearance. `silent` is for the paused-sideways screen, which speaks
+  // into a deliberately silent game (shell/orientationPause.js).
+  if (!silent) playItSting();
 
   const screen = document.createElement('div');
   screen.className = 'dx-screen dx-it-screen';
@@ -113,7 +114,7 @@ export function createItPopup(stageEl, { text, loadout, flashClose = false, onCl
   box.appendChild(textEl);
 
   typewriter = createTypewriter(textEl, resolveItText(text, loadout), {
-    onChar: playTypewriterTick,
+    onChar: silent ? undefined : playTypewriterTick,
     onDone: () => { if (flashClose) closeBtn.classList.add('is-flashing'); },
   });
 

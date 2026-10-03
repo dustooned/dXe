@@ -5,6 +5,7 @@
 //
 // scene shape: { type: 'ending', id: string, endings: <endings.json> }
 import { getEndingKey, getEpilogueStat } from '../engine/endingEngine.js';
+import { later, cancelLater } from '../shell/pauseBus.js';
 import { drawEmotionPattern } from '../ui/emotionPattern.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createItPopup } from '../ui/itPopup.js';
@@ -56,11 +57,11 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
     stageEl.appendChild(screen);
     drawEmotionPattern(canvas, { seedStr: endingKey, key: endingKey });
 
-    judgmentTimer = setTimeout(showText, JUDGMENT_BEAT_MS);
+    judgmentTimer = later(showText, JUDGMENT_BEAT_MS);
   }
 
   function skipJudgment() {
-    clearTimeout(judgmentTimer);
+    cancelLater(judgmentTimer);
     showText();
   }
 
@@ -82,7 +83,7 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
   }
 
   function showText() {
-    clearTimeout(judgmentTimer);
+    cancelLater(judgmentTimer);
     const screen = newPage('dx-ending-page--water');
     const label = document.createElement('p');
     label.className = 'dx-text dx-ending-reading-label';
@@ -235,7 +236,7 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
   function appendMenuButton(screen) {
     const btn = document.createElement('button');
     btn.className = 'dx-btn';
-    btn.textContent = 'BACK TO MENU';
+    btn.textContent = 'BACK TO TITLE';
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       exit();
@@ -246,7 +247,7 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
   renderJudgment();
 
   return function unmount() {
-    clearTimeout(judgmentTimer);
+    cancelLater(judgmentTimer);
     typewriter?.destroy();
     fax?.destroy();
     itPopup?.destroy();

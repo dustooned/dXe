@@ -7,6 +7,7 @@ import { initFx, fadeToBlack, flash, shake } from './shell/fx.js';
 import { initFeelzWord } from './shell/feelzWord.js';
 import { setJumpHandler } from './shell/debug.js';
 import { initHud, setVisible as setHudVisible } from './shell/hud.js';
+import { initOrientationPause } from './shell/orientationPause.js';
 import { startTitleMusic, stopTitleMusic, playStartJingle, playLogoSting, unlockAudio, playLogoSweep, playLogoSlam, startChapterPreview, stopChapterPreview } from './shell/audio.js';
 
 // Chapter registry — adding a new chapter later is one entry here.
@@ -42,6 +43,9 @@ const stage = document.createElement('div');
 stage.className = 'dx-stage';
 canvas.appendChild(stage);
 initHud(canvas);
+// A touch phone held sideways: IT pauses the game until it's turned back.
+const turnPause = initOrientationPause(app, canvas);
+if (import.meta.env.DEV) window.__turnPause = turnPause; // force it without a phone
 
 let currentUnmount = null;
 

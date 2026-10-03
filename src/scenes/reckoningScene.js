@@ -15,6 +15,7 @@
 //
 // scene shape: { type: 'reckoning', id: string, pastor: <pastor.json> }
 import { buildReckoningDeck, resolveReckoningCard } from '../engine/reckoning.js';
+import { later, cancelLater } from '../shell/pauseBus.js';
 import { pastorContext, pickSection, pickLine } from '../engine/pastor.js';
 import { colorFor, fishStageFor, LAKE_MAX_DEBT } from '../engine/lake.js';
 import { createItPopup } from '../ui/itPopup.js';
@@ -213,7 +214,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   function walkDown() {
     const ms = audio.playHowl(run.get().truthDebt / LAKE_MAX_DEBT);
     fx.shake('weak');
-    setTimeout(baptism, Math.min(ms, 2600));
+    later(baptism, Math.min(ms, 2600));
   }
 
   function baptism() {
@@ -224,7 +225,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
   function altar() {
-    entranceTimers.forEach(clearTimeout);
+    entranceTimers.forEach(cancelLater);
     entranceTimers = [];
     playLines(pickSection(script.altar, ctx()), () => (deck.length ? renderCard(0) : gate()));
   }
@@ -253,7 +254,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     clock.className = 'dx-text dx-pastor-clock';
     screen.appendChild(clock);
     stageEl.appendChild(screen);
-    const at = (ms, fn) => entranceTimers.push(setTimeout(fn, ms));
+    const at = (ms, fn) => entranceTimers.push(later(fn, ms));
 
     TICKS.forEach((time, i) => at(i * TICK_MS, () => {
       clock.textContent = time;
@@ -290,7 +291,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   entrance();
 
   return function unmount() {
-    entranceTimers.forEach(clearTimeout);
+    entranceTimers.forEach(cancelLater);
     typewriter?.destroy();
     itPopup?.destroy();
     stageEl.innerHTML = '';

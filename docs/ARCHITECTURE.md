@@ -63,7 +63,7 @@ just do that inside its own `mount()`, without touching the shell or any
 other chapter.
 
 `exit()` is the chapter's way of handing control back to the shell (e.g.
-"back to menu" after an ending).
+"back to title" after an ending).
 
 ## Inside a chapter: the scene sequencer (`src/engine/sceneSequencer.js`)
 

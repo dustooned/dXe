@@ -21,6 +21,6 @@ export function loadSettings() {
 
 export function updateSettings(patch) {
   const next = { ...loadSettings(), ...patch };
-  localStorage.setItem(KEY, JSON.stringify(next));
+  try { localStorage.setItem(KEY, JSON.stringify(next)); } catch { /* unsaved */ }
   return next;
 }

@@ -17,7 +17,9 @@ export function loadSave() {
 export function updateSave(patch) {
   const current = loadSave();
   const next = { ...current, ...patch };
-  localStorage.setItem(KEY, JSON.stringify(next));
+  // Storage can be off or full (private windows, blocked site data); progress
+  // just won't persist then, and the game keeps going.
+  try { localStorage.setItem(KEY, JSON.stringify(next)); } catch { /* unsaved */ }
   return next;
 }
 

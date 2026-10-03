@@ -2,14 +2,14 @@
 
 .dx-meters {
   display: flex;
-  gap: 8px;
+  gap: calc(8 * var(--px));
 }
 
 .dx-meter {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: calc(4 * var(--px));
 }
 
 .dx-meter__label {
@@ -17,7 +17,7 @@
 }
 
 .dx-meter__track {
-  height: 6px;
+  height: calc(6 * var(--px));
   border: 1px solid var(--color-white);
 }
 
@@ -33,8 +33,8 @@
 
 .dx-portrait {
   position: relative;
-  width: 96px;
-  height: 96px;
+  width: calc(96 * var(--px));
+  height: calc(96 * var(--px));
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -89,7 +89,7 @@
 .dx-swipe-card-wrap {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: calc(8 * var(--px));
 }
 
 /* A static legend row above the card — not inside it, so it never shares
@@ -100,7 +100,7 @@
 .dx-swipe-card__hints {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
+  gap: calc(10 * var(--px));
 }
 
 .dx-swipe-card__hint {
@@ -130,8 +130,8 @@
 .dx-swipe-card {
   position: relative;
   border: 2px solid var(--color-white);
-  padding: 20px 14px;
-  min-height: 90px;
+  padding: calc(20 * var(--px)) calc(14 * var(--px));
+  min-height: calc(90 * var(--px));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -159,7 +159,7 @@
 
 .dx-dartboard {
   width: 100%;
-  max-width: 160px;
+  max-width: calc(160 * var(--px));
   margin: 0 auto;
   aspect-ratio: 1;
 }
@@ -191,6 +191,7 @@
 .dx-feelz__ghost {
   position: fixed;
   z-index: 1000;
+  /* Lives on <body>, outside .dx-canvas, so --px doesn't exist here. */
   width: 56px;
   height: 56px;
   margin-left: -28px;
@@ -229,7 +230,7 @@
 
 .dx-title-screen {
   justify-content: center;
-  gap: 32px;
+  gap: calc(32 * var(--px));
   animation: dx-title-fadein 1.4s ease-out both;
 }
 
@@ -243,11 +244,11 @@
    .dx-stage's margin-top), so nothing a scene draws ever sits under them. */
 .dx-hud-btn {
   position: absolute;
-  top: 6px;
+  top: calc(6 * var(--px));
   z-index: 900;
-  width: 36px;
-  height: 36px;
-  padding: 7px;
+  width: calc(36 * var(--px));
+  height: calc(36 * var(--px));
+  padding: calc(7 * var(--px));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -272,15 +273,15 @@
 }
 
 .dx-hud-gear {
-  right: 6px;
+  right: calc(6 * var(--px));
 }
 
 .dx-hud-ff {
-  left: 6px;
+  left: calc(6 * var(--px));
 }
 
 .dx-canvas > .dx-stage {
-  margin-top: 48px;
+  margin-top: calc(48 * var(--px));
 }
 
 .dx-hud-panel {
@@ -300,18 +301,18 @@
 
 .dx-hud-panel__box {
   position: relative;
-  width: calc(100% - 48px);
-  max-width: 260px;
+  width: calc(100% - 48 * var(--px));
+  max-width: calc(260 * var(--px));
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 20px 16px;
+  gap: calc(12 * var(--px));
+  padding: calc(20 * var(--px)) calc(16 * var(--px));
   background: var(--color-black);
   border: 2px solid var(--color-white);
 }
 
 .dx-hud-panel__title {
-  margin: 0 0 4px;
+  margin: 0 0 calc(4 * var(--px));
   font-size: calc(10 * var(--fs));
   text-align: center;
 }
@@ -320,7 +321,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: calc(10 * var(--px));
   font-size: calc(8 * var(--fs));
 }
 
@@ -335,7 +336,7 @@
 }
 
 .dx-hud-panel__confirm-text {
-  margin: 0 0 4px;
+  margin: 0 0 calc(4 * var(--px));
   font-size: calc(8 * var(--fs));
   line-height: 1.9;
   text-align: center;
@@ -344,7 +345,7 @@
 .dx-hud-panel__confirm-row {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: calc(10 * var(--px));
 }
 
 .dx-hud-panel__confirm-row .dx-btn {
@@ -429,19 +430,19 @@
 /* ── Lake gauge (ui/lakeGauge.js) ── Truth Debt as water quality. */
 .dx-lake {
   display: flex;
-  gap: 10px;
+  gap: calc(10 * var(--px));
   align-items: stretch;
   background: var(--color-black);
   border: 1px solid var(--color-white);
-  padding: 6px;
+  padding: calc(6 * var(--px));
 }
 
 .dx-lake__tank {
   --water: #35c4f2;
   position: relative;
   flex: 0 0 auto;
-  width: 52px;
-  height: 52px;
+  width: calc(52 * var(--px));
+  height: calc(52 * var(--px));
   overflow: hidden;
   border: 1px solid var(--color-white);
   background: var(--water);
@@ -461,40 +462,40 @@
 
 .dx-fish {
   position: absolute;
-  left: 4px;
-  width: 16px;
-  height: 10px;
+  left: calc(4 * var(--px));
+  width: calc(16 * var(--px));
+  height: calc(10 * var(--px));
   animation: dx-fish-swim 3s ease-in-out infinite alternate;
 }
 .dx-fish__svg { width: 100%; height: 100%; display: block; }
-.dx-fish--0 { top: 8px; }
-.dx-fish--1 { top: 24px; animation-delay: -1.1s; }
-.dx-fish--2 { top: 36px; animation-delay: -2.2s; }
+.dx-fish--0 { top: calc(8 * var(--px)); }
+.dx-fish--1 { top: calc(24 * var(--px)); animation-delay: -1.1s; }
+.dx-fish--2 { top: calc(36 * var(--px)); animation-delay: -2.2s; }
 
 /* Slower as the water turns. */
 .dx-lake__tank[data-stage="1"] .dx-fish { animation-duration: 4.5s; }
 .dx-lake__tank[data-stage="2"] .dx-fish { animation-duration: 7s; }
 /* Sick: barely moving, listing, sinking toward the bottom. */
 .dx-lake__tank[data-stage="3"] .dx-fish {
-  top: 32px;
+  top: calc(32 * var(--px));
   animation: dx-fish-sick 5s ease-in-out infinite alternate;
 }
 /* Dead: belly-up at the surface, bobbing. */
 .dx-lake__tank[data-stage="4"] .dx-fish {
   top: 2px;
-  left: 18px;
+  left: calc(18 * var(--px));
   animation: dx-fish-dead 3s ease-in-out infinite alternate;
 }
 
 @keyframes dx-fish-swim {
   0%   { transform: translateX(0) scaleX(1); }
-  48%  { transform: translateX(26px) scaleX(1); }
-  52%  { transform: translateX(26px) scaleX(-1); }
+  48%  { transform: translateX(calc(26 * var(--px))) scaleX(1); }
+  52%  { transform: translateX(calc(26 * var(--px))) scaleX(-1); }
   100% { transform: translateX(0) scaleX(-1); }
 }
 @keyframes dx-fish-sick {
-  from { transform: translateX(6px) rotate(20deg); }
-  to   { transform: translateX(14px) translateY(4px) rotate(35deg); }
+  from { transform: translateX(calc(6 * var(--px))) rotate(20deg); }
+  to   { transform: translateX(calc(14 * var(--px))) translateY(calc(4 * var(--px))) rotate(35deg); }
 }
 @keyframes dx-fish-dead {
   from { transform: rotate(180deg) translateY(0); }
@@ -503,17 +504,17 @@
 
 .dx-bubble {
   position: absolute;
-  bottom: -4px;
-  width: 3px;
-  height: 3px;
+  bottom: calc(-4 * var(--px));
+  width: calc(3 * var(--px));
+  height: calc(3 * var(--px));
   border: 1px solid rgba(255, 255, 255, 0.8);
   animation: dx-bubble-rise 2.6s linear infinite;
 }
-.dx-bubble--0 { left: 34px; }
-.dx-bubble--1 { left: 42px; animation-delay: -1.3s; }
+.dx-bubble--0 { left: calc(34 * var(--px)); }
+.dx-bubble--1 { left: calc(42 * var(--px)); animation-delay: -1.3s; }
 @keyframes dx-bubble-rise {
   from { transform: translateY(0); opacity: 1; }
-  to   { transform: translateY(-56px); opacity: 0; }
+  to   { transform: translateY(calc(-56 * var(--px))); opacity: 0; }
 }
 
 .dx-lake__chart {
@@ -522,14 +523,14 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 5px;
+  gap: calc(5 * var(--px));
 }
 
 .dx-lake__head {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 2px 6px;
+  gap: 2px calc(6 * var(--px));
   font-size: calc(6 * var(--fs));
   letter-spacing: 0.05em;
 }
@@ -540,15 +541,15 @@
   position: relative;
   display: flex;
   gap: 2px;
-  height: 12px;
+  height: calc(12 * var(--px));
 }
 .dx-lake__band { flex: 1; }
 
 .dx-lake__marker {
   position: absolute;
-  top: -4px;
-  bottom: -4px;
-  width: 3px;
+  top: calc(-4 * var(--px));
+  bottom: calc(-4 * var(--px));
+  width: calc(3 * var(--px));
   margin-left: -1.5px;
   background: var(--color-white);
   box-shadow: 0 0 0 1px var(--color-black);
@@ -557,7 +558,7 @@
 
 .dx-lake__ticks {
   position: relative;
-  height: 8px;
+  height: calc(8 * var(--px));
   font-size: calc(5 * var(--fs));
   opacity: 0.7;
 }
@@ -569,13 +570,13 @@
 .dx-lake__ticks span:last-child { transform: translateX(-100%); }
 
 /* Ending payoff: same gauge, bigger. */
-.dx-lake--large .dx-lake__tank { width: 96px; height: 96px; }
-.dx-lake--large .dx-fish { width: 28px; height: 18px; }
-.dx-lake--large .dx-fish--0 { top: 14px; }
-.dx-lake--large .dx-fish--1 { top: 44px; }
-.dx-lake--large .dx-fish--2 { top: 70px; }
+.dx-lake--large .dx-lake__tank { width: calc(96 * var(--px)); height: calc(96 * var(--px)); }
+.dx-lake--large .dx-fish { width: calc(28 * var(--px)); height: calc(18 * var(--px)); }
+.dx-lake--large .dx-fish--0 { top: calc(14 * var(--px)); }
+.dx-lake--large .dx-fish--1 { top: calc(44 * var(--px)); }
+.dx-lake--large .dx-fish--2 { top: calc(70 * var(--px)); }
 .dx-lake--large .dx-lake__head { font-size: calc(8 * var(--fs)); }
-.dx-lake--large .dx-lake__bar { height: 20px; }
+.dx-lake--large .dx-lake__bar { height: calc(20 * var(--px)); }
 .dx-lake--large .dx-lake__ticks { font-size: calc(6 * var(--fs)); }
 
 .dx-lake.is-concealed { visibility: hidden; }
@@ -592,7 +593,7 @@
   align-items: center;
   font-size: calc(7 * var(--fs));
   letter-spacing: 0.04em;
-  padding: 2px 2px 6px;
+  padding: 2px 2px calc(6 * var(--px));
   transition: opacity 0.3s;
 }
 
@@ -615,7 +616,7 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 6px;
+  gap: calc(6 * var(--px));
 }
 
 /* Pixel sprites: each SVG cell is one "pixel"; dim cells show the empty
@@ -666,7 +667,7 @@
   right: 2px;
   top: 100%;
   display: flex;
-  gap: 8px;
+  gap: calc(8 * var(--px));
   font-size: calc(7 * var(--fs));
   letter-spacing: 0.06em;
   pointer-events: none;
@@ -687,8 +688,8 @@
 }
 
 .dx-status__dot {
-  width: 6px;
-  height: 6px;
+  width: calc(6 * var(--px));
+  height: calc(6 * var(--px));
   border-radius: 50%;
   background: #ff4d4d;
   animation: dx-more-blink 0.8s steps(1, end) infinite;
@@ -705,14 +706,14 @@
 /* ── Contacts dock + calls (engine/contacts.js) ───────────────────────── */
 .dx-dock {
   display: flex;
-  gap: 10px;
+  gap: calc(10 * var(--px));
   justify-content: center;
-  padding-top: 4px;
+  padding-top: calc(4 * var(--px));
 }
 
 .dx-dock__contact {
-  width: 34px;
-  height: 34px;
+  width: calc(34 * var(--px));
+  height: calc(34 * var(--px));
   border-radius: 50%;
   border: 2px solid var(--contact, #ffc94d);
   background: var(--color-black);
@@ -750,8 +751,8 @@
   flex-direction: column;
   justify-content: flex-end;
   align-items: stretch;
-  padding: 16px;
-  gap: 10px;
+  padding: calc(16 * var(--px));
+  gap: calc(10 * var(--px));
   cursor: pointer;
 }
 
@@ -766,7 +767,7 @@
 .dx-call__box {
   border: 2px solid var(--contact, #ffc94d);
   background: var(--color-black);
-  padding: 14px;
+  padding: calc(14 * var(--px));
 }
 
 .dx-call__box p {
@@ -783,15 +784,15 @@ svg .is-hinted path {
 /* Undertale-style: the caller's face on the left, their words beside it. */
 .dx-call__box {
   display: flex;
-  gap: 12px;
+  gap: calc(12 * var(--px));
   align-items: flex-start;
-  min-height: 96px;
+  min-height: calc(96 * var(--px));
 }
 
 .dx-call__avatar {
-  flex: 0 0 64px;
-  width: 64px;
-  height: 64px;
+  flex: 0 0 calc(64 * var(--px));
+  width: calc(64 * var(--px));
+  height: calc(64 * var(--px));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -851,17 +852,17 @@ svg .is-hinted path {
 }
 .dx-swipe-card__stamp {
   position: absolute;
-  top: 6px;
+  top: calc(6 * var(--px));
   font-size: calc(10 * var(--fs));
   letter-spacing: 0.12em;
-  padding: 2px 6px;
+  padding: 2px calc(6 * var(--px));
   border: 2px solid var(--lean-color);
   color: var(--lean-color);
   opacity: 0;
   pointer-events: none;
 }
-.dx-swipe-card-wrap[data-side="left"] .dx-swipe-card__stamp { opacity: var(--lean); right: 8px; transform: rotate(8deg); }
-.dx-swipe-card-wrap[data-side="right"] .dx-swipe-card__stamp { opacity: var(--lean); left: 8px; transform: rotate(-8deg); }
+.dx-swipe-card-wrap[data-side="left"] .dx-swipe-card__stamp { opacity: var(--lean); right: calc(8 * var(--px)); transform: rotate(8deg); }
+.dx-swipe-card-wrap[data-side="right"] .dx-swipe-card__stamp { opacity: var(--lean); left: calc(8 * var(--px)); transform: rotate(-8deg); }
 .dx-swipe-card-wrap.has-tap-hints .dx-swipe-card__hint { cursor: pointer; }
 
 /* The tutorial's TRYCALL beat (dialogScene.js createSelfDock): his contact
@@ -902,23 +903,23 @@ svg .is-hinted path {
 
 /* Settings → DEBUG (shell/hud.js): scene jumps and a starting state. */
 .dx-hud-panel__box.is-debug {
-  max-width: 320px;
-  max-height: calc(100% - 64px);
+  max-width: calc(320 * var(--px));
+  max-height: calc(100% - 64 * var(--px));
   overflow-y: auto;
-  gap: 10px;
+  gap: calc(10 * var(--px));
 }
 
 .dx-debug__row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: calc(8 * var(--px));
   font-size: calc(7 * var(--fs));
 }
 
 .dx-debug__lake { flex: 1; accent-color: var(--color-white); }
 
-.dx-debug__seg { display: flex; gap: 4px; }
+.dx-debug__seg { display: flex; gap: calc(4 * var(--px)); }
 
 .dx-debug__chip,
 .dx-debug__scene {
@@ -927,7 +928,7 @@ svg .is-hinted path {
   background: var(--color-black);
   color: var(--color-white);
   border: 1px solid rgba(255, 255, 255, 0.5);
-  padding: 4px 6px;
+  padding: calc(4 * var(--px)) calc(6 * var(--px));
   cursor: pointer;
 }
 
@@ -940,12 +941,12 @@ svg .is-hinted path {
 .dx-debug__scenes {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: calc(4 * var(--px));
 }
 
 .dx-debug__group {
   flex-basis: 100%;
-  margin: 6px 0 0;
+  margin: calc(6 * var(--px)) 0 0;
   font-size: calc(7 * var(--fs));
   opacity: 0.55;
   letter-spacing: 0.1em;
@@ -968,7 +969,7 @@ svg .is-hinted path {
 .dx-title-intro {
   position: relative;
   overflow: hidden;
-  gap: 18px;
+  gap: calc(18 * var(--px));
   animation: none;
 }
 
@@ -1133,10 +1134,10 @@ svg .is-hinted path {
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-start;
-  gap: 4px;
+  gap: calc(4 * var(--px));
   width: 100%;
   height: calc(118 * var(--px));
-  padding: 10px 12px;
+  padding: calc(10 * var(--px)) calc(12 * var(--px));
   overflow: hidden;
   border: 2px solid var(--color-white);
   background: #000;
@@ -1288,15 +1289,16 @@ svg .is-hinted path {
 /* Touch: "Ready to play?" over the chapter's art (main.js askReady). */
 .dx-chapters-screen > .dx-chapter-ask {
   position: absolute;
-  left: 16px;
-  right: 16px;
+  left: calc(16 * var(--px));
+  right: calc(16 * var(--px));
   bottom: 16%;
   z-index: 5;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 16px;
-  background: rgba(0, 0, 0, 0.88);
+  gap: calc(12 * var(--px));
+  padding: calc(16 * var(--px));
+  /* Near-opaque: the menu buttons it covers must not ghost through. */
+  background: rgba(0, 0, 0, 0.97);
   border: 2px solid var(--color-white);
   text-align: center;
   animation: dx-intake-in 0.35s ease-out both;
