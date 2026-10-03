@@ -133,7 +133,7 @@ function renderSettingsPanel() {
       <button type="button" class="dx-btn dx-hud-mute"></button>
       <button type="button" class="dx-btn dx-hud-speed"></button>
       ${chapterActive ? '<button type="button" class="dx-btn dx-hud-restart">RESTART CHAPTER</button>' : ''}
-      <button type="button" class="dx-btn dx-hud-chapters">CHAPTER SELECT</button>
+      <button type="button" class="dx-btn dx-hud-chapters">QUIT TO TITLE</button>
       <button type="button" class="dx-btn dx-hud-debug">DEBUG</button>
       <button type="button" class="dx-btn dx-hud-resume">RESUME</button>
     </div>
@@ -185,13 +185,13 @@ function renderSettingsPanel() {
 
   panelEl.querySelector('.dx-hud-chapters').addEventListener('click', () => {
     if (chapterActive) {
-      confirmInPanel('Progress in this chapter will be lost. Return to Chapter Select?', () => {
+      confirmInPanel('Progress in this chapter will be lost. Quit to the title screen?', () => {
         closePanel();
-        navigate('menu');
+        navigate('title');
       });
     } else {
       closePanel();
-      navigate('menu');
+      navigate('title');
     }
   });
 }

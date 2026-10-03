@@ -111,8 +111,10 @@ function afterLogo() {
   // itself on a previous visit, and obeying them strands you past the intro.
   if (route && route.screen === 'chapter') { dispatch(route); return; }
 
-  // Everything else routes by save: returning → chapter select, new → title.
-  goto(loadSave().chaptersCompleted.length > 0 ? 'menu' : 'title');
+  // Everything else lands on the title screen, every time: it's the front
+  // door. ENTER from there decides (first time: straight into the story;
+  // returning: chapter select).
+  goto('title');
 }
 
 // navigate(), but still renders when the hash already equals the target —
@@ -275,47 +277,17 @@ function renderTitleMenu() {
   const enterBtn = document.createElement('button');
   enterBtn.className = 'dx-btn';
   enterBtn.textContent = 'ENTER';
+  // First time: straight into the story. Played before: chapter select,
+  // where each chapter asks before it starts (and offers to skip the story).
   enterBtn.addEventListener('click', () => {
-    if (hasPlayed) {
-      showSkipDialog(screen, menu);
-    } else {
-      beginTransition('chapter/lake-ulysses');
-    }
+    if (hasPlayed) navigate('menu');
+    else beginTransition('chapter/lake-ulysses');
   });
   menu.appendChild(enterBtn);
   screen.appendChild(menu);
   stage.appendChild(screen);
 
   currentUnmount = stopTitleMusic;
-}
-
-function showSkipDialog(screen, menu) {
-  menu.style.opacity = '0.3';
-  menu.style.pointerEvents = 'none';
-
-  const dialog = document.createElement('div');
-  dialog.className = 'dx-skip-dialog';
-  dialog.innerHTML = `<p class="dx-text">You've been here before.<br>Skip the story?</p>`;
-
-  const btnRow = document.createElement('div');
-  btnRow.className = 'dx-menu';
-  btnRow.style.flexDirection = 'row';
-  btnRow.style.gap = '12px';
-
-  const yesBtn = document.createElement('button');
-  yesBtn.className = 'dx-btn';
-  yesBtn.textContent = 'SKIP';
-  yesBtn.addEventListener('click', () => beginTransition('chapter/lake-ulysses/feelz-launch'));
-
-  const noBtn = document.createElement('button');
-  noBtn.className = 'dx-btn';
-  noBtn.textContent = 'REPLAY';
-  noBtn.addEventListener('click', () => beginTransition('chapter/lake-ulysses'));
-
-  btnRow.appendChild(yesBtn);
-  btnRow.appendChild(noBtn);
-  dialog.appendChild(btnRow);
-  screen.appendChild(dialog);
 }
 
 // Cuts title music, plays snd_start (6.1s), fades to black over the same
@@ -415,7 +387,7 @@ function renderMenu() {
     btn.addEventListener('click', () => {
       // Mouse: straight in. Touch: the art fills the screen first and it
       // asks, and a returning player is offered the skip.
-      if (canHover) { stopChapterPreview(); navigate(`chapter/${chapterId}`); return; }
+      if (canHover && !done) { stopChapterPreview(); navigate(`chapter/${chapterId}`); return; }
       if (b) showBackdrop(b);
       if (chapter.ambience) startChapterPreview(chapter.ambience);
       askReady(chapterId, chapter, done);
@@ -432,6 +404,12 @@ function renderMenu() {
   aboutBtn.textContent = 'ABOUT / CONTACT';
   aboutBtn.addEventListener('click', () => navigate('about'));
   menu.appendChild(aboutBtn);
+
+  const titleBtn = document.createElement('button');
+  titleBtn.className = 'dx-btn';
+  titleBtn.textContent = 'TITLE SCREEN';
+  titleBtn.addEventListener('click', () => navigate('title'));
+  menu.appendChild(titleBtn);
 
   screen.appendChild(menu);
 
@@ -480,7 +458,7 @@ async function renderChapter(chapterId, startAt) {
   const mod = await chapter.load();
   if (ticket !== chapterRender) return;
   currentUnmount = mod.mount(stage, {
-    exit: () => navigate('menu'),
+    exit: () => navigate('title'),
     // Settings panel's "Restart Chapter" (shell/hud.js) — re-enters the same
     // chapter fresh. Re-navigating via the hash wouldn't fire hashchange
     // since it's already there, so this calls back in directly instead.
