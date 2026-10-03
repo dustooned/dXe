@@ -8,7 +8,7 @@
       "id": "rick_01",
       "npc": "RICK",
       "location": 5,
-      "prompt": "\"Guy looked at me {color:Anger}wrong{/color} outside. Now he's got a busted jaw and I got my patch back. That's just how it works out here.\"",
+      "prompt": "\"Guy looked at me {color:Fear}wrong{/color} outside. Now he's got a busted jaw and I got my patch back. That's just how it works out here.\"",
       "swipes": {
         "truth": {
           "playerText": "That's not how it works. You just wanted a reason.",
@@ -53,7 +53,8 @@
         "value": 3,
         "elseNodeId": "rick_shut_down"
       },
-      "mood": "Anger"
+      "mood": "Fear",
+      "mask": "Anger"
     },
     "rick_02_enabled": {
       "id": "rick_02_enabled",
@@ -91,13 +92,14 @@
           "nextNodeId": "rick_03"
         }
       },
-      "mood": "Anger"
+      "mood": "Disgust",
+      "mask": "Anger"
     },
     "rick_02_confronted": {
       "id": "rick_02_confronted",
       "npc": "RICK",
       "location": 5,
-      "prompt": "\"You don't get to {color:Anger}judge{/color} me. You don't know what it costs to keep this patch.\"",
+      "prompt": "\"You don't get to {color:Fear}judge{/color} me. You don't know what it costs to keep this patch.\"",
       "swipes": {
         "truth": {
           "playerText": "What's it cost, Rick? Who's it for? Who are you trying to prove this to?",
@@ -129,7 +131,8 @@
           "nextNodeId": "rick_03"
         }
       },
-      "mood": "Anger"
+      "mood": "Fear",
+      "mask": "Anger"
     },
     "rick_shut_down": {
       "id": "rick_shut_down",

@@ -644,6 +644,15 @@ whether people can rely on you, and it&#39;s built three ways:</p>
 <li><strong>Attunement.</strong> Every NPC moment has a mood (one of the 8 feelings),
 shown as the oscilloscope&#39;s color. Pick the matching feeling and the
 waves sync.</li>
+<li><strong>Masks (Samun and Rick).</strong> On their first two questions they show a
+feeling that isn&#39;t the real one: Samun&#39;s grin (Happy, or Anger when
+pushed), Rick&#39;s Anger. The screen and oscilloscope wear the mask; only the
+real feeling syncs. Tells: the colored word in their line is the real
+feeling; every few seconds the oscilloscope blinks the real color; picking
+the mask grinds. A contact on a call reads the real mood (more reliably
+the closer you are). The masks drop on questions 3 and 4. The therapist
+plants it in his outro: &quot;People wear their weather on the outside. Listen
+for the word that doesn&#39;t match the face.&quot;</li>
 <li><strong>Turning toward.</strong> Some lines are &quot;bids&quot; (Deborah saying Caleb&#39;s name).
 Meeting one warms the portrait gold. On some bids a kind lie counts
 too, so a player can build trust while still dirtying the lake.</li>
@@ -1484,6 +1493,7 @@ falls back when the intersection is empty.</li>
 <p><strong>Open (raised 2026-09-30, not decided):</strong></p>
 <ul>
 <li><strong>No node MOOD is Trust any more</strong> (2026-10-01): Rwanda Q4 → Anxiety, Rick&#39;s enabled Q2 → Anger. Trust is earn-only, so a Trust mood could almost never be matched.</li>
+<li><strong>Masks</strong> (MASK lines; Samun ×4, Rick ×3, first two questions): the shown feeling differs from the real MOOD; tells are the prompt&#39;s colored word, a blink of the real color on the oscilloscope, the grind on picking the mask, and contacts&#39; reads. Therapist outro plants it. Difficulty is now reading, not reachability (balance script still shows every route possible).</li>
 <li><strong>Earned stories</strong> (STORY lines, <code>showConnection</code>): connecting plays a five-beat first-person cutscene of each NPC&#39;s trauma (one per character). Rick&#39;s ties to Gabriel; hearing it puts Rick on the bank at the Reckoning&#39;s gate (<code>run.storiesHeard</code>).</li>
 <li><strong>Dialogue always in quotes</strong> (2026-10-02): every NPC PROMPT (58 lines across manuscript + handoff copies), every speaker cutscene beat (Bob Baiter, the confrontations), the epigraph; calls, the player&#39;s SAY and future speaker beats are quoted at render (<code>ui/speech.js</code>). IT/SO stay unquoted (thoughts).</li>
 <li><strong>Narration styling</strong> (tester note, <code>typewriterText.js</code> markNarration): ( ) and [ ] text, and anything outside quotes in a quoting line, render grey and slanted; quote-less reactions are all narration.</li>
@@ -3877,7 +3887,7 @@ mini-games are structured, if you&#39;re writing one of those.</li>
     </article>
 <article class="doc" id="doc-script_format" data-title="Script Format" data-file="SCRIPT_FORMAT.md" hidden>
       <p class="doc-source">Authoring · <code>docs/SCRIPT_FORMAT.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-script_format--where-files-go">Where files go</a></li><li><a href="#doc-script_format--building-it">Building it</a></li><li><a href="#doc-script_format--the-format">The format</a></li><li><a href="#doc-script_format--rules-that-will-make-the-build-fail-on-purpose">Rules that will make the build fail (on purpose)</a></li><li><a href="#doc-script_format--what-this-format-doesn39t-cover-yet">What this format doesn&amp;#39;t cover yet</a></li><li><a href="#doc-script_format--cues-inside-text-cuename">Cues inside text: {cue:name}</a></li><li><a href="#doc-script_format--cues-inside-text-markname">Cues inside text: {mark:name}</a></li><li><a href="#doc-script_format--story-header">STORY (header)</a></li><li><a href="#doc-script_format--trycall-outro">TRYCALL (outro)</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-script_format--where-files-go">Where files go</a></li><li><a href="#doc-script_format--building-it">Building it</a></li><li><a href="#doc-script_format--the-format">The format</a></li><li><a href="#doc-script_format--rules-that-will-make-the-build-fail-on-purpose">Rules that will make the build fail (on purpose)</a></li><li><a href="#doc-script_format--what-this-format-doesn39t-cover-yet">What this format doesn&amp;#39;t cover yet</a></li><li><a href="#doc-script_format--cues-inside-text-cuename">Cues inside text: {cue:name}</a></li><li><a href="#doc-script_format--cues-inside-text-markname">Cues inside text: {mark:name}</a></li><li><a href="#doc-script_format--mask-node">MASK (node)</a></li><li><a href="#doc-script_format--story-header">STORY (header)</a></li><li><a href="#doc-script_format--trycall-outro">TRYCALL (outro)</a></li></ul></nav>
       <h1 id="doc-script_format--script-format-for-writers"><a class="anchor" href="#doc-script_format--script-format-for-writers" aria-label="Link to this section">#</a>Script Format (for writers)</h1>
 <p>This is for anyone writing dialog content who doesn&#39;t want to touch JSON —
 a collaborator, a co-writer, anyone. Write a plain <code>.txt</code> file in this
@@ -4120,6 +4130,11 @@ quick run). Today: <code>{cue:stability}</code>, <code>{cue:trust}</code>, <code
 blip. Used in the therapist&#39;s first reaction as he names each one.</p>
 <h2 id="doc-script_format--cues-inside-text-markname"><a class="anchor" href="#doc-script_format--cues-inside-text-markname" aria-label="Link to this section">#</a>Cues inside text: {mark:name}</h2>
 <p>A <code>{mark:name}</code> tag inside a REACT starts a new page and fires a cue when that page comes up. Today: <code>{mark:lake}</code> brings the lake gauge in mid-reaction (with the spotlight moving to it) if a lie already put debt on the lake before its REVEAL turn. Used in the therapist&#39;s check-in lie reaction: he finishes the phone bars, then points at the lake.</p>
+<h2 id="doc-script_format--mask-node"><a class="anchor" href="#doc-script_format--mask-node" aria-label="Link to this section">#</a>MASK (node)</h2>
+<p><code>MASK: Feeling</code> on a node: the feeling the NPC shows (screen color,
+oscilloscope) while <code>MOOD:</code> stays the real one that attunement needs.
+Color the prompt&#39;s hint word in the real feeling. Used on Samun&#39;s and
+Rick&#39;s first two questions.</p>
 <h2 id="doc-script_format--story-header"><a class="anchor" href="#doc-script_format--story-header" aria-label="Link to this section">#</a>STORY (header)</h2>
 <p><code>STORY: line</code>, repeatable, in the header: the cutscene the player earns by
 connecting, one line per beat, in order, the same for every class. It plays

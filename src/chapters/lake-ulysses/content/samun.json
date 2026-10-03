@@ -42,7 +42,8 @@
           "nextNodeId": "samun_02_enabled"
         }
       },
-      "mood": "Happy"
+      "mood": "Fear",
+      "mask": "Happy"
     },
     "samun_02_enabled": {
       "id": "samun_02_enabled",
@@ -80,7 +81,8 @@
           "nextNodeId": "samun_03"
         }
       },
-      "mood": "Happy"
+      "mood": "Disgust",
+      "mask": "Happy"
     },
     "samun_02_confronted": {
       "id": "samun_02_confronted",
@@ -117,7 +119,8 @@
           "nextNodeId": "samun_03"
         }
       },
-      "mood": "Anger"
+      "mood": "Sadness",
+      "mask": "Anger"
     },
     "samun_01_soft": {
       "id": "samun_01_soft",
@@ -154,7 +157,8 @@
           "nextNodeId": "samun_02_enabled"
         }
       },
-      "mood": "Happy"
+      "mood": "Disgust",
+      "mask": "Happy"
     },
     "samun_01_hard": {
       "id": "samun_01_hard",

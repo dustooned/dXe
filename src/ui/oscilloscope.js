@@ -154,7 +154,11 @@ export function createOscilloscope(
       ctx2d.globalCompositeOperation = 'source-over';
     }
 
-    ctx2d.strokeStyle = npcFlat < 1 ? 'rgba(255,255,255,0.3)' : npcColorNow;
+    // A mask (dialogScene.js drama.under): every few seconds, for a blink,
+    // the trace shows the real feeling's color underneath.
+    const under = getDrama?.()?.under;
+    const blink = under && performance.now() % 2600 < 170;
+    ctx2d.strokeStyle = npcFlat < 1 ? 'rgba(255,255,255,0.3)' : blink ? under : npcColorNow;
     traceNpcPath(w, h, 0);
     ctx2d.filter = 'none';
   }

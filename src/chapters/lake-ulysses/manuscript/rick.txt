@@ -2,6 +2,10 @@ NPC: RICK
 LOCATION: 5
 ACCENT: var(--color-rick)
 
+# MASK: on the first two questions this one shows a feeling (the screen's
+# color) that isn't the real one (MOOD). The colored word in the line hints at
+# the real one. The masks drop on questions 3 and 4.
+
 # The connection moment: played when this NPC first trusts you.
 CONNECT [Guns]: He squares up, then doesn't. "Takes one to know one, huh." He rolls his sleeve down over the patch. "Nobody's ever seen me back down. Keep it that way."
 CONNECT [Bible]: "My old man quoted Leviticus at me till the day I left." His jaw works. "You're the first churchy type who didn't make me feel like the verse."
@@ -25,8 +29,9 @@ OPENER [Crystals]: (He sneers.) "What are you, the welcome committee?"
 
 === rick_01
 GATE: trust < 3 -> rick_shut_down
-PROMPT: "Guy looked at me {color:Anger}wrong{/color} outside. Now he's got a busted jaw and I got my patch back. That's just how it works out here."
-MOOD: Anger
+PROMPT: "Guy looked at me {color:Fear}wrong{/color} outside. Now he's got a busted jaw and I got my patch back. That's just how it works out here."
+MOOD: Fear
+MASK: Anger
 
 -- TRUTH
 SAY: That's not how it works. You just wanted a reason.
@@ -47,7 +52,8 @@ NEXT: rick_02_enabled
 
 === rick_02_enabled
 PROMPT: "See, that's why I run with guys like you. Most people get {color:Disgust}soft{/color}, start asking questions."
-MOOD: Anger
+MOOD: Disgust
+MASK: Anger
 
 -- TRUTH
 SAY: Maybe the questions are the only thing keeping you human.
@@ -66,8 +72,9 @@ LEDGER: You told Rick that violence was proof, not a problem.
 NEXT: rick_03
 
 === rick_02_confronted
-PROMPT: "You don't get to {color:Anger}judge{/color} me. You don't know what it costs to keep this patch."
-MOOD: Anger
+PROMPT: "You don't get to {color:Fear}judge{/color} me. You don't know what it costs to keep this patch."
+MOOD: Fear
+MASK: Anger
 
 -- TRUTH
 SAY: What's it cost, Rick? Who's it for? Who are you trying to prove this to?

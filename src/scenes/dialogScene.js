@@ -225,6 +225,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
     return npc.nodes[currentNodeId];
   }
 
+  // The feeling a node shows: its MASK if it wears one, else its MOOD.
+  function shownMood(node) {
+    return node?.mask ?? node?.mood;
+  }
+
   // The encounter is shaped as a cadence: it opens in the predominant area,
   // sits in dominant tension through the body, and resolves on its last
   // beat — each step one fourth/fifth of root motion. Whether that
@@ -249,7 +254,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
     drama.tension = 0;
     drama.mismatch = false;
     hintedEmotion = null;
-    easeMoodTo(currentNode().mood);
+    // A masked node shows its mask; the real mood flickers under it now and
+    // then on the oscilloscope (the tell), and only the real one syncs.
+    easeMoodTo(shownMood(currentNode()));
+    drama.under = currentNode().mask ? moodHex(currentNode().mood) : null;
     audio.startPulse(() => drama.tension);
     audio.strikeChord(emotionsForClass(run.get().loadout, run.get().unlocked), harmonicFunction());
     render();
@@ -745,10 +753,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // and STB moved; the new color is the mood this answer sends them into
     // (the next moment's), or holds if this was their last.
     audio.stopPulse();
-    const nextMood = edge.nextNodeId ? npc.nodes[edge.nextNodeId]?.mood : node.mood;
+    const nextMood = edge.nextNodeId ? shownMood(npc.nodes[edge.nextNodeId]) : shownMood(node);
     pendingImpact = {
       strength: Math.min(1, (Math.abs(trustDelta) + Math.abs(stabilityDelta)) / 4),
-      mood: nextMood ?? node.mood,
+      mood: nextMood ?? shownMood(node),
       turnedToward,
     };
     drama.mismatch = false;

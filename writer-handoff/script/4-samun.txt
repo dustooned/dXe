@@ -2,6 +2,10 @@ NPC: SAMUN
 LOCATION: 4
 ACCENT: var(--color-samun)
 
+# MASK: on the first two questions this one shows a feeling (the screen's
+# color) that isn't the real one (MOOD). The colored word in the line hints at
+# the real one. The masks drop on questions 3 and 4.
+
 # The connection moment: played when this NPC first trusts you.
 CONNECT [Guns]: He stops wiping the counter. "Army taught me to spot guys like you. Ready to swing." He slides you one of the unopened bottles. "Didn't figure you'd be the one to set it down."
 CONNECT [Bible]: "My mother prayed over me every night. Didn't take." He turns the bottle in his hands. "You didn't pray at me. You listened. That's worse." A beat. "That's better."
@@ -25,7 +29,8 @@ OPENER [Crystals]: "Ooh, good vibes. Sit, sit."
 
 === samun_01
 PROMPT: "Man, everyone's {color:Fear}hooked{/color} on something. Mine's just more honest."
-MOOD: Happy
+MOOD: Fear
+MASK: Happy
 
 -- TRUTH
 SAY: Honest or not, you're still killing yourself slowly.
@@ -45,7 +50,8 @@ NEXT: samun_02_enabled
 
 === samun_02_enabled
 PROMPT: "See? You get it. Nobody else does. They all want me {color:Disgust}fixed{/color}."
-MOOD: Happy
+MOOD: Disgust
+MASK: Happy
 
 -- TRUTH
 SAY: Maybe fixed is the wrong word. But not this — not this either.
@@ -65,7 +71,8 @@ NEXT: samun_03
 
 === samun_02_confronted
 PROMPT: "Easy for you to say. You're not the one {color:Sadness}hurting{/color}."
-MOOD: Anger
+MOOD: Sadness
+MASK: Anger
 
 -- TRUTH
 SAY: You're right. I'm not. But you are. Every day.
@@ -85,7 +92,8 @@ NEXT: samun_03
 
 === samun_01_soft
 PROMPT: "Business? Business is {color:Disgust}great{/color}, man. Look around. Everybody's real busy."
-MOOD: Happy
+MOOD: Disgust
+MASK: Happy
 
 -- TRUTH
 SAY: There's nobody here, Samun.

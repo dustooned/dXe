@@ -222,6 +222,10 @@
     },
     {
       "kind": "line",
+      "text": "\"People wear their weather on the outside. Listen for the word that doesn't match the face.\""
+    },
+    {
+      "kind": "line",
       "text": "\"You told me about the water. It heard you too.\"",
       "when": {
         "choice": {

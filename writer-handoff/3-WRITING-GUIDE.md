@@ -53,6 +53,9 @@ only rewrite two things per node, rewrite those.
 - **`MOOD:`** — how they feel *right now*, as one of the 8 feelings. The
   screen turns that color. Think of it as the stage lighting for the line.
 - After changing any `MOOD:` or `BID:`, ask the developer to run `node scripts/balance-check.mjs`: it shows whether every class can still earn each character's trust.
+- **`MASK:`** — the feeling they *show* when it isn't the real one (MOOD).
+  Color the hint word in the line with the real feeling, so a careful reader
+  can see through it. Late characters only; masks drop when they open up.
 - **`BID:`** — mark the moment they hand you something fragile. Which
   answer meets it: `truth`, `lie`, or `both` (a kind lie can meet
   someone). Meeting a bid is how the player earns their trust and a new

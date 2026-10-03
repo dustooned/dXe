@@ -378,6 +378,15 @@ whether people can rely on you, and it's built three ways:
 - **Attunement.** Every NPC moment has a mood (one of the 8 feelings),
   shown as the oscilloscope's color. Pick the matching feeling and the
   waves sync.
+- **Masks (Samun and Rick).** On their first two questions they show a
+  feeling that isn't the real one: Samun's grin (Happy, or Anger when
+  pushed), Rick's Anger. The screen and oscilloscope wear the mask; only the
+  real feeling syncs. Tells: the colored word in their line is the real
+  feeling; every few seconds the oscilloscope blinks the real color; picking
+  the mask grinds. A contact on a call reads the real mood (more reliably
+  the closer you are). The masks drop on questions 3 and 4. The therapist
+  plants it in his outro: "People wear their weather on the outside. Listen
+  for the word that doesn't match the face."
 - **Turning toward.** Some lines are "bids" (Deborah saying Caleb's name).
   Meeting one warms the portrait gold. On some bids a kind lie counts
   too, so a player can build trust while still dirtying the lake.

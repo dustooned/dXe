@@ -134,6 +134,7 @@ LINE [Crystals]: "You feel everything in a room. Pick one person and stay with t
 LINE [Guns]: "This week, ask one person a question about their day. Then wait for the answer. You don't have to fix anything. Just listen."
 LINE [Bible]: "Try getting curious about someone this week. Ask how they're doing, then ask a follow-up. People can tell when you mean it."
 LINE [Crystals]: "Take an interest in somebody this week. Notice what they're doing and ask about it. Curiosity's a good place to start."
+LINE: "People wear their weather on the outside. Listen for the word that doesn't match the face."
 LINE [therapist_02=truth]: "You told me about the water. It heard you too."
 LINE [therapist_02=lie]: "The dream can wait. Dreams are patient. Lakes are more patient."
 # TRYCALL: his own contact pops into the dock and waits for a tap. Calling

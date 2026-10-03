@@ -262,6 +262,13 @@ blip. Used in the therapist's first reaction as he names each one.
 A `{mark:name}` tag inside a REACT starts a new page and fires a cue when that page comes up. Today: `{mark:lake}` brings the lake gauge in mid-reaction (with the spotlight moving to it) if a lie already put debt on the lake before its REVEAL turn. Used in the therapist's check-in lie reaction: he finishes the phone bars, then points at the lake.
 
 
+## MASK (node)
+
+`MASK: Feeling` on a node: the feeling the NPC shows (screen color,
+oscilloscope) while `MOOD:` stays the real one that attunement needs.
+Color the prompt's hint word in the real feeling. Used on Samun's and
+Rick's first two questions.
+
 ## STORY (header)
 
 `STORY: line`, repeatable, in the header: the cutscene the player earns by

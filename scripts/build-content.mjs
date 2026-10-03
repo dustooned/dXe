@@ -182,6 +182,13 @@ function parseManuscript(text, fileName) {
       currentNode.spotlight = parts;
     } else if (line.startsWith('PROMPT:')) {
       currentNode.prompt = parseText(line.slice(7));
+    } else if (line.startsWith('MASK:')) {
+      // The feeling they show (screen color, oscilloscope) while MOOD, the
+      // real one, is what attunement needs. The prompt's colored word hints
+      // at the real one; contacts on a call see through it.
+      const mask = line.slice(5).trim();
+      if (!EMOTIONS.includes(mask)) throw new Error(`${fileName}:${lineNumber}: bad MASK "${mask}"`);
+      currentNode.mask = mask;
     } else if (line.startsWith('MOOD:')) {
       // The NPC's feeling at this moment: tints the oscilloscope, and a
       // matching FEELZ pick counts as attunement (Trust).
