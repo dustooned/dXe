@@ -444,7 +444,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
       typewriter = createTypewriter(
         reaction,
-        composeReaction(npc.npc, varyReaction(pendingEdge), reactionEmotion, reactionSwipeKey)
+        reactionTextFor(pendingEdge)
           + (pendingCaught ? ` {mark:caught}${pendingCaught}` : ''),
         {
           onChar: audio.playTypewriterTick,
@@ -884,6 +884,18 @@ export function mount(stageEl, scene, { run, onComplete }) {
   function contactColor(who) {
     const dominant = CONTACTS[who]?.dominant;
     return dominant ? emotionColor(dominant) : 'var(--color-therapist)';
+  }
+
+  // The reaction text for this answer, composed once (the closing coda
+  // alternates between versions, so a redraw mustn't pick again).
+  let composedFor = null;
+  let composedText = '';
+  function reactionTextFor(edge) {
+    if (composedFor !== edge) {
+      composedFor = edge;
+      composedText = composeReaction(npc.npc, varyReaction(edge), reactionEmotion, reactionSwipeKey, run.get().loadout);
+    }
+    return composedText;
   }
 
   // The tutorial's TRYCALL beat: the therapist's own contact pops into the

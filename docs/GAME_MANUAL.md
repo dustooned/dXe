@@ -344,6 +344,10 @@ The body line shows (just under the wheel) on every hold (a long hover with a mo
 
 **Tap burst:** every pick also fires a one-shot burst of chunky pixels from the slice, in the feeling's color and its own motion: sparks rising and flickering (red), a ring closing like a blink (indigo), drops falling (blue), rays out (yellow), a jittering swarm (orange), a wobbling drip (green), a fast wide burst (pink), a slow soft ring (teal). The names appear only in the ending's FEELZ report. (Body lines draw on research mapping where people feel emotions: Nummenmaa et al., 2014.)
 
+### The closing line after each reaction
+
+After a character reacts, one short line says how your answer left you, keyed by the feeling you picked and whether you told the truth (`engine/reactions.js`). Each character has their own set in their own imagery (Deborah's kitchen, Rick's bar). Each class also has its own set, the same delivery told through the class lens (Guns: force and bracing; Bible: conscience and confession; Crystals: energy moving through). The game alternates the two, so the same pick never closes the same way twice in a row. Example, Anger and truth with Rick as Bible: "It came out like a verdict. You let it stand." then next time Rick's own "Harder than you meant it, and for a second his jaw matched yours."
+
 ### The word FEELZ
 
 Wherever FEELZ appears on screen it wears the logo colors, one feeling per letter: F Anger, E Happy, E Trust, L Sadness, Z Anxiety. Typed text gets it from the typewriter; fixed labels (status bar carrier, app bars, report headers) from a page-wide watcher (`shell/feelzWord.js`). A line that colors the word itself keeps its own color.

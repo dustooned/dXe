@@ -11,6 +11,9 @@
 # these — picked by the feeling they chose and which way they swiped. 16 lines
 # cover the entire game, so keep them general. They describe DELIVERY — how the
 # line left you — never whether the choice was right.
+# [class-coda / Class / Feeling / side] lines are the same delivery told
+# through the player's class; the game alternates them with the
+# character's own line so the same pick doesn't close the same way twice.
 #
 
 
@@ -206,3 +209,54 @@
 [coda / Anxiety / truth] You were already bracing for his next question before you’d finished this answer.
 [coda / Anxiety / lie] You knew which answer would end the call fastest, and gave him that one.
 
+# --- Guns ---
+[class-coda / Guns / Happy / truth] It came out loose and easy, no recoil at all.
+[class-coda / Guns / Happy / lie] Easy. Too easy. You checked the exits anyway.
+[class-coda / Guns / Trust / truth] You lowered your guard and said it straight.
+[class-coda / Guns / Trust / lie] You said it like someone who’d cover them. Your hand never left your pocket.
+[class-coda / Guns / Fear / truth] You got it out before the flinch could stop it.
+[class-coda / Guns / Fear / lie] You took the safe line and kept your back to the wall.
+[class-coda / Guns / Surprise / truth] It went off before you’d aimed it.
+[class-coda / Guns / Surprise / lie] The lie cleared leather before you decided to draw.
+[class-coda / Guns / Sadness / truth] It came out slow, like setting something heavy down.
+[class-coda / Guns / Sadness / lie] You kept it light so nobody would clock the weight.
+[class-coda / Guns / Disgust / truth] You spat it out and didn’t wipe your mouth.
+[class-coda / Guns / Disgust / lie] Your jaw locked while the easy words went out.
+[class-coda / Guns / Anger / truth] It hit harder than you aimed. You let it.
+[class-coda / Guns / Anger / lie] You put force behind it so nobody would check what was underneath.
+[class-coda / Guns / Anxiety / truth] You said it with one eye on the door.
+[class-coda / Guns / Anxiety / lie] You had three ways out before the sentence ended.
+# --- Bible ---
+[class-coda / Bible / Happy / truth] It came out like a small grace, plain and unearned.
+[class-coda / Bible / Happy / lie] It went down sweet, and something in you kept count.
+[class-coda / Bible / Trust / truth] You laid it down open-handed, like an offering.
+[class-coda / Bible / Trust / lie] You said it the way a promise sounds. You heard the difference.
+[class-coda / Bible / Fear / truth] You said it the way people confess: fast, eyes down.
+[class-coda / Bible / Fear / lie] You chose the safe words and felt them settle like a debt.
+[class-coda / Bible / Surprise / truth] It slipped out like a prayer you didn’t mean to say aloud.
+[class-coda / Bible / Surprise / lie] The lie came so easily it frightened you a little.
+[class-coda / Bible / Sadness / truth] Quiet, like something said at a graveside.
+[class-coda / Bible / Sadness / lie] You said it softly, and it sat on your chest anyway.
+[class-coda / Bible / Disgust / truth] It tasted bitter, and you said it anyway.
+[class-coda / Bible / Disgust / lie] Something in you stepped back from your own voice.
+[class-coda / Bible / Anger / truth] It came out like a verdict. You let it stand.
+[class-coda / Bible / Anger / lie] Righteous on the outside. You knew what was under it.
+[class-coda / Bible / Anxiety / truth] You said it and started rehearsing how it sounded.
+[class-coda / Bible / Anxiety / lie] You’d already written the apology in your head.
+# --- Crystals ---
+[class-coda / Crystals / Happy / truth] It came out bright, and the room took it in.
+[class-coda / Crystals / Happy / lie] It sparkled on the way out and held no charge.
+[class-coda / Crystals / Trust / truth] You let it flow straight through you, no filter.
+[class-coda / Crystals / Trust / lie] You matched their frequency perfectly. It wasn’t your note.
+[class-coda / Crystals / Fear / truth] You pushed it out through the cold in your arms.
+[class-coda / Crystals / Fear / lie] You pulled your energy in tight and let the safe thing out.
+[class-coda / Crystals / Surprise / truth] It came through you before you knew it was there.
+[class-coda / Crystals / Surprise / lie] The lie lit up and was gone before you felt it leave.
+[class-coda / Crystals / Sadness / truth] It came out low, and the air got heavier with it.
+[class-coda / Crystals / Sadness / lie] You smoothed it over and felt the weight sink lower.
+[class-coda / Crystals / Disgust / truth] It left a film on your tongue, and you let it.
+[class-coda / Crystals / Disgust / lie] Your skin crawled while your voice stayed sweet.
+[class-coda / Crystals / Anger / truth] Heat went out with it. The room felt it.
+[class-coda / Crystals / Anger / lie] You ran hot on the surface so nothing deeper showed.
+[class-coda / Crystals / Anxiety / truth] You said it with your whole body buzzing.
+[class-coda / Crystals / Anxiety / lie] You were already picking up the fallout before it landed.

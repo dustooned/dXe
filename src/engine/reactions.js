@@ -240,14 +240,63 @@ const THERAPIST = {
 
 const CODAS = { DEBORAH, RICK, RWANDA, SAMUN, THERAPIST, DEFAULT };
 
-export function reactionCoda(npcKey, emotion, swipeKey) {
-  const table = CODAS[npcKey] ?? DEFAULT;
-  return table[emotion]?.[swipeKey] ?? null;
+// The same delivery, told through the player's class: how Guns, Bible and
+// Crystals each notice how a line left them (the lenses of the body lines,
+// ui/feelingIcons.js): force and bracing; conscience and confession; energy
+// moving through. Delivery only, never a verdict. PLACEHOLDER PROSE.
+const CLASS_CODAS = {
+  Guns: {
+    Happy: { truth: 'It came out loose and easy, no recoil at all.', lie: 'Easy. Too easy. You checked the exits anyway.' },
+    Trust: { truth: 'You lowered your guard and said it straight.', lie: 'You said it like someone who’d cover them. Your hand never left your pocket.' },
+    Fear: { truth: 'You got it out before the flinch could stop it.', lie: 'You took the safe line and kept your back to the wall.' },
+    Surprise: { truth: 'It went off before you’d aimed it.', lie: 'The lie cleared leather before you decided to draw.' },
+    Sadness: { truth: 'It came out slow, like setting something heavy down.', lie: 'You kept it light so nobody would clock the weight.' },
+    Disgust: { truth: 'You spat it out and didn’t wipe your mouth.', lie: 'Your jaw locked while the easy words went out.' },
+    Anger: { truth: 'It hit harder than you aimed. You let it.', lie: 'You put force behind it so nobody would check what was underneath.' },
+    Anxiety: { truth: 'You said it with one eye on the door.', lie: 'You had three ways out before the sentence ended.' },
+  },
+  Bible: {
+    Happy: { truth: 'It came out like a small grace, plain and unearned.', lie: 'It went down sweet, and something in you kept count.' },
+    Trust: { truth: 'You laid it down open-handed, like an offering.', lie: 'You said it the way a promise sounds. You heard the difference.' },
+    Fear: { truth: 'You said it the way people confess: fast, eyes down.', lie: 'You chose the safe words and felt them settle like a debt.' },
+    Surprise: { truth: 'It slipped out like a prayer you didn’t mean to say aloud.', lie: 'The lie came so easily it frightened you a little.' },
+    Sadness: { truth: 'Quiet, like something said at a graveside.', lie: 'You said it softly, and it sat on your chest anyway.' },
+    Disgust: { truth: 'It tasted bitter, and you said it anyway.', lie: 'Something in you stepped back from your own voice.' },
+    Anger: { truth: 'It came out like a verdict. You let it stand.', lie: 'Righteous on the outside. You knew what was under it.' },
+    Anxiety: { truth: 'You said it and started rehearsing how it sounded.', lie: 'You’d already written the apology in your head.' },
+  },
+  Crystals: {
+    Happy: { truth: 'It came out bright, and the room took it in.', lie: 'It sparkled on the way out and held no charge.' },
+    Trust: { truth: 'You let it flow straight through you, no filter.', lie: 'You matched their frequency perfectly. It wasn’t your note.' },
+    Fear: { truth: 'You pushed it out through the cold in your arms.', lie: 'You pulled your energy in tight and let the safe thing out.' },
+    Surprise: { truth: 'It came through you before you knew it was there.', lie: 'The lie lit up and was gone before you felt it leave.' },
+    Sadness: { truth: 'It came out low, and the air got heavier with it.', lie: 'You smoothed it over and felt the weight sink lower.' },
+    Disgust: { truth: 'It left a film on your tongue, and you let it.', lie: 'Your skin crawled while your voice stayed sweet.' },
+    Anger: { truth: 'Heat went out with it. The room felt it.', lie: 'You ran hot on the surface so nothing deeper showed.' },
+    Anxiety: { truth: 'You said it with your whole body buzzing.', lie: 'You were already picking up the fallout before it landed.' },
+  },
+};
+
+// Variety: each time a feeling and side come up, the coda alternates
+// between the NPC's own line (their imagery) and the class's line (your
+// lens), so the same pick doesn't close the same way twice in a row. The
+// first time it's a coin flip.
+const lastSource = new Map();
+
+export function reactionCoda(npcKey, emotion, swipeKey, loadout) {
+  const npcLine = (CODAS[npcKey] ?? DEFAULT)[emotion]?.[swipeKey] ?? null;
+  const classLine = CLASS_CODAS[loadout]?.[emotion]?.[swipeKey] ?? null;
+  if (!npcLine || !classLine) return npcLine ?? classLine;
+  const key = `${npcKey}|${emotion}|${swipeKey}`;
+  const prev = lastSource.get(key);
+  const useClass = prev === undefined ? Math.random() < 0.5 : prev === 'npc';
+  lastSource.set(key, useClass ? 'class' : 'npc');
+  return useClass ? classLine : npcLine;
 }
 
 // Falls back to the authored line alone when no emotion was in play, so a
 // scene that doesn't use the dartboard reads exactly as it did before.
-export function composeReaction(npcKey, npcReaction, emotion, swipeKey) {
-  const coda = reactionCoda(npcKey, emotion, swipeKey);
+export function composeReaction(npcKey, npcReaction, emotion, swipeKey, loadout) {
+  const coda = reactionCoda(npcKey, emotion, swipeKey, loadout);
   return coda ? `${npcReaction}\n\n${coda}` : npcReaction;
 }

@@ -108,14 +108,48 @@ to the latest fishing gear!
 We've got you covered!
 
 [bob_baiter / beat 17] (BOB BAITER speaking)
+And thanks to your city council, every family in Lake Ulysses now carries our lake right in their pocket!
+
+[bob_baiter / beat 18] (BOB BAITER speaking)
+That's the official water reading, live in your FEELZ app. The county sensors keep an eye on it, so you don't have to worry.
+
+[bob_baiter / beat 19] (BOB BAITER speaking)
+We're lookin' out for you.
+
+[bob_baiter / beat 20] (BOB BAITER speaking)
+See those little fellas? Those are {slow}our{/slow} fish. The good Lord gave us this lake, and the county gave us the numbers to prove we're takin' care of it.
+
+[bob_baiter / beat 21] (BOB BAITER speaking)
+Low number, clear water, happy fish. Number climbs, water clouds up, fish get to lookin' poorly. Simple as Sunday school.
+
+[bob_baiter / beat 22] (BOB BAITER speaking)
+Clean water comes from clean living, folks. Every little thing a person keeps to themselves ends up in that water somehow.
+
+[bob_baiter / beat 23] (BOB BAITER speaking)
+A fib here, a fib there? That water remembers. Every one of 'em muddies it a little more.
+
+[bob_baiter / beat 24] (BOB BAITER speaking)
+But an honest word? Clears it right back up. Little by little. That's how the Lord does His washin'.
+
+[bob_baiter / beat 25] (BOB BAITER speaking)
+Now, we don't judge here.{pause:600}
+We just {slow}measure.{/slow}
+
+[bob_baiter / beat 26] (BOB BAITER speaking)
+And come the end of the season, we all go down to the water together. Pastor Gabriel will see what you've been bringin' in.
+
+[bob_baiter / beat 27] (BOB BAITER speaking)
+So keep 'em swimmin'! And if it ever goes a little green on ya — water filters, {slow}NOW AVAILABLE AT MY SHOP!{/slow}
+
+[bob_baiter / beat 28] (BOB BAITER speaking)
 Whether you're local
 or just passin' by —
 
-[bob_baiter / beat 18] (BOB BAITER speaking)
+[bob_baiter / beat 29] (BOB BAITER speaking)
 {slow}Welcome back,
 Lake Ulysses!{/slow}
 
-[bob_baiter / beat 19] (BOB BAITER speaking)
+[bob_baiter / beat 30] (BOB BAITER speaking)
 Now let's go enjoy
 our watery playground!
 

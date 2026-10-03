@@ -164,7 +164,10 @@ function buildCodas() {
       '# After a swipe the player reads the NPC reaction, a blank line, then ONE of\n' +
       '# these — picked by the feeling they chose and which way they swiped. 16 lines\n' +
       '# cover the entire game, so keep them general. They describe DELIVERY — how the\n' +
-      '# line left you — never whether the choice was right.'),
+      '# line left you — never whether the choice was right.\n' +
+      '# [class-coda / Class / Feeling / side] lines are the same delivery told\n' +
+      "# through the player's class; the game alternates them with the\n" +
+      "# character's own line so the same pick doesn't close the same way twice."),
   ];
   const block = /^\s{2}(\w+):\s*\{$/;
   const entry = /^\s{4}(truth|lie):\s*(['"])(.*)\2,?\s*$/;
@@ -172,6 +175,13 @@ function buildCodas() {
   for (const line of src.split(/\r?\n/)) {
     const b = line.match(block);
     if (b) { emotion = b[1]; parts.push(`# --- ${emotion} ---`); continue; }
+    // Class codas: one line per feeling, inside a Guns/Bible/Crystals block.
+    const c = line.match(/^\s{4}(\w+):\s*\{\s*truth:\s*'(.*)',\s*lie:\s*'(.*)'\s*\},?\s*$/);
+    if (c && emotion) {
+      parts.push(`[class-coda / ${emotion} / ${c[1]} / truth] ${c[2]}`);
+      parts.push(`[class-coda / ${emotion} / ${c[1]} / lie] ${c[3]}`);
+      continue;
+    }
     const e = line.match(entry);
     if (e && emotion) {
       parts.push(`[coda / ${emotion} / ${e[1]}] ${e[3].replace(/\\'/g, "'")}`);
