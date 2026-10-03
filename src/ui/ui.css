@@ -982,3 +982,134 @@ svg .is-hinted path {
   color: #a9a9b3;
   transform: skewX(-10deg);
 }
+
+/* ── Title intro (main.js renderTitleMenu) ──────────────────────────────
+   Art: public/assets/shared/title (scripts/import-gm-title.mjs). Both are
+   horizontal sprite sheets stepped with background-position. */
+.dx-title-intro {
+  position: relative;
+  overflow: hidden;
+  gap: 18px;
+  animation: none;
+}
+
+/* Cover the screen without stretching: as tall as the screen, as wide as
+   the art's proportions make it, centered (the sides crop on a phone). */
+.dx-title-bg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  height: 100%;
+  aspect-ratio: 640 / 288;
+  transform: translateX(-50%);
+  z-index: 0;
+  background-image: url('/assets/shared/title/spr_title_bg.png');
+  background-repeat: no-repeat;
+  background-size: 700% 100%;
+  image-rendering: pixelated;
+  opacity: 0;
+  animation:
+    dx-title-bg-frames 0.58s steps(6) infinite,
+    dx-title-bg-in 1.2s steps(6, end) 0.1s forwards;
+}
+
+/* Keep the menu readable over the photo: a dark wash under the bottom. */
+.dx-title-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.35) 45%, rgba(0, 0, 0, 0.9) 75%);
+}
+
+@keyframes dx-title-bg-frames {
+  from { background-position: 0% 0; }
+  to { background-position: 100% 0; }
+}
+
+@keyframes dx-title-bg-in {
+  to { opacity: 1; }
+}
+
+.dx-title-logo {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  aspect-ratio: 640 / 280;
+  margin: 0;
+}
+
+/* Each half is the whole logo, clipped to its half, sliding in from its
+   own side in chunky NES steps. */
+.dx-title-logo__half {
+  position: absolute;
+  inset: 0;
+  background-image: url('/assets/shared/title/spr_game_title.png');
+  background-repeat: no-repeat;
+  background-size: 1300% 100%;
+  image-rendering: pixelated;
+  animation: dx-title-logo-boil 1.6s steps(12) infinite;
+}
+
+.dx-title-logo__half--top {
+  clip-path: inset(0 0 50% 0);
+  transform: translateX(-130%);
+  animation: dx-title-logo-boil 1.6s steps(12) infinite, dx-title-from-left 0.7s steps(10, end) 0.7s forwards;
+}
+
+.dx-title-logo__half--bottom {
+  clip-path: inset(50% 0 0 0);
+  transform: translateX(130%);
+  animation: dx-title-logo-boil 1.6s steps(12) infinite, dx-title-from-right 0.7s steps(10, end) 0.7s forwards;
+}
+
+@keyframes dx-title-logo-boil {
+  from { background-position: 0% 0; }
+  to { background-position: 100% 0; }
+}
+
+@keyframes dx-title-from-left { to { transform: none; } }
+@keyframes dx-title-from-right { to { transform: none; } }
+
+/* The slam: the logo strobes a few times (inverted), like the NES flash. */
+.dx-title-intro.is-slammed .dx-title-logo {
+  animation: dx-title-strobe 0.9s steps(1, end);
+}
+
+@keyframes dx-title-strobe {
+  0%, 22%, 44% { filter: invert(1); }
+  11%, 33%, 55%, 100% { filter: none; }
+}
+
+/* Menu and subtitle wait for the logo. */
+.dx-title-intro .dx-title-sub,
+.dx-title-intro .dx-menu {
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.4s steps(4, end);
+}
+
+.dx-title-intro.is-ready .dx-title-sub { opacity: 0.75; }
+.dx-title-intro.is-ready .dx-menu { opacity: 1; }
+
+/* Skipped: everything lands at once. */
+.dx-title-intro.is-skipped .dx-title-bg { opacity: 1; animation: dx-title-bg-frames 0.58s steps(6) infinite; }
+.dx-title-intro.is-skipped .dx-title-logo__half { transform: none; animation: dx-title-logo-boil 1.6s steps(12) infinite; }
+.dx-title-intro.is-skipped .dx-title-logo { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-title-logo__half { animation: none; transform: none; }
+  .dx-title-bg { animation: none; opacity: 1; }
+}
+
+/* Readable over the dithered lake. */
+@keyframes dx-title-bg-in { to { opacity: 0.72; } }
+.dx-title-intro.is-skipped .dx-title-bg { opacity: 0.72; }
+.dx-title-intro .dx-title-sub {
+  align-self: center;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.78);
+  text-shadow: 0 0 4px #000;
+}
+.dx-title-intro.is-ready .dx-title-sub { opacity: 1; }

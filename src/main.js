@@ -3,11 +3,11 @@ import './ui/ui.css';
 import './scenes/scenes.css';
 import { onRouteChange, navigate, getCurrentRoute } from './shell/router.js';
 import { loadSave } from './shell/save.js';
-import { initFx, fadeToBlack } from './shell/fx.js';
+import { initFx, fadeToBlack, flash, shake } from './shell/fx.js';
 import { initFeelzWord } from './shell/feelzWord.js';
 import { setJumpHandler } from './shell/debug.js';
 import { initHud, setVisible as setHudVisible } from './shell/hud.js';
-import { startTitleMusic, stopTitleMusic, playStartJingle, playLogoSting, unlockAudio } from './shell/audio.js';
+import { startTitleMusic, stopTitleMusic, playStartJingle, playLogoSting, unlockAudio, playLogoSweep, playLogoSlam } from './shell/audio.js';
 
 // Chapter registry — adding a new chapter later is one entry here.
 const CHAPTERS = {
@@ -56,6 +56,8 @@ const PRELOAD_ASSETS = [
   '/assets/lake-ulysses/audio/lk_01.mp3',
   '/assets/shared/audio/title/snd_lake_title.mp3',
   '/assets/shared/audio/title/snd_titlemusic.mp3',
+  '/assets/shared/title/spr_title_bg.png',
+  '/assets/shared/title/spr_game_title.png',
 ];
 
 // Assets are often warm in cache, which would flash the loading phase past
@@ -229,12 +231,36 @@ function renderTitleMenu() {
   const save = loadSave();
   const hasPlayed = save.chaptersCompleted.length > 0;
 
+  // The title, NES-style: the dithered lake fades in, the DREAM XTREME
+  // logo (from the GameMaker beta, still "boiling" frame to frame) arrives
+  // split in two, top half from the left and bottom half from the right,
+  // they slam together with a flash, the logo strobes, then the menu. A tap
+  // skips straight to the finished screen.
   const screen = document.createElement('div');
-  screen.className = 'dx-screen dx-title-screen';
+  screen.className = 'dx-screen dx-title-screen dx-title-intro';
   screen.innerHTML = `
-    <h1 class="dx-title">DREAM XTREME</h1>
+    <div class="dx-title-bg" aria-hidden="true"></div>
+    <h1 class="dx-title-logo" aria-label="Dream Xtreme">
+      <span class="dx-title-logo__half dx-title-logo__half--top"></span>
+      <span class="dx-title-logo__half dx-title-logo__half--bottom"></span>
+    </h1>
     <p class="dx-text dx-title-sub">Lake Ulysses. The water looks fine.</p>
   `;
+  const introTimers = [];
+  const at = (ms, fn) => introTimers.push(setTimeout(fn, ms));
+  at(700, playLogoSweep);
+  at(1400, () => {
+    playLogoSlam();
+    flash('strong', '#ffffff');
+    shake('strong');
+    screen.classList.add('is-slammed');
+  });
+  at(2600, () => screen.classList.add('is-ready'));
+  screen.addEventListener('pointerdown', () => {
+    if (screen.classList.contains('is-ready')) return;
+    introTimers.forEach(clearTimeout);
+    screen.classList.add('is-skipped', 'is-slammed', 'is-ready');
+  });
 
   const menu = document.createElement('div');
   menu.className = 'dx-menu';

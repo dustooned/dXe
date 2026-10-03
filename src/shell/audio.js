@@ -1449,6 +1449,33 @@ export function playFaxLine(stamp = false) {
   for (let i = 0; i < 4; i++) blip(1600 + Math.random() * 600, t + i * 0.025, 0.012, 0.02, 'square');
 }
 
+// The title logo (main.js): two halves sweep in (a rising square-wave
+// whoosh), then slam together (a bright metallic clang over a low thud and
+// a crack of noise), NES-style.
+export function playLogoSweep() {
+  const audioCtx = ensureContext();
+  const t = audioCtx.currentTime + 0.02;
+  const osc = audioCtx.createOscillator();
+  osc.type = 'square';
+  osc.frequency.setValueAtTime(180, t);
+  osc.frequency.exponentialRampToValueAtTime(1400, t + 0.65);
+  const g = audioCtx.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.linearRampToValueAtTime(0.035, t + 0.1);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.7);
+  osc.connect(g).connect(masterGain);
+  osc.start(t);
+  osc.stop(t + 0.75);
+  osc.onended = () => g.disconnect();
+}
+
+export function playLogoSlam() {
+  const t = ensureContext().currentTime + 0.01;
+  [1760, 2349, 2637].forEach((f, i) => blip(f, t + i * 0.012, 0.35 - i * 0.08, 0.04, 'square'));
+  blip(55, t, 0.25, 0.22, 'triangle');
+  playStaticNoise(160);
+}
+
 // A meter moved (ui/statusBar.js): two square-wave notes a fifth apart,
 // rising when it went up, falling when it went down. Each meter has its
 // own pitch so they're learnable by ear; several changes play in turn.
