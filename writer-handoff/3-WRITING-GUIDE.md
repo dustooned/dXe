@@ -89,6 +89,14 @@ only rewrite two things per node, rewrite those.
 
 Write **FEELZ** in caps and it shows in the logo colors on its own; no color codes needed.
 
+### Narration vs speech
+
+Stage directions and description show in a grey slant; speech stays bright. The game decides by punctuation, so be consistent:
+- Anything in ( ) or [ ] is narration.
+- In any line that quotes someone ("…"), everything outside the quotes is narration.
+- A REACT with no quotes at all is all narration ("She flinches.").
+- NPC PROMPTs are their speech, bare: put directions in ( ) or [ ].
+
 ### Character voices (one word each)
 
 Every character barks a single word in SAM, the 1982 talking-computer

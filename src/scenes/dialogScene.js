@@ -448,6 +448,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
           + (pendingCaught ? ` {mark:caught}${pendingCaught}` : ''),
         {
           onChar: audio.playTypewriterTick,
+          narration: 'reaction',
           onDone: () => { tapHint.hidden = false; },
           onMark: (name) => {
             if (name === 'lake') cueLake(screen, reaction);

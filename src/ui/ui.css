@@ -973,3 +973,12 @@ svg .is-hinted path {
 }
 
 .dx-debug__scene:active { background: var(--color-white); color: var(--color-black); }
+
+/* Narration (ui/typewriterText.js markNarration): stage directions and
+   description in a grey slant; speech stays bright and upright. A real
+   skew, not font-style, so the pixel font slants cleanly. */
+.dx-typewriter-char.is-narration {
+  display: inline-block;
+  color: #a9a9b3;
+  transform: skewX(-10deg);
+}

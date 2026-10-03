@@ -44,6 +44,36 @@ const SPEED_MULTIPLIER = { slow: 2.6, fast: 0.35, normal: 1 };
 // therapist naming each status-bar icon as it flashes).
 const TAG_PATTERN = /\{(\/?)(slow|fast)\}|\{color:(\w+)\}|\{(\/)color\}|\{pause:(\d+)\}|\{mark:(\w+)\}|\{cue:(\w+)\}/g;
 
+// Narration vs speech (a tester asked for it): stage directions and
+// description render in a grey slant (.is-narration), spoken words stay
+// bright and upright. Rules, per text:
+//   - anything inside ( ) or [ ] is narration, brackets included
+//   - if the text quotes anyone ("…"), everything outside the quotes is
+//     narration (the therapist's lines, reactions that quote the NPC)
+//   - mode 'reaction' with no quotes at all: the whole text is narration
+//     ("She flinches. Her bible shifts in her grip.")
+// NPC prompts are bare speech with bracketed directions, so only the
+// bracket rule touches them.
+function markNarration(segments, mode) {
+  const chars = segments.filter((s) => s.type === 'char');
+  const hasQuotes = chars.some((s) => s.char === '"' || s.char === '\u201c' || s.char === '\u201d');
+  if (mode === 'reaction' && !hasQuotes) {
+    chars.forEach((s) => { s.narr = true; });
+    return segments;
+  }
+  let depth = 0;
+  let inQuote = false;
+  for (const s of chars) {
+    const c = s.char;
+    if (c === '(' || c === '[') depth += 1;
+    const quoteMark = c === '"' || c === '\u201c' || c === '\u201d';
+    s.narr = depth > 0 || (hasQuotes && !inQuote && !quoteMark);
+    if (quoteMark) inQuote = c === '\u201c' ? true : c === '\u201d' ? false : !inQuote;
+    if (c === ')' || c === ']') depth = Math.max(0, depth - 1);
+  }
+  return segments;
+}
+
 export function parseSegments(raw) {
   const segments = [];
   const speedStack = ['normal'];
@@ -162,10 +192,10 @@ export function paginate(segments) {
 // text immediately — for re-rendering a line that already finished drawing
 // once (e.g. dialogScene rebuilding its screen when the player picks a FEELZ
 // emotion, without replaying the node's prompt from scratch).
-export function createTypewriter(container, text, { onDone, onChar, onMark, startRevealed: revealedArg = false } = {}) {
+export function createTypewriter(container, text, { onDone, onChar, onMark, narration = 'auto', startRevealed: revealedArg = false } = {}) {
   const speed = TEXT_SPEED[loadSettings().textSpeed] ?? 1;
   const startRevealed = revealedArg || speed === 0;
-  const pages = paginate(parseSegments(text));
+  const pages = paginate(markNarration(parseSegments(text), narration));
   let pageIndex = revealedArg ? pages.length - 1 : 0;
   let page = null;
 
@@ -266,7 +296,7 @@ function drawPage(container, segments, { onDone, onChar, onCue, startRevealed, m
     }
 
     const span = document.createElement('span');
-    span.className = 'dx-typewriter-char';
+    span.className = seg.narr ? 'dx-typewriter-char is-narration' : 'dx-typewriter-char';
     span.textContent = seg.char;
     if (seg.color) span.style.color = emotionColor(seg.color);
     wordSpan.appendChild(span);
