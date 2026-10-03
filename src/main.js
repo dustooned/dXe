@@ -14,6 +14,10 @@ const CHAPTERS = {
   'lake-ulysses': {
     title: 'Truth Debt: Lake Ulysses',
     load: () => import('./chapters/lake-ulysses/index.js'),
+    // The chapter card's panning background (renderMenu): a vertical sheet
+    // of seamless tiles (see scripts/import-gm-title.mjs), tinted. PLACEHOLDER:
+    // the title screen's lake until this chapter has its own art.
+    banner: { src: '/assets/shared/title/spr_title_bg.png', frames: 7, tile: [500, 288], tint: '#1f8a8a' },
   },
 };
 
@@ -342,10 +346,22 @@ function renderMenu() {
   menu.className = 'dx-menu';
 
   for (const [chapterId, chapter] of Object.entries(CHAPTERS)) {
+    // A banner per chapter: its own art panning behind the title.
     const btn = document.createElement('button');
-    btn.className = 'dx-btn';
-    const seen = save.chaptersCompleted.includes(chapterId) ? ' ✓' : '';
-    btn.textContent = chapter.title + seen;
+    btn.className = 'dx-chapter-card';
+    const b = chapter.banner;
+    if (b) {
+      btn.style.setProperty('--banner', `url('${b.src}')`);
+      btn.style.setProperty('--frames', b.frames);
+      btn.style.setProperty('--frame-steps', b.frames - 1);
+      // One tile's width at the card's height (118 * --px): the strip is the
+      // card plus one tile wide and slides exactly one tile per loop.
+      btn.style.setProperty('--tile-w', `calc(${(118 * b.tile[0] / b.tile[1]).toFixed(2)} * var(--px))`);
+      btn.style.setProperty('--tint', b.tint ?? 'transparent');
+    }
+    const done = save.chaptersCompleted.includes(chapterId);
+    btn.innerHTML = `<span class="dx-chapter-card__bg" aria-hidden="true"><span class="dx-chapter-card__strip"></span></span><span class="dx-chapter-card__title"></span><span class="dx-chapter-card__meta">${done ? 'PLAYED ✓' : 'NEW'}</span>`;
+    btn.querySelector('.dx-chapter-card__title').textContent = chapter.title;
     btn.addEventListener('click', () => navigate(`chapter/${chapterId}`));
     menu.appendChild(btn);
   }

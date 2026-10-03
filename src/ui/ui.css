@@ -1152,3 +1152,96 @@ svg .is-hinted path {
 @media (prefers-reduced-motion: reduce) {
   .dx-title-bg__strip { animation: none; }
 }
+
+/* ── Chapter cards (main.js renderMenu) ──────────────────────────────────
+   Each chapter's banner: its art (a vertical sheet of seamless tiles) pans
+   sideways forever and boils frame to frame, tinted, under a dark wash so
+   the title reads. Set per chapter in main.js CHAPTERS[id].banner. */
+.dx-chapter-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  height: calc(118 * var(--px));
+  padding: 10px 12px;
+  overflow: hidden;
+  border: 2px solid var(--color-white);
+  background: #000;
+  color: var(--color-white);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dx-chapter-card__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.dx-chapter-card__strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: calc(100% + var(--tile-w, 200px));
+  background-image: var(--banner);
+  background-repeat: repeat-x;
+  background-size: var(--tile-w, 200px) calc(var(--frames, 1) * 100%);
+  image-rendering: pixelated;
+  opacity: 0.85;
+  animation:
+    dx-chapter-pan 30s linear infinite,
+    dx-title-boil-y 0.58s steps(var(--frame-steps, 1)) infinite;
+}
+
+/* The tint (multiply over the grey dither), then a wash for the text. */
+.dx-chapter-card__bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--tint, transparent);
+  mix-blend-mode: multiply;
+}
+
+.dx-chapter-card__bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 30%, rgba(0, 0, 0, 0.85) 100%);
+}
+
+.dx-chapter-card__title,
+.dx-chapter-card__meta {
+  position: relative;
+  z-index: 3;
+  text-shadow: 0 0 4px #000, 0 0 2px #000;
+}
+
+.dx-chapter-card__title { font-size: calc(10 * var(--fs)); line-height: 1.5; }
+
+.dx-chapter-card__meta {
+  font-size: calc(7 * var(--fs));
+  letter-spacing: 0.15em;
+  opacity: 0.75;
+}
+
+.dx-chapter-card:hover,
+.dx-chapter-card:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #000, 0 0 0 4px var(--color-white);
+}
+
+.dx-chapter-card:active { transform: scale(0.98); }
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-chapter-card__strip { animation: none; }
+}
+
+@keyframes dx-chapter-pan { to { transform: translateX(calc(-1 * var(--tile-w, 200px))); } }
