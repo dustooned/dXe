@@ -231,7 +231,7 @@ function renderTitleMenu() {
   const save = loadSave();
   const hasPlayed = save.chaptersCompleted.length > 0;
 
-  // The title, NES-style: the dithered lake fades in, the DREAM XTREME
+  // The title, NES-style: the dithered lake fades in, panning slowly, the DREAM XTREME
   // logo (from the GameMaker beta, still "boiling" frame to frame) arrives
   // split in two, top half from the left and bottom half from the right,
   // they slam together with a flash, the logo strobes, then the menu. A tap
@@ -239,12 +239,11 @@ function renderTitleMenu() {
   const screen = document.createElement('div');
   screen.className = 'dx-screen dx-title-screen dx-title-intro';
   screen.innerHTML = `
-    <div class="dx-title-bg" aria-hidden="true"></div>
+    <div class="dx-title-bg" aria-hidden="true"><div class="dx-title-bg__strip"></div></div>
     <h1 class="dx-title-logo" aria-label="Dream Xtreme">
       <span class="dx-title-logo__half dx-title-logo__half--top"></span>
       <span class="dx-title-logo__half dx-title-logo__half--bottom"></span>
     </h1>
-    <p class="dx-text dx-title-sub">Lake Ulysses. The water looks fine.</p>
   `;
   const introTimers = [];
   const at = (ms, fn) => introTimers.push(setTimeout(fn, ms));

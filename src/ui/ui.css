@@ -1113,3 +1113,42 @@ svg .is-hinted path {
   text-shadow: 0 0 4px #000;
 }
 .dx-title-intro.is-ready .dx-title-sub { opacity: 1; }
+
+/* The lake pans forever: a strip two tiles wide (the tile's right edge
+   dissolves into its left, scripts/import-gm-title.mjs) slides one tile's
+   width and repeats, while the frames still boil (background-position-y). */
+.dx-title-bg {
+  left: 0;
+  right: 0;
+  width: auto;
+  aspect-ratio: auto;
+  transform: none;
+  overflow: hidden;
+  background: none;
+  animation: dx-title-bg-in 1.2s steps(6, end) 0.1s forwards;
+}
+
+.dx-title-bg__strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  aspect-ratio: 1000 / 288;
+  background-image: url('/assets/shared/title/spr_title_bg.png');
+  background-repeat: repeat-x;
+  background-size: 50% 700%;
+  image-rendering: pixelated;
+  animation: dx-title-pan 60s linear infinite, dx-title-boil-y 0.58s steps(6) infinite;
+}
+
+@keyframes dx-title-pan { to { transform: translateX(-50%); } }
+@keyframes dx-title-boil-y {
+  from { background-position-y: 0%; }
+  to { background-position-y: 100%; }
+}
+
+.dx-title-intro.is-skipped .dx-title-bg { animation: none; opacity: 0.72; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-title-bg__strip { animation: none; }
+}

@@ -1522,7 +1522,7 @@ falls back when the intersection is empty.</li>
 <p><strong>Open (raised 2026-09-30, not decided):</strong></p>
 <ul>
 <li><strong>No node MOOD is Trust any more</strong> (2026-10-01): Rwanda Q4 → Anxiety, Rick&#39;s enabled Q2 → Anger. Trust is earn-only, so a Trust mood could almost never be matched.</li>
-<li><strong>Title intro</strong> (<code>main.js</code> renderTitleMenu, art via <code>scripts/import-gm-title.mjs</code> from the GameMaker beta): the dithered Lake Ulysses panorama (spr_title_bg, 7 frames) fades in; the DREAM XTREME logo (spr_game_title, still boiling, 13 of its 73 frames) arrives split, top half from the left, bottom from the right, in NES steps; they slam with a clang (<code>playLogoSweep</code>/<code>playLogoSlam</code>), a white flash and shake; the logo strobes; then subtitle and ENTER. Tap skips. Art as palette PNG sprite sheets in public/assets/shared/title (~330 KB).</li>
+<li><strong>Title intro</strong> (<code>main.js</code> renderTitleMenu, art via <code>scripts/import-gm-title.mjs</code> from the GameMaker beta): the dithered Lake Ulysses panorama (spr_title_bg, 7 frames) fades in and pans forever (each frame made a seamless tile at import: its right edge dissolves into its left with a Bayer-dither crossfade; a two-tile strip slides one tile per 60 s while the frames still boil); the DREAM XTREME logo (spr_game_title, still boiling, 13 of its 73 frames) arrives split, top half from the left, bottom from the right, in NES steps; they slam with a clang (<code>playLogoSweep</code>/<code>playLogoSlam</code>), a white flash and shake; the logo strobes; then ENTER (no subtitle). Tap skips. Art as palette PNG sprite sheets in public/assets/shared/title (~330 KB).</li>
 <li><strong>Ending rebuilt</strong> (<code>endingScene.js</code>, <code>ui/feelzRecord.js</code>): final reading → story slides with image placeholders (endings.json <code>images</code> for art) → epilogue → closing quote (endings.json <code>quote</code>/<code>quoteBy</code>) → ending card → the record printed by a pixel fax (handshake, per-line print head and chirp; tap rushes it with a jam sound and a smear scratch) → SAVE AS PNG, an official FEELZ certified copy with letterhead, seal, signatures and company lore (Halberd &amp; Lowe Affective Systems, Agreement LU-77; PLACEHOLDER lore). The old water/report pages are folded into the record.</li>
 <li><strong>Masks</strong> (MASK lines; Samun ×4, Rick ×3, first two questions): the shown feeling differs from the real MOOD; tells are the prompt&#39;s colored word, a blink of the real color on the oscilloscope, the grind on picking the mask, and contacts&#39; reads. Therapist outro plants it. Difficulty is now reading, not reachability (balance script still shows every route possible).</li>
 <li><strong>Earned stories</strong> (STORY lines, <code>showConnection</code>): connecting plays a five-beat first-person cutscene of each NPC&#39;s trauma (one per character). Rick&#39;s ties to Gabriel; hearing it puts Rick on the bank at the Reckoning&#39;s gate (<code>run.storiesHeard</code>).</li>
@@ -3388,7 +3388,7 @@ colored-initial placeholder whenever it&#39;s unset.</p>
 </tr>
 <tr>
 <td align="left"><code>title/spr_title_bg.png</code></td>
-<td align="left">640×288 ×7 frames</td>
+<td align="left">500×288 ×7 seamless tiles (vertical sheet)</td>
 <td align="left">✅ from GameMaker beta</td>
 </tr>
 <tr>

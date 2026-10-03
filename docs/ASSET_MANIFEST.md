@@ -103,7 +103,7 @@ colored-initial placeholder whenever it's unset.
 | `portrait_rick` | 192×192 | ⬜ |
 | `portrait_therapist` | 192×192 | 💬 he's voice-only by design — confirm before drawing |
 | `title/spr_game_title.png` | 640×280 ×13 frames | ✅ from GameMaker beta (scripts/import-gm-title.mjs) |
-| `title/spr_title_bg.png` | 640×288 ×7 frames | ✅ from GameMaker beta |
+| `title/spr_title_bg.png` | 500×288 ×7 seamless tiles (vertical sheet) | ✅ from GameMaker beta |
 | `bust_pastor` | bust | ⬜ placeholder is code-drawn pixel art (`ui/pastorBust.js`: halo, clerical collar, dark wings); replace with a real bust sprite |
 
 ---
