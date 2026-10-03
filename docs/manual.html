@@ -467,6 +467,67 @@ scales with how far their TRU and STB moved.</p>
 <p>A heart-monitor band runs across the portrait. Their line sits on top, yours underneath, and the gap between them is how close this person is to you: it narrows with every attuned pick and every bid you turn toward, widens with each answer that does neither, and closes completely (the lines merge and glow) once they trust you. Holding a feeling previews it: theirs pulls the lines in a little, another pushes them apart. Your line wears the color of the feeling you hold (or your last one), and a strip under the portrait keeps one colored block per answer in this encounter (newest outlined), so you can see which feelings you lean on with this person. Shut out (airplane mode): your line greys and theirs flatlines.</p>
 <h3 id="doc-game_manual--debug-menu-for-testing"><a class="anchor" href="#doc-game_manual--debug-menu-for-testing" aria-label="Link to this section">#</a>Debug menu (for testing)</h3>
 <p>Settings → DEBUG. Choose a class (GUNS / BIBLE / CRYSTALS), a lake level (0–10 Truth Debt), ALL FEELINGS (every slice unlocked), and EVERYONE TRUSTS YOU (all four NPCs already trust you, so contacts are in the dock), then tap any scene to restart the chapter there with that state. The questionnaire still re-picks the class if you jump to it.</p>
+<h3 id="doc-game_manual--what-each-feeling-feels-like-never-named"><a class="anchor" href="#doc-game_manual--what-each-feeling-feels-like-never-named" aria-label="Link to this section">#</a>What each feeling feels like (never named)</h3>
+<p>Testers wanted to know what the colors meant without the game naming them. Three clues, each a different sense (<code>ui/feelingIcons.js</code>):</p>
+<table>
+<thead>
+<tr>
+<th align="left">Color</th>
+<th align="left">Icon on the slice</th>
+<th align="left">Body line</th>
+<th align="left">The screen</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Red</td>
+<td align="left">flame</td>
+<td align="left">jaw tight, hands hot</td>
+<td align="left">a heat shimmer</td>
+</tr>
+<tr>
+<td align="left">Indigo</td>
+<td align="left">wide eye</td>
+<td align="left">stomach drops, cold neck</td>
+<td align="left">the edges close in</td>
+</tr>
+<tr>
+<td align="left">Blue</td>
+<td align="left">raindrop</td>
+<td align="left">heavy arms, slow breath</td>
+<td align="left">colors drain</td>
+</tr>
+<tr>
+<td align="left">Yellow</td>
+<td align="left">sun</td>
+<td align="left">chest light, face warm</td>
+<td align="left">a warm glow</td>
+</tr>
+<tr>
+<td align="left">Orange</td>
+<td align="left">tangled knot</td>
+<td align="left">can&#39;t sit still, tight chest</td>
+<td align="left">a small jitter</td>
+</tr>
+<tr>
+<td align="left">Green</td>
+<td align="left">squeezed eyes, wavy mouth</td>
+<td align="left">throat closes, lip curls</td>
+<td align="left">a sickly wobble</td>
+</tr>
+<tr>
+<td align="left">Pink</td>
+<td align="left">spark burst</td>
+<td align="left">breath catches, eyes wide</td>
+<td align="left">a quick zoom-flash</td>
+</tr>
+<tr>
+<td align="left">Teal</td>
+<td align="left">open hand</td>
+<td align="left">shoulders drop, hands open</td>
+<td align="left">everything steadies</td>
+</tr>
+</tbody></table>
+<p>The body line shows on every hold (a long hover with a mouse) and on the first 3 picks of each feeling, then picks show only the icon and the screen&#39;s reaction. The names appear only in the ending&#39;s FEELZ report. (Body lines draw on research mapping where people feel emotions: Nummenmaa et al., 2014.)</p>
 <h3 id="doc-game_manual--the-word-feelz"><a class="anchor" href="#doc-game_manual--the-word-feelz" aria-label="Link to this section">#</a>The word FEELZ</h3>
 <p>Wherever FEELZ appears on screen it wears the logo colors, one feeling per letter: F Anger, E Happy, E Trust, L Sadness, Z Anxiety. Typed text gets it from the typewriter; fixed labels (status bar carrier, app bars, report headers) from a page-wide watcher (<code>shell/feelzWord.js</code>). A line that colors the word itself keeps its own color.</p>
 <h3 id="doc-game_manual--contact-colors"><a class="anchor" href="#doc-game_manual--contact-colors" aria-label="Link to this section">#</a>Contact colors</h3>
@@ -1353,6 +1414,7 @@ falls back when the intersection is empty.</li>
 <p><strong>Open (raised 2026-09-30, not decided):</strong></p>
 <ul>
 <li><strong>No node MOOD is Trust any more</strong> (2026-10-01): Rwanda Q4 → Anxiety, Rick&#39;s enabled Q2 → Anger. Trust is earn-only, so a Trust mood could almost never be matched.</li>
+<li><strong>Feeling context clues</strong> (2026-10-02, <code>ui/feelingIcons.js</code>): pixel icons on the wheel slices (flame, wide eye, raindrop, sun, knot, ugh-face, spark, open hand) replace the glyphs; body-sensation lines on hold and on each feeling&#39;s first 3 picks; a short screen reaction per feeling on hold and pick.</li>
 <li><strong>Class balance</strong> (2026-10-02, <code>scripts/balance-check.mjs</code>): Bible could never earn Deborah&#39;s trust and Guns had a narrow route with Rwanda. Fixed with two mood swaps: Deborah&#39;s soft opener Sadness → Anxiety, Rwanda&#39;s soft opener Anxiety → Fear. Every class can now reach every NPC (Bible × Deborah only via the soft opener). Samun and Rick are reachable on every route for every class: maybe too easy, a difficulty question for later. Rerun the script after any MOOD/BID change.</li>
 <li><strong>FEELZ feeling contradictions</strong> (proposed): TOPIC tags per node; picking
 the opposite feeling on the same topic with someone else pings a FEELZ

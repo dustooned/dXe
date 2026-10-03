@@ -312,6 +312,23 @@ A heart-monitor band runs across the portrait. Their line sits on top, yours und
 
 Settings → DEBUG. Choose a class (GUNS / BIBLE / CRYSTALS), a lake level (0–10 Truth Debt), ALL FEELINGS (every slice unlocked), and EVERYONE TRUSTS YOU (all four NPCs already trust you, so contacts are in the dock), then tap any scene to restart the chapter there with that state. The questionnaire still re-picks the class if you jump to it.
 
+### What each feeling feels like (never named)
+
+Testers wanted to know what the colors meant without the game naming them. Three clues, each a different sense (`ui/feelingIcons.js`):
+
+| Color | Icon on the slice | Body line | The screen |
+| :-- | :-- | :-- | :-- |
+| Red | flame | jaw tight, hands hot | a heat shimmer |
+| Indigo | wide eye | stomach drops, cold neck | the edges close in |
+| Blue | raindrop | heavy arms, slow breath | colors drain |
+| Yellow | sun | chest light, face warm | a warm glow |
+| Orange | tangled knot | can't sit still, tight chest | a small jitter |
+| Green | squeezed eyes, wavy mouth | throat closes, lip curls | a sickly wobble |
+| Pink | spark burst | breath catches, eyes wide | a quick zoom-flash |
+| Teal | open hand | shoulders drop, hands open | everything steadies |
+
+The body line shows on every hold (a long hover with a mouse) and on the first 3 picks of each feeling, then picks show only the icon and the screen's reaction. The names appear only in the ending's FEELZ report. (Body lines draw on research mapping where people feel emotions: Nummenmaa et al., 2014.)
+
 ### The word FEELZ
 
 Wherever FEELZ appears on screen it wears the logo colors, one feeling per letter: F Anger, E Happy, E Trust, L Sadness, Z Anxiety. Typed text gets it from the typewriter; fixed labels (status bar carrier, app bars, report headers) from a page-wide watcher (`shell/feelzWord.js`). A line that colors the word itself keeps its own color.

@@ -30,6 +30,7 @@
 // commits (see shell/audio.js's "FEELZ wheel hover/select tones").
 import { EMOTIONS, EMOTION_ORDER, CLASSES } from '../engine/loadout.js';
 import * as audio from '../shell/audio.js';
+import { iconCells, iconHtml, showBody, feel } from './feelingIcons.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 const CX = 100, CY = 100, OUTER_R = 88, INNER_R = 34, SYMBOL_R = 61;
@@ -137,16 +138,10 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
     const pos = symbolPos(i);
 
     const path = svgEl('path', { d: sectorPath(i) });
-    const label = svgEl('text', {
-      x: pos.x.toFixed(2),
-      y: pos.y.toFixed(2),
-      'text-anchor': 'middle',
-      'dominant-baseline': 'central',
-      'font-size': '14',
-      'font-family': 'monospace',
-      'pointer-events': 'none',
-    });
-    label.textContent = em.symbol;
+    // The slice's picture (ui/feelingIcons.js): pixel cells that take the
+    // label's fill, so applyState colors it exactly as it did the glyph.
+    const label = svgEl('g', { 'pointer-events': 'none', 'shape-rendering': 'crispEdges', class: 'dx-feelz__icon' });
+    label.innerHTML = iconCells(emotion, pos.x, pos.y, 2.4);
 
     const g = svgEl('g');
     if (isActive) {
@@ -177,12 +172,15 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
     }
     holdClearers.push(clearHold);
 
-    g.addEventListener('pointerenter', () => {
+    let hoverTimer = null;
+    g.addEventListener('pointerenter', (e) => {
       g.classList.add('is-hovering');
       audio.startFeelzHover(emotion, activeEmotionsOrder, harmonicFunction);
+      if (e.pointerType === 'mouse') hoverTimer = setTimeout(() => showBody(emotion), HOLD_MS);
     });
 
     g.addEventListener('pointerleave', () => {
+      clearTimeout(hoverTimer);
       g.classList.remove('is-hovering');
       audio.stopFeelzHover();
     });
@@ -201,6 +199,8 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
           // it here too in case that event didn't come through.
           audio.startFeelzHover(emotion, activeEmotionsOrder, harmonicFunction);
           audio.swellFeelzHover();
+          showBody(emotion);
+          feel(emotion);
         }, HOLD_MS);
       }
     });
@@ -214,7 +214,7 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
         ghost = document.createElement('div');
         ghost.className = 'dx-feelz__ghost';
         ghost.style.setProperty('--bubble-color', em.color);
-        ghost.textContent = em.symbol;
+        ghost.innerHTML = iconHtml(emotion);
         document.body.appendChild(ghost);
       }
       if (ghost) {
@@ -271,6 +271,10 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
     label.setAttribute('fill', em.color);
 
     audio.playFeelzSelectTone(emotion, activeEmotionsOrder, harmonicFunction);
+    // The screen reacts, and the first few picks of each feeling say how it
+    // sits in the body (ui/feelingIcons.js).
+    feel(emotion);
+    showBody(emotion, { onPick: true });
     onSelect?.(emotion, source);
   }
 

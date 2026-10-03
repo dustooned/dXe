@@ -7,6 +7,7 @@
 // emotionCounts (every FEELZ pick), choices (truth/lie per node, keyed
 // `<npc>_<node>`). Nothing new is recorded for it.
 import { EMOTIONS, EMOTION_ORDER, emotionsForClass, getDominantEmotion } from '../engine/loadout.js';
+import { iconHtml } from './feelingIcons.js';
 
 // The class, as FEELZ files it. Each description doubles as a hint at the
 // player character's own battle.
@@ -116,7 +117,8 @@ export function createFeelzReport(state) {
   const chips = el('div', 'dx-report__chips');
   for (const name of EMOTION_ORDER) {
     const has = r.collected.includes(name);
-    const chip = el('span', `dx-report__chip${has ? '' : ' is-missing'}`, has ? `${EMOTIONS[name].symbol} ${name}` : '· ???');
+    const chip = el('span', `dx-report__chip${has ? '' : ' is-missing'}`, has ? name : '· ???');
+    if (has) chip.insertAdjacentHTML('afterbegin', iconHtml(name) + ' ');
     if (has) chip.style.color = EMOTIONS[name].color;
     chips.appendChild(chip);
   }
@@ -130,7 +132,8 @@ export function createFeelzReport(state) {
   for (const name of shown) {
     const n = r.counts[name] ?? 0;
     const row = el('div', 'dx-report__bar-row');
-    const label = el('span', 'dx-report__bar-label', `${EMOTIONS[name].symbol} ${name}`);
+    const label = el('span', 'dx-report__bar-label', name);
+    label.insertAdjacentHTML('afterbegin', iconHtml(name) + ' ');
     label.style.color = EMOTIONS[name].color;
     const track = el('span', 'dx-report__bar-track');
     const fill = el('span', 'dx-report__bar-fill');
