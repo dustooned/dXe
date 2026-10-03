@@ -1476,6 +1476,58 @@ export function playLogoSlam() {
   playStaticNoise(160);
 }
 
+// A chapter's preview on the chapter screen (main.js): its ambience fades
+// in low while you hover (or the touch prompt is up), and a few soft notes
+// of its motif ring once over it, with an echo. Separate from the scene
+// ambience so it never fights it; fades out when you leave.
+let previewGain = null;
+let previewSource = null;
+let previewGeneration = 0;
+const PREVIEW_GAIN = 0.22;
+
+export async function startChapterPreview({ src, motif = [] } = {}) {
+  stopChapterPreview();
+  const generation = ++previewGeneration;
+  const audioCtx = ensureContext();
+  const gain = audioCtx.createGain();
+  gain.gain.value = 0;
+  gain.connect(masterGain);
+  previewGain = gain;
+  const t = audioCtx.currentTime;
+  gain.gain.linearRampToValueAtTime(PREVIEW_GAIN, t + 0.9);
+  // The motif: soft triangle notes, each echoed once, fainter.
+  let at = t + 0.45;
+  for (const [note, ms] of motif) {
+    const f = noteToFrequency(note);
+    blip(f, at, (ms / 1000) * 0.9, 0.025, 'triangle');
+    blip(f, at + 0.32, (ms / 1000) * 0.8, 0.01, 'triangle');
+    at += ms / 1000;
+  }
+  if (!src) return;
+  const buffer = await loadAudio(src).catch(() => null);
+  if (!buffer || generation !== previewGeneration) return;
+  const source = audioCtx.createBufferSource();
+  source.buffer = buffer;
+  source.loop = true;
+  source.connect(gain);
+  source.start();
+  previewSource = source;
+}
+
+export function stopChapterPreview() {
+  previewGeneration++;
+  const gain = previewGain;
+  const source = previewSource;
+  previewGain = null;
+  previewSource = null;
+  if (!gain || !ctx) return;
+  const t = ctx.currentTime;
+  gain.gain.cancelScheduledValues(t);
+  gain.gain.setValueAtTime(gain.gain.value, t);
+  gain.gain.linearRampToValueAtTime(0.0001, t + 0.6);
+  setTimeout(() => { try { source?.stop(); } catch (_) { /* stopped */ } gain.disconnect(); }, 700);
+}
+
 // A meter moved (ui/statusBar.js): two square-wave notes a fifth apart,
 // rising when it went up, falling when it went down. Each meter has its
 // own pitch so they're learnable by ear; several changes play in turn.

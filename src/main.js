@@ -7,7 +7,7 @@ import { initFx, fadeToBlack, flash, shake } from './shell/fx.js';
 import { initFeelzWord } from './shell/feelzWord.js';
 import { setJumpHandler } from './shell/debug.js';
 import { initHud, setVisible as setHudVisible } from './shell/hud.js';
-import { startTitleMusic, stopTitleMusic, playStartJingle, playLogoSting, unlockAudio, playLogoSweep, playLogoSlam } from './shell/audio.js';
+import { startTitleMusic, stopTitleMusic, playStartJingle, playLogoSting, unlockAudio, playLogoSweep, playLogoSlam, startChapterPreview, stopChapterPreview } from './shell/audio.js';
 
 // Chapter registry — adding a new chapter later is one entry here.
 const CHAPTERS = {
@@ -20,6 +20,8 @@ const CHAPTERS = {
     banner: { src: '/assets/shared/title/spr_title_bg.png', frames: 7, tile: [500, 288], tint: '#1f8a8a' },
     // Where 'skip the story' starts a returning player.
     skipTo: 'feelz-launch',
+    // Hovering its card: the lake's ambience, low, and a few watery notes.
+    ambience: { src: '/assets/lake-ulysses/audio/lk_01.mp3', motif: [['E4', 420], ['G4', 420], ['B4', 620], ['A4', 1000]] },
   },
 };
 
@@ -378,13 +380,13 @@ function renderMenu() {
       const go = document.createElement('button');
       go.className = 'dx-btn';
       go.textContent = label;
-      go.addEventListener('click', () => navigate(to));
+      go.addEventListener('click', () => { stopChapterPreview(); navigate(to); });
       row.appendChild(go);
     }
     const back = document.createElement('button');
     back.className = 'dx-btn dx-chapter-ask__back';
     back.textContent = 'BACK';
-    back.addEventListener('click', () => { ask.remove(); backdrop.classList.remove('is-on'); });
+    back.addEventListener('click', () => { ask.remove(); backdrop.classList.remove('is-on'); stopChapterPreview(); });
     row.appendChild(back);
     ask.append(title, q, row);
     screen.appendChild(ask);
@@ -413,13 +415,14 @@ function renderMenu() {
     btn.addEventListener('click', () => {
       // Mouse: straight in. Touch: the art fills the screen first and it
       // asks, and a returning player is offered the skip.
-      if (canHover) { navigate(`chapter/${chapterId}`); return; }
+      if (canHover) { stopChapterPreview(); navigate(`chapter/${chapterId}`); return; }
       if (b) showBackdrop(b);
+      if (chapter.ambience) startChapterPreview(chapter.ambience);
       askReady(chapterId, chapter, done);
     });
     if (canHover && b) {
-      btn.addEventListener('mouseenter', () => showBackdrop(b));
-      btn.addEventListener('mouseleave', () => backdrop.classList.remove('is-on'));
+      btn.addEventListener('mouseenter', () => { showBackdrop(b); if (chapter.ambience) startChapterPreview(chapter.ambience); });
+      btn.addEventListener('mouseleave', () => { backdrop.classList.remove('is-on'); stopChapterPreview(); });
     }
     menu.appendChild(btn);
   }
@@ -438,6 +441,7 @@ function renderMenu() {
   screen.appendChild(buildInfo);
 
   stage.appendChild(screen);
+  currentUnmount = stopChapterPreview;
 }
 
 // ─── About ────────────────────────────────────────────────────────────────────
