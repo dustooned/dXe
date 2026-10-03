@@ -364,11 +364,18 @@ function renderAbout() {
 
 // ─── Chapter ──────────────────────────────────────────────────────────────────
 
+// Bumped on every chapter render: a load that finishes after a newer render
+// started (a debug jump during boot, a fast double navigation) is dropped
+// instead of mounting over it and eating the newer one's debug state.
+let chapterRender = 0;
+
 async function renderChapter(chapterId, startAt) {
   teardown();
   const chapter = CHAPTERS[chapterId];
   if (!chapter) { navigate('menu'); return; }
+  const ticket = ++chapterRender;
   const mod = await chapter.load();
+  if (ticket !== chapterRender) return;
   currentUnmount = mod.mount(stage, {
     exit: () => navigate('menu'),
     // Settings panel's "Restart Chapter" (shell/hud.js) — re-enters the same

@@ -205,7 +205,8 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
     });
     screen.append(fax.el, actions);
     // A tap pulls the paper: it rushes (and jams) rather than vanishing.
-    fax.el.addEventListener('click', () => fax.rush());
+    fax.el.querySelector('.dx-fax__paper').addEventListener('click', () => fax.rush());
+    fax.el.querySelector('.dx-fax__printer').addEventListener('click', () => fax.rush());
   }
 
   // IT and SO get the actual last word of the chapter — once the body text

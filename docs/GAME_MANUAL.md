@@ -363,7 +363,9 @@ One thing per screen, then the record:
    by line, a print head riding each line, the status light blinking, a
    dot-matrix chirp per line, a RECEIVED stamp. Tap to pull the paper: the
    motor jams and grinds, the rest rips out fast and comes out smeared, and
-   a faint drag scratch stays on the paper.
+   a faint drag scratch stays on the paper. Reading it: no scrollbar. Drag
+   the paper down to pull more out, or tap the pixel arrow to ease it down
+   to the next section (at the end it flips and takes you back up).
 7. **SAVE AS PNG**: a letter-size "certified copy": FEELZ letterhead (the
    wheel with your collected slices, the rainbow wordmark), the record,
    signature lines for C. Browning, LCSW and B. Baiter, City Council, a red

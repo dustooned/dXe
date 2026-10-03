@@ -99,6 +99,9 @@ function printerSvg() {
   return `<svg viewBox="0 0 ${PRINTER[0].length} ${PRINTER.length}" shape-rendering="crispEdges" aria-hidden="true">${cells}</svg>`;
 }
 
+// A chunky pixel arrow for "pull it down" (flipped for "back to the top").
+const ARROW_SVG = '<svg viewBox="0 0 7 5" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="7" height="1"/><rect x="1" y="1" width="5" height="1"/><rect x="2" y="2" width="3" height="1"/><rect x="3" y="3" width="1" height="1"/></svg>';
+
 // How long each line takes to print, and how fast once the paper's pulled.
 const LINE_MS = 340;
 const STAMP_MS = 700;
@@ -108,7 +111,7 @@ const RUSH_MS = 45;
 export function createFaxPrintout(rec, { onDone } = {}) {
   const el = document.createElement('div');
   el.className = 'dx-fax';
-  el.innerHTML = `<div class="dx-fax__printer">${printerSvg()}</div><div class="dx-fax__paper"><div class="dx-fax__feed"></div></div>`;
+  el.innerHTML = `<div class="dx-fax__printer">${printerSvg()}</div><div class="dx-fax__paper"><div class="dx-fax__feed"></div></div><button type="button" class="dx-fax__more" aria-label="Pull the paper down" hidden>${ARROW_SVG}</button>`;
   const paper = el.querySelector('.dx-fax__paper');
   const feed = el.querySelector('.dx-fax__feed');
 
@@ -162,6 +165,8 @@ export function createFaxPrintout(rec, { onDone } = {}) {
     if (i >= lines.length) {
       done = true;
       el.classList.remove('is-printing');
+      paper.scrollTop = 0;
+      syncArrow();
       onDone?.();
       return;
     }
@@ -180,6 +185,65 @@ export function createFaxPrintout(rec, { onDone } = {}) {
   const lead = playFaxHandshake();
   timer = setTimeout(next, lead);
 
+  // Reading it once it's printed: no scrollbar. Drag the paper down (pull
+  // it out of the machine) to read on, or tap the arrow to ease it down to
+  // the next section; at the end the arrow flips and takes you back up.
+  const more = el.querySelector('.dx-fax__more');
+  let easing = null;
+  function easeTo(target) {
+    cancelAnimationFrame(easing);
+    const from = paper.scrollTop;
+    const to = Math.max(0, Math.min(target, paper.scrollHeight - paper.clientHeight));
+    const t0 = performance.now();
+    const dur = 650;
+    const step = (now) => {
+      const p = Math.min(1, (now - t0) / dur);
+      paper.scrollTop = from + (to - from) * (1 - Math.pow(1 - p, 3));
+      if (p < 1) easing = requestAnimationFrame(step);
+      else { easing = null; syncArrow(); }
+    };
+    easing = requestAnimationFrame(step);
+  }
+  function atBottom() {
+    return paper.scrollTop + paper.clientHeight >= paper.scrollHeight - 4;
+  }
+  function syncArrow() {
+    if (!done) return;
+    const scrolls = paper.scrollHeight > paper.clientHeight + 4;
+    more.hidden = !scrolls;
+    more.classList.toggle('is-up', atBottom());
+  }
+  more.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (atBottom()) { easeTo(0); return; }
+    // The next section: the first rule line below the current view.
+    const view = paper.scrollTop + 8;
+    const rules = [...feed.querySelectorAll('.dx-fax__rule, .dx-fax__fine')].map((r) => r.offsetTop);
+    const next = rules.find((top) => top > view + 4);
+    easeTo(next ?? paper.scrollHeight);
+  });
+  let drag = null;
+  paper.addEventListener('pointerdown', (e) => {
+    if (!done) return;
+    drag = { y: e.clientY, top: paper.scrollTop, moved: false };
+    paper.setPointerCapture?.(e.pointerId);
+  });
+  paper.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    const dy = e.clientY - drag.y;
+    if (Math.abs(dy) > 4) drag.moved = true;
+    // Pulling down draws more paper out: the text moves up toward the slot.
+    paper.scrollTop = drag.top + dy;
+    syncArrow();
+  });
+  const endDrag = (e) => {
+    if (drag?.moved) e.stopPropagation();
+    drag = null;
+  };
+  paper.addEventListener('pointerup', endDrag);
+  paper.addEventListener('pointercancel', endDrag);
+  paper.addEventListener('scroll', () => { if (!easing) syncArrow(); });
+
   // Tap: pull the paper. The motor jams and grinds, the rest prints in a
   // rush, and a faint scratch is left on the paper where it dragged.
   function rush() {
@@ -197,8 +261,8 @@ export function createFaxPrintout(rec, { onDone } = {}) {
   return {
     el,
     rush,
-    finish() { clearTimeout(timer); while (i < lines.length) feed.appendChild(lines[i++]); paper.scrollTop = paper.scrollHeight; done = true; onDone?.(); },
-    destroy() { clearTimeout(timer); el.remove(); },
+    finish() { clearTimeout(timer); while (i < lines.length) feed.appendChild(lines[i++]); done = true; paper.scrollTop = 0; syncArrow(); onDone?.(); },
+    destroy() { clearTimeout(timer); cancelAnimationFrame(easing); el.remove(); },
   };
 }
 
