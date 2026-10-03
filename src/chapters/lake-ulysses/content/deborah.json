@@ -8,7 +8,7 @@
       "id": "deborah_01",
       "npc": "DEBORAH",
       "location": 2,
-      "prompt": "God took my boy when He needed him. I just have to {color:Trust}trust{/color} that.",
+      "prompt": "\"God took my boy when He needed him. I just have to {color:Trust}trust{/color} that.\"",
       "swipes": {
         "truth": {
           "playerText": "Your faith didn't protect him. Someone failed him.",
@@ -47,7 +47,7 @@
       "id": "deborah_02_denial",
       "npc": "DEBORAH",
       "location": 2,
-      "prompt": "I knew you'd {color:Trust}understand{/color}. Most people don't want to hear it.",
+      "prompt": "\"I knew you'd {color:Trust}understand{/color}. Most people don't want to hear it.\"",
       "swipes": {
         "truth": {
           "playerText": "I lied to you. Your grief deserves better than that.",
@@ -85,7 +85,7 @@
       "id": "deborah_02_confronted",
       "npc": "DEBORAH",
       "location": 2,
-      "prompt": "You don't know what it's like to {color:Sadness}lose{/color} a child.",
+      "prompt": "\"You don't know what it's like to {color:Sadness}lose{/color} a child.\"",
       "swipes": {
         "truth": {
           "playerText": "No. But you do. And you're still here.",
@@ -123,7 +123,7 @@
       "id": "deborah_01_soft",
       "npc": "DEBORAH",
       "location": 2,
-      "prompt": "You {color:Surprise}noticed{/color}. Nobody notices. Sit down — I'll make coffee neither of us is going to drink.",
+      "prompt": "\"You {color:Surprise}noticed{/color}. Nobody notices. Sit down — I'll make coffee neither of us is going to drink.\"",
       "swipes": {
         "truth": {
           "playerText": "I'm not here for coffee. I'm here about your son.",
@@ -160,7 +160,7 @@
       "id": "deborah_01_hard",
       "npc": "DEBORAH",
       "location": 2,
-      "prompt": "[She stops in the doorway and does not move out of it.] You {color:Anxiety}heard{/color}. Everybody heard. Go on — say the part where it was God's will.",
+      "prompt": "[She stops in the doorway and does not move out of it.] \"You {color:Anxiety}heard{/color}. Everybody heard. Go on — say the part where it was God's will.\"",
       "swipes": {
         "truth": {
           "playerText": "I wasn't going to say that.",
@@ -198,7 +198,7 @@
       "id": "deborah_03",
       "npc": "DEBORAH",
       "location": 2,
-      "prompt": "(She sits down at the kitchen table, like her legs finally admit it.) His name was {color:Sadness}Caleb{/color}. Nobody at this church says his name anymore.",
+      "prompt": "(She sits down at the kitchen table, like her legs finally admit it.) \"His name was {color:Sadness}Caleb{/color}. Nobody at this church says his name anymore.\"",
       "swipes": {
         "truth": {
           "playerText": "Say it as much as you need to. I'm listening.",
@@ -253,7 +253,7 @@
       "id": "deborah_04",
       "npc": "DEBORAH",
       "location": 2,
-      "prompt": "(She reaches for her bible out of habit, then stops, hand resting on the cover instead.) Everyone who knew him is either gone or {color:Disgust}pretending{/color} they weren't there.",
+      "prompt": "(She reaches for her bible out of habit, then stops, hand resting on the cover instead.) \"Everyone who knew him is either gone or {color:Disgust}pretending{/color} they weren't there.\"",
       "swipes": {
         "truth": {
           "playerText": "Then let me be someone who was.",

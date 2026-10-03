@@ -15,13 +15,22 @@
     {
       "speaker": "DEBORAH",
       "sprite": "/assets/lake-ulysses/sprites/npc_deborah.svg",
-      "text": "{slow}Well.{/slow}{pause:400} You're not the church.",
+      "text": "\"{slow}Well.{/slow}{pause:400} You're not the church.\"",
       "interactive": {
         "type": "choice",
         "options": [
-          { "label": "Say nothing. Let her fill it.", "opener": "deborah_01" },
-          { "label": "\"You look like you haven't slept.\"", "opener": "deborah_01_soft" },
-          { "label": "\"I heard about your son.\"", "opener": "deborah_01_hard" }
+          {
+            "label": "Say nothing. Let her fill it.",
+            "opener": "deborah_01"
+          },
+          {
+            "label": "\"You look like you haven't slept.\"",
+            "opener": "deborah_01_soft"
+          },
+          {
+            "label": "\"I heard about your son.\"",
+            "opener": "deborah_01_hard"
+          }
         ]
       }
     }

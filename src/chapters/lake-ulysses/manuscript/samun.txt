@@ -17,7 +17,7 @@ OPENER [Bible]: "Don't pray at me, man. I'm working."
 OPENER [Crystals]: "Ooh, good vibes. Sit, sit."
 
 === samun_01
-PROMPT: Man, everyone's {color:Fear}hooked{/color} on something. Mine's just more honest.
+PROMPT: "Man, everyone's {color:Fear}hooked{/color} on something. Mine's just more honest."
 MOOD: Happy
 
 -- TRUTH
@@ -37,7 +37,7 @@ LEDGER: You cosigned Samun's denial about his addiction.
 NEXT: samun_02_enabled
 
 === samun_02_enabled
-PROMPT: See? You get it. Nobody else does. They all want me {color:Disgust}fixed{/color}.
+PROMPT: "See? You get it. Nobody else does. They all want me {color:Disgust}fixed{/color}."
 MOOD: Happy
 
 -- TRUTH
@@ -57,7 +57,7 @@ LEDGER: You told Samun that people wanting him to get better were wrong.
 NEXT: samun_03
 
 === samun_02_confronted
-PROMPT: Easy for you to say. You're not the one {color:Sadness}hurting{/color}.
+PROMPT: "Easy for you to say. You're not the one {color:Sadness}hurting{/color}."
 MOOD: Anger
 
 -- TRUTH
@@ -77,7 +77,7 @@ LEDGER: You walked back the truth with Samun to avoid discomfort.
 NEXT: samun_03
 
 === samun_01_soft
-PROMPT: Business? Business is {color:Disgust}great{/color}, man. Look around. Everybody's real busy.
+PROMPT: "Business? Business is {color:Disgust}great{/color}, man. Look around. Everybody's real busy."
 MOOD: Happy
 
 -- TRUTH
@@ -97,7 +97,7 @@ LEDGER: You agreed with Samun that the shop was doing fine.
 NEXT: samun_02_enabled
 
 === samun_01_hard
-PROMPT: (He puts the rag down.) Ask it, then. Everybody who comes in here asks it {color:Anxiety}eventually{/color}.
+PROMPT: (He puts the rag down.) "Ask it, then. Everybody who comes in here asks it {color:Anxiety}eventually{/color}."
 MOOD: Fear
 
 -- TRUTH
@@ -117,7 +117,7 @@ LEDGER: You backed off the question Samun had already braced himself to answer.
 NEXT: samun_02_enabled
 
 === samun_03
-PROMPT: (He sets two bottles on the counter, unopened, just to have something to look at instead of you.) Tried quitting once. Four days. Everybody around me got {color:Disgust}worse{/color}, not me.
+PROMPT: (He sets two bottles on the counter, unopened, just to have something to look at instead of you.) "Tried quitting once. Four days. Everybody around me got {color:Disgust}worse{/color}, not me."
 MOOD: Sadness
 BID: truth
 
@@ -141,7 +141,7 @@ CAUGHT [samun_01]: "First I'm killing myself. Now it ain't me? Pick one, man."
 NEXT: samun_04
 
 === samun_04
-PROMPT: Fifth day, my {color:Sadness}brother{/color} called asking for money. That's the whole story. That's all it ever takes.
+PROMPT: "Fifth day, my {color:Sadness}brother{/color} called asking for money. That's the whole story. That's all it ever takes."
 MOOD: Sadness
 BID: both
 

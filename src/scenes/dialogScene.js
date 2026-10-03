@@ -31,6 +31,7 @@ import { createSpotlight } from '../ui/spotlight.js';
 import * as fx from '../shell/fx.js';
 import * as audio from '../shell/audio.js';
 import * as voices from '../shell/voices.js';
+import { quoteSpeech } from '../ui/speech.js';
 
 // Weak vs strong hit feedback is derived from how big a swipe's effects
 // are, not from truth/lie — intensity signals weight, not judgment.
@@ -417,7 +418,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       tapHint.hidden = true;
       content.appendChild(tapHint);
 
-      typewriter = createTypewriter(say, composeSay(pendingEdge.playerText, reactionEmotion, reactionSwipeKey), {
+      typewriter = createTypewriter(say, quoteSpeech(composeSay(pendingEdge.playerText, reactionEmotion, reactionSwipeKey)), {
         onChar: audio.playTypewriterTick,
         onDone: () => { tapHint.hidden = false; },
       });
@@ -1015,7 +1016,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
         return;
       }
       if (i === 1) { hintedEmotion = call.read; dartboard?.hint(call.read); }
-      tw = createTypewriter(p, call.lines[i], { onChar: audio.playTypewriterTick });
+      tw = createTypewriter(p, quoteSpeech(call.lines[i]), { onChar: audio.playTypewriterTick });
       i += 1;
     }
     setTimeout(() => {

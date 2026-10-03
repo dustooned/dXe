@@ -8,7 +8,7 @@
       "id": "samun_01",
       "npc": "SAMUN",
       "location": 4,
-      "prompt": "Man, everyone's {color:Fear}hooked{/color} on something. Mine's just more honest.",
+      "prompt": "\"Man, everyone's {color:Fear}hooked{/color} on something. Mine's just more honest.\"",
       "swipes": {
         "truth": {
           "playerText": "Honest or not, you're still killing yourself slowly.",
@@ -48,7 +48,7 @@
       "id": "samun_02_enabled",
       "npc": "SAMUN",
       "location": 4,
-      "prompt": "See? You get it. Nobody else does. They all want me {color:Disgust}fixed{/color}.",
+      "prompt": "\"See? You get it. Nobody else does. They all want me {color:Disgust}fixed{/color}.\"",
       "swipes": {
         "truth": {
           "playerText": "Maybe fixed is the wrong word. But not this — not this either.",
@@ -86,7 +86,7 @@
       "id": "samun_02_confronted",
       "npc": "SAMUN",
       "location": 4,
-      "prompt": "Easy for you to say. You're not the one {color:Sadness}hurting{/color}.",
+      "prompt": "\"Easy for you to say. You're not the one {color:Sadness}hurting{/color}.\"",
       "swipes": {
         "truth": {
           "playerText": "You're right. I'm not. But you are. Every day.",
@@ -123,7 +123,7 @@
       "id": "samun_01_soft",
       "npc": "SAMUN",
       "location": 4,
-      "prompt": "Business? Business is {color:Disgust}great{/color}, man. Look around. Everybody's real busy.",
+      "prompt": "\"Business? Business is {color:Disgust}great{/color}, man. Look around. Everybody's real busy.\"",
       "swipes": {
         "truth": {
           "playerText": "There's nobody here, Samun.",
@@ -160,7 +160,7 @@
       "id": "samun_01_hard",
       "npc": "SAMUN",
       "location": 4,
-      "prompt": "(He puts the rag down.) Ask it, then. Everybody who comes in here asks it {color:Anxiety}eventually{/color}.",
+      "prompt": "(He puts the rag down.) \"Ask it, then. Everybody who comes in here asks it {color:Anxiety}eventually{/color}.\"",
       "swipes": {
         "truth": {
           "playerText": "What are you on, Samun?",
@@ -198,7 +198,7 @@
       "id": "samun_03",
       "npc": "SAMUN",
       "location": 4,
-      "prompt": "(He sets two bottles on the counter, unopened, just to have something to look at instead of you.) Tried quitting once. Four days. Everybody around me got {color:Disgust}worse{/color}, not me.",
+      "prompt": "(He sets two bottles on the counter, unopened, just to have something to look at instead of you.) \"Tried quitting once. Four days. Everybody around me got {color:Disgust}worse{/color}, not me.\"",
       "swipes": {
         "truth": {
           "playerText": "Everybody around you didn't change. You did, for four days. That's the part worth noticing.",
@@ -252,7 +252,7 @@
       "id": "samun_04",
       "npc": "SAMUN",
       "location": 4,
-      "prompt": "Fifth day, my {color:Sadness}brother{/color} called asking for money. That's the whole story. That's all it ever takes.",
+      "prompt": "\"Fifth day, my {color:Sadness}brother{/color} called asking for money. That's the whole story. That's all it ever takes.\"",
       "swipes": {
         "truth": {
           "playerText": "That's not a small thing to say out loud.",

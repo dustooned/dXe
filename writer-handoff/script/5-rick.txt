@@ -18,7 +18,7 @@ OPENER [Crystals]: (He sneers.) "What are you, the welcome committee?"
 
 === rick_01
 GATE: trust < 3 -> rick_shut_down
-PROMPT: Guy looked at me {color:Anger}wrong{/color} outside. Now he's got a busted jaw and I got my patch back. That's just how it works out here.
+PROMPT: "Guy looked at me {color:Anger}wrong{/color} outside. Now he's got a busted jaw and I got my patch back. That's just how it works out here."
 MOOD: Anger
 
 -- TRUTH
@@ -39,7 +39,7 @@ LEDGER: You told Rick that beating a man half to death was just how it works.
 NEXT: rick_02_enabled
 
 === rick_02_enabled
-PROMPT: See, that's why I run with guys like you. Most people get {color:Disgust}soft{/color}, start asking questions.
+PROMPT: "See, that's why I run with guys like you. Most people get {color:Disgust}soft{/color}, start asking questions."
 MOOD: Anger
 
 -- TRUTH
@@ -59,7 +59,7 @@ LEDGER: You told Rick that violence was proof, not a problem.
 NEXT: rick_03
 
 === rick_02_confronted
-PROMPT: You don't get to {color:Anger}judge{/color} me. You don't know what it costs to keep this patch.
+PROMPT: "You don't get to {color:Anger}judge{/color} me. You don't know what it costs to keep this patch."
 MOOD: Anger
 
 -- TRUTH
@@ -79,7 +79,7 @@ LEDGER: You backed off Rick right as he almost let something show.
 NEXT: rick_03
 
 === rick_shut_down
-PROMPT: [Rick looks you over from the doorway and doesn't step aside.] Word gets around. I {color:Anxiety}know{/color} what you are.
+PROMPT: [Rick looks you over from the doorway and doesn't step aside.] "Word gets around. I {color:Anxiety}know{/color} what you are."
 MOOD: Disgust
 
 -- TRUTH
@@ -100,7 +100,7 @@ NEXT: (end)
 
 === rick_01_soft
 GATE: trust < 3 -> rick_shut_down
-PROMPT: (He takes the drink without looking at it.) You buying because you want something, or because I {color:Fear}scare{/color} you?
+PROMPT: (He takes the drink without looking at it.) "You buying because you want something, or because I {color:Fear}scare{/color} you?"
 MOOD: Anxiety
 
 -- TRUTH
@@ -121,7 +121,7 @@ NEXT: rick_02_enabled
 
 === rick_01_hard
 GATE: trust < 3 -> rick_shut_down
-PROMPT: The guy outside. (He wipes his {color:Anger}knuckles{/color} on his jeans, slow, so that you watch him do it.) What about him.
+PROMPT: "The guy outside." (He wipes his {color:Anger}knuckles{/color} on his jeans, slow, so that you watch him do it.) "What about him."
 MOOD: Anger
 
 -- TRUTH
@@ -141,7 +141,7 @@ LEDGER: You told Rick the man he beat half to death had it coming.
 NEXT: rick_02_enabled
 
 === rick_03
-PROMPT: (He turns the empty glass in a slow circle.) You know why I got the patch tattooed instead of just wearing it? Can't take off {color:Fear}skin{/color}.
+PROMPT: (He turns the empty glass in a slow circle.) "You know why I got the patch tattooed instead of just wearing it? Can't take off {color:Fear}skin{/color}."
 MOOD: Fear
 BID: truth
 
@@ -164,7 +164,7 @@ CAUGHT [rick_01]: "Five minutes ago I was just looking for a reason. Now I'm com
 NEXT: rick_04
 
 === rick_04
-PROMPT: (He rolls his sleeve back up, slow, like it costs him something now.) Guys who try to walk {color:Fear}away{/color} from this patch don't walk away clean. Never have.
+PROMPT: (He rolls his sleeve back up, slow, like it costs him something now.) "Guys who try to walk {color:Fear}away{/color} from this patch don't walk away clean. Never have."
 MOOD: Fear
 BID: both
 

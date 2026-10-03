@@ -22,7 +22,7 @@ She has been standing on the other side of it for a while.
 [object Object]
 
 [confront_deborah / beat 3] (DEBORAH speaking)
-{slow}Well.{/slow}{pause:400} You're not the church.
+"{slow}Well.{/slow}{pause:400} You're not the church."
 
 [confront_deborah / beat 3 / choice A] Say nothing. Let her fill it.
 [confront_deborah / beat 3 / choice B] "You look like you haven't slept."
@@ -39,7 +39,7 @@ She knew you came in. She hasn't decided yet whether to make that your problem.
 [object Object]
 
 [confront_rwanda / beat 3] (RWANDA speaking)
-You gonna stand there,{pause:300} or you gonna say the thing you came to say?
+"You gonna stand there,{pause:300} or you gonna say the thing you came to say?"
 
 [confront_rwanda / beat 3 / choice A] Wait her out.
 [confront_rwanda / beat 3 / choice B] "What are you looking at out there?"
@@ -56,7 +56,7 @@ He keeps doing it after they're dry.
 [object Object]
 
 [confront_samun / beat 3] (SAMUN speaking)
-Hey. {slow}Hey.{/slow}{pause:350} You need something, or you just walking around tonight?
+"Hey. {slow}Hey.{/slow}{pause:350} You need something, or you just walking around tonight?"
 
 [confront_samun / beat 3 / choice A] Let him keep talking.
 [confront_samun / beat 3 / choice B] "How's business been?"
@@ -73,7 +73,7 @@ There's blood on his knuckles that isn't his.
 [object Object]
 
 [confront_rick / beat 3] (RICK speaking)
-{slow}You're new.{/slow}{pause:400} Sit if you're sitting.
+"{slow}You're new.{/slow}{pause:400} Sit if you're sitting."
 
 [confront_rick / beat 3 / choice A] Sit down and say nothing.
 [confront_rick / beat 3 / choice B] Buy him a drink first.

@@ -15,13 +15,22 @@
     {
       "speaker": "RICK",
       "sprite": "/assets/lake-ulysses/sprites/npc_rick.svg",
-      "text": "{slow}You're new.{/slow}{pause:400} Sit if you're sitting.",
+      "text": "\"{slow}You're new.{/slow}{pause:400} Sit if you're sitting.\"",
       "interactive": {
         "type": "choice",
         "options": [
-          { "label": "Sit down and say nothing.", "opener": "rick_01" },
-          { "label": "Buy him a drink first.", "opener": "rick_01_soft" },
-          { "label": "\"What happened to the guy outside?\"", "opener": "rick_01_hard" }
+          {
+            "label": "Sit down and say nothing.",
+            "opener": "rick_01"
+          },
+          {
+            "label": "Buy him a drink first.",
+            "opener": "rick_01_soft"
+          },
+          {
+            "label": "\"What happened to the guy outside?\"",
+            "opener": "rick_01_hard"
+          }
         ]
       }
     }

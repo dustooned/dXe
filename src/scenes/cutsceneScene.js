@@ -37,6 +37,7 @@
 // saved to run.checkIn[key] (the FEELZ check-in answers, read back at the
 // ending; see endingScene.js).
 import { createTypewriter } from '../ui/typewriterText.js';
+import { quoteSpeech } from '../ui/speech.js';
 import { preloadTypewriterTick, playTypewriterTick, startAmbient, stopAmbient, startLeitmotif, playFeelzBoot } from '../shell/audio.js';
 import { createFeelzSilhouette } from '../ui/feelzSilhouette.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
@@ -180,7 +181,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
       const textEl = document.createElement('p');
       textEl.className = 'dx-text dx-cutscene-text';
       textBox.appendChild(textEl);
-      typewriter = createTypewriter(textEl, beat.text, { onDone: handleBeatReady, onChar: playTypewriterTick });
+      // A beat with a speaker is that character talking: always in quotes.
+      const shown = beat.speaker ? quoteSpeech(beat.text) : beat.text;
+      typewriter = createTypewriter(textEl, shown, { onDone: handleBeatReady, onChar: playTypewriterTick });
     } else {
       handleBeatReady();
     }

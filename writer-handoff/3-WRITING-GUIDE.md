@@ -95,7 +95,7 @@ Stage directions and description show in a grey slant; speech stays bright. The 
 - Anything in ( ) or [ ] is narration.
 - In any line that quotes someone ("…"), everything outside the quotes is narration.
 - A REACT with no quotes at all is all narration ("She flinches.").
-- NPC PROMPTs are their speech, bare: put directions in ( ) or [ ].
+- **Character dialogue always goes in quotes** ("…"), everywhere: PROMPTs, REACTs, CONNECT/CONTACT, cutscene lines with a speaker. Directions go in ( ) or [ ], outside the quotes. (Contact calls and the player's own line are quoted automatically.) IT and SO are thoughts, not dialogue: no quotes.
 
 ### Character voices (one word each)
 

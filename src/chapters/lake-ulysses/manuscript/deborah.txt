@@ -17,7 +17,7 @@ OPENER [Bible]: (She brightens.) "You've got a church face. I can always tell."
 OPENER [Crystals]: (Her smile tightens.) "You're not from our congregation, are you."
 
 === deborah_01
-PROMPT: God took my boy when He needed him. I just have to {color:Trust}trust{/color} that.
+PROMPT: "God took my boy when He needed him. I just have to {color:Trust}trust{/color} that."
 MOOD: Sadness
 
 -- TRUTH
@@ -37,7 +37,7 @@ LEDGER: You told Deborah God took her son on purpose.
 NEXT: deborah_02_denial
 
 === deborah_02_denial
-PROMPT: I knew you'd {color:Trust}understand{/color}. Most people don't want to hear it.
+PROMPT: "I knew you'd {color:Trust}understand{/color}. Most people don't want to hear it."
 MOOD: Happy
 
 -- TRUTH
@@ -57,7 +57,7 @@ LEDGER: You told Deborah she was spiritually superior for blaming God.
 NEXT: deborah_03
 
 === deborah_02_confronted
-PROMPT: You don't know what it's like to {color:Sadness}lose{/color} a child.
+PROMPT: "You don't know what it's like to {color:Sadness}lose{/color} a child."
 MOOD: Anger
 
 -- TRUTH
@@ -77,7 +77,7 @@ LEDGER: You apologized for telling Deborah the truth.
 NEXT: deborah_03
 
 === deborah_01_soft
-PROMPT: You {color:Surprise}noticed{/color}. Nobody notices. Sit down — I'll make coffee neither of us is going to drink.
+PROMPT: "You {color:Surprise}noticed{/color}. Nobody notices. Sit down — I'll make coffee neither of us is going to drink."
 MOOD: Anxiety
 
 -- TRUTH
@@ -97,7 +97,7 @@ LEDGER: You let Deborah change the subject away from her son.
 NEXT: deborah_02_denial
 
 === deborah_01_hard
-PROMPT: [She stops in the doorway and does not move out of it.] You {color:Anxiety}heard{/color}. Everybody heard. Go on — say the part where it was God's will.
+PROMPT: [She stops in the doorway and does not move out of it.] "You {color:Anxiety}heard{/color}. Everybody heard. Go on — say the part where it was God's will."
 MOOD: Anger
 
 -- TRUTH
@@ -117,7 +117,7 @@ LEDGER: You told Deborah her son's death was God's will, standing on her doorste
 NEXT: deborah_02_denial
 
 === deborah_03
-PROMPT: (She sits down at the kitchen table, like her legs finally admit it.) His name was {color:Sadness}Caleb{/color}. Nobody at this church says his name anymore.
+PROMPT: (She sits down at the kitchen table, like her legs finally admit it.) "His name was {color:Sadness}Caleb{/color}. Nobody at this church says his name anymore."
 MOOD: Sadness
 BID: truth
 
@@ -142,7 +142,7 @@ CAUGHT [deborah_01_hard]: "You said you weren't going to say it. Then you said i
 NEXT: deborah_04
 
 === deborah_04
-PROMPT: (She reaches for her bible out of habit, then stops, hand resting on the cover instead.) Everyone who knew him is either gone or {color:Disgust}pretending{/color} they weren't there.
+PROMPT: (She reaches for her bible out of habit, then stops, hand resting on the cover instead.) "Everyone who knew him is either gone or {color:Disgust}pretending{/color} they weren't there."
 MOOD: Disgust
 BID: both
 

@@ -17,7 +17,7 @@ OPENER [Bible]: "If you're here to save me, I'm booked."
 OPENER [Crystals]: (She almost relaxes.) "You don't look like you're here to tell me to smile."
 
 === rwanda_01
-PROMPT: Why do I gotta sand myself down just to be {color:Disgust}digestible{/color}?
+PROMPT: "Why do I gotta sand myself down just to be {color:Disgust}digestible{/color}?"
 MOOD: Anger
 
 -- TRUTH
@@ -38,7 +38,7 @@ LEDGER: You told Rwanda her experience wasn't that bad.
 NEXT: rwanda_02_closed
 
 === rwanda_02_closed
-PROMPT: Right. Sure. I'm doing {color:Sadness}fine{/color}. (She turns back to the window.)
+PROMPT: "Right. Sure. I'm doing {color:Sadness}fine{/color}." (She turns back to the window.)
 MOOD: Disgust
 
 -- TRUTH
@@ -58,7 +58,7 @@ LEDGER: You told Rwanda her erasure was a universal experience.
 NEXT: rwanda_03
 
 === rwanda_02_open
-PROMPT: You actually mean that? Most people just want me to {color:Disgust}perform{/color}.
+PROMPT: "You actually mean that? Most people just want me to {color:Disgust}perform{/color}."
 MOOD: Surprise
 
 -- TRUTH
@@ -78,7 +78,7 @@ LEDGER: You told Rwanda to wait for the world to catch up to her.
 NEXT: rwanda_03
 
 === rwanda_01_soft
-PROMPT: (She doesn't turn around.) You {color:Anxiety}see{/color} it too, right. Whatever's out there tonight.
+PROMPT: (She doesn't turn around.) "You {color:Anxiety}see{/color} it too, right. Whatever's out there tonight."
 MOOD: Fear
 
 -- TRUTH
@@ -99,7 +99,7 @@ LEDGER: You told Rwanda that what she was seeing wasn't there.
 NEXT: rwanda_02_closed
 
 === rwanda_01_hard
-PROMPT: Word travels. You've been at three doors tonight already. What is it you're {color:Anxiety}collecting{/color}?
+PROMPT: "Word travels. You've been at three doors tonight already. What is it you're {color:Anxiety}collecting{/color}?"
 MOOD: Fear
 
 -- TRUTH
@@ -119,7 +119,7 @@ LEDGER: You lied to Rwanda about why you were at her door at all.
 NEXT: rwanda_02_closed
 
 === rwanda_03
-PROMPT: (She lights a cigarette she doesn't smoke, just holds.) You want to know the actual tiring part? It's not them. It's {color:Fear}flinching{/color} before they even say anything.
+PROMPT: (She lights a cigarette she doesn't smoke, just holds.) "You want to know the actual tiring part? It's not them. It's {color:Fear}flinching{/color} before they even say anything."
 MOOD: Anxiety
 BID: truth
 
@@ -144,7 +144,7 @@ CAUGHT [rwanda_02_closed]: "You told me not to minimize it. Then you minimized m
 NEXT: rwanda_04
 
 === rwanda_04
-PROMPT: (She sets the cigarette down for good this time.) You're the first person tonight I haven't had to {color:Fear}brace{/color} for. That's either good, or it means I'm not paying attention.
+PROMPT: (She sets the cigarette down for good this time.) "You're the first person tonight I haven't had to {color:Fear}brace{/color} for. That's either good, or it means I'm not paying attention."
 MOOD: Anxiety
 BID: truth
 

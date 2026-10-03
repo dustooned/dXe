@@ -483,6 +483,7 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 
 **Open (raised 2026-09-30, not decided):**
 - **No node MOOD is Trust any more** (2026-10-01): Rwanda Q4 → Anxiety, Rick's enabled Q2 → Anger. Trust is earn-only, so a Trust mood could almost never be matched.
+- **Dialogue always in quotes** (2026-10-02): every NPC PROMPT (58 lines across manuscript + handoff copies), every speaker cutscene beat (Bob Baiter, the confrontations), the epigraph; calls, the player's SAY and future speaker beats are quoted at render (`ui/speech.js`). IT/SO stay unquoted (thoughts).
 - **Narration styling** (tester note, `typewriterText.js` markNarration): ( ) and [ ] text, and anything outside quotes in a quoting line, render grey and slanted; quote-less reactions are all narration.
 - **Class codas** (`engine/reactions.js` CLASS_CODAS): 48 closing lines, per class × feeling × truth/lie, alternating with each NPC's own coda so a pick never closes the same way twice in a row. In the writer handoff as [class-coda / …] lines (`npm run handoff`).
 - **Feeling context clues** (2026-10-02, `ui/feelingIcons.js`): pixel icons on the wheel slices (flame, wide eye, raindrop, sun, knot, ugh-face, spark, open hand) replace the glyphs; body-sensation lines on hold and on each feeling's first 3 picks, written per class (24 lines); a short screen reaction per feeling on hold and pick; a one-shot pixel burst from the slice on every pick.
