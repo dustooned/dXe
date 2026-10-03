@@ -6,6 +6,13 @@ ACCENT: var(--color-samun)
 CONNECT [Guns]: He stops wiping the counter. "Army taught me to spot guys like you. Ready to swing." He slides you one of the unopened bottles. "Didn't figure you'd be the one to set it down."
 CONNECT [Bible]: "My mother prayed over me every night. Didn't take." He turns the bottle in his hands. "You didn't pray at me. You listened. That's worse." A beat. "That's better."
 CONNECT [Crystals]: For once, the joke doesn't come. "Four days," he says quietly. "Nobody ever asked what the four days felt like." He tells you. It takes a while.
+# The story you earn by connecting: right after the CONNECT beat, they tell
+# you, in their own words, the wound that led them here. One beat per line.
+STORY: [He sets the rag down and doesn't pick it back up.] "I was nine. Woke up early for cartoons."
+STORY: "Dad was on the kitchen floor. Breathing wrong. Bottles everywhere."
+STORY: "My little brother was still asleep. So I cleaned it. The glass, the smell, all of it. Told him Dad was 'sleeping in.'"
+STORY: "Been cleaning up ever since. The jokes started that morning too. If people are laughing, nobody looks at the floor."
+STORY: [He laughs, once, and it's not a deflection this time.] "Huh. You looked at the floor."
 # Then they ask to stay in touch, and join your contacts.
 CONTACT [Guns]: "Put my number in. Call me before you swing at somebody." He grins. "I'll talk you down. Somebody should."
 CONTACT [Bible]: "My number. Pray for me if you want." He shrugs. "Or just call. Calling works better."

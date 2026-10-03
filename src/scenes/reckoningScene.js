@@ -21,6 +21,7 @@ import { createItPopup } from '../ui/itPopup.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
 import { createPastorBust } from '../ui/pastorBust.js';
+import { createNpcPortrait } from '../ui/npcPortrait.js';
 import { emotionColor, emotionsForClass } from '../engine/loadout.js';
 import * as audio from '../shell/audio.js';
 import * as voices from '../shell/voices.js';
@@ -70,8 +71,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
     const nameplate = document.createElement('p');
     nameplate.className = 'dx-text dx-pastor-nameplate';
-    nameplate.textContent = revealedName ? 'SAMAEL' : nameKnown ? 'PASTOR GABRIEL' : '???';
-    screen.appendChild(createPastorBust());
+    nameplate.textContent = line.speaker ?? (revealedName ? 'SAMAEL' : nameKnown ? 'PASTOR GABRIEL' : '???');
+    // Someone else on the bank (Rick) shows instead of the pastor.
+    screen.appendChild(line.speaker ? createNpcPortrait(line.speaker, `var(--color-${line.speaker.toLowerCase()})`).el : createPastorBust());
     screen.appendChild(nameplate);
 
     if (showLake) screen.appendChild(createLakeGauge(debt).el);
@@ -197,6 +199,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
     for (const voice of ['it', 'so']) {
       const last = lines.map((l) => l.voice).lastIndexOf(voice);
       if (last >= 0) lines[last] = { ...lines[last], reveal: true };
+    }
+    // Rick told you what Gabriel's water is. If he did, he's on the bank as
+    // you're walked down: the one moment anyone is in your corner.
+    if ((run.get().storiesHeard ?? []).includes('RICK')) {
+      lines.push({ speaker: 'RICK', text: '[Up on the bank, Rick, arms folded, not coming any closer.] "I told you. Don\'t let him."' });
     }
     playLines(lines, walkDown);
   }

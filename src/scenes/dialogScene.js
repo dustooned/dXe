@@ -1049,10 +1049,25 @@ export function mount(stageEl, scene, { run, onComplete }) {
       p.className = 'dx-text';
       box.appendChild(p);
       overlay.appendChild(box);
-      const tw = createTypewriter(p, text, { onChar: audio.playTypewriterTick });
+      let tw = createTypewriter(p, text, { onChar: audio.playTypewriterTick });
+      // Then the story they tell you (manuscript STORY lines): their bust
+      // comes up over the box, and each tap is the next beat.
+      const story = npc.story ?? [];
+      let beat = -1;
       overlay.addEventListener('click', () => {
         if (!tw.isDone()) { tw.finish(); return; }
         tw.destroy();
+        beat += 1;
+        if (beat === 0 && story.length) {
+          const bust = createNpcPortrait(npc.npc, npc.accentColor, npc.portrait);
+          bust.el.classList.add('dx-connect__bust', 'dx-connect__bust--story');
+          overlay.insertBefore(bust.el, box);
+          run.set({ storiesHeard: [...(run.get().storiesHeard ?? []), npc.npc] });
+        }
+        if (beat < story.length) {
+          tw = createTypewriter(p, story[beat], { onChar: audio.playTypewriterTick });
+          return;
+        }
         overlay.remove();
         onDone();
       });

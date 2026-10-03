@@ -305,6 +305,13 @@
     "Bible": "\"My mother prayed over me every night. Didn't take.\" He turns the bottle in his hands. \"You didn't pray at me. You listened. That's worse.\" A beat. \"That's better.\"",
     "Crystals": "For once, the joke doesn't come. \"Four days,\" he says quietly. \"Nobody ever asked what the four days felt like.\" He tells you. It takes a while."
   },
+  "story": [
+    "[He sets the rag down and doesn't pick it back up.] \"I was nine. Woke up early for cartoons.\"",
+    "\"Dad was on the kitchen floor. Breathing wrong. Bottles everywhere.\"",
+    "\"My little brother was still asleep. So I cleaned it. The glass, the smell, all of it. Told him Dad was 'sleeping in.'\"",
+    "\"Been cleaning up ever since. The jokes started that morning too. If people are laughing, nobody looks at the floor.\"",
+    "[He laughs, once, and it's not a deflection this time.] \"Huh. You looked at the floor.\""
+  ],
   "contactAsk": {
     "Guns": "\"Put my number in. Call me before you swing at somebody.\" He grins. \"I'll talk you down. Somebody should.\"",
     "Bible": "\"My number. Pray for me if you want.\" He shrugs. \"Or just call. Calling works better.\"",

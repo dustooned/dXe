@@ -79,6 +79,7 @@ function parseManuscript(text, fileName) {
   const nodes = {};
   const reveal = {};
   const connect = {};
+  const story = [];
   const contactAsk = {};
   const opener = {};
   const outro = [];
@@ -136,6 +137,11 @@ function parseManuscript(text, fileName) {
       const m = line.match(/^CONTACT \[(Guns|Bible|Crystals)\]:\s*(.*)$/);
       if (!m) throw new Error(`${fileName}:${lineNumber}: bad CONTACT line "${raw}" (CONTACT [Guns|Bible|Crystals]: text)`);
       contactAsk[m[1]] = parseText(m[2]);
+    } else if (line.startsWith('STORY:')) {
+      // The cutscene you earn by connecting: right after the CONNECT beat,
+      // they tell you, in their own words, the wound that led them here.
+      // One STORY line per beat, in order; the same for every class.
+      story.push(parseText(line.slice(6)));
     } else if (line.startsWith('CONNECT')) {
       // The connection moment (dialogScene.js showConnection): the story beat
       // played when this NPC first trusts the player, one per class.
@@ -275,6 +281,7 @@ function parseManuscript(text, fileName) {
   const result = { npc, location, accentColor, portrait, nodes };
   if (Object.keys(reveal).length) result.reveal = reveal;
   if (Object.keys(connect).length) result.connect = connect;
+  if (story.length) result.story = story;
   if (Object.keys(contactAsk).length) result.contactAsk = contactAsk;
   if (Object.keys(opener).length) result.opener = opener;
   if (outro.length) result.outro = outro;

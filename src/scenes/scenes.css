@@ -1528,3 +1528,20 @@
   pointer-events: none;
   image-rendering: pixelated;
 }
+
+/* The earned story (dialogScene.js showConnection): their bust rises over
+   the box as they start telling it. */
+.dx-connect__bust--story {
+  animation: dx-story-bust 0.9s ease-out both;
+}
+
+@keyframes dx-story-bust {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.dx-portrait.dx-connect__bust--story {
+  align-self: center;
+  width: 38%;
+  margin: 0 auto 10px;
+}

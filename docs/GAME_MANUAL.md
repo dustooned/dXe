@@ -400,7 +400,15 @@ whether people can rely on you, and it's built three ways:
 
 Two syncs plus one bid met and that NPC **trusts you**: the screen closes
 to a vignette on them, all sound drops out, a crack, then a short story
-beat of them letting you in (different per NPC and per class). If the
+beat of them letting you in (different per NPC and per class). Then the
+reward: **their story**, a five-beat cutscene in their own words, bust up,
+of the wound that led them here (Deborah: the two calls she let ring the
+night Caleb drove into the lake; Rwanda: the portrait of her mother she
+softened to win; Samun: cleaning up his father at nine so his brother
+wouldn't see; Rick: Gabriel holding him under at sixteen). Rick's ends with
+a warning about Gabriel's water, and if you heard it, Rick is on the bank
+at the Reckoning's gate as IT and SO walk you down: "I told you. Don't let
+him." If the
 encounter ends with them trusting you, a last beat closes it: the room
 goes dark, their bust fades in large, one on one, and they ask to stay in
 touch in their own way (per class). Their contact joins your dock. Earn

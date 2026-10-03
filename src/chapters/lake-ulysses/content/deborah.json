@@ -296,6 +296,13 @@
     "Bible": "She opens her bible to a page with a pressed petunia in it. \"He picked this for me the Easter before. I never told anyone I kept it.\" She closes it gently, with you still looking.",
     "Crystals": "She laughs, and it breaks halfway into something else. \"You're the first person who hasn't told me he's in a better place.\" She lets herself cry, and doesn't apologize for it."
   },
+  "story": [
+    "[She turns her phone over on the table, face-down, then face-up again.] \"The night Caleb died, he called me. Twice.\"",
+    "\"I was at the finance committee. We'd fought that week, about him leaving the church. I saw his name and I let it ring. I thought, let him sit with it.\"",
+    "\"He drove the lake road that night. They found the car in the morning.\"",
+    "\"Pastor said it was God's will. And I said amen. Because if it was God's will, then it wasn't my phone, face-down on that table.\"",
+    "[She looks at you, finally, all the way.] \"You're the first person I've told that it was face-down.\""
+  ],
   "contactAsk": {
     "Guns": "\"You'll call me if you need anything. I mean it.\" She takes a pen and writes her number on the back of your hand. \"There. So you can't lose it.\"",
     "Bible": "\"Come by Wednesday night, we do a supper.\" She presses a card into your hand. \"And that's my number, for the other six nights.\"",

@@ -149,6 +149,8 @@ const initialRunState = {
   // The FEELZ evaluation's read on the player (questionnaireScene.js), said
   // by the therapist as he looks over the intake (therapist_01 {intake}).
   intakeRead: null,
+  // NPCs whose story (their STORY cutscene) the player has heard.
+  storiesHeard: [],
 };
 
 // For the settings panel's DEBUG page: every scene, in order.

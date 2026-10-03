@@ -305,6 +305,13 @@
     "Bible": "\"My grandmother carried a bible like that. Swore by it. Swore at me with it, too.\" A small smile, the first real one. \"You didn't do either. That's new.\"",
     "Crystals": "She leans her head back against the brick and lets the breath all the way out. \"You didn't try to fix me. Or save me.\" Her shoulders come down an inch. \"Stay a minute. Don't say anything.\""
   },
+  "story": [
+    "[She doesn't turn from the window.] \"I was seventeen. I painted my mother at the bus stop, five in the morning.\"",
+    "\"The real her. Tired. Beautiful. Furious about it. Best thing I ever made.\"",
+    "\"Some parent called it 'too much' for the school show. Principal asked me to soften her face. Just a little. So I did. It won first place.\"",
+    "\"My mother came. Stood in front of it a long time. Said, 'That's not me.' Walked out.\"",
+    "[She finally turns around.] \"I've been sanding myself down for rooms ever since. You're the first room I didn't.\""
+  ],
   "contactAsk": {
     "Guns": "\"Give me your phone.\" She types her number in, then holds your eyes a second. \"Don't make me regret that.\"",
     "Bible": "\"If you ever want to see this finished, text me.\" She puts her number in your phone. \"I won't preach at you if you don't preach at me.\"",

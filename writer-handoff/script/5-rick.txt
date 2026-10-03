@@ -6,6 +6,13 @@ ACCENT: var(--color-rick)
 CONNECT [Guns]: He squares up, then doesn't. "Takes one to know one, huh." He rolls his sleeve down over the patch. "Nobody's ever seen me back down. Keep it that way."
 CONNECT [Bible]: "My old man quoted Leviticus at me till the day I left." His jaw works. "You're the first churchy type who didn't make me feel like the verse."
 CONNECT [Crystals]: He looks at you a long time. "There was a guy. Before the patch." He doesn't say more. He doesn't have to. He lets you see it.
+# The story you earn by connecting: right after the CONNECT beat, they tell
+# you, in their own words, the wound that led them here. One beat per line.
+STORY: [He rolls the sleeve all the way up. Under the patch, older ink, scarred over.] "Sixteen. My old man found me with a boy."
+STORY: "Didn't hit me. Worse. Drove me straight to the lake. To Gabriel."
+STORY: "He walked me in, hand on my chest. Said he'd wash it out of me. Held me under till I quit fighting. When I came up, they were singing."
+STORY: "I joined the club that summer. Figured you can't wash off skin. So I made sure mine couldn't be."
+STORY: [He looks out toward the water.] "He's still down there every Sunday. You go near that lake, you don't let him put his hand on you."
 # Then they ask to stay in touch, and join your contacts.
 CONTACT [Guns]: He takes your phone right out of your hand, thumbs his number in, hands it back. "You didn't see me do that."
 CONTACT [Bible]: He takes your phone without asking and saves his number under a fake name. "Nobody from church needs to know."

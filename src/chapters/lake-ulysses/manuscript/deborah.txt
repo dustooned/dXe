@@ -6,6 +6,13 @@ ACCENT: var(--color-deborah)
 CONNECT [Guns]: She holds out her hand, palm up, the way you'd show a dog you're not a threat. "Caleb used to stand like you. Like he was waiting to get hit." She doesn't pull the hand back.
 CONNECT [Bible]: She opens her bible to a page with a pressed petunia in it. "He picked this for me the Easter before. I never told anyone I kept it." She closes it gently, with you still looking.
 CONNECT [Crystals]: She laughs, and it breaks halfway into something else. "You're the first person who hasn't told me he's in a better place." She lets herself cry, and doesn't apologize for it.
+# The story you earn by connecting: right after the CONNECT beat, they tell
+# you, in their own words, the wound that led them here. One beat per line.
+STORY: [She turns her phone over on the table, face-down, then face-up again.] "The night Caleb died, he called me. Twice."
+STORY: "I was at the finance committee. We'd fought that week, about him leaving the church. I saw his name and I let it ring. I thought, let him sit with it."
+STORY: "He drove the lake road that night. They found the car in the morning."
+STORY: "Pastor said it was God's will. And I said amen. Because if it was God's will, then it wasn't my phone, face-down on that table."
+STORY: [She looks at you, finally, all the way.] "You're the first person I've told that it was face-down."
 # Then they ask to stay in touch, and join your contacts.
 CONTACT [Guns]: "You'll call me if you need anything. I mean it." She takes a pen and writes her number on the back of your hand. "There. So you can't lose it."
 CONTACT [Bible]: "Come by Wednesday night, we do a supper." She presses a card into your hand. "And that's my number, for the other six nights."

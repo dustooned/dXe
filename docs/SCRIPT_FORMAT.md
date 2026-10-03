@@ -262,6 +262,13 @@ blip. Used in the therapist's first reaction as he names each one.
 A `{mark:name}` tag inside a REACT starts a new page and fires a cue when that page comes up. Today: `{mark:lake}` brings the lake gauge in mid-reaction (with the spotlight moving to it) if a lie already put debt on the lake before its REVEAL turn. Used in the therapist's check-in lie reaction: he finishes the phone bars, then points at the lake.
 
 
+## STORY (header)
+
+`STORY: line`, repeatable, in the header: the cutscene the player earns by
+connecting, one line per beat, in order, the same for every class. It plays
+right after the CONNECT beat, with the NPC's bust up. Their words in quotes,
+directions in [ ].
+
 ## TRYCALL (outro)
 
 `TRYCALL: "line"` inside `=== OUTRO`: the speaker's own contact pops into the dock (spotlit, pulsing) and the line waits for the player to tap it instead of tapping on. Tapping rings, connects, and his "Hello?" echoes back twice with feedback (the phone calling the phone it's on). The next LINE carries the joke. Used once, in the therapist's outro, to teach the contacts dock.

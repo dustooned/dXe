@@ -76,6 +76,10 @@ only rewrite two things per node, rewrite those.
   their voice, quoting the earlier answer back if you can ("On my porch you
   said faith didn't save him. Now he's at peace?"). No CAUGHT line = their
   stock fallback plays.
+- **`STORY:`** (header, one per beat, about five) — the reward for connecting:
+  they tell you, in their own words, the wound that led them here. Same for
+  every class. Specific and plain beats dramatic: a phone face-down on a
+  table, a painting softened to win. Keep the worst of it implied.
 - **`{cue:stability}` / `{cue:trust}` / `{cue:lucidity}` / `{cue:integrity}`**
   inside a line — as the text reaches it, that phone icon (battery / bars /
   Wi-Fi / clock) flashes, shows its word and plays its sound. Put it right

@@ -666,7 +666,15 @@ never a catch. 8 pairs: two each for Deborah, Rwanda, Samun, Rick.</li>
 </ul>
 <p>Two syncs plus one bid met and that NPC <strong>trusts you</strong>: the screen closes
 to a vignette on them, all sound drops out, a crack, then a short story
-beat of them letting you in (different per NPC and per class). If the
+beat of them letting you in (different per NPC and per class). Then the
+reward: <strong>their story</strong>, a five-beat cutscene in their own words, bust up,
+of the wound that led them here (Deborah: the two calls she let ring the
+night Caleb drove into the lake; Rwanda: the portrait of her mother she
+softened to win; Samun: cleaning up his father at nine so his brother
+wouldn&#39;t see; Rick: Gabriel holding him under at sixteen). Rick&#39;s ends with
+a warning about Gabriel&#39;s water, and if you heard it, Rick is on the bank
+at the Reckoning&#39;s gate as IT and SO walk you down: &quot;I told you. Don&#39;t let
+him.&quot; If the
 encounter ends with them trusting you, a last beat closes it: the room
 goes dark, their bust fades in large, one on one, and they ask to stay in
 touch in their own way (per class). Their contact joins your dock. Earn
@@ -1476,6 +1484,7 @@ falls back when the intersection is empty.</li>
 <p><strong>Open (raised 2026-09-30, not decided):</strong></p>
 <ul>
 <li><strong>No node MOOD is Trust any more</strong> (2026-10-01): Rwanda Q4 → Anxiety, Rick&#39;s enabled Q2 → Anger. Trust is earn-only, so a Trust mood could almost never be matched.</li>
+<li><strong>Earned stories</strong> (STORY lines, <code>showConnection</code>): connecting plays a five-beat first-person cutscene of each NPC&#39;s trauma (one per character). Rick&#39;s ties to Gabriel; hearing it puts Rick on the bank at the Reckoning&#39;s gate (<code>run.storiesHeard</code>).</li>
 <li><strong>Dialogue always in quotes</strong> (2026-10-02): every NPC PROMPT (58 lines across manuscript + handoff copies), every speaker cutscene beat (Bob Baiter, the confrontations), the epigraph; calls, the player&#39;s SAY and future speaker beats are quoted at render (<code>ui/speech.js</code>). IT/SO stay unquoted (thoughts).</li>
 <li><strong>Narration styling</strong> (tester note, <code>typewriterText.js</code> markNarration): ( ) and [ ] text, and anything outside quotes in a quoting line, render grey and slanted; quote-less reactions are all narration.</li>
 <li><strong>Class codas</strong> (<code>engine/reactions.js</code> CLASS_CODAS): 48 closing lines, per class × feeling × truth/lie, alternating with each NPC&#39;s own coda so a pick never closes the same way twice in a row. In the writer handoff as [class-coda / …] lines (<code>npm run handoff</code>).</li>
@@ -3868,7 +3877,7 @@ mini-games are structured, if you&#39;re writing one of those.</li>
     </article>
 <article class="doc" id="doc-script_format" data-title="Script Format" data-file="SCRIPT_FORMAT.md" hidden>
       <p class="doc-source">Authoring · <code>docs/SCRIPT_FORMAT.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-script_format--where-files-go">Where files go</a></li><li><a href="#doc-script_format--building-it">Building it</a></li><li><a href="#doc-script_format--the-format">The format</a></li><li><a href="#doc-script_format--rules-that-will-make-the-build-fail-on-purpose">Rules that will make the build fail (on purpose)</a></li><li><a href="#doc-script_format--what-this-format-doesn39t-cover-yet">What this format doesn&amp;#39;t cover yet</a></li><li><a href="#doc-script_format--cues-inside-text-cuename">Cues inside text: {cue:name}</a></li><li><a href="#doc-script_format--cues-inside-text-markname">Cues inside text: {mark:name}</a></li><li><a href="#doc-script_format--trycall-outro">TRYCALL (outro)</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-script_format--where-files-go">Where files go</a></li><li><a href="#doc-script_format--building-it">Building it</a></li><li><a href="#doc-script_format--the-format">The format</a></li><li><a href="#doc-script_format--rules-that-will-make-the-build-fail-on-purpose">Rules that will make the build fail (on purpose)</a></li><li><a href="#doc-script_format--what-this-format-doesn39t-cover-yet">What this format doesn&amp;#39;t cover yet</a></li><li><a href="#doc-script_format--cues-inside-text-cuename">Cues inside text: {cue:name}</a></li><li><a href="#doc-script_format--cues-inside-text-markname">Cues inside text: {mark:name}</a></li><li><a href="#doc-script_format--story-header">STORY (header)</a></li><li><a href="#doc-script_format--trycall-outro">TRYCALL (outro)</a></li></ul></nav>
       <h1 id="doc-script_format--script-format-for-writers"><a class="anchor" href="#doc-script_format--script-format-for-writers" aria-label="Link to this section">#</a>Script Format (for writers)</h1>
 <p>This is for anyone writing dialog content who doesn&#39;t want to touch JSON —
 a collaborator, a co-writer, anyone. Write a plain <code>.txt</code> file in this
@@ -4111,6 +4120,11 @@ quick run). Today: <code>{cue:stability}</code>, <code>{cue:trust}</code>, <code
 blip. Used in the therapist&#39;s first reaction as he names each one.</p>
 <h2 id="doc-script_format--cues-inside-text-markname"><a class="anchor" href="#doc-script_format--cues-inside-text-markname" aria-label="Link to this section">#</a>Cues inside text: {mark:name}</h2>
 <p>A <code>{mark:name}</code> tag inside a REACT starts a new page and fires a cue when that page comes up. Today: <code>{mark:lake}</code> brings the lake gauge in mid-reaction (with the spotlight moving to it) if a lie already put debt on the lake before its REVEAL turn. Used in the therapist&#39;s check-in lie reaction: he finishes the phone bars, then points at the lake.</p>
+<h2 id="doc-script_format--story-header"><a class="anchor" href="#doc-script_format--story-header" aria-label="Link to this section">#</a>STORY (header)</h2>
+<p><code>STORY: line</code>, repeatable, in the header: the cutscene the player earns by
+connecting, one line per beat, in order, the same for every class. It plays
+right after the CONNECT beat, with the NPC&#39;s bust up. Their words in quotes,
+directions in [ ].</p>
 <h2 id="doc-script_format--trycall-outro"><a class="anchor" href="#doc-script_format--trycall-outro" aria-label="Link to this section">#</a>TRYCALL (outro)</h2>
 <p><code>TRYCALL: &quot;line&quot;</code> inside <code>=== OUTRO</code>: the speaker&#39;s own contact pops into the dock (spotlit, pulsing) and the line waits for the player to tap it instead of tapping on. Tapping rings, connects, and his &quot;Hello?&quot; echoes back twice with feedback (the phone calling the phone it&#39;s on). The next LINE carries the joke. Used once, in the therapist&#39;s outro, to teach the contacts dock.</p>
 
