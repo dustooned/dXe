@@ -339,8 +339,13 @@ function renderMenu() {
   teardown();
   const save = loadSave();
   const screen = document.createElement('div');
-  screen.className = 'dx-screen';
-  screen.innerHTML = `<h2 class="dx-title">CHAPTERS</h2>`;
+  screen.className = 'dx-screen dx-chapters-screen';
+  // Behind everything: hovering a chapter (mouse only) fills the screen with
+  // its art, black and white, magnified, with an echo of itself drifting
+  // behind, like the card's image thrown up on the wall.
+  screen.innerHTML = `<div class="dx-chapters-backdrop" aria-hidden="true"><span class="dx-chapters-backdrop__strip"></span><span class="dx-chapters-backdrop__strip is-echo"></span></div><h2 class="dx-title">CHAPTERS</h2>`;
+  const backdrop = screen.querySelector('.dx-chapters-backdrop');
+  const canHover = window.matchMedia?.('(hover: hover) and (pointer: fine)').matches;
 
   const menu = document.createElement('div');
   menu.className = 'dx-menu';
@@ -363,6 +368,17 @@ function renderMenu() {
     btn.innerHTML = `<span class="dx-chapter-card__bg" aria-hidden="true"><span class="dx-chapter-card__strip"></span></span><span class="dx-chapter-card__title"></span><span class="dx-chapter-card__meta">${done ? 'PLAYED ✓' : 'NEW'}</span>`;
     btn.querySelector('.dx-chapter-card__title').textContent = chapter.title;
     btn.addEventListener('click', () => navigate(`chapter/${chapterId}`));
+    if (canHover && b) {
+      btn.addEventListener('mouseenter', () => {
+        backdrop.style.setProperty('--banner', `url('${b.src}')`);
+        backdrop.style.setProperty('--frames', b.frames);
+        backdrop.style.setProperty('--frame-steps', b.frames - 1);
+        // A tile's width at the main layer's height (120% of the screen).
+        backdrop.style.setProperty('--tile-w', `${(screen.clientHeight * 1.2 * b.tile[0] / b.tile[1]).toFixed(1)}px`);
+        backdrop.classList.add('is-on');
+      });
+      btn.addEventListener('mouseleave', () => backdrop.classList.remove('is-on'));
+    }
     menu.appendChild(btn);
   }
 

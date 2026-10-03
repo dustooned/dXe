@@ -1245,3 +1245,72 @@ svg .is-hinted path {
 }
 
 @keyframes dx-chapter-pan { to { transform: translateX(calc(-1 * var(--tile-w, 200px))); } }
+
+/* Chapter hover backdrop (main.js renderMenu): the hovered chapter's art,
+   black and white, magnified to fill the screen, panning slowly, with a
+   fainter echo of it offset and drifting the other way. Mouse only. */
+.dx-chapters-screen {
+  position: relative;
+  overflow: hidden;
+}
+
+.dx-chapters-screen > *:not(.dx-chapters-backdrop) {
+  position: relative;
+  z-index: 1;
+}
+
+.dx-chapters-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.6s steps(6, end);
+  pointer-events: none;
+}
+
+.dx-chapters-backdrop.is-on { opacity: 1; }
+
+.dx-chapters-backdrop__strip {
+  position: absolute;
+  top: -10%;
+  left: 0;
+  height: 120%;
+  width: calc(100% + var(--tile-w, 800px));
+  background-image: var(--banner);
+  background-repeat: repeat-x;
+  background-size: var(--tile-w, 800px) calc(var(--frames, 1) * 100%);
+  image-rendering: pixelated;
+  filter: grayscale(1) contrast(1.25) brightness(0.55);
+  animation:
+    dx-chapter-pan 80s linear infinite,
+    dx-title-boil-y 0.58s steps(var(--frame-steps, 1)) infinite;
+}
+
+/* The echo: the same image, bigger, offset, fainter, drifting backward. */
+.dx-chapters-backdrop__strip.is-echo {
+  --echo-w: calc(var(--tile-w, 800px) * 1.25); /* 150% tall vs 120% */
+  top: -25%;
+  height: 150%;
+  width: calc(100% + var(--echo-w));
+  background-size: var(--echo-w) calc(var(--frames, 1) * 100%);
+  opacity: 0.22;
+  mix-blend-mode: screen;
+  animation:
+    dx-echo-pan 120s linear infinite reverse,
+    dx-title-boil-y 0.58s steps(var(--frame-steps, 1)) infinite;
+}
+
+/* Keep the menu readable over it. */
+.dx-chapters-backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.8));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-chapters-backdrop__strip { animation: none; }
+}
+
+@keyframes dx-echo-pan { to { transform: translateX(calc(-1 * var(--echo-w, 1000px))); } }
