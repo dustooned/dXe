@@ -233,30 +233,9 @@
   animation: dx-title-fadein 1.4s ease-out both;
 }
 
-.dx-title-sub {
-  text-align: center;
-  opacity: 0.6;
-  font-size: calc(8 * var(--fs));
-  letter-spacing: 0.06em;
-}
-
 @keyframes dx-title-fadein {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
-}
-
-.dx-skip-dialog {
-  border: 1px solid var(--color-white);
-  padding: 20px 16px;
-  margin: 0 16px;
-  text-align: center;
-  animation: dx-title-fadein 0.3s ease-out both;
-}
-
-.dx-skip-dialog .dx-text {
-  margin: 0 0 16px;
-  font-size: calc(8 * var(--fs));
-  line-height: 1.9;
 }
 
 /* ── HUD: settings gear + fast-forward (shell/hud.js) ──────────────────── */
@@ -1082,7 +1061,6 @@ svg .is-hinted path {
 }
 
 /* Menu and subtitle wait for the logo. */
-.dx-title-intro .dx-title-sub,
 .dx-title-intro .dx-menu {
   position: relative;
   z-index: 1;
@@ -1090,7 +1068,6 @@ svg .is-hinted path {
   transition: opacity 0.4s steps(4, end);
 }
 
-.dx-title-intro.is-ready .dx-title-sub { opacity: 0.75; }
 .dx-title-intro.is-ready .dx-menu { opacity: 1; }
 
 /* Skipped: everything lands at once. */
@@ -1106,13 +1083,6 @@ svg .is-hinted path {
 /* Readable over the dithered lake. */
 @keyframes dx-title-bg-in { to { opacity: 0.72; } }
 .dx-title-intro.is-skipped .dx-title-bg { opacity: 0.72; }
-.dx-title-intro .dx-title-sub {
-  align-self: center;
-  padding: 6px 10px;
-  background: rgba(0, 0, 0, 0.78);
-  text-shadow: 0 0 4px #000;
-}
-.dx-title-intro.is-ready .dx-title-sub { opacity: 1; }
 
 /* The lake pans forever: a strip two tiles wide (the tile's right edge
    dissolves into its left, scripts/import-gm-title.mjs) slides one tile's

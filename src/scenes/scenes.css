@@ -6,25 +6,6 @@
   gap: 20px;
 }
 
-.dx-questionnaire-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-
-.dx-questionnaire-npc {
-  font-size: calc(8 * var(--fs));
-  opacity: 0.5;
-  margin: 0;
-  letter-spacing: 0.05em;
-}
-
-.dx-questionnaire-counter {
-  font-size: calc(7 * var(--fs));
-  opacity: 0.3;
-  margin: 0;
-}
-
 /* The intake as a FEELZ form (questionnaireScene.js): app bar, progress,
    the question above the card, fine print at the bottom. */
 .dx-intake {
@@ -142,10 +123,6 @@
 @keyframes dx-intake-stamp {
   from { opacity: 0; transform: scale(1.8) rotate(-6deg); }
   to { opacity: 1; transform: rotate(-3deg); }
-}
-
-.dx-questionnaire-diagnosis {
-  cursor: pointer;
 }
 
 .dx-questionnaire-diagnosis-text {
@@ -418,10 +395,6 @@
   position: relative;
   padding: 0;
   cursor: pointer;
-}
-
-.dx-ending-body {
-  white-space: pre-line;
 }
 
 /* Typewriter text (shared by any scene that draws text character-by-
@@ -906,39 +879,6 @@
   .dx-feelz-sil { animation: none; }
 }
 
-/* Ending: the FEELZ check-in answers vs. what was recorded (endingScene.js).
-   Flat two-column data, no emphasis on either side. */
-.dx-checkin-record {
-  margin: 0;
-  font-size: calc(7 * var(--fs));
-  line-height: 1.7;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.dx-checkin-record__head {
-  margin-top: 6px;
-  letter-spacing: 0.2em;
-  opacity: 0.6;
-}
-
-.dx-checkin-record__row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  border-bottom: 1px dotted rgba(255, 255, 255, 0.25);
-}
-
-.dx-checkin-record__row dt,
-.dx-checkin-record__row dd {
-  margin: 0;
-}
-
-.dx-checkin-record__row dd {
-  text-align: right;
-}
-
 /* ── Pastor Gabriel's baptism (reckoningScene.js) ── */
 .dx-reckoning-screen {
   position: relative;
@@ -1092,105 +1032,6 @@
   .dx-notify { animation: none; }
 }
 
-/* ── Ending pages (endingScene.js) ─────────────────────────────────────── */
-.dx-ending-page--report,
-.dx-ending-page--story {
-  justify-content: flex-start;
-  text-align: left;
-}
-
-.dx-ending-next {
-  margin-top: auto;
-}
-
-/* FEELZ clinical report (ui/feelzReport.js). */
-.dx-report {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.dx-report p {
-  margin: 0;
-}
-
-.dx-report__app {
-  font-size: calc(7 * var(--fs));
-  letter-spacing: 0.08em;
-  color: var(--color-therapist);
-}
-
-.dx-report__section {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
-  padding-top: 10px;
-}
-
-.dx-report__label {
-  font-size: calc(6 * var(--fs));
-  opacity: 0.55;
-  letter-spacing: 0.08em;
-}
-
-.dx-report__diagnosis {
-  font-size: calc(9 * var(--fs));
-  line-height: 1.5;
-}
-
-.dx-report__body {
-  font-size: calc(7 * var(--fs));
-  line-height: 1.7;
-}
-
-.dx-report__note {
-  font-style: italic;
-}
-
-.dx-report__bar-row {
-  display: grid;
-  grid-template-columns: 9.5em 1fr 2em;
-  align-items: center;
-  gap: 8px;
-  font-size: calc(7 * var(--fs));
-}
-
-.dx-report__bar-track {
-  height: 8px;
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.dx-report__bar-fill {
-  display: block;
-  height: 100%;
-}
-
-.dx-report__bar-count {
-  text-align: right;
-}
-
-.dx-report__row {
-  display: flex;
-  justify-content: space-between;
-  font-size: calc(7 * var(--fs));
-}
-
-.dx-ending-summary {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
-  padding-top: 12px;
-}
-
-.dx-ending-summary__line {
-  margin: 0;
-  font-size: calc(7 * var(--fs));
-  line-height: 1.7;
-  text-align: center;
-}
-
 /* Freeze frame after a swipe (dialogScene.js FREEZE_MS): the committed
    moment hangs, a touch harsher, before the answer plays out. */
 .dx-stage.is-frozen {
@@ -1262,17 +1103,6 @@
   .has-fresh svg g,
   .dx-fresh-ring { animation: none; }
   .dx-fresh-ring { display: none; }
-}
-
-.dx-report__chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 12px;
-  font-size: calc(7 * var(--fs));
-}
-
-.dx-report__chip.is-missing {
-  opacity: 0.35;
 }
 
 /* The connection moment (dialogScene.js showConnection). The dark closes in

@@ -73,6 +73,10 @@ check-in answers come back at the very end, set against what actually
 happened (§3, "The ending"). The Therapist (§5) is the human voice behind
 the app.
 
+### Front door: title and chapters
+
+Every visit starts on the title: the dithered lake pans behind the DREAM XTREME logo, which arrives split (top half from the left, bottom from the right), slams together and strobes. ENTER: a first-timer goes straight into the story; a returning player goes to chapter select. Each chapter is a banner card with its own panning art; hovering it (mouse) fills the screen with that art in black and white, magnified with a drifting echo, and plays the chapter's motif, then its ambience crossfades in. Picking a chapter you have played asks SKIP STORY / FROM THE START; on touch, a tap asks "Ready to play?" first. Finishing or quitting a chapter returns to the title.
+
 ### The loop, at chapter scale
 
 Chapter 1 has one fixed shape, and every future chapter is expected to

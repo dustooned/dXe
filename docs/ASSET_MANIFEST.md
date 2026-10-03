@@ -1,5 +1,7 @@
 # Asset Manifest — Chapter 1 Visual Assets
 
+> **Start with [ART_GUIDE.md](ART_GUIDE.md)**: every asset, its sizes and its template in one place. This page has the deeper detail.
+
 Every image asset Chapter 1 needs, with dimensions. Work straight down it.
 
 **Format:** WebP. **DPI:** 72 (screen standard — DPI doesn't affect

@@ -1,5 +1,7 @@
 # Asset Guidelines
 
+> **Start with [ART_GUIDE.md](ART_GUIDE.md)**: every asset, its sizes and its template in one place. This page has the deeper detail.
+
 How to prepare, name, place, and wire art and audio for Dream Xtreme.
 Written against what's actually in the repo as of 2026-08-04 — the numbers
 here are measured, not aspirational.
