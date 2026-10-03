@@ -1476,56 +1476,91 @@ export function playLogoSlam() {
   playStaticNoise(160);
 }
 
-// A chapter's preview on the chapter screen (main.js): its ambience fades
-// in low while you hover (or the touch prompt is up), and a few soft notes
-// of its motif ring once over it, with an echo. Separate from the scene
-// ambience so it never fights it; fades out when you leave.
+// A chapter's preview on the chapter screen (main.js): a few soft notes of
+// its motif ring once (with an echo), then its ambience crossfades in low
+// while you hover (or the touch prompt is up). Separate from the scene
+// ambience so it never fights it; everything fades out when you leave,
+// including notes still scheduled.
+let previewMotif = null;
 let previewGain = null;
 let previewSource = null;
 let previewGeneration = 0;
 const PREVIEW_GAIN = 0.22;
+const PREVIEW_MOTIF_GAIN = 1;
 
+// One motif note (and its fainter echo) into the preview's own bus, so
+// stopping the preview silences notes still scheduled, not just the loop.
+function motifNote(bus, f, at, dur, peak) {
+  const osc = ctx.createOscillator();
+  osc.type = 'triangle';
+  osc.frequency.value = f;
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(0, at);
+  g.gain.linearRampToValueAtTime(peak, at + 0.01);
+  g.gain.setValueAtTime(peak, at + Math.max(0.02, dur - 0.05));
+  g.gain.linearRampToValueAtTime(0.0001, at + dur);
+  osc.connect(g).connect(bus);
+  osc.start(at);
+  osc.stop(at + dur + 0.02);
+  osc.onended = () => g.disconnect();
+}
+
+// The motif plays first; the ambience waits for it, then crossfades in
+// under the motif's last echo.
 export async function startChapterPreview({ src, motif = [] } = {}) {
   stopChapterPreview();
   const generation = ++previewGeneration;
   const audioCtx = ensureContext();
+  const t = audioCtx.currentTime;
+  const motifBus = audioCtx.createGain();
+  motifBus.gain.value = PREVIEW_MOTIF_GAIN;
+  motifBus.connect(masterGain);
+  previewMotif = motifBus;
+  let at = t + 0.15;
+  for (const [note, ms] of motif) {
+    const f = noteToFrequency(note);
+    motifNote(motifBus, f, at, (ms / 1000) * 0.9, 0.025);
+    motifNote(motifBus, f, at + 0.32, (ms / 1000) * 0.8, 0.01);
+    at += ms / 1000;
+  }
+  const motifEnd = at;
+  if (!src) return;
+  const buffer = await loadAudio(src).catch(() => null);
+  if (!buffer || generation !== previewGeneration) return;
   const gain = audioCtx.createGain();
   gain.gain.value = 0;
   gain.connect(masterGain);
   previewGain = gain;
-  const t = audioCtx.currentTime;
-  gain.gain.linearRampToValueAtTime(PREVIEW_GAIN, t + 0.9);
-  // The motif: soft triangle notes, each echoed once, fainter.
-  let at = t + 0.45;
-  for (const [note, ms] of motif) {
-    const f = noteToFrequency(note);
-    blip(f, at, (ms / 1000) * 0.9, 0.025, 'triangle');
-    blip(f, at + 0.32, (ms / 1000) * 0.8, 0.01, 'triangle');
-    at += ms / 1000;
-  }
-  if (!src) return;
-  const buffer = await loadAudio(src).catch(() => null);
-  if (!buffer || generation !== previewGeneration) return;
+  // Crossfade: the ambience rises from where the last note starts to fade,
+  // and the motif bus eases down as it comes in.
+  const fadeIn = Math.max(audioCtx.currentTime, motifEnd - 0.6);
+  gain.gain.setValueAtTime(0, fadeIn);
+  gain.gain.linearRampToValueAtTime(PREVIEW_GAIN, fadeIn + 1.6);
+  motifBus.gain.setValueAtTime(PREVIEW_MOTIF_GAIN, fadeIn);
+  motifBus.gain.linearRampToValueAtTime(0.0001, fadeIn + 1.6);
   const source = audioCtx.createBufferSource();
   source.buffer = buffer;
   source.loop = true;
   source.connect(gain);
-  source.start();
+  source.start(fadeIn);
   previewSource = source;
 }
 
 export function stopChapterPreview() {
   previewGeneration++;
-  const gain = previewGain;
+  const gains = [previewGain, previewMotif].filter(Boolean);
   const source = previewSource;
   previewGain = null;
+  previewMotif = null;
   previewSource = null;
-  if (!gain || !ctx) return;
+  if (!gains.length || !ctx) return;
   const t = ctx.currentTime;
-  gain.gain.cancelScheduledValues(t);
-  gain.gain.setValueAtTime(gain.gain.value, t);
-  gain.gain.linearRampToValueAtTime(0.0001, t + 0.6);
-  setTimeout(() => { try { source?.stop(); } catch (_) { /* stopped */ } gain.disconnect(); }, 700);
+  for (const g of gains) {
+    g.gain.cancelScheduledValues(t);
+    g.gain.setValueAtTime(g.gain.value, t);
+    g.gain.linearRampToValueAtTime(0.0001, t + 0.35);
+  }
+  setTimeout(() => { try { source?.stop(); } catch (_) { /* stopped */ } gains.forEach((g) => g.disconnect()); }, 450);
 }
 
 // A meter moved (ui/statusBar.js): two square-wave notes a fifth apart,
