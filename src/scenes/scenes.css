@@ -1517,3 +1517,14 @@
   .dx-stage[class*="dx-feel--"], .dx-stage[class*="dx-feel--"]::after { animation: none; }
   .dx-feel-body { animation: none; }
 }
+
+/* One-shot tap burst (ui/feelingIcons.js burst): chunky pixels. */
+.dx-feel-burst {
+  position: absolute;
+  z-index: 885;
+  width: calc(4 * var(--px));
+  height: calc(4 * var(--px));
+  margin: calc(-2 * var(--px)) 0 0 calc(-2 * var(--px));
+  pointer-events: none;
+  image-rendering: pixelated;
+}

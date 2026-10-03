@@ -527,7 +527,67 @@ scales with how far their TRU and STB moved.</p>
 <td align="left">everything steadies</td>
 </tr>
 </tbody></table>
-<p>The body line shows on every hold (a long hover with a mouse) and on the first 3 picks of each feeling, then picks show only the icon and the screen&#39;s reaction. The names appear only in the ending&#39;s FEELZ report. (Body lines draw on research mapping where people feel emotions: Nummenmaa et al., 2014.)</p>
+<p>The body lines above are the neutral versions. Each class notices the body its own way, so the line you see depends on your class:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Feeling</th>
+<th align="left">Guns (bracing)</th>
+<th align="left">Bible (body and conscience)</th>
+<th align="left">Crystals (energy)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Red</td>
+<td align="left">knuckles white, pulse in your teeth</td>
+<td align="left">face hot, a verse on your tongue</td>
+<td align="left">heat climbing up the spine</td>
+</tr>
+<tr>
+<td align="left">Indigo</td>
+<td align="left">back to the wall, ears ringing</td>
+<td align="left">knees weak, hands clasped</td>
+<td align="left">a cold prickle down the arms</td>
+</tr>
+<tr>
+<td align="left">Blue</td>
+<td align="left">arms like sandbags</td>
+<td align="left">chest hollow, eyes stinging</td>
+<td align="left">a weight pooling in the chest</td>
+</tr>
+<tr>
+<td align="left">Yellow</td>
+<td align="left">shoulders loose, a grin you can&#39;t help</td>
+<td align="left">lifted, light in the chest</td>
+<td align="left">fizz in the fingertips, face warm</td>
+</tr>
+<tr>
+<td align="left">Orange</td>
+<td align="left">finger tapping, scanning for exits</td>
+<td align="left">rehearsing it, over and over</td>
+<td align="left">buzzing under the skin</td>
+</tr>
+<tr>
+<td align="left">Green</td>
+<td align="left">jaw set, spit the taste out</td>
+<td align="left">stomach turns, a step back</td>
+<td align="left">skin crawls, you need air</td>
+</tr>
+<tr>
+<td align="left">Pink</td>
+<td align="left">flinch, then freeze</td>
+<td align="left">breath held, heart skips</td>
+<td align="left">a jolt, everything too bright</td>
+</tr>
+<tr>
+<td align="left">Teal</td>
+<td align="left">back turned, and that&#39;s fine</td>
+<td align="left">hands open, head bowed</td>
+<td align="left">a soft hum, shoulders melting</td>
+</tr>
+</tbody></table>
+<p>The body line shows (just under the wheel) on every hold (a long hover with a mouse) and on the first 3 picks of each feeling, then picks show only the icon and the screen&#39;s reaction.</p>
+<p><strong>Tap burst:</strong> every pick also fires a one-shot burst of chunky pixels from the slice, in the feeling&#39;s color and its own motion: sparks rising and flickering (red), a ring closing like a blink (indigo), drops falling (blue), rays out (yellow), a jittering swarm (orange), a wobbling drip (green), a fast wide burst (pink), a slow soft ring (teal). The names appear only in the ending&#39;s FEELZ report. (Body lines draw on research mapping where people feel emotions: Nummenmaa et al., 2014.)</p>
 <h3 id="doc-game_manual--the-word-feelz"><a class="anchor" href="#doc-game_manual--the-word-feelz" aria-label="Link to this section">#</a>The word FEELZ</h3>
 <p>Wherever FEELZ appears on screen it wears the logo colors, one feeling per letter: F Anger, E Happy, E Trust, L Sadness, Z Anxiety. Typed text gets it from the typewriter; fixed labels (status bar carrier, app bars, report headers) from a page-wide watcher (<code>shell/feelzWord.js</code>). A line that colors the word itself keeps its own color.</p>
 <h3 id="doc-game_manual--contact-colors"><a class="anchor" href="#doc-game_manual--contact-colors" aria-label="Link to this section">#</a>Contact colors</h3>
@@ -1414,7 +1474,7 @@ falls back when the intersection is empty.</li>
 <p><strong>Open (raised 2026-09-30, not decided):</strong></p>
 <ul>
 <li><strong>No node MOOD is Trust any more</strong> (2026-10-01): Rwanda Q4 → Anxiety, Rick&#39;s enabled Q2 → Anger. Trust is earn-only, so a Trust mood could almost never be matched.</li>
-<li><strong>Feeling context clues</strong> (2026-10-02, <code>ui/feelingIcons.js</code>): pixel icons on the wheel slices (flame, wide eye, raindrop, sun, knot, ugh-face, spark, open hand) replace the glyphs; body-sensation lines on hold and on each feeling&#39;s first 3 picks; a short screen reaction per feeling on hold and pick.</li>
+<li><strong>Feeling context clues</strong> (2026-10-02, <code>ui/feelingIcons.js</code>): pixel icons on the wheel slices (flame, wide eye, raindrop, sun, knot, ugh-face, spark, open hand) replace the glyphs; body-sensation lines on hold and on each feeling&#39;s first 3 picks, written per class (24 lines); a short screen reaction per feeling on hold and pick; a one-shot pixel burst from the slice on every pick.</li>
 <li><strong>Class balance</strong> (2026-10-02, <code>scripts/balance-check.mjs</code>): Bible could never earn Deborah&#39;s trust and Guns had a narrow route with Rwanda. Fixed with two mood swaps: Deborah&#39;s soft opener Sadness → Anxiety, Rwanda&#39;s soft opener Anxiety → Fear. Every class can now reach every NPC (Bible × Deborah only via the soft opener). Samun and Rick are reachable on every route for every class: maybe too easy, a difficulty question for later. Rerun the script after any MOOD/BID change.</li>
 <li><strong>FEELZ feeling contradictions</strong> (proposed): TOPIC tags per node; picking
 the opposite feeling on the same topic with someone else pings a FEELZ

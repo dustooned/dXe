@@ -483,7 +483,7 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 
 **Open (raised 2026-09-30, not decided):**
 - **No node MOOD is Trust any more** (2026-10-01): Rwanda Q4 → Anxiety, Rick's enabled Q2 → Anger. Trust is earn-only, so a Trust mood could almost never be matched.
-- **Feeling context clues** (2026-10-02, `ui/feelingIcons.js`): pixel icons on the wheel slices (flame, wide eye, raindrop, sun, knot, ugh-face, spark, open hand) replace the glyphs; body-sensation lines on hold and on each feeling's first 3 picks; a short screen reaction per feeling on hold and pick.
+- **Feeling context clues** (2026-10-02, `ui/feelingIcons.js`): pixel icons on the wheel slices (flame, wide eye, raindrop, sun, knot, ugh-face, spark, open hand) replace the glyphs; body-sensation lines on hold and on each feeling's first 3 picks, written per class (24 lines); a short screen reaction per feeling on hold and pick; a one-shot pixel burst from the slice on every pick.
 - **Class balance** (2026-10-02, `scripts/balance-check.mjs`): Bible could never earn Deborah's trust and Guns had a narrow route with Rwanda. Fixed with two mood swaps: Deborah's soft opener Sadness → Anxiety, Rwanda's soft opener Anxiety → Fear. Every class can now reach every NPC (Bible × Deborah only via the soft opener). Samun and Rick are reachable on every route for every class: maybe too easy, a difficulty question for later. Rerun the script after any MOOD/BID change.
 - **FEELZ feeling contradictions** (proposed): TOPIC tags per node; picking
   the opposite feeling on the same topic with someone else pings a FEELZ

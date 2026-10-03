@@ -327,7 +327,22 @@ Testers wanted to know what the colors meant without the game naming them. Three
 | Pink | spark burst | breath catches, eyes wide | a quick zoom-flash |
 | Teal | open hand | shoulders drop, hands open | everything steadies |
 
-The body line shows on every hold (a long hover with a mouse) and on the first 3 picks of each feeling, then picks show only the icon and the screen's reaction. The names appear only in the ending's FEELZ report. (Body lines draw on research mapping where people feel emotions: Nummenmaa et al., 2014.)
+The body lines above are the neutral versions. Each class notices the body its own way, so the line you see depends on your class:
+
+| Feeling | Guns (bracing) | Bible (body and conscience) | Crystals (energy) |
+| :-- | :-- | :-- | :-- |
+| Red | knuckles white, pulse in your teeth | face hot, a verse on your tongue | heat climbing up the spine |
+| Indigo | back to the wall, ears ringing | knees weak, hands clasped | a cold prickle down the arms |
+| Blue | arms like sandbags | chest hollow, eyes stinging | a weight pooling in the chest |
+| Yellow | shoulders loose, a grin you can't help | lifted, light in the chest | fizz in the fingertips, face warm |
+| Orange | finger tapping, scanning for exits | rehearsing it, over and over | buzzing under the skin |
+| Green | jaw set, spit the taste out | stomach turns, a step back | skin crawls, you need air |
+| Pink | flinch, then freeze | breath held, heart skips | a jolt, everything too bright |
+| Teal | back turned, and that's fine | hands open, head bowed | a soft hum, shoulders melting |
+
+The body line shows (just under the wheel) on every hold (a long hover with a mouse) and on the first 3 picks of each feeling, then picks show only the icon and the screen's reaction.
+
+**Tap burst:** every pick also fires a one-shot burst of chunky pixels from the slice, in the feeling's color and its own motion: sparks rising and flickering (red), a ring closing like a blink (indigo), drops falling (blue), rays out (yellow), a jittering swarm (orange), a wobbling drip (green), a fast wide burst (pink), a slow soft ring (teal). The names appear only in the ending's FEELZ report. (Body lines draw on research mapping where people feel emotions: Nummenmaa et al., 2014.)
 
 ### The word FEELZ
 

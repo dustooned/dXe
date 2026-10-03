@@ -30,7 +30,7 @@
 // commits (see shell/audio.js's "FEELZ wheel hover/select tones").
 import { EMOTIONS, EMOTION_ORDER, CLASSES } from '../engine/loadout.js';
 import * as audio from '../shell/audio.js';
-import { iconCells, iconHtml, showBody, feel } from './feelingIcons.js';
+import { iconCells, iconHtml, showBody, feel, burst } from './feelingIcons.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 const CX = 100, CY = 100, OUTER_R = 88, INNER_R = 34, SYMBOL_R = 61;
@@ -176,7 +176,7 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
     g.addEventListener('pointerenter', (e) => {
       g.classList.add('is-hovering');
       audio.startFeelzHover(emotion, activeEmotionsOrder, harmonicFunction);
-      if (e.pointerType === 'mouse') hoverTimer = setTimeout(() => showBody(emotion), HOLD_MS);
+      if (e.pointerType === 'mouse') hoverTimer = setTimeout(() => showBody(emotion, { loadout }), HOLD_MS);
     });
 
     g.addEventListener('pointerleave', () => {
@@ -199,7 +199,7 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
           // it here too in case that event didn't come through.
           audio.startFeelzHover(emotion, activeEmotionsOrder, harmonicFunction);
           audio.swellFeelzHover();
-          showBody(emotion);
+          showBody(emotion, { loadout });
           feel(emotion);
         }, HOLD_MS);
       }
@@ -246,8 +246,11 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
       if (wasListen) {
         // Held to listen — the tone stopped with the finger, nothing picked.
       } else if (onCard) {
+        burst(emotion, e.clientX, e.clientY);
         selectEmotion(emotion, 'drag');
       } else if (wasTap) {
+        const r = path.getBoundingClientRect();
+        burst(emotion, r.left + r.width / 2, r.top + r.height / 2);
         selectEmotion(emotion, 'tap');
       }
       // drag that didn't land on card — no selection change
@@ -274,7 +277,7 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
     // The screen reacts, and the first few picks of each feeling say how it
     // sits in the body (ui/feelingIcons.js).
     feel(emotion);
-    showBody(emotion, { onPick: true });
+    showBody(emotion, { onPick: true, loadout });
     onSelect?.(emotion, source);
   }
 
