@@ -183,6 +183,13 @@ function ensureContext() {
   return ctx;
 }
 
+// The shared context and the master output, for players that build their own
+// sound (shell/arrangement.js). Creates the context if nothing has yet.
+export function getAudioGraph() {
+  const c = ensureContext();
+  return { ctx: c, out: masterGain };
+}
+
 // Read-only handle onto the live master mix — see ensureContext's analyser
 // setup. Ensures the context exists first, so this is safe to call before
 // anything's played yet (e.g. mounting a confrontation's oscilloscope
@@ -317,7 +324,12 @@ export async function playItSting() {
 // it's a scan of the whole phrase and never changes for a given NPC.
 const tonicCache = new Map();
 
+// A baked arrangement can name its own key (shell/encounterMusic.js), so the
+// chord is built on the song's root instead of a leitmotif phrase's.
+const tonicOverride = new Map();
+
 function tonicForNpc(npcKey) {
+  if (tonicOverride.has(npcKey)) return `${tonicOverride.get(npcKey)}3`;
   if (!tonicCache.has(npcKey)) {
     const notes = LEITMOTIFS[npcKey]?.notes;
     // Root register sits below the feeling voices, which stack up to two
@@ -672,6 +684,19 @@ export function getLeitmotifMood() {
   return encounterMood;
 }
 
+// An encounter whose music is a baked arrangement (shell/encounterMusic.js)
+// instead of a leitmotif phrase: same bookkeeping as startLeitmotif — a
+// neutral mood, the NPC as the chord's owner — with no phrase to play.
+export function beginEncounter(npcKey, tonic) {
+  if (npcKey === activeLeitmotifKey && activeLeitmotif) return;
+  stopLeitmotif();
+  encounterMood = 0;
+  currentDissonance = 0;
+  if (tonic) tonicOverride.set(npcKey, tonic); else tonicOverride.delete(npcKey);
+  activeLeitmotif = { stop() {} };
+  activeLeitmotifKey = npcKey;
+}
+
 // Ends the encounter's audio: the character's melody, any chord still
 // ringing, and any FEELZ hover/select tone. All belong to the same
 // encounter, so they end together rather than trailing into the next scene.
@@ -683,6 +708,44 @@ export function stopLeitmotif() {
   activeLeitmotif?.stop();
   activeLeitmotif = null;
   activeLeitmotifKey = null;
+}
+
+// ─── Sound player (debug menu) ────────────────────────────────────────────────
+
+// Leitmotif keys, for the sound player's track list.
+export const leitmotifKeys = () => Object.keys(LEITMOTIFS);
+
+// Files decoded and held in memory right now: [{ url, seconds }].
+export function loadedTracks() {
+  return [...audioCache].map(([url, buf]) => ({ url, seconds: buf.duration }));
+}
+
+// Plays one audio file through the master output (loading it first if it
+// isn't in memory). Returns { stop, seconds }.
+export async function previewFile(url, { loop = false } = {}) {
+  const audioCtx = ensureContext();
+  const buffer = await loadAudio(url);
+  const source = audioCtx.createBufferSource();
+  source.buffer = buffer;
+  source.loop = loop;
+  const gain = audioCtx.createGain();
+  gain.gain.value = 0.5;
+  source.connect(gain).connect(masterGain);
+  source.start();
+  return {
+    seconds: buffer.duration,
+    source,
+    stop() { try { source.stop(); } catch (_) { /* ended */ } gain.disconnect(); },
+  };
+}
+
+// Everything the running game has going, off — so the sound player can be
+// listened to alone. The scene's music stays off until the scene changes.
+export function silenceGame() {
+  stopAmbient();
+  stopLeitmotif();
+  stopPulse();
+  stopTitleMusic?.();
 }
 
 // ─── Preloader logo sting ─────────────────────────────────────────────────────

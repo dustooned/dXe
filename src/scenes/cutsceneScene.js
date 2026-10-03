@@ -39,6 +39,7 @@
 import { createTypewriter } from '../ui/typewriterText.js';
 import { later, cancelLater } from '../shell/pauseBus.js';
 import { quoteSpeech } from '../ui/speech.js';
+import * as encounterMusic from '../shell/encounterMusic.js';
 import { preloadTypewriterTick, playTypewriterTick, startAmbient, stopAmbient, startLeitmotif, playFeelzBoot } from '../shell/audio.js';
 import { createFeelzSilhouette } from '../ui/feelzSilhouette.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
@@ -310,7 +311,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // rather than restarting — stopping it here first would cause exactly
   // the glitch that continuity check exists to avoid. dialogScene.js's own
   // unmount is what actually stops it, once that encounter really ends.
-  if (scene.opensDialog) startLeitmotif(scene.opensDialog.toUpperCase());
+  // An NPC with a baked arrangement opens on its intro section instead.
+  if (scene.opensDialog && !encounterMusic.open(scene.opensDialog.toUpperCase())) startLeitmotif(scene.opensDialog.toUpperCase());
   render();
 
   return function unmount() {

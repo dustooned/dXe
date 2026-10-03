@@ -224,6 +224,7 @@ async function renderDebugPage() {
   box.classList.add('is-debug');
   box.innerHTML = `
     <h3 class="dx-hud-panel__title">DEBUG</h3>
+    <button type="button" class="dx-btn dx-debug__sound">SOUND PLAYER</button>
     <div class="dx-debug__row"><span>CLASS</span><span class="dx-debug__seg" data-key="loadout"></span></div>
     <label class="dx-debug__row"><span>LAKE <b class="dx-debug__debt"></b></span>
       <input type="range" min="0" max="10" step="1" class="dx-debug__lake"></label>
@@ -276,6 +277,11 @@ async function renderDebugPage() {
       scenes.appendChild(b);
     }
   }
+  box.querySelector('.dx-debug__sound').addEventListener('click', async () => {
+    const { mountSoundLab } = await import('../ui/soundLab.js');
+    closePanel();
+    mountSoundLab(hostEl, { onClose: openPanel });
+  });
   box.querySelector('.dx-debug__back').addEventListener('click', () => { closePanel(); openPanel(); });
 
   function sync() {

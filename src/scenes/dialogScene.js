@@ -30,6 +30,7 @@ import { createLakeGauge } from '../ui/lakeGauge.js';
 import { createOscilloscope } from '../ui/oscilloscope.js';
 import { createSpotlight } from '../ui/spotlight.js';
 import { loadSettings } from '../shell/settings.js';
+import * as encounterMusic from '../shell/encounterMusic.js';
 import * as fx from '../shell/fx.js';
 import * as audio from '../shell/audio.js';
 import * as voices from '../shell/voices.js';
@@ -260,7 +261,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // then on the oscilloscope (the tell), and only the real one syncs.
     easeMoodTo(shownMood(currentNode()));
     drama.under = currentNode().mask ? moodHex(currentNode().mood) : null;
-    audio.startPulse(() => drama.tension);
+    // The heartbeat would fight an arrangement's own drums.
+    if (!encounterMusic.claims(npc.npc)) audio.startPulse(() => drama.tension);
     audio.strikeChord(emotionsForClass(run.get().loadout, run.get().unlocked), harmonicFunction());
     render();
   }
@@ -750,6 +752,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const stabilityDelta = (patch.stability ?? before.stability) - before.stability;
     if (before.stability > 2 && (patch.stability ?? before.stability) <= 2) audio.playLowBattery();
     audio.nudgeLeitmotifMood(trustDelta + stabilityDelta);
+    encounterMusic.react({ delta: trustDelta + stabilityDelta, caught: !!seen, missed: !synced && !turnedToward });
     reactionDelta = seen ? -1 : trustDelta + stabilityDelta;
 
     // The impact lands on their reaction: how hard is how much their TRU
@@ -1426,7 +1429,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   const offPause = onPauseChange((paused, forMs) => {
     if (!paused && cardShownAt !== null) cardShownAt += forMs;
   });
-  audio.startLeitmotif(npc.npc);
+  // A baked arrangement carries the battle if the NPC has one; otherwise the leitmotif.
+  if (encounterMusic.engage(npc.npc)) audio.beginEncounter(npc.npc, encounterMusic.current()?.player.data.tonic);
+  else audio.startLeitmotif(npc.npc);
   audio.preloadTypewriterTick();
   enterNode();
 
@@ -1443,6 +1448,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // audio bleeds into the next scene.
     audio.stopLeitmotif();
     audio.stopPulse();
+    encounterMusic.end();
     clearStall();
     statusBar?.destroy();
     stageEl.classList.remove('is-frozen');

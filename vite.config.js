@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import { execSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
 
 // Build version, shown as a small low-key label (main.js, .dx-build-info).
 // commitCount is the auto-incrementing part — "math per new version" with
@@ -20,6 +21,12 @@ function git(cmd, fallback) {
 
 const pkg = JSON.parse(readFileSync('./package.json', 'utf8'));
 
+// Every audio file under public/assets, for the debug menu's sound player.
+function audioFiles(dir = 'public/assets', base = '/assets') {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+    e.isDirectory() ? audioFiles(join(dir, e.name), `${base}/${e.name}`) : /.(mp3|wav|ogg)$/i.test(e.name) ? [`${base}/${e.name}`] : []);
+}
+
 export default defineConfig({
   base: './',
   build: {
@@ -28,6 +35,7 @@ export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
     __BUILD_NUMBER__: JSON.stringify(git('git rev-list --count HEAD', '0')),
+    __AUDIO_FILES__: JSON.stringify(audioFiles()),
     __COMMIT_HASH__: JSON.stringify(git('git rev-parse --short HEAD', 'dev')),
   },
 });

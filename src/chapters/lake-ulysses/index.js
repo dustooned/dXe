@@ -3,6 +3,8 @@ import { takeDebugOverrides } from '../../shell/debug.js';
 import { createSceneSequencer } from '../../engine/sceneSequencer.js';
 import { recordEnding } from '../../shell/save.js';
 import * as hud from '../../shell/hud.js';
+import * as audio from '../../shell/audio.js';
+import * as encounterMusic from '../../shell/encounterMusic.js';
 import * as questionnaireScene from '../../scenes/questionnaireScene.js';
 import * as cutsceneScene from '../../scenes/cutsceneScene.js';
 import * as dialogScene from '../../scenes/dialogScene.js';
@@ -177,5 +179,8 @@ export function mount(stageEl, { exit, restart, startSceneId }) {
     hud.setChapterActive(null);
     hud.setSkip(null);
     sequencer.unmount();
+    // Leaving mid-confrontation must not leave an NPC's music behind.
+    encounterMusic.end({ fade: 0.3 });
+    audio.stopLeitmotif();
   };
 }
