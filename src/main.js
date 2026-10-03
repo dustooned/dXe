@@ -18,6 +18,8 @@ const CHAPTERS = {
     // of seamless tiles (see scripts/import-gm-title.mjs), tinted. PLACEHOLDER:
     // the title screen's lake until this chapter has its own art.
     banner: { src: '/assets/shared/title/spr_title_bg.png', frames: 7, tile: [500, 288], tint: '#1f8a8a' },
+    // Where 'skip the story' starts a returning player.
+    skipTo: 'feelz-launch',
   },
 };
 
@@ -346,6 +348,47 @@ function renderMenu() {
   screen.innerHTML = `<div class="dx-chapters-backdrop" aria-hidden="true"><span class="dx-chapters-backdrop__strip"></span><span class="dx-chapters-backdrop__strip is-echo"></span></div><h2 class="dx-title">CHAPTERS</h2>`;
   const backdrop = screen.querySelector('.dx-chapters-backdrop');
   const canHover = window.matchMedia?.('(hover: hover) and (pointer: fine)').matches;
+  function showBackdrop(b) {
+    backdrop.style.setProperty('--banner', `url('${b.src}')`);
+    backdrop.style.setProperty('--frames', b.frames);
+    backdrop.style.setProperty('--frame-steps', b.frames - 1);
+    // A tile's width at the main layer's height (120% of the screen).
+    backdrop.style.setProperty('--tile-w', `${(screen.clientHeight * 1.2 * b.tile[0] / b.tile[1]).toFixed(1)}px`);
+    backdrop.classList.add('is-on');
+  }
+
+  // Touch: 'Ready to play?' over the chapter's art. Played before: offer to
+  // skip the story, or start over.
+  function askReady(chapterId, chapter, played) {
+    screen.querySelector('.dx-chapter-ask')?.remove();
+    const ask = document.createElement('div');
+    ask.className = 'dx-chapter-ask';
+    const title = document.createElement('p');
+    title.className = 'dx-text dx-chapter-ask__title';
+    title.textContent = chapter.title;
+    const q = document.createElement('p');
+    q.className = 'dx-text';
+    q.textContent = played ? "You've been here before. Skip the story?" : 'Ready to play?';
+    const row = document.createElement('div');
+    row.className = 'dx-menu';
+    const options = played && chapter.skipTo
+      ? [['SKIP STORY', `chapter/${chapterId}/${chapter.skipTo}`], ['FROM THE START', `chapter/${chapterId}`]]
+      : [['PLAY', `chapter/${chapterId}`]];
+    for (const [label, to] of options) {
+      const go = document.createElement('button');
+      go.className = 'dx-btn';
+      go.textContent = label;
+      go.addEventListener('click', () => navigate(to));
+      row.appendChild(go);
+    }
+    const back = document.createElement('button');
+    back.className = 'dx-btn dx-chapter-ask__back';
+    back.textContent = 'BACK';
+    back.addEventListener('click', () => { ask.remove(); backdrop.classList.remove('is-on'); });
+    row.appendChild(back);
+    ask.append(title, q, row);
+    screen.appendChild(ask);
+  }
 
   const menu = document.createElement('div');
   menu.className = 'dx-menu';
@@ -367,16 +410,15 @@ function renderMenu() {
     const done = save.chaptersCompleted.includes(chapterId);
     btn.innerHTML = `<span class="dx-chapter-card__bg" aria-hidden="true"><span class="dx-chapter-card__strip"></span></span><span class="dx-chapter-card__title"></span><span class="dx-chapter-card__meta">${done ? 'PLAYED ✓' : 'NEW'}</span>`;
     btn.querySelector('.dx-chapter-card__title').textContent = chapter.title;
-    btn.addEventListener('click', () => navigate(`chapter/${chapterId}`));
+    btn.addEventListener('click', () => {
+      // Mouse: straight in. Touch: the art fills the screen first and it
+      // asks, and a returning player is offered the skip.
+      if (canHover) { navigate(`chapter/${chapterId}`); return; }
+      if (b) showBackdrop(b);
+      askReady(chapterId, chapter, done);
+    });
     if (canHover && b) {
-      btn.addEventListener('mouseenter', () => {
-        backdrop.style.setProperty('--banner', `url('${b.src}')`);
-        backdrop.style.setProperty('--frames', b.frames);
-        backdrop.style.setProperty('--frame-steps', b.frames - 1);
-        // A tile's width at the main layer's height (120% of the screen).
-        backdrop.style.setProperty('--tile-w', `${(screen.clientHeight * 1.2 * b.tile[0] / b.tile[1]).toFixed(1)}px`);
-        backdrop.classList.add('is-on');
-      });
+      btn.addEventListener('mouseenter', () => showBackdrop(b));
       btn.addEventListener('mouseleave', () => backdrop.classList.remove('is-on'));
     }
     menu.appendChild(btn);
