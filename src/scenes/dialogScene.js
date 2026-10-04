@@ -36,6 +36,7 @@ import * as audio from '../shell/audio.js';
 import * as voices from '../shell/voices.js';
 import { quoteSpeech } from '../ui/speech.js';
 import { createFeelzTip } from '../ui/feelzTip.js';
+import { createOpponentFx } from '../ui/opponentFx.js';
 
 // Weak vs strong hit feedback is derived from how big a swipe's effects
 // are, not from truth/lie — intensity signals weight, not judgment.
@@ -178,6 +179,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // The FEELZ tip on screen (ui/feelzTip.js) and the scope piece it frames.
   let tip = null;
   let tipHighlight = null;
+  // The opponent's weather (ui/opponentFx.js); picking their real feeling
+  // settles it until this time.
+  let opfx = null;
+  let settleUntil = 0;
   let cozyThisEncounter = false;
   // Phone: the live status bar (rebuilt each render; its clock ticks), and
   // who's already been called this encounter (one call per contact).
@@ -310,6 +315,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (METERS.includes(name)) {
       if (first) statusBar?.reveal?.(name); else statusBar?.flash?.(name);
     }
+    // {cue:tone_fifth} etc.: the interval he's describing, played (the science lesson).
+    if (name.startsWith('tone_')) audio.playIntervalDemo(name.slice(5));
   }
   function isRevealed(kind) {
     const gateNode = npc.reveal?.[kind];
@@ -636,7 +643,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
           if (nodeMood) {
             drama.mismatch = emotion !== nodeMood;
             if (drama.mismatch) audio.playGrind();
-            else audio.playSyncChime();
+            else { audio.playSyncChime(); settleUntil = performance.now() + 1400; }
           }
           render();
           scopeTip(emotion);
@@ -743,6 +750,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
       screen.appendChild(hazeEl);
     }
     stageEl.appendChild(screen);
+    opfx ??= createOpponentFx({ npc: npc.npc, getLevel: fxLevel });
+    opfx.attach(screen);
     tip?.attach(stageEl); // the stage was just cleared; a tip stays up across renders
     placeScopeBand(screen, scopeCanvas, portrait.el);
 
@@ -968,6 +977,21 @@ export function mount(stageEl, scene, { run, onComplete }) {
     });
     freshFeeling = gift;
     return gift;
+  }
+
+  // How strongly the opponent bends the screen (ui/opponentFx.js), 0..1:
+  // the battle's phase (answers given) sets the ceiling, getting close calms
+  // it, their trust clears it, and finding their feeling settles it a beat.
+  // Light in the tutorial; off once the talking is done.
+  function fxLevel() {
+    if (stage !== 'prompt' && stage !== 'say' && stage !== 'reaction') return 0;
+    const { closeness, merged } = connection(null, false);
+    if (merged) return 0;
+    const ceiling = 0.35 + 0.65 * Math.min(1, encounterSwipes.length / 3);
+    let level = ceiling * (1 - closeness * 0.8);
+    if (performance.now() < settleUntil) level *= 0.25;
+    if (npc.reveal) level *= 0.6;
+    return level;
   }
 
   // FEELZ tips (ui/feelzTip.js): the first time each piece of the scope does
@@ -1702,6 +1726,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   return function unmount() {
     tip?.destroy();
+    opfx?.destroy();
     offPause();
     typewriter?.destroy();
     pickTypewriter?.destroy();

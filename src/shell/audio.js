@@ -228,6 +228,34 @@ export function playRelief() {
   });
 }
 
+// The Therapist's science lesson, heard: two tones struck together at the
+// ratio he's describing, ringing out — unison (the circle), a fifth (2:3,
+// a neighbor on the wheel), the tritone (7:5, opposites). The music steps
+// back for it so the beating between the two is audible.
+const INTERVALS = { unison: [1, 1], fifth: [2, 3], tritone: [5, 7] };
+export function playIntervalDemo(kind) {
+  const ratio = INTERVALS[kind];
+  if (!ratio) return;
+  const audioCtx = ensureContext();
+  const t = audioCtx.currentTime + 0.03;
+  const base = 262;
+  duckMusic(true, 0.2);
+  ratio.forEach((n, i) => {
+    const osc = audioCtx.createOscillator();
+    osc.type = 'triangle';
+    osc.frequency.value = base * (n / ratio[0]);
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.07, t + 0.015 + i * 0.005);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 1.9);
+    osc.connect(g).connect(masterGain);
+    osc.start(t);
+    osc.stop(t + 2);
+    osc.onended = () => g.disconnect();
+  });
+  later(() => duckMusic(false, 0.8), 1800);
+}
+
 // Read-only handle onto the live master mix — see ensureContext's analyser
 // setup. Ensures the context exists first, so this is safe to call before
 // anything's played yet (e.g. mounting a confrontation's oscilloscope

@@ -354,6 +354,20 @@ A heart-monitor band runs across the portrait. Their line sits on top, yours und
 
 **Meters you can see move (2026-10-04).** When a status-bar meter rises, its new cells charge in one by one with a gold flash and pixel sparks float off the icon; when it drops, the icon glitches (shake, red/blue split) and the lost cells flicker red and go dark. The small words under the bar stay, but you don't need them.
 
+### The opponent's weather
+
+Each opponent bends their side of the screen a little, in their own way: a seasoning, never in the way (`ui/opponentFx.js`, `.dx-opfx--*` in scenes.css).
+
+| Opponent | Look |
+| :-- | :-- |
+| Deborah | Wet ink: rain streaks behind, the portrait fades toward an old photo, her words bleed faintly downward |
+| Rwanda | Paint-over: translucent brush strokes wipe across and paint drips from the top, punchy poster color, words misregistered like a print |
+| Samun | Last call: neon bokeh, the portrait and scope sway like a drunk room, double vision on his words |
+| Rick | Engine heat: shimmer rising, the portrait idles like a bike, a red heat glow, a thin tear across on hard beats |
+| Therapist | Bad connection: blocky compression squares, the picture stutters now and then |
+
+Only the portrait, their words (a faint ghost via text-shadow, never moved), the scope band and a layer behind everything get it. The status bar, lake gauge, card, wheel and dock are never touched. **Strength** (`fxLevel` in dialogScene): the phase (answers given) sets the ceiling, closeness calms it, trust clears it, finding their real feeling settles it for a beat, and it pulses with the music's loudness. Lighter in the tutorial; off outside the prompt/say/reaction stages; halved with reduced motion.
+
 ### The music of an encounter
 
 Each NPC with a composed arrangement (Rwanda so far) has a song that follows the fight, not your score. The confrontation opens on the intro (drums), the battle on the next layer, and every answer moves it one step up: more parts, faster (100 → 110 → 125 → 140 BPM). If you get close to a full connection, a **secret track** fades in (a part the composer hides in FL as "Secret…"), the sign you're almost there. When someone trusts you and tells you their story, every sound stops; IT and SO weigh it in the silence (IT on how true it rings, SO doubting a corner, never the person); then the sound fades back.

@@ -1754,3 +1754,87 @@
 @media (prefers-reduced-motion: reduce) {
   .dx-tip.is-entering, .dx-tip.is-leaving { animation: none; }
 }
+
+/* ── The opponent's weather (ui/opponentFx.js) ──────────────────────────
+   A light seasoning on their side only: the portrait, their words and the
+   scope band. --fx (0..1) is set every frame on the screen. The status bar,
+   lake, card, wheel and dock are never touched, and words only ever get a
+   faint ghost (text-shadow), never a transform, so they stay readable. */
+.dx-opfx {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.dx-opfx-on .dx-game-content .dx-portrait,
+.dx-opfx-on .dx-scope-band {
+  will-change: transform, filter;
+}
+
+/* Deborah: wet ink. Faded like an old photo; words bleed downward. */
+.dx-opfx--deborah .dx-game-content .dx-portrait {
+  filter: sepia(calc(var(--fx, 0) * 0.55)) blur(calc(var(--fx, 0) * 0.5px));
+}
+.dx-opfx--deborah .dx-prompt,
+.dx-opfx--deborah .dx-reaction {
+  text-shadow: 0 calc(var(--fx, 0) * 3px) calc(var(--fx, 0) * 2px) rgba(140, 170, 255, calc(var(--fx, 0) * 0.45));
+}
+.dx-opfx--deborah .dx-scope-band { filter: blur(calc(var(--fx, 0) * 0.7px)); }
+
+/* Rwanda: paint-over. Punchy poster color; words misregistered like a print. */
+.dx-opfx--rwanda .dx-game-content .dx-portrait {
+  filter: contrast(calc(1 + var(--fx, 0) * 0.35)) saturate(calc(1 + var(--fx, 0) * 0.8));
+}
+.dx-opfx--rwanda .dx-prompt,
+.dx-opfx--rwanda .dx-reaction {
+  text-shadow: calc(var(--fx, 0) * 2px) calc(var(--fx, 0) * 1px) 0 rgba(255, 120, 60, calc(var(--fx, 0) * 0.4));
+}
+
+/* Samun: last call. The room sways; double vision in neon. */
+.dx-opfx--samun .dx-game-content .dx-portrait,
+.dx-opfx--samun .dx-scope-band {
+  animation: dx-opfx-sway 3.2s ease-in-out infinite alternate;
+}
+.dx-opfx--samun .dx-prompt,
+.dx-opfx--samun .dx-reaction {
+  text-shadow:
+    calc(var(--fx, 0) * 2.5px) 0 0 rgba(255, 60, 200, calc(var(--fx, 0) * 0.4)),
+    calc(var(--fx, 0) * -2.5px) 0 0 rgba(60, 220, 255, calc(var(--fx, 0) * 0.4));
+}
+@keyframes dx-opfx-sway {
+  from { transform: translateX(calc(var(--fx, 0) * -3px)) rotate(calc(var(--fx, 0) * -0.8deg)); }
+  to { transform: translateX(calc(var(--fx, 0) * 3px)) rotate(calc(var(--fx, 0) * 0.8deg)); }
+}
+
+/* Rick: engine heat. The picture idles like a bike; words run hot. */
+.dx-opfx--rick .dx-game-content .dx-portrait {
+  animation: dx-opfx-idle 0.12s steps(2, end) infinite;
+  filter: drop-shadow(0 0 calc(var(--fx, 0) * 6px) rgba(255, 70, 30, calc(var(--fx, 0) * 0.8)));
+}
+.dx-opfx--rick .dx-scope-band { animation: dx-opfx-idle 0.16s steps(2, end) infinite; }
+.dx-opfx--rick .dx-prompt,
+.dx-opfx--rick .dx-reaction {
+  text-shadow: 0 0 calc(var(--fx, 0) * 5px) rgba(255, 70, 30, calc(var(--fx, 0) * 0.55));
+}
+@keyframes dx-opfx-idle {
+  from { transform: translate(calc(var(--fx, 0) * -1px), calc(var(--fx, 0) * 0.6px)); }
+  to { transform: translate(calc(var(--fx, 0) * 1px), calc(var(--fx, 0) * -0.6px)); }
+}
+
+/* Therapist: bad connection. The picture stutters now and then. */
+.dx-opfx--therapist .dx-game-content .dx-portrait {
+  animation: dx-opfx-lag 2.6s steps(1, end) infinite;
+}
+@keyframes dx-opfx-lag {
+  0%, 88%, 100% { transform: none; filter: none; }
+  90% { transform: translateX(calc(var(--fx, 0) * 3px)); filter: contrast(calc(1 + var(--fx, 0) * 0.6)); }
+  94% { transform: translateX(calc(var(--fx, 0) * -2px)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-opfx-on .dx-game-content .dx-portrait,
+  .dx-opfx-on .dx-scope-band { animation: none !important; }
+}

@@ -326,7 +326,57 @@
     },
     {
       "kind": "line",
-      "text": "\"And the needle on the left. Leaning right, you're moving together. Leaning left, you're pulling apart.\""
+      "text": "\"Technically, that's a Lissajous figure. Your feeling moves the dot side to side. Mine moves it up and down. Same speed, {cue:tone_unison}it draws a circle.\""
+    },
+    {
+      "kind": "line",
+      "text": "\"Different speeds, and they keep missing each other, so the path tangles. Neighbors on the wheel are simple ratios, {cue:tone_fifth}like two notes in harmony. Opposites are the tritone, {cue:tone_tritone}the most restless interval in music.\""
+    },
+    {
+      "kind": "line",
+      "text": "\"I don't own a gun. You're within your rights to, and I respect that. So: rifling. The spiral cut inside a barrel. Same twist, the grooves line up. Different twists, they never do. That's the knot.\"",
+      "when": {
+        "class": "Guns"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"I'm not religious. I don't hold that against anyone, I want that on the record. But bear with me, I'm driven by data. Jacob wrestling the angel, plotted on graph paper. Two forces at right angles, all night. When they finally match, the blessing is a circle.\"",
+      "when": {
+        "class": "Bible"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"My mom was into all that. Crystals, energy, the whole shelf. I didn't inherit it. But this I can explain to you with total confidence: two tuning forks, yours and mine. Same pitch, they hum one circle. Different pitch, the waveforms interfere. Waveforms. Not energies.\"",
+      "when": {
+        "class": "Crystals"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"And the needle on the left measures whether we rise and fall together. Leaning right, in step. Leaning left, mirror images, pulling apart.\""
+    },
+    {
+      "kind": "line",
+      "text": "\"Leaning right, you're both aiming at the same target. Leaning left, you're aiming at each other. Please don't take that literally.\"",
+      "when": {
+        "class": "Guns"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Leaning right, you're praying for the same thing. Leaning left, for opposite things. Monks called that tritone the devil's interval. I call it Thursday.\"",
+      "when": {
+        "class": "Bible"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Leaning right, two auras in phase. Leaning left, out of phase. My mother would be thrilled. I need to stop talking.\"",
+      "when": {
+        "class": "Crystals"
+      }
     },
     {
       "kind": "tryfeel",
