@@ -69,11 +69,34 @@ const MAX_GAP_RATIO = 0.24;
 const GAP_EASE = 0.08;
 const HISTORY_MAX = 10;
 
+// Two instruments either side of the portrait, borrowed from audio
+// engineering, showing how the two of you move together — never a score:
+//  - a phase-correlation meter (left): a needle from -1 (pulling against
+//    each other) through 0 (unrelated) to +1 (moving as one);
+//  - a vectorscope / Lissajous figure (right): your signal plotted against
+//    theirs. The shape comes from the ratio between your feeling and theirs
+//    on Plutchik's wheel (the same eight as the FEELZ wheel): the same
+//    feeling is a circle, a neighbor a knot, two apart a weave, three apart
+//    a denser loop, and opposites (four apart) the tritone, which never
+//    settles. Closeness decides how still it holds: drifting when you're far
+//    apart, locked when you're close, a perfect circle at full trust.
+const WHEEL = ['Happy', 'Trust', 'Fear', 'Surprise', 'Sadness', 'Disgust', 'Anger', 'Anxiety'];
+// The tritone is drawn as 7:5 (the just tritone, 583 cents): close to the
+// equal-tempered one, and few enough loops to read as a shape, not a fill.
+const RATIOS = [[1, 1], [2, 3], [8, 9], [4, 5], [5, 7]];
+function wheelSteps(a, b) {
+  const i = WHEEL.indexOf(a);
+  const j = WHEEL.indexOf(b);
+  if (i < 0 || j < 0) return null;
+  const d = Math.abs(i - j);
+  return Math.min(d, WHEEL.length - d);
+}
+
 export function createOscilloscope(
   canvas,
   {
     npcColor = '#ffffff', playerColor = '#4fd6ff', lineWidth = 2, getPlayerStats, isSynced, getDrama,
-    getConnection, getPlayerColor, getHistory,
+    getConnection, getPlayerColor, getHistory, getFeelings,
   } = {}
 ) {
   let gapNow = null;
@@ -235,6 +258,120 @@ export function createOscilloscope(
     ctx2d.shadowBlur = 0;
   }
 
+  // ── The instruments (see WHEEL above) ──
+  let phase = Math.PI / 2;
+  let lastT = null;
+  let needle = 0;
+  const FONT = '"Press Start 2P", monospace';
+
+  function instrumentBox(x, y, bw, bh) {
+    ctx2d.fillStyle = 'rgba(0,0,0,0.85)';
+    ctx2d.fillRect(x, y, bw, bh);
+    ctx2d.strokeStyle = 'rgba(255,255,255,0.35)';
+    ctx2d.lineWidth = 1;
+    ctx2d.strokeRect(Math.round(x) + 0.5, Math.round(y) + 0.5, Math.round(bw) - 1, Math.round(bh) - 1);
+  }
+
+  function drawInstruments(w, h, timeMs) {
+    if (!getFeelings) return;
+    const portraitW = Math.max(0, h - 34); // the band is the portrait plus a margin (dialogScene placeScopeBand)
+    const sideW = (w - portraitW) / 2;
+    if (sideW < 44) return;
+    const { mine, theirs } = getFeelings() ?? {};
+    const conn = getConnection?.() ?? {};
+    const close = conn.merged ? 1 : clamp(conn.closeness ?? 0, 0, 1);
+    const steps = mine && theirs && !conn.shutOut ? wheelSteps(mine, theirs) : null;
+    const dt = lastT === null ? 0 : Math.min(0.1, (timeMs - lastT) / 1000);
+    lastT = timeMs;
+    // Drift freely when far apart, hold still when close; the tritone never holds.
+    phase += ((1 - close) * 1.4 + (steps === 4 ? 0.8 : 0)) * dt;
+    if (conn.merged && steps === 0) {
+      const target = Math.PI / 2 + Math.round((phase - Math.PI / 2) / (Math.PI * 2)) * Math.PI * 2;
+      phase += (target - phase) * 0.06; // trust: it settles into a true circle
+    }
+    const own = conn.shutOut ? '#5a5a5a' : (getPlayerColor?.() ?? playerColor);
+
+    // Vectorscope, right of the portrait.
+    const s = Math.min(h * 0.62, sideW * 0.66);
+    const cx = w - sideW / 2;
+    const cy = h / 2;
+    instrumentBox(cx - s / 2, cy - s / 2, s, s);
+    ctx2d.strokeStyle = 'rgba(255,255,255,0.12)';
+    ctx2d.beginPath();
+    ctx2d.moveTo(cx - s / 2 + 3, cy); ctx2d.lineTo(cx + s / 2 - 3, cy);
+    ctx2d.moveTo(cx, cy - s / 2 + 3); ctx2d.lineTo(cx, cy + s / 2 - 3);
+    ctx2d.stroke();
+    const r = s * 0.38;
+    const jitter = (1 - close) * 0.06;
+    ctx2d.strokeStyle = own;
+    ctx2d.lineWidth = 1.5;
+    ctx2d.shadowColor = own;
+    ctx2d.shadowBlur = close > 0.9 && steps !== null ? 6 : 0;
+    ctx2d.beginPath();
+    if (steps === null) {
+      // No feeling held, or shut out: only one signal, so a flat line.
+      ctx2d.globalAlpha = 0.5;
+      ctx2d.moveTo(cx - r, cy);
+      ctx2d.lineTo(cx + r, cy);
+    } else {
+      const [a, b] = RATIOS[steps];
+      const n = steps === 2 ? 720 : 480;
+      for (let i = 0; i <= n; i++) {
+        const t = (i / n) * Math.PI * 2;
+        const x = cx + Math.sin(a * t + phase) * r * (1 + (Math.random() - 0.5) * jitter);
+        const y = cy - Math.sin(b * t) * r * (1 + (Math.random() - 0.5) * jitter);
+        if (i === 0) ctx2d.moveTo(x, y); else ctx2d.lineTo(x, y);
+      }
+    }
+    ctx2d.stroke();
+    ctx2d.globalAlpha = 1;
+    ctx2d.shadowBlur = 0;
+    if (steps !== null) {
+      // The beam: their color, tracing the figure.
+      const [a, b] = RATIOS[steps];
+      const t = timeMs * 0.0015;
+      ctx2d.fillStyle = npcColorNow;
+      ctx2d.fillRect(cx + Math.sin(a * t + phase) * r - 1.5, cy - Math.sin(b * t) * r - 1.5, 3, 3);
+    }
+
+    // Correlation meter, left of the portrait.
+    const target = steps === null ? 0
+      : Math.cos(steps * Math.PI / 4) * (0.25 + 0.75 * close) + (1 - close) * 0.18 * Math.sin(timeMs * 0.0031);
+    needle += (clamp(target, -1, 1) - needle) * 0.08;
+    const mw = Math.min(sideW * 0.74, s * 1.5);
+    const mh = Math.max(18, s * 0.46);
+    const mx = sideW / 2 - mw / 2;
+    const my = h / 2 - mh / 2;
+    instrumentBox(mx, my, mw, mh);
+    const x0 = mx + mw * 0.12;
+    const x1 = mx + mw * 0.88;
+    const base = my + mh * 0.62;
+    ctx2d.strokeStyle = npcColorNow;
+    ctx2d.globalAlpha = 0.55;
+    ctx2d.beginPath();
+    ctx2d.moveTo(x0, base); ctx2d.lineTo(x1, base);
+    for (const k of [-1, -0.5, 0, 0.5, 1]) {
+      const x = x0 + ((k + 1) / 2) * (x1 - x0);
+      const tick = k === 0 || Math.abs(k) === 1 ? mh * 0.2 : mh * 0.1;
+      ctx2d.moveTo(x, base); ctx2d.lineTo(x, base - tick);
+    }
+    ctx2d.stroke();
+    const fontPx = Math.max(5, Math.round(mh * 0.2));
+    ctx2d.font = `${fontPx}px ${FONT}`;
+    ctx2d.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx2d.textAlign = 'center';
+    ctx2d.fillText('-', x0, my + mh * 0.92);
+    ctx2d.fillText('0', (x0 + x1) / 2, my + mh * 0.92);
+    ctx2d.fillText('+', x1, my + mh * 0.92);
+    ctx2d.globalAlpha = 1;
+    const nx = x0 + ((needle + 1) / 2) * (x1 - x0);
+    ctx2d.strokeStyle = own;
+    ctx2d.lineWidth = 2;
+    ctx2d.beginPath();
+    ctx2d.moveTo(nx, my + mh * 0.14); ctx2d.lineTo(nx, base);
+    ctx2d.stroke();
+  }
+
   function ring(w, h, t, rgb, maxWidth, alphaPeak) {
     const radius = t * Math.hypot(w, h) * 0.6;
     ctx2d.lineWidth = Math.max(1, maxWidth * (1 - t));
@@ -314,6 +451,7 @@ export function createOscilloscope(
     updateGap();
     drawNpcTrace(w, h, dissonance);
     drawPlayerTrace(w, h, timeMs, dissonance);
+    drawInstruments(w, h, timeMs);
     drawRings(w, h, now, drama);
     drawHistory(w, h);
     rafId = requestAnimationFrame(draw);

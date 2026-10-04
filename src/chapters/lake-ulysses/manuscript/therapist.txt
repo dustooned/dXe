@@ -41,14 +41,14 @@ PICK Anxiety: "Braced already, and nothing's even happened yet. Okay."
 
 -- TRUTH
 SAY: Not great. I woke up on the side of the road.
-REACT: "Okay. Thank you." The keys keep going; he types while you talk, the way you learn to with forty people on your caseload. "Look at the top of your screen. {cue:stability}Battery's how steady you're holding up. {cue:trust}The bars are how connected people feel to you. {cue:lucidity}The Wi-Fi's how clearly you're seeing things. {cue:integrity}And the clock keeps honest time, as long as you do." A beat. "Weather, not a verdict."
+REACT: "Okay. Thank you." The keys keep going; he types while you talk, the way you learn to with forty people on your caseload. "Look at the top of your screen. {cue:stability}Battery's how steady you're holding up. Let it run low and the people you call get tired of carrying you. {cue:trust}Bars are how connected people feel to you. Some people won't open up to you below a certain number. {cue:lucidity}Wi-Fi's how clearly you're seeing things. You need bars and Wi-Fi for a call to go through. {cue:integrity}And the clock keeps honest time, as long as you do. Lie enough and you'll watch the minutes skip." A beat. "Weather, not a verdict."
 EFFECTS: trust+1 lucidity+1 stability-1
 DEBT: 0
 NEXT: therapist_intrusive
 
 -- LIE
 SAY: Fine. I'm fine.
-REACT: "Fine." The keys don't stop. "Everyone's fine. My whole caseload is fine." A tired almost-laugh. "Top of your screen. {cue:stability}Battery, {cue:trust}bars, {cue:lucidity}Wi-Fi: how steady, how connected, how clear. They move whether you tell me the truth or not. {cue:integrity}And if the clock starts acting funny, that one's on you." {mark:lake}A pause. "That reading at the bottom is the lake. FEELZ pulls it off the county sensors. It doesn't care how anybody feels."
+REACT: "Fine." The keys don't stop. "Everyone's fine. My whole caseload is fine." A tired almost-laugh. "Top of your screen. {cue:stability}Battery: how steady. Run it down and your calls get heavy. {cue:trust}Bars: how connected. Some doors stay shut below a certain number. {cue:lucidity}Wi-Fi: how clear. No bars and Wi-Fi, no calls. They move whether you tell me the truth or not. {cue:integrity}And if the clock starts skipping, that one's on you." {mark:lake}A pause. "That reading at the bottom is the lake. FEELZ pulls it off the county sensors. It doesn't care how anybody feels."
 EFFECTS: stability+1 trust-1
 DEBT: +1
 TAGS: Deflection
@@ -135,6 +135,10 @@ LINE [Guns]: "This week, ask one person a question about their day. Then wait fo
 LINE [Bible]: "Try getting curious about someone this week. Ask how they're doing, then ask a follow-up. People can tell when you mean it."
 LINE [Crystals]: "Take an interest in somebody this week. Notice what they're doing and ask about it. Curiosity's a good place to start."
 LINE: "People wear their weather on the outside. Listen for the word that doesn't match the face."
+LINE: "See the two lines across their picture? That's you and them. The closer the lines, the closer you are. The little screen beside them draws the two of you together. When it holds still, you're there."
+LINE: "These talks get louder the longer they go. If you hear something new come in, something that wasn't there before, you're almost there with them."
+LINE: "If someone shows you the door, listen to the last thing they say. People tell you what they needed on their way out."
+LINE: "Get all the way in with someone and they might tell you why they are the way they are. Just listen. Don't fix it."
 LINE [therapist_02=truth]: "You told me about the water. It heard you too."
 LINE [therapist_02=lie]: "The dream can wait. Dreams are patient. Lakes are more patient."
 # TRYCALL: his own contact pops into the dock and waits for a tap. Calling

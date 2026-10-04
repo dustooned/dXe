@@ -358,6 +358,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
         return held ? moodHex(held) : null;
       },
       getHistory: () => encounterPicks.map(moodHex),
+      // The feelings the vectorscope and correlation needle compare: yours
+      // (held, else the last you picked) against the one they're showing.
+      getFeelings: () => ({ mine: activeEmotion ?? encounterPicks.at(-1) ?? null, theirs: shownMood(currentNode()) ?? null }),
     });
 
     const content = document.createElement('div');

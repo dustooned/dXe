@@ -471,6 +471,15 @@ the answer sends them into, their wave shifts to it, and the shake
 scales with how far their TRU and STB moved.</p>
 <h3 id="doc-game_manual--the-oscilloscope-how-close-you-are"><a class="anchor" href="#doc-game_manual--the-oscilloscope-how-close-you-are" aria-label="Link to this section">#</a>The oscilloscope: how close you are</h3>
 <p>A heart-monitor band runs across the portrait. Their line sits on top, yours underneath, and the gap between them is how close this person is to you: it narrows with every attuned pick and every bid you turn toward, widens with each answer that does neither, and closes completely (the lines merge and glow) once they trust you. Holding a feeling previews it: theirs pulls the lines in a little, another pushes them apart. Your line wears the color of the feeling you hold (or your last one), and a strip under the portrait keeps one colored block per answer in this encounter (newest outlined), so you can see which feelings you lean on with this person. Shut out (airplane mode): your line greys and theirs flatlines.</p>
+<p><strong>Two instruments either side of the portrait</strong> (borrowed from audio engineering; both describe the two of you, neither grades you):</p>
+<ul>
+<li><strong>Correlation needle (left):</strong> from − (pulling against each other) through 0 (unrelated) to + (moving as one). It leans by how your feeling sits against theirs, and wanders less the closer you are; full trust with their feeling pins it at +.</li>
+<li><strong>Vectorscope (right):</strong> your signal plotted against theirs, a Lissajous figure. The shape is the ratio between your feeling and the one they&#39;re showing, on Plutchik&#39;s wheel (the FEELZ wheel&#39;s own order): the same feeling is a circle (1:1), a neighbor a knot (2:3), two apart a weave (8:9), three apart a denser loop (4:5), opposites a tangle that never settles (7:5, the tritone). How still it holds is closeness: drifting when far apart, locked when close, a still glowing circle at full trust. No feeling held, or shut out: a flat line.</li>
+</ul>
+<h3 id="doc-game_manual--the-music-of-an-encounter"><a class="anchor" href="#doc-game_manual--the-music-of-an-encounter" aria-label="Link to this section">#</a>The music of an encounter</h3>
+<p>Each NPC with a composed arrangement (Rwanda so far) has a song that follows the fight, not your score. The confrontation opens on the intro (drums), the battle on the next layer, and every answer moves it one step up: more parts, faster (100 → 110 → 125 → 140 BPM). If you get close to a full connection, a <strong>secret track</strong> fades in (a part the composer hides in FL as &quot;Secret…&quot;), the sign you&#39;re almost there. When someone trusts you and tells you their story, every sound stops; IT and SO weigh it in the silence (IT on how true it rings, SO doubting a corner, never the person); then the sound fades back.</p>
+<h3 id="doc-game_manual--pushed-away"><a class="anchor" href="#doc-game_manual--pushed-away" aria-label="Link to this section">#</a>Pushed away</h3>
+<p>If an encounter ends without their trust, their bust comes up close, cold, and they show you out, saying what they wish someone had done just now. One word is colored in the feeling that would have reached them: a hint, written for your class.</p>
 <h3 id="doc-game_manual--debug-menu-for-testing"><a class="anchor" href="#doc-game_manual--debug-menu-for-testing" aria-label="Link to this section">#</a>Debug menu (for testing)</h3>
 <p>Settings → DEBUG. Choose a class (GUNS / BIBLE / CRYSTALS), a lake level (0–10 Truth Debt), ALL FEELINGS (every slice unlocked), and EVERYONE TRUSTS YOU (all four NPCs already trust you, so contacts are in the dock), then tap any scene to restart the chapter there with that state. The questionnaire still re-picks the class if you jump to it.</p>
 <h3 id="doc-game_manual--what-each-feeling-feels-like-never-named"><a class="anchor" href="#doc-game_manual--what-each-feeling-feels-like-never-named" aria-label="Link to this section">#</a>What each feeling feels like (never named)</h3>
@@ -1055,7 +1064,7 @@ after any doc edit).</li>
       <p class="doc-source">Start here · <code>docs/HANDOFF.md</code></p>
       <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-handoff--what-dream-xtreme-is">What Dream Xtreme is</a></li><li><a href="#doc-handoff--what39s-actually-playable-right-now">What&amp;#39;s actually playable right now</a></li><li><a href="#doc-handoff--key-decisions-and-why">Key decisions and why</a></li><li><a href="#doc-handoff--stats-what39s-wired-up-and-what-isn39t">Stats — what&amp;#39;s wired up and what isn&amp;#39;t</a></li><li><a href="#doc-handoff--what-was-deliberately-cut-from-the-original-design-docs">What was deliberately cut from the original design docs</a></li><li><a href="#doc-handoff--asset-inventory">Asset inventory</a></li><li><a href="#doc-handoff--known-gaps-not-bugs-just-not-done">Known gaps (not bugs, just not done)</a></li><li><a href="#doc-handoff--what39s-next">What&amp;#39;s next</a></li><li><a href="#doc-handoff--build-version-stamp">Build version stamp</a></li><li><a href="#doc-handoff--deployment">Deployment</a></li><li><a href="#doc-handoff--running-it">Running it</a></li></ul></nav>
       <h1 id="doc-handoff--handoff-project-status"><a class="anchor" href="#doc-handoff--handoff-project-status" aria-label="Link to this section">#</a>Handoff / Project Status</h1>
-<p>Last updated: 2026-08-09. Read this first if you&#39;re picking this project
+<p>Last updated: 2026-10-03. Read this first if you&#39;re picking this project
 up cold — it&#39;s the &quot;why,&quot; not the &quot;what&quot; (the code and the other docs in
 this folder cover the what).</p>
 <p>Other docs, roughly in reading order: <a class="doc-ref" href="#doc-architecture" data-doc="doc-architecture"><code>ARCHITECTURE.md</code></a> (shell/chapter
@@ -1075,13 +1084,13 @@ UI framework, Vite for dev/build only.</p>
 <p>Boot plays the inkflo Graphics intro (loading phase -&gt; logo, skippable),
 then lands on the title screen for new players or chapter select for
 returning ones.</p>
-<p>Shell chrome around it: title screen, chapter select, About/Contact. A
-returning player who hits ENTER on the title gets a &quot;You&#39;ve been here
-before — skip the story?&quot; prompt; SKIP jumps straight to the FEELZ
-app launch, REPLAY starts the chapter from the top
-(<code>showSkipDialog()</code> in <code>main.js</code>). SKIP bypasses the three story
-cutscenes and drops you at FEELZ -&gt; intake quiz -&gt; Therapist call. The
-Therapist call is never skipped, because it&#39;s the tutorial.</p>
+<p>Shell chrome around it: title screen, chapter select, About/Contact. ENTER
+on the title goes straight into the story the first time and to chapter
+select after that; a returning player picking a chapter is asked SKIP
+STORY / FROM THE START (<code>askReady()</code> in <code>main.js</code>). SKIP STORY bypasses
+the three story cutscenes and drops you at FEELZ -&gt; intake quiz -&gt;
+Therapist call. The Therapist call is never skipped, because it&#39;s the
+tutorial.</p>
 <p>One chapter: <strong>Truth Debt: Lake Ulysses</strong>, in scene order: Opening quote
 (cutscene) -&gt; Bob Baiter (cutscene, the councilman&#39;s lake-reopening pitch)
 -&gt; Prologue (typewriter-drawn narrative cutscene; ends on &quot;Your phone
@@ -1525,6 +1534,71 @@ needs to be a new opt-in field that intersects with the class set and
 falls back when the intersection is empty.</li>
 </ul>
 <h2 id="doc-handoff--what39s-next"><a class="anchor" href="#doc-handoff--what39s-next" aria-label="Link to this section">#</a>What&#39;s next</h2>
+<p><strong>Done in the 2026-10-03 QA session</strong> (screen sizes, plus a bot that plays the game):</p>
+<ul>
+<li><strong>Layout units, the rule:</strong> every layout size in CSS (gap, padding, margin,
+width, height, top/left/right/bottom) is <code>calc(N * var(--px))</code>, never raw
+px. <code>--px</code> is 1 at the 390-wide reference and scales with the canvas, so
+the reference layout is unchanged and every other size is the same layout
+shrunk or grown. Before this, text scaled but boxes did not, so on phones
+under ~800px tall (320x568, 360x640, any iPhone in Safari) the dialog
+scenes overflowed and pushed the lake gauge off the bottom. Hairlines and
+borders (1-2px) stay px. Anything attached to <code>&lt;body&gt;</code> (the drag ghost,
+<code>.dx-feelz__ghost</code>) is outside <code>.dx-canvas</code> and has no <code>--px</code>, so it keeps
+raw px. The fish and bubble keyframes scale too.</li>
+<li><strong>Instant text speed was a softlock:</strong> the typewriter never reported done
+in INSTANT mode, so cutscene choices, the wheel and card in every dialog,
+and the ending quote credit never appeared (<code>ui/typewriterText.js</code>,
+<code>notifyDone</code>). A line a caller starts revealed (a re-render) stays quiet.</li>
+<li><strong>Skim pressure never fired:</strong> <code>lineReadThrough</code> reset the skim streak on
+lines cut short instead of lines read to the end, so IT&#39;s &quot;you&#39;re
+skimming&quot; could not trigger. Instant text counts as read.</li>
+<li>Storage writes (<code>save.js</code>, <code>settings.js</code>) no longer throw when storage is
+blocked or full (private windows); progress just won&#39;t persist.</li>
+<li>The ending button says BACK TO TITLE (it always went to the title).</li>
+<li><strong>Sideways pause</strong> (<code>shell/orientationPause.js</code>): a touch phone held
+sideways (<code>orientation: landscape</code>, <code>max-height: 520px</code>, <code>pointer: coarse</code>) pauses the game into silence and IT says &quot;Sideways. You can&#39;t
+see it like that. Turn it back.&quot; on black, outside the canvas at real
+pixel size. Turning it upright resumes where it was. Paused = audio faded
+and frozen (<code>pauseAudio</code>/<code>resumeAudio</code>), animations stopped, canvas
+<code>inert</code>, and every timer that moves the story or paces the player held:
+those use <code>later()</code>/<code>cancelLater()</code> from <code>shell/pauseBus.js</code> (cutscene
+auto-advance, ending judgment, reckoning entrance, class-reveal sequence,
+IT&#39;s stall popups, the leitmotif/pulse loops). New timers that advance
+the story should use them too, not <code>setTimeout</code>. In dev,
+<code>window.__turnPause(true/false)</code> forces it without a phone. <code>.dx-btn</code> has a
+10px padding floor for small canvases.
+<code>100vh</code> fallback sits under the <code>100dvh</code> canvas width.</li>
+<li><strong>Checked:</strong> all 22 scenes swept for overflow, clipped and tiny text at
+320x568, 360x640, 390x844, 412x915, 768x1024, 1440x900, 1920x1080 and
+844x390; a bot played Deborah to the ending at 320x568, 844x390 and
+1920x1080, and the whole chapter at 390x844 (instant and normal text).
+No JS errors, no softlocks. <strong>Not testable there:</strong> real touch feel,
+audio on devices, iOS Safari toolbar behavior.</li>
+<li><strong>Known, left alone:</strong> lake gauge scale labels are ~6.7px at the reference
+size (4.5px at 320 wide); the chapter &quot;ready&quot; sheet overlaps the ABOUT
+button by ~11px; a prompt split across pages shows a closing quote on its
+last page with no opening one.</li>
+</ul>
+<p><strong>Done in the 2026-10-03 music session</strong> (Rwanda&#39;s FL arrangement, tempo that follows the relationship):</p>
+<ul>
+<li><strong>Pipeline:</strong> <code>node scripts/build-arrangement.mjs &lt;project.flp&gt; rwanda lake-ulysses --tonic=C</code> reads the FL project directly (<code>scripts/lib/flp.mjs</code>: channels, pattern names, notes; NOT the playlist order, plugin presets or automation) and writes <code>content/arrangements/rwanda.json</code>. Each FL pattern is a section (Intro_A/B/C, Intro_Bridge, Verse_001/002); parts are Organ, Drum 01, Bass. FL&#39;s own MIDI export came out empty for this project, hence the direct read. The synth is Plogue chipsynth C64 (a SID chip), so the voices are SID-style: pulse, triangle, a plucked low-pass, synth drums (<code>shell/arrangementVoices.js</code>). Tuned by ear; the drum key mapping (49 snare, 50 kick, 53 click, 54 hat, 55 open hat) is a guess.</li>
+<li><strong>Engine:</strong> <code>engine/arrangementClock.js</code> is pure timing in ticks (one position, one tempo, every part off it; ramps; section changes on pattern/bar/beat); <code>shell/arrangement.js</code> plays it on the audio clock, 250 ms ahead, never from timers (so the sideways pause freezes it for free); <code>engine/tempoDirector.js</code> turns relationship numbers (tension, agitation, connection) into a target BPM and section along a five-step ladder (calm 80 / guarded 100 / uneasy 110 / tense 125 / agitated 140); <code>shell/battleMusic.js</code> joins them; <code>shell/encounterMusic.js</code> is the game hook. <code>npm run test:music</code> checks the rules and timing with a fake clock.</li>
+<li><strong>In the game:</strong> Rwanda&#39;s confrontation cutscene plays Intro_A; the dialog then begins the battle and the director takes it from there (Intro_B at 100 BPM, up the ladder as answers land cold, down as they land warm). Each answer&#39;s <code>trustDelta + stabilityDelta</code> (the number that already bends the leitmotif and chord) feeds the director; being caught contradicting yourself is a connection failure. Rwanda&#39;s old placeholder riff and the heartbeat pulse are off while the arrangement plays; the polychord stays, built on C (<code>tonic</code> in the JSON). Any NPC with an arrangement JSON gets this; the rest keep their leitmotif. Music follows the relationship, not a verdict.</li>
+<li><strong>Sound player (Settings -&gt; DEBUG -&gt; SOUND PLAYER, <code>ui/soundLab.js</code>):</strong> every track: arrangements (start a battle, push events, auto-escalate/calm, queue sections, mute/solo, audition a voice or drum key, edit the mix, master level, drum map and the tempo ladder live), leitmotifs (play, lean the mood), audio in memory, and every audio file in the build (<code>__AUDIO_FILES__</code>, vite.config.js). Holds the game while open (timers paused, scene music off). SAVE keeps tuning per arrangement on this device and applies it in the game too (<code>shell/soundTuning.js</code>); COPY JSON prints it to be made the default in code.</li>
+<li><strong>Why the full arrangement was never heard (fixed):</strong> an answer moves trust+stability by only 1-2 points, and the first scaling turned that into tiny nudges, so even an all-cold Rwanda run ended on &quot;uneasy&quot; (Intro_C) and never reached the verses. <code>encounterMusic.react</code> now counts a delta as <code>SENSITIVITY</code> (2) events; checked against Rwanda&#39;s real deltas (all cold: guarded &gt; uneasy &gt; tense &gt; tense, 130 BPM; all warm: calm, 80). The sound player shows which parts are sounding (● organ ● drum ● bass).</li>
+<li><strong>The confrontation was nearly inaudible (fixed):</strong> its section (Intro_A) is drums only, and the hat/click pieces were ~4x quieter than the kick, organ and bass, so a local run peaked at 0.017 and read as &quot;no music&quot;. Drum pieces rebalanced and the arrangement&#39;s default level raised 0.14 -&gt; 0.24 (peak 0.089 at the confrontation). Saved tuning (<code>shell/soundTuning.js</code>) now keeps only values that differ from the code defaults (v2), and a v1 save&#39;s old default master level is dropped, so default improvements reach you.</li>
+<li><strong>Scope instruments (<code>ui/oscilloscope.js</code> drawInstruments, <code>getFeelings</code> from dialogScene):</strong> a correlation needle left of the portrait (-1..+1: cos(wheel steps x pi/4) x (0.25 + 0.75 x closeness), wandering less as closeness rises) and a vectorscope right of it: a Lissajous figure whose ratio comes from the steps between your feeling (held, else last pick) and their shown mood on Plutchik&#39;s wheel (0 1:1 circle, 1 2:3, 2 8:9, 3 4:5, 4 7:5 tritone, which keeps rolling). Closeness sets the drift; at full trust with the same feeling it eases into a still, glowing circle. Verified live on Rwanda (Anger vs Anger circle, vs Sadness weave, vs Fear tangle, trusted + Anger a still circle with the needle at +1).</li>
+<li><strong>Tutorial (therapist manuscript):</strong> the meters reaction now says what each one does (battery low: your calls get heavy; bars gate who opens up; bars + Wi-Fi needed for calls; the clock skips when you lie), and the outro teaches the scope and its two instruments, the music building and the secret track (&quot;something new come in&quot;), the push-away (&quot;listen to the last thing they say&quot;), and the story (&quot;just listen&quot;).</li>
+<li><strong>Secret track (the hook is built, the music is yours):</strong> name an FL channel starting with &quot;Secret&quot;, rebake, and it becomes a part flagged <code>secret</code>. It plays silently from the start and fades in (4 s) when the player gets close to a full connection — closeness &gt;= <code>secretAt</code> (0.6, one step from trust) — and back out only below 0.45, so it&#39;s a sign they&#39;re almost there. It has a default organ-type voice until tuned. Sound player: SECRET TRACK toggle, the part shows with a star. Verified with a stand-in part: silent at 0.5, in at 0.7 (0 -&gt; 0.98), held at 0.5, out at 0.4, other parts untouched.</li>
+<li><strong>Pushed away (<code>PUSHAWAY [class]</code>, <code>showPushAway</code>):</strong> an encounter that ends without trust gets the number-ask close-up, but cold (grey edge, a drift tone): they push the player away and say what they wish someone had done, one feeling-colored word as the hint, per class (Guns braced, Bible held on to the right words, Crystals absorbed everything). Written for all four NPCs. Verified live on Rwanda (Guns: &quot;...put it <strong>down</strong>&quot;).</li>
+<li><strong>IT/SO on the story (<code>STORYIT</code>/<code>STORYSO</code>, <code>showStoryThoughts</code>):</strong> right after the trauma story, in the same silence: IT weighs how true it rings, SO doubts one corner, never the person. Silent popups, NOT sharpened by the lake (the sharpen tags would turn it on the player). Written for all four NPCs. Not yet checked live (the browser pane was in use).</li>
+<li><strong>Tension follows the battle&#39;s phases, not connection (decided 2026-10-03):</strong> <code>config.drive: &#39;phase&#39;</code> (the game). Each answer given moves the music one step up the ladder (<code>phaseStates</code>: guarded &gt; uneasy &gt; tense &gt; agitated), so Rwanda&#39;s 4-answer fight goes Intro_B 100 BPM &gt; Intro_Bridge 110 &gt; Verse_001 125 &gt; Verse_002 140 whatever you say or however close you get (verified live). Connection and warm/cold answers no longer touch tempo or sections; connection is reserved for unlocking the secret track (design open: which instrument, when it joins, whether the unlock is saved). The old emotion model is still in the director (<code>drive: &#39;emotion&#39;</code>, selectable in the sound player) for experiments.</li>
+<li><strong>(Superseded by the phase drive above) Instruments build with the conversation, tension only picks tempo and flavor:</strong> the confrontation plays Intro_A (drums); the battle opens on Intro_B (+bass); from the 2nd answer (<code>fullAfterAnswers</code>) every state&#39;s section carries all three parts (calm/guarded Intro_C, uneasy Intro_Bridge, tense Verse_001, agitated Verse_002). So a warm run grows into the whole band at 80 BPM instead of thinning out, and a cold run grows into it harder and faster (130-140). <code>director.answerGiven()</code> counts answers (called from <code>encounterMusic.react</code>); the sound player has an ANSWER button and shows the count. Verified live on Rwanda: drums &gt; +bass &gt; all three at 110 &gt; 114 BPM.</li>
+<li><strong>What the music follows:</strong> tension comes from how each answer lands (trust+stability delta: warm eases, cold raises, a miss or being caught raises); connection is set outright to the scope&#39;s closeness (syncs, bids, misses; 1 once they trust you), so tempo and section track how close you actually are. Checked on Rwanda&#39;s real deltas: all cold = guarded &gt; uneasy &gt; tense &gt; tense (130 BPM); all warm = calm (80 BPM) by the second answer.</li>
+<li><strong>Trauma stories are told in silence (<code>showConnection</code>):</strong> when the story starts, their bust comes up close and centered (same layout as the number ask), <code>audio.hush()</code> drops the whole mix (music, chord, typing), and <code>audio.unhush()</code> fades it back over 3 s when the last beat is done. Unmounting always unhushes. Verified: RMS 0.028 before, 0 during, 0.02 after.</li>
+<li><strong>Left:</strong> the other three NPCs have no arrangement yet; the Bridge section isn&#39;t on the ladder; tempo-synced effects and reference-stem A/B aren&#39;t built; the FL playlist order is unread.</li>
+</ul>
 <p><strong>Open (raised 2026-09-30, not decided):</strong></p>
 <ul>
 <li><strong>No node MOOD is Trust any more</strong> (2026-10-01): Rwanda Q4 → Anxiety, Rick&#39;s enabled Q2 → Anger. Trust is earn-only, so a Trust mood could almost never be matched.</li>
@@ -1922,7 +1996,7 @@ that needs a mini-game with drag physics or a canvas particle effect can
 just do that inside its own <code>mount()</code>, without touching the shell or any
 other chapter.</p>
 <p><code>exit()</code> is the chapter&#39;s way of handing control back to the shell (e.g.
-&quot;back to menu&quot; after an ending).</p>
+&quot;back to title&quot; after an ending).</p>
 <h2 id="doc-architecture--inside-a-chapter-the-scene-sequencer-srcenginescenesequencer"><a class="anchor" href="#doc-architecture--inside-a-chapter-the-scene-sequencer-srcenginescenesequencer" aria-label="Link to this section">#</a>Inside a chapter: the scene sequencer (<code>src/engine/sceneSequencer.js</code>)</h2>
 <p>A chapter&#39;s <code>mount()</code> doesn&#39;t have to hand-roll its own flow control. Most
 chapters will define a <code>SCENES</code> list and hand it to
@@ -2167,7 +2241,7 @@ Truth Debt, before the baptism.</p>
 <h3 id="doc-scene_types--ending-srcscenesendingscenejs"><a class="anchor" href="#doc-scene_types--ending-srcscenesendingscenejs" aria-label="Link to this section">#</a><code>ending</code> (<code>src/scenes/endingScene.js</code>)</h3>
 <p>Terminal, two phases. Picks the ending by final Truth Debt and records
 it immediately on mount (not deferred to the end of the beat). Calls
-<code>exit</code> (not <code>onComplete</code>) when the player taps back to menu — the only
+<code>exit</code> (not <code>onComplete</code>) when the player taps back to title — the only
 scene that does, since there&#39;s nothing after it.</p>
 <pre><code class="language-json">{ &quot;type&quot;: &quot;ending&quot;, &quot;id&quot;: &quot;ending&quot;, &quot;endings&quot;: /* endings.json */ }
 </code></pre>
@@ -2190,7 +2264,7 @@ reading). Then the ending&#39;s body text plus the epilogue line (see
 (<code>ui/typewriterText.js</code>). A tap while drawing finishes it instantly. Once
 the text is fully drawn, one IT popup appears — the actual last word of
 the chapter, one line per class (<code>engine/itEndgame.js</code>&#39;s <code>ENDING_IT_TEXT</code>)
-— and only once <em>that&#39;s</em> closed does &quot;BACK TO MENU&quot; appear. No premature
+— and only once <em>that&#39;s</em> closed does &quot;BACK TO TITLE&quot; appear. No premature
 exit mid-reveal, and now none mid-IT either.</p>
 <p>Resolved open questions from the original plan: real ending art still
 doesn&#39;t exist, so the judgment beat uses the same procedural placeholder
@@ -3944,7 +4018,7 @@ mini-games are structured, if you&#39;re writing one of those.</li>
     </article>
 <article class="doc" id="doc-script_format" data-title="Script Format" data-file="SCRIPT_FORMAT.md" hidden>
       <p class="doc-source">Authoring · <code>docs/SCRIPT_FORMAT.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-script_format--where-files-go">Where files go</a></li><li><a href="#doc-script_format--building-it">Building it</a></li><li><a href="#doc-script_format--the-format">The format</a></li><li><a href="#doc-script_format--rules-that-will-make-the-build-fail-on-purpose">Rules that will make the build fail (on purpose)</a></li><li><a href="#doc-script_format--what-this-format-doesn39t-cover-yet">What this format doesn&amp;#39;t cover yet</a></li><li><a href="#doc-script_format--cues-inside-text-cuename">Cues inside text: {cue:name}</a></li><li><a href="#doc-script_format--cues-inside-text-markname">Cues inside text: {mark:name}</a></li><li><a href="#doc-script_format--mask-node">MASK (node)</a></li><li><a href="#doc-script_format--story-header">STORY (header)</a></li><li><a href="#doc-script_format--trycall-outro">TRYCALL (outro)</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-script_format--where-files-go">Where files go</a></li><li><a href="#doc-script_format--building-it">Building it</a></li><li><a href="#doc-script_format--the-format">The format</a></li><li><a href="#doc-script_format--rules-that-will-make-the-build-fail-on-purpose">Rules that will make the build fail (on purpose)</a></li><li><a href="#doc-script_format--what-this-format-doesn39t-cover-yet">What this format doesn&amp;#39;t cover yet</a></li><li><a href="#doc-script_format--cues-inside-text-cuename">Cues inside text: {cue:name}</a></li><li><a href="#doc-script_format--cues-inside-text-markname">Cues inside text: {mark:name}</a></li><li><a href="#doc-script_format--mask-node">MASK (node)</a></li><li><a href="#doc-script_format--story-header">STORY (header)</a></li><li><a href="#doc-script_format--storyit-storyso-header">STORYIT / STORYSO (header)</a></li><li><a href="#doc-script_format--pushaway-header">PUSHAWAY (header)</a></li><li><a href="#doc-script_format--trycall-outro">TRYCALL (outro)</a></li></ul></nav>
       <h1 id="doc-script_format--script-format-for-writers"><a class="anchor" href="#doc-script_format--script-format-for-writers" aria-label="Link to this section">#</a>Script Format (for writers)</h1>
 <p>This is for anyone writing dialog content who doesn&#39;t want to touch JSON —
 a collaborator, a co-writer, anyone. Write a plain <code>.txt</code> file in this
@@ -4195,8 +4269,26 @@ Rick&#39;s first two questions.</p>
 <h2 id="doc-script_format--story-header"><a class="anchor" href="#doc-script_format--story-header" aria-label="Link to this section">#</a>STORY (header)</h2>
 <p><code>STORY: line</code>, repeatable, in the header: the cutscene the player earns by
 connecting, one line per beat, in order, the same for every class. It plays
-right after the CONNECT beat, with the NPC&#39;s bust up. Their words in quotes,
+right after the CONNECT beat, with the NPC&#39;s bust up close and every sound
+stopped; the sound fades back when it&#39;s over. Their words in quotes,
 directions in [ ].</p>
+<h2 id="doc-script_format--storyit-storyso-header"><a class="anchor" href="#doc-script_format--storyit-storyso-header" aria-label="Link to this section">#</a>STORYIT / STORYSO (header)</h2>
+<p><code>STORYIT: line</code> and <code>STORYSO: line</code>, one each, in the header: what IT and
+SO think, in the same silence, right after the STORY. IT weighs how true it
+rings (a detail people don&#39;t invent); SO doubts one corner of it, never the
+person, and ends on what still stands. No quotes (they&#39;re thoughts).</p>
+<pre><code>STORYIT: Seventeen. The bus stop. Five a.m. People don&#39;t invent the time of day.
+STORYSO: Maybe the principal wasn&#39;t that cruel. Maybe it got harder every time she told it. ...Her mother still walked out.
+</code></pre>
+<h2 id="doc-script_format--pushaway-header"><a class="anchor" href="#doc-script_format--pushaway-header" aria-label="Link to this section">#</a>PUSHAWAY (header)</h2>
+<p><code>PUSHAWAY [Guns|Bible|Crystals]: line</code>, one per class: the encounter ended
+and they didn&#39;t come to trust the player. Same close-up as CONTACT, but cold:
+they push the player away and say what they wish someone had done just now.
+Color ONE word in the feeling that would have reached them; it&#39;s a hint, not
+a grade. Write it to the class&#39;s habit (Guns braces, Bible holds on to the
+right words, Crystals absorbs everything).</p>
+<pre><code>PUSHAWAY [Guns]: [She turns back to the window.] &quot;You never put it down. Not once. I needed you to put it {color:Fear}down{/color}.&quot; &quot;Go on. I&#39;ve got a wall to finish.&quot;
+</code></pre>
 <h2 id="doc-script_format--trycall-outro"><a class="anchor" href="#doc-script_format--trycall-outro" aria-label="Link to this section">#</a>TRYCALL (outro)</h2>
 <p><code>TRYCALL: &quot;line&quot;</code> inside <code>=== OUTRO</code>: the speaker&#39;s own contact pops into the dock (spotlit, pulsing) and the line waits for the player to tap it instead of tapping on. Tapping rings, connects, and his &quot;Hello?&quot; echoes back twice with feedback (the phone calling the phone it&#39;s on). The next LINE carries the joke. Used once, in the therapist&#39;s outro, to teach the contacts dock.</p>
 
@@ -5464,7 +5556,7 @@ walking the player into the water before the baptism
 (<code>content/pastor.json</code>&#39;s <code>gate</code>, lines keyed by final lake status). The
 old standalone Reckoning line (<code>RECKONING_IT_TEXT</code>) was retired.</li>
 <li><strong>Ending</strong> — one class-variant line once the body text finishes drawing,
-before &quot;BACK TO MENU&quot; — the actual last word of the chapter
+before &quot;BACK TO TITLE&quot; — the actual last word of the chapter
 (<code>ENDING_IT_TEXT</code>, same file).</li>
 </ul>
 <p>Every popup also plays <code>audio.playTyagl()</code> on mount — the same sting
@@ -8293,6 +8385,11 @@ change to shell/chapter responsibilities and deserves its own decision.</p>
 needs, the size to draw it at, how it&#39;s shown, the file format, and which
 template to start from. Templates live in <a href="../art-templates/"><code>art-templates/</code></a>
 (regenerate with <code>node scripts/make-art-templates.mjs</code>).</p>
+<p><strong>To send to artists:</strong> <code>node scripts/make-artist-kit.mjs</code> builds
+<code>deliverables/DreamXtreme_ArtistKit/</code> (an HTML guide with search, collapsible
+asset rows, previews, template downloads and the palette, plus the templates
+and reference images) and zips it to <code>deliverables/DreamXtreme_ArtistKit.zip</code>.
+The deliverables folder is git-ignored; rebuild it whenever the guide changes.</p>
 <p>Deeper detail lives in <a href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><a class="doc-ref" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><code>ASSET_GUIDELINES.md</code></a></a> (naming,
 budgets, animation registration, video and audio gotchas) and
 <a href="#doc-asset_manifest" data-doc="doc-asset_manifest"><a class="doc-ref" href="#doc-asset_manifest" data-doc="doc-asset_manifest"><code>ASSET_MANIFEST.md</code></a></a> (per-object room sizes).</p>

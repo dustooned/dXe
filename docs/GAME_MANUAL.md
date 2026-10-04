@@ -312,6 +312,19 @@ scales with how far their TRU and STB moved.
 
 A heart-monitor band runs across the portrait. Their line sits on top, yours underneath, and the gap between them is how close this person is to you: it narrows with every attuned pick and every bid you turn toward, widens with each answer that does neither, and closes completely (the lines merge and glow) once they trust you. Holding a feeling previews it: theirs pulls the lines in a little, another pushes them apart. Your line wears the color of the feeling you hold (or your last one), and a strip under the portrait keeps one colored block per answer in this encounter (newest outlined), so you can see which feelings you lean on with this person. Shut out (airplane mode): your line greys and theirs flatlines.
 
+**Two instruments either side of the portrait** (borrowed from audio engineering; both describe the two of you, neither grades you):
+
+- **Correlation needle (left):** from − (pulling against each other) through 0 (unrelated) to + (moving as one). It leans by how your feeling sits against theirs, and wanders less the closer you are; full trust with their feeling pins it at +.
+- **Vectorscope (right):** your signal plotted against theirs, a Lissajous figure. The shape is the ratio between your feeling and the one they're showing, on Plutchik's wheel (the FEELZ wheel's own order): the same feeling is a circle (1:1), a neighbor a knot (2:3), two apart a weave (8:9), three apart a denser loop (4:5), opposites a tangle that never settles (7:5, the tritone). How still it holds is closeness: drifting when far apart, locked when close, a still glowing circle at full trust. No feeling held, or shut out: a flat line.
+
+### The music of an encounter
+
+Each NPC with a composed arrangement (Rwanda so far) has a song that follows the fight, not your score. The confrontation opens on the intro (drums), the battle on the next layer, and every answer moves it one step up: more parts, faster (100 → 110 → 125 → 140 BPM). If you get close to a full connection, a **secret track** fades in (a part the composer hides in FL as "Secret…"), the sign you're almost there. When someone trusts you and tells you their story, every sound stops; IT and SO weigh it in the silence (IT on how true it rings, SO doubting a corner, never the person); then the sound fades back.
+
+### Pushed away
+
+If an encounter ends without their trust, their bust comes up close, cold, and they show you out, saying what they wish someone had done just now. One word is colored in the feeling that would have reached them: a hint, written for your class.
+
 ### Debug menu (for testing)
 
 Settings → DEBUG. Choose a class (GUNS / BIBLE / CRYSTALS), a lake level (0–10 Truth Debt), ALL FEELINGS (every slice unlocked), and EVERYONE TRUSTS YOU (all four NPCs already trust you, so contacts are in the dock), then tap any scene to restart the chapter there with that state. The questionnaire still re-picks the class if you jump to it.
