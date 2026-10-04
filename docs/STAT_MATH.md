@@ -783,7 +783,7 @@ Authored via a manuscript `GATE:` line (`SCRIPT_FORMAT.md`) — writers
 never touch the JSON `gate` object directly.
 
 **First real use:** Rick's opening node (`rick_01`) is gated on
-`trust < 3`, redirecting to `rick_shut_down` — a short new node where he
+`trust < 4` (was 3 until the 2026-10-04 soft cap), redirecting to `rick_shut_down` — a short new node where he
 won't engage ("Word gets around. I know what you are.") rather than his
 normal opening. Fits his established characterization (defensive,
 loyalty-obsessed) rather than being an arbitrary demo of the mechanism.

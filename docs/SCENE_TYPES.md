@@ -63,7 +63,7 @@ the player's choice, so keep opener ids and confrontation options in sync.
 
 Gates still apply on top: `resolveGatedNode` runs against whichever opener
 was chosen, which is why every alternate opener for a gated NPC needs the
-same `GATE:` line. Rick's three openers all carry `trust < 3 ->
+same `GATE:` line. Rick's three openers all carry `trust < 4 ->
 rick_shut_down`; without that, picking a non-default opener would quietly
 bypass his gate.
 
@@ -94,8 +94,8 @@ reaction stays visible, dimmed under the scrim, not cleared — using the
 highest newly-crossed threshold's line (`engine/itBlooms.js`; if a big lie
 crosses two thresholds in one swipe, only the top one gets shown). Closing
 it resumes exactly what `advance()` would otherwise have done immediately:
-the force-to-Reckoning jump at debt 10 still happens, just after the
-popup's been dismissed rather than instead of it.
+the next node, or the encounter's end. (The old force-to-Reckoning
+jump at debt 10 was removed 2026-10-04.)
 
 **The end of each NPC's encounter can fire an IT/SO "finding"** — but only
 when something new was noticed (`showFindingIfAny()`, `engine/itFindings.js`):

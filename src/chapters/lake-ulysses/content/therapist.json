@@ -12,7 +12,7 @@
       "swipes": {
         "truth": {
           "playerText": "Not great. I woke up on the side of the road.",
-          "npcReaction": "\"Okay. Thank you.\" The keys keep going; he types while you talk, the way you learn to with forty people on your caseload. \"Look at the top of your screen. {cue:stability}Battery's how steady you're holding up. Let it run low and the people you call get tired of carrying you. {cue:trust}Bars are how connected people feel to you. Some people won't open up to you below a certain number. {cue:lucidity}Wi-Fi's how clearly you're seeing things. You need bars and Wi-Fi for a call to go through. {cue:integrity}And the clock keeps honest time, as long as you do. Lie enough and you'll watch the minutes skip.\" A beat. \"Weather, not a verdict.\"",
+          "npcReaction": "\"Okay. Thank you.\" The keys keep going; he types while you talk, the way you learn to with forty people on your caseload. \"Look at the top of your screen. {cue:stability}Battery's how steady you're holding up. Let it run low and the people you call get tired of carrying you. It charges back between people, more if they let you in. {cue:trust}Bars are how connected people feel to you. Some people won't open up to you below a certain number. {cue:lucidity}Wi-Fi's how clearly you're seeing things. Every lie fogs it a little. You need bars and Wi-Fi for a call to go through. {cue:integrity}And the clock keeps honest time, as long as you do. Lie enough and you'll watch the minutes skip.\" A beat. \"Weather, not a verdict.\"",
           "effects": {
             "trust": 1,
             "lucidity": 1,
@@ -25,7 +25,7 @@
         },
         "lie": {
           "playerText": "Fine. I'm fine.",
-          "npcReaction": "\"Fine.\" The keys don't stop. \"Everyone's fine. My whole caseload is fine.\" A tired almost-laugh. \"Top of your screen. {cue:stability}Battery: how steady. Run it down and your calls get heavy. {cue:trust}Bars: how connected. Some doors stay shut below a certain number. {cue:lucidity}Wi-Fi: how clear. No bars and Wi-Fi, no calls. They move whether you tell me the truth or not. {cue:integrity}And if the clock starts skipping, that one's on you.\" {mark:lake}A pause. \"That reading at the bottom is the lake. FEELZ pulls it off the county sensors. It doesn't care how anybody feels.\"",
+          "npcReaction": "\"Fine.\" The keys don't stop. \"Everyone's fine. My whole caseload is fine.\" A tired almost-laugh. \"Top of your screen. {cue:stability}Battery: how steady. Run it down and your calls get heavy. It charges between people, faster if they let you in. {cue:trust}Bars: how connected. Some doors stay shut below a certain number. {cue:lucidity}Wi-Fi: how clear. Every lie fogs it a little. No bars and Wi-Fi, no calls. They move whether you tell me the truth or not. {cue:integrity}And if the clock starts skipping, that one's on you.\" {mark:lake}A pause. \"That reading at the bottom is the lake. FEELZ pulls it off the county sensors. It doesn't care how anybody feels.\"",
           "effects": {
             "stability": 1,
             "trust": -1
@@ -277,7 +277,7 @@
     },
     {
       "kind": "line",
-      "text": "\"When you're stuck out there, call. I'll tell you what I'm reading off you, and off them. If your bars and Wi-Fi drop too low, I won't pick up. That's not me ignoring you. That's you not letting anyone in.\""
+      "text": "\"When you're stuck out there, call. I'll tell you what I'm reading off you, and off them. If your bars and Wi-Fi drop too low, I won't pick up. You'll get my voicemail. That's not me ignoring you. That's you not letting anyone in.\""
     },
     {
       "kind": "line",
@@ -406,6 +406,36 @@
     {
       "kind": "line",
       "text": "\"And the little blocks under it are what you've picked so far. Go find a few more.\""
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Your battery's low, and honesty did that. The truth costs charge. Rest between people, or your calls get heavy. That's not a metaphor. Okay, it's a little bit a metaphor.\"",
+      "watch": "stability"
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Your bars are low. People aren't sure about you yet, and some doors stay shut below a certain number. Mine too, technically. Turn toward what they offer you.\"",
+      "watch": "trust"
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Your Wi-Fi's weak. You're not seeing clearly, and FEELZ goes quiet when you can't. So do I. One true thing clears it a little.\"",
+      "watch": "lucidity"
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Your clock's slipping. When the minutes start skipping, that's you, not the phone. I checked. I check things.\"",
+      "watch": "integrity"
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. The lake moved while we talked. I'm not grading you, I'm reading a sensor. Sensors don't round down.\"",
+      "watch": "lake"
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Everything's holding. Statistically, that's when people get careless. I would know. I'm people.\"",
+      "watch": "steady"
     },
     {
       "kind": "hangup",

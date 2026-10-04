@@ -150,7 +150,8 @@ function buildEndings() {
   }
   parts.push('# --- EPILOGUE LINES (one is appended to whichever ending played) ---\n');
   for (const [stat, line] of Object.entries(endings.epilogues)) {
-    parts.push(`[epilogue / ${stat}] ${line}`);
+    if (typeof line === 'string') parts.push(`[epilogue / ${stat}] ${line}`);
+    else for (const [dir, text] of Object.entries(line)) parts.push(`[epilogue / ${stat} / ${dir}] ${text}`);
   }
   writeFileSync(join(EXTRA_DIR, '4-endings.txt'), parts.join('\n') + '\n');
 }

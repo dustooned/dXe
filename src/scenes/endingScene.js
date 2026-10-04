@@ -4,7 +4,7 @@
 // docs/SCENE_TYPES.md.
 //
 // scene shape: { type: 'ending', id: string, endings: <endings.json> }
-import { getEndingKey, getEpilogueStat } from '../engine/endingEngine.js';
+import { getEndingKey, getEpilogueLine } from '../engine/endingEngine.js';
 import { later, cancelLater } from '../shell/pauseBus.js';
 import { drawEmotionPattern } from '../ui/emotionPattern.js';
 import { createTypewriter } from '../ui/typewriterText.js';
@@ -32,8 +32,7 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
   recordEnding?.(chapterId, endingKey);
 
   const finalDebt = run.get().truthDebt;
-  const epilogueStat = getEpilogueStat(run.get());
-  const epilogueLine = scene.endings.epilogues?.[epilogueStat];
+  const epilogueLine = getEpilogueLine(run.get(), scene.endings.epilogues);
 
   const intensity = ENDING_INTENSITY[endingKey] ?? 'weak';
   fx.flash(intensity);

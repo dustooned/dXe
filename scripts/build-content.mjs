@@ -17,7 +17,10 @@ const PICK_PATTERN = /^PICK\s+(\w+):\s*(.*)$/;
 const REVEAL_PATTERN = /^(meters|debt|scope|instruments|dock)\s+(?:after\s+(\S+)|on\s+cue)$/;
 // Inside `=== OUTRO`: LINE / HANGUP / NOTIFY / IT / SO / TRYCALL, each with an optional
 // [condition] before the colon — see docs/SCRIPT_FORMAT.md.
-const OUTRO_PATTERN = /^(LINE|HANGUP|NOTIFY|IT|SO|TRYCALL|TRYFEEL)(?:\s*\[([^\]]*)\])?:\s*(.*)$/;
+const OUTRO_PATTERN = /^(LINE|HANGUP|NOTIFY|IT|SO|TRYCALL|TRYFEEL|WATCH)(?:\s*\[([^\]]*)\])?:\s*(.*)$/;
+// WATCH [stability|trust|lucidity|integrity|lake|steady]: a parting watch-out;
+// only the one matching how the player's readings ended plays (dialogScene.js watchFor).
+const WATCH_KEYS = ['stability', 'trust', 'lucidity', 'integrity', 'lake', 'steady'];
 
 // "[Guns]", "[therapist_02=lie]", or both comma-separated — every part has
 // to hold for the beat to play.
@@ -184,7 +187,11 @@ function parseManuscript(text, fileName) {
       const match = line.match(OUTRO_PATTERN);
       if (!match) throw new Error(`${fileName}:${lineNumber}: unrecognized OUTRO line "${raw}"`);
       const beat = { kind: match[1].toLowerCase(), text: parseText(match[3]) };
-      if (match[2]) beat.when = parseCondition(match[2], fileName, lineNumber);
+      if (beat.kind === 'watch') {
+        if (!WATCH_KEYS.includes(match[2])) throw new Error(`${fileName}:${lineNumber}: WATCH needs one of [${WATCH_KEYS.join('|')}]`);
+        beat.kind = 'line';
+        beat.watch = match[2];
+      } else if (match[2]) beat.when = parseCondition(match[2], fileName, lineNumber);
       outro.push(beat);
     } else if (line.startsWith('PICK ')) {
       const match = line.match(PICK_PATTERN);

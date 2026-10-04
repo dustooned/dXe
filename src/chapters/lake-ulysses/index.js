@@ -9,6 +9,7 @@ import * as questionnaireScene from '../../scenes/questionnaireScene.js';
 import * as cutsceneScene from '../../scenes/cutsceneScene.js';
 import * as dialogScene from '../../scenes/dialogScene.js';
 import * as reckoningScene from '../../scenes/reckoningScene.js';
+import { forgetMeters } from '../../ui/statusBar.js';
 import * as endingScene from '../../scenes/endingScene.js';
 import * as minigameScene from '../../scenes/minigameScene.js';
 import { ANIMS } from './anims.js';
@@ -164,6 +165,7 @@ const initialRunState = {
 export const DEBUG_SCENES = SCENES.map(({ id, type }) => ({ id, type }));
 
 export function mount(stageEl, { exit, restart, startSceneId }) {
+  forgetMeters(); // a new run: no meter "changes" carried over from the last one
   const run = createStore({ ...initialRunState, ...takeDebugOverrides() });
   const sequencer = createSceneSequencer({
     scenes: SCENES,

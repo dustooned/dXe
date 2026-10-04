@@ -50,7 +50,7 @@
       "gate": {
         "stat": "trust",
         "op": "<",
-        "value": 3,
+        "value": 4,
         "elseNodeId": "rick_shut_down"
       },
       "mood": "Fear",
@@ -212,7 +212,7 @@
       "gate": {
         "stat": "trust",
         "op": "<",
-        "value": 3,
+        "value": 4,
         "elseNodeId": "rick_shut_down"
       },
       "mood": "Anxiety"
@@ -257,7 +257,7 @@
       "gate": {
         "stat": "trust",
         "op": "<",
-        "value": 3,
+        "value": 4,
         "elseNodeId": "rick_shut_down"
       },
       "mood": "Anger",

@@ -28,6 +28,12 @@ const WORDS = { integrity: 'honest', trust: 'connected', lucidity: 'clear', stab
 // so change is measured against whatever the previous one displayed.
 let lastSeen = null;
 
+// A new run starts fresh, so its first screen doesn't animate a "change"
+// carried over from the last run (chapters call this on mount).
+export function forgetMeters() {
+  lastSeen = null;
+}
+
 // A pixel sprite from rows of characters: '.' is empty, a digit is a cell
 // that lights when the level is at least that digit (0 = always lit).
 // `prev` (the level the last bar showed) marks the cells that just changed:

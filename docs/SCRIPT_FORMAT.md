@@ -81,7 +81,7 @@ e.g. `deborah_01`, `deborah_02_denial`.
 - `GATE:` (optional) — redirects to a *different* node instead of this
   one, if a stat condition is true. Format:
   `GATE: <stat> <op> <value> -> <nodeId>`, e.g.
-  `GATE: trust < 3 -> rick_shut_down`. Valid `<op>`: `<`, `<=`, `>`, `>=`.
+  `GATE: trust < 4 -> rick_shut_down`. Valid `<op>`: `<`, `<=`, `>`, `>=`.
   This only matters for the *first* node the player would otherwise see
   — put it on the node your `NEXT:`/opening points at, not on every node
   in the tree. Leave it off entirely unless you specifically want this
@@ -313,6 +313,10 @@ PUSHAWAY [Guns]: [She turns back to the window.] "You never put it down. Not onc
 ## TRYCALL (outro)
 
 `TRYCALL: "line"` inside `=== OUTRO`: the speaker's own contact pops into the dock (spotlit, pulsing) and the line waits for the player to tap it instead of tapping on. Tapping rings, connects, and his "Hello?" echoes back twice with feedback (the phone calling the phone it's on). The next LINE carries the joke. Used once, in the therapist's outro, to teach the contacts dock.
+
+## WATCH (outro)
+
+`WATCH [stability|trust|lucidity|integrity|lake|steady]: "line"` inside `=== OUTRO`: a parting watch-out. Write one per key; only one plays, picked by how the readings ended: `lake` if Truth Debt is 3 or more, else the lowest meter if it's 4 or below, else `steady`. Used by the therapist just before HANGUP.
 
 ## TRYFEEL (outro)
 

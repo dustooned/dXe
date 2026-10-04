@@ -53,9 +53,21 @@
     "quoteBy": "Jonathan Swift, 1710"
   },
   "epilogues": {
-    "integrity": "Integrity never came back all the way.",
-    "trust": "Trust didn't survive the trip.",
-    "stability": "Nothing about you sat still after that.",
-    "lucidity": "You saw it clearly, the whole time. That's its own kind of debt."
+    "integrity": {
+      "high": "You kept your word, even when it cost you.",
+      "low": "Integrity never came back all the way."
+    },
+    "trust": {
+      "high": "People let you in. Hold that carefully.",
+      "low": "Trust didn't survive the trip."
+    },
+    "stability": {
+      "high": "You held steady when it would've been easier to fold.",
+      "low": "Nothing about you sat still after that."
+    },
+    "lucidity": {
+      "high": "You saw it clearly, the whole time. That's its own kind of debt.",
+      "low": "Somewhere along the way, you stopped seeing it clearly. That was the point."
+    }
   }
 }

@@ -9,6 +9,12 @@ const AMPLIFY_MULTIPLIER = 1.5;
 // during play. Any nonzero authored value wins, and `DEBT: 0!` (debtFixed)
 // pins a truth at exactly 0.
 export const TRUTH_CLEANSE = -1;
+// Every lie fogs the Wi-Fi (Lucidity) a little: a LIE edge with no authored
+// lucidity change applies this. Lying feels fine; you just see less clearly,
+// and below 4 the Therapist won't pick up and FEELZ tips go quiet. Not in
+// the tutorial (resolveCard's `fog: false`): his session is a safe place to
+// try lying, and a player shouldn't leave it already cut off.
+export const LIE_FOG = -1;
 
 // The debt change a swipe actually applies (see TRUTH_CLEANSE).
 export function effectiveDebtDelta(edge, swipeKey) {
@@ -31,14 +37,48 @@ function applyEmotionalLean(effects, emotion) {
   return { ...effects, [amplifiedKey]: amplify(effects[amplifiedKey]) };
 }
 
+// Meters get harder to push the further out they are: inside SOFT_BAND
+// (3..7) every point moves a full step; past it, moving further out takes
+// two points per step (a meter heading back toward the middle never slows).
+// Keeps honest players off an empty battery and liars off a full board, and
+// keeps every meter moving instead of pinning at 0 or 10 by the second NPC.
+export const SOFT_BAND = [3, 7];
+export function softStep(value, delta) {
+  let v = value;
+  let budget = Math.abs(delta);
+  const dir = Math.sign(delta);
+  while (budget > 0) {
+    const outward = dir > 0 ? v >= SOFT_BAND[1] : v <= SOFT_BAND[0];
+    const cost = outward ? 2 : 1;
+    if (budget < cost) break;
+    budget -= cost;
+    v += dir;
+  }
+  return clamp(v, 0, 10);
+}
+
 export function applyStatDelta(state, effects = {}) {
   const patch = {};
   for (const key of STAT_KEYS) {
     if (effects[key] != null) {
-      patch[key] = clamp((state[key] ?? 0) + effects[key], 0, 10);
+      patch[key] = softStep(state[key] ?? 0, effects[key]);
     }
   }
   return patch;
+}
+
+// Rest after each encounter (the walk to the next one), battery only: how
+// people feel about you, how clearly you see and your honest clock don't
+// heal on a walk. The Therapist told you to rest; this is it.
+//   connected  being let in charges you: +REST_CONNECTED, past the middle too
+//              (soft-capped like any gain)
+//   otherwise  you walk it off: up to REST_WALK back toward 5, never down
+export const REST_WALK = 2;
+export const REST_CONNECTED = 3;
+export function restAfter(state, { connected = false } = {}) {
+  const v = state.stability ?? 5;
+  const next = connected ? softStep(v, REST_CONNECTED) : v < 5 ? Math.min(5, v + REST_WALK) : v;
+  return { stability: next };
 }
 
 // Resolves a swipe against a dialog node. Returns the chosen edge (for
@@ -47,9 +87,11 @@ export function applyStatDelta(state, effects = {}) {
 // into the run store. `emotion` is optional; omitting it (or passing one
 // that doesn't touch this edge's effects) behaves exactly as before
 // Emotional Lean existed.
-export function resolveCard(state, node, swipeKey, emotion) {
+export function resolveCard(state, node, swipeKey, emotion, { fog = true } = {}) {
   const edge = node.swipes[swipeKey];
-  const leaningEffects = applyEmotionalLean(edge.effects, emotion);
+  const authored = edge.effects ?? {};
+  const effects = fog && swipeKey === 'lie' && authored.lucidity == null ? { ...authored, lucidity: LIE_FOG } : authored;
+  const leaningEffects = applyEmotionalLean(effects, emotion);
   const statPatch = applyStatDelta(state, leaningEffects);
   const truthDebt = clamp(state.truthDebt + effectiveDebtDelta(edge, swipeKey), 0, 10);
 

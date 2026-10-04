@@ -14,7 +14,8 @@
 //              to the right words, Crystals absorbs everything).
 //   moods      how they put each feeling into words — their own voice, never
 //              the feeling's name.
-// Deep water (debt at FOG_DEBT or more) quietly costs the call its clarity:
+// Low Wi-Fi (Lucidity under FOG_WIFI: every lie fogs it) quietly costs the
+// call its clarity, the same line that silences the Therapist and FEELZ tips:
 // the read comes through uncolored, the wheel doesn't light, and the friend
 // says something that shows your story is getting hard to follow (foggy).
 // PLACEHOLDER PROSE throughout (first drafts, for the writer).
@@ -28,13 +29,15 @@ const HEALTH_LINES = {
     "Your battery's in the red. Sit down for a second before you answer anything.",
     "You're running on fumes. I can see it. Nothing has to be decided this second.",
   ],
+  // Bars and Wi-Fi: he only picks up at 4 or more, so these are for exactly
+  // 4, one step from the call not connecting at all.
   trust: [
-    "Your bars are low. People aren't feeling you right now. One honest sentence can change that.",
-    "Signal's weak. They don't know what to make of you yet.",
+    "Your bars are one notch from me not getting through. People aren't feeling you right now. One honest sentence can change that.",
+    "Signal's weak. One more step down and this call doesn't connect.",
   ],
   lucidity: [
-    "Your Wi-Fi's barely holding. You're not seeing this clearly. Slow down.",
-    "You're foggy. Say less, notice more.",
+    "Your Wi-Fi's barely holding. One more lie and this call doesn't connect. Slow down.",
+    "You're foggy. Say less, notice more. I'd like to keep hearing from you.",
   ],
   integrity: [
     "Your clock's slipping. You know what that means.",
@@ -51,10 +54,13 @@ const HEALTH_LINES = {
 };
 
 function healthLine(state) {
+  // Low is 3 or below, except bars and Wi-Fi: he can't be reached under 4,
+  // so for those, 4 is the warning. The lowest low reading gets the line.
+  const low = (k, v) => v <= (k === 'trust' || k === 'lucidity' ? 4 : 3);
   const readings = ['stability', 'trust', 'lucidity', 'integrity'].map((k) => [k, state[k] ?? 5]);
-  const [worst, value] = readings.sort((a, b) => a[1] - b[1])[0];
+  const [worst, value] = readings.filter(([k, v]) => low(k, v)).sort((a, b) => a[1] - b[1])[0] ?? ['steady', 5];
   const debt = state.truthDebt ?? 0;
-  let key = value <= 3 ? worst : 'steady';
+  let key = worst;
   if (debt >= 6 && (key === 'steady' || debt - 5 > 3 - value)) key = 'lake';
   return pick(HEALTH_LINES[key]).replace('{ppm}', ppmFor(debt));
 }
@@ -62,8 +68,9 @@ function healthLine(state) {
 // The feelings a contact can read (each contact words them in `moods`).
 const MOODS = ['Happy', 'Trust', 'Fear', 'Surprise', 'Sadness', 'Disgust', 'Anger', 'Anxiety'];
 
-// Deep enough in the lake that calls lose their color (engine/lake.js: HIGH).
-export const FOG_DEBT = 6;
+// Below this Wi-Fi, calls lose their color (one fog rule for the whole phone:
+// the Therapist won't pick up and FEELZ tips go quiet at the same line).
+export const FOG_WIFI = 4;
 
 // bias: chance they tell you to lie. sight: how reliably they read a mood
 // before your bond adds to it. dominant: the feeling they live in — their
@@ -251,6 +258,29 @@ export const CONTACTS = {
   },
 };
 
+// When he won't pick up: his voicemail greeting, which (being him) says
+// exactly why. Keyed by what's too low: bars, Wi-Fi, or both.
+const VOICEMAIL = {
+  trust: [
+    "Hi, you've reached the Therapist. If you're hearing this, your bars are too low to get through. That's not a judgment. It's signal strength. Get to four and try me again.",
+    "*beep*",
+  ],
+  lucidity: [
+    "Hi, you've reached the Therapist. If you're hearing this, your Wi-Fi's too foggy to connect. Tell someone one true thing, then call back. Or don't. I'm not your mom.",
+    "*beep*",
+  ],
+  both: [
+    "Hi, you've reached the Therapist. I'm not available right now. Statistically I'm in a session, or eating lunch over my keyboard. Bars and Wi-Fi, four or more, then call back.",
+    "Please don't leave a message. My inbox is at capacity. I'm working on it. I'm not working on it.",
+    "*beep*",
+  ],
+};
+export function voicemailFor(state) {
+  const lowBars = (state.trust ?? 0) < 4;
+  const lowWifi = (state.lucidity ?? 0) < 4;
+  return VOICEMAIL[lowBars && lowWifi ? 'both' : lowBars ? 'trust' : 'lucidity'];
+}
+
 // The Therapist picks up only when the phone has something to work with:
 // enough bars (Trust) and enough Wi-Fi (Lucidity).
 export function therapistReachable(state) {
@@ -290,7 +320,7 @@ export function callFor(contact, { state, currentName, currentKey, mood }) {
   // The image is colored the feeling it describes, matching the slice that
   // glows on the wheel; their history with this person frames it if they have
   // one. In deep water it comes through uncolored and the wheel stays dark.
-  const fogged = (state.truthDebt ?? 0) >= FOG_DEBT;
+  const fogged = (state.lucidity ?? 5) < FOG_WIFI;
   const words = c.moods[read];
   const image = fogged ? words : `{color:${read}}${words}{/color}`;
   const knows = c.knows?.[currentKey];

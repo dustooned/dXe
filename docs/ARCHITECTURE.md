@@ -114,8 +114,8 @@ Framework-agnostic game logic:
   `DEBT: 0` apply `TRUTH_CLEANSE` (−1) unless pinned with `0!`.
 - `debtEngine.js` — Truth Debt thresholds and bloom-event triggers.
   `newlyFired` drives an IT popup interrupt (`dialogScene.js`'s
-  `advance()`, text in `engine/itBlooms.js`) — see `IT_DESIGN.md`. The
-  Reckoning-at-10 cutoff lives in `dialogScene.js`, not here.
+  `advance()`, text in `engine/itBlooms.js`) — see `IT_DESIGN.md`. There is no
+  Reckoning-at-10 cutoff any more (2026-10-04): debt only picks the ending.
 - `lake.js` — Truth Debt as water quality: ppm, status, fish stage,
   color, and `{ppm}`/`{status}` text tokens. Drives `ui/lakeGauge.js`,
   the splash pitch, IT/SO findings and the Pastor's line choices.

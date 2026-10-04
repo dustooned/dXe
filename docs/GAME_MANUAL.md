@@ -195,7 +195,7 @@ costs later, so the game does too:
   resets the streak (`run.lieStreak`).
 - **Comforting lies are bids** for Deborah, Samun and Rick, so a liar can
   still connect (Rwanda only warms to the truth).
-- **The quiet cost:** from debt 6 calls come through uncolored, the wheel
+- **The quiet cost:** every lie fogs the Wi-Fi; below 4, calls come through uncolored, the wheel
   doesn't light, and the friend can't follow your story (`foggy` lines in
   `engine/contacts.js`). The rest comes due at the Reckoning and ending.
 The debt-10 IT/SO bloom is the bottom of the lake, warm and quiet, not a
@@ -326,7 +326,7 @@ Final Truth Debt alone decides which of four endings plays:
 | 8–10 | **Living Lie** | Reopened, influencer-ready. Dead fish edited out of the photos. |
 
 One extra line — the "epilogue" — is appended, naming whichever of the
-four meters strayed furthest from its starting value of 5. That's the
+four meters strayed furthest from its starting value of 5, in the direction it went (each meter has a high and a low line). That's the
 only place the four meters get the last word.
 
 ### Every answer is a hit
@@ -350,7 +350,9 @@ A heart-monitor band runs across the portrait. Their line sits on top, yours und
 
 **Masks** show one color on their line and flicker the real one underneath (about every two seconds); only the real one syncs, and the vectorscope answers to it.
 
-**How it's taught (2026-10-04).** The Therapist's last exercise has two parts. First he asks you to pick any feeling but his (his line wears a "fine" mask) and names what apart looks like: a busier shape, the needle leaning left. Then his real color starts to flicker under his line and you find it: a still circle. "My line said fine. The shape doesn't lie." In real encounters, a **FEELZ tip** (`ui/feelzTip.js`) slides up above the lake the first time each piece does something (a mask, a busy shape, the needle left, a clean circle, the pick blocks), once a run, with a tiny picture of the thing, while the scope frames that piece in a pulsing gold box (`getHighlight`). It never blocks and goes away on its own.
+**How it's taught (2026-10-04).** The Therapist's last exercise has two parts. First he asks you to pick any feeling but his (his line wears a "fine" mask) and names what apart looks like: a busier shape, the needle leaning left. Then his real color starts to flicker under his line and you find it: a still circle. "My line said fine. The shape doesn't lie." In real encounters, a **FEELZ tip** (`ui/feelzTip.js`) slides up above the lake the first time each piece does something (a mask, a busy shape, the needle left, a clean circle, the pick blocks), once a run, with a tiny picture of the thing, while the scope frames that piece in a pulsing gold box (`getHighlight`). It never blocks and stays up until you tap it closed (✕). Tips only show while your Wi-Fi is 4 or more (two arcs); every lie fogs the Wi-Fi by 1 (not in the tutorial), so a liar loses them (and the Therapist's call) until the truth clears things up.
+
+**Meters push back at the edges (2026-10-04).** Inside 3 to 7 every point moves a meter a full step; past that, moving further out costs two points per step, so meters rarely pin at 0 or 10. After each encounter a short beat shows the battery charging back: +3 if they let you in, otherwise up to +2 toward 5 (never down). Calling the Therapist when he can't be reached rings out to his voicemail, which says whether your bars or your Wi-Fi is too low. 
 
 **Meters you can see move (2026-10-04).** When a status-bar meter rises, its new cells charge in one by one with a gold flash and pixel sparks float off the icon; when it drops, the icon glitches (shake, red/blue split) and the lost cells flicker red and go dark. The small words under the bar stay, but you don't need them.
 

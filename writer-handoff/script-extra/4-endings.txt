@@ -46,7 +46,11 @@
 
 # --- EPILOGUE LINES (one is appended to whichever ending played) ---
 
-[epilogue / integrity] Integrity never came back all the way.
-[epilogue / trust] Trust didn't survive the trip.
-[epilogue / stability] Nothing about you sat still after that.
-[epilogue / lucidity] You saw it clearly, the whole time. That's its own kind of debt.
+[epilogue / integrity / high] You kept your word, even when it cost you.
+[epilogue / integrity / low] Integrity never came back all the way.
+[epilogue / trust / high] People let you in. Hold that carefully.
+[epilogue / trust / low] Trust didn't survive the trip.
+[epilogue / stability / high] You held steady when it would've been easier to fold.
+[epilogue / stability / low] Nothing about you sat still after that.
+[epilogue / lucidity / high] You saw it clearly, the whole time. That's its own kind of debt.
+[epilogue / lucidity / low] Somewhere along the way, you stopped seeing it clearly. That was the point.

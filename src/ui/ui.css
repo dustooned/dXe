@@ -796,7 +796,7 @@
 .dx-call {
   position: absolute;
   inset: 0;
-  z-index: 60;
+  z-index: 470; /* over the feeling flavor (450) */
   background: rgba(0, 0, 0, 0.72);
   display: flex;
   flex-direction: column;

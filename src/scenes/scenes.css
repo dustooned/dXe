@@ -1111,7 +1111,7 @@
 .dx-connect {
   position: absolute;
   inset: 0;
-  z-index: 60;
+  z-index: 470; /* over the feeling flavor (450) */
   background: radial-gradient(circle at 50% 17%, transparent 0, transparent 60px, rgba(0, 0, 0, 0.97) 150px);
   opacity: 0;
   transition: opacity 1.2s ease-in;
@@ -1283,7 +1283,8 @@
   left: calc(16 * var(--px));
   right: calc(16 * var(--px));
   bottom: 23%;
-  z-index: 880;
+  /* Under every popup (FEELZ tips 480, IT/SO 500): flavor never covers information. */
+  z-index: 450;
   margin: 0;
   text-align: center;
   font-size: calc(9 * var(--fs));
@@ -1308,7 +1309,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 870;
+  z-index: 440; /* under the popups, like the body line */
   pointer-events: none;
 }
 .dx-stage.dx-feel--fear::after { animation: dx-feel-close 1.6s ease-out both; }
@@ -1370,7 +1371,7 @@
 /* One-shot tap burst (ui/feelingIcons.js burst): chunky pixels. */
 .dx-feel-burst {
   position: absolute;
-  z-index: 885;
+  z-index: 455;
   width: calc(4 * var(--px));
   height: calc(4 * var(--px));
   margin: calc(-2 * var(--px)) 0 0 calc(-2 * var(--px));
@@ -1704,11 +1705,11 @@
   bottom: calc(82 * var(--px));
   left: calc(14 * var(--px));
   right: calc(14 * var(--px));
-  z-index: 40;
+  z-index: 480; /* over the feeling flavor (body line 450), under IT/SO (500) */
   display: flex;
   align-items: center;
   gap: calc(10 * var(--px));
-  padding: calc(9 * var(--px)) calc(10 * var(--px));
+  padding: calc(5 * var(--px)) calc(8 * var(--px));
   background: rgba(10, 10, 14, 0.94);
   border: 1px solid rgba(255, 226, 122, 0.55);
   border-left: calc(4 * var(--px)) solid #ffe27a;
@@ -1722,23 +1723,33 @@
 
 .dx-tip__icon {
   flex: none;
-  width: calc(36 * var(--px));
-  height: calc(24 * var(--px));
+  width: calc(30 * var(--px));
+  height: calc(20 * var(--px));
   color: #ffe27a;
 }
 
+.dx-tip__body { flex: 1; }
 .dx-tip__body p { margin: 0; }
+
+/* Tips stay until closed: the ✕ says so. */
+.dx-tip__close {
+  flex: none;
+  align-self: flex-start;
+  font-size: calc(9 * var(--fs));
+  color: #ffe27a;
+  opacity: 0.85;
+}
 
 .dx-tip__app {
   font-size: calc(6 * var(--fs));
   letter-spacing: 0.12em;
   opacity: 0.7;
-  margin-bottom: calc(4 * var(--px)) !important;
+  margin-bottom: calc(2 * var(--px)) !important;
 }
 
 .dx-tip__text {
-  font-size: calc(8 * var(--fs));
-  line-height: 1.55;
+  font-size: calc(7.5 * var(--fs));
+  line-height: 1.4;
   color: var(--color-white);
 }
 
@@ -1837,4 +1848,71 @@
 @media (prefers-reduced-motion: reduce) {
   .dx-opfx-on .dx-game-content .dx-portrait,
   .dx-opfx-on .dx-scope-band { animation: none !important; }
+}
+
+/* The walk out (dialogScene.js showRest): a big pixel battery, the cells it
+   got back charging in one by one. */
+.dx-rest {
+  position: absolute;
+  inset: 0;
+  z-index: 470;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(14 * var(--px));
+  padding: calc(24 * var(--px));
+  background: rgba(0, 0, 0, 0.92);
+  text-align: center;
+  cursor: pointer;
+  animation: dx-rest-in 0.4s steps(5, end) both;
+}
+.dx-rest__title {
+  margin: 0;
+  font-size: calc(10 * var(--fs));
+  letter-spacing: 0.14em;
+  color: #ffe27a;
+}
+.dx-rest__battery {
+  display: flex;
+  align-items: center;
+}
+.dx-rest__cells {
+  display: grid;
+  grid-template-columns: repeat(10, calc(14 * var(--px)));
+  gap: calc(3 * var(--px));
+  padding: calc(5 * var(--px));
+  border: calc(3 * var(--px)) solid var(--color-white);
+}
+.dx-rest__nub {
+  width: calc(6 * var(--px));
+  height: calc(18 * var(--px));
+  background: var(--color-white);
+}
+.dx-rest__cell {
+  height: calc(30 * var(--px));
+  background: rgba(255, 255, 255, 0.12);
+}
+.dx-rest__cell.is-on { background: var(--color-white); }
+.dx-rest__battery.is-low .dx-rest__cell.is-on { background: #ff4d4d; }
+.dx-rest__cell.is-gain { animation: dx-rest-charge 0.5s steps(1, end) both; }
+.dx-rest__gain {
+  margin: 0;
+  font-size: calc(9 * var(--fs));
+  color: #ffe27a;
+}
+.dx-rest__line { margin: 0; }
+@keyframes dx-rest-charge {
+  0% { background: rgba(255, 255, 255, 0.12); }
+  30% { background: #ffe27a; box-shadow: 0 0 calc(8 * var(--px)) #ffe27a; }
+  60% { background: rgba(255, 255, 255, 0.3); }
+  100% { background: #ffe27a; box-shadow: 0 0 calc(4 * var(--px)) #ffe27a; }
+}
+@keyframes dx-rest-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dx-rest, .dx-rest__cell.is-gain { animation: none; }
+  .dx-rest__cell.is-gain { background: #ffe27a; }
 }

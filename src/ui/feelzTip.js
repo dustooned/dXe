@@ -1,15 +1,12 @@
 // A FEELZ tip: the app's own little banner, sliding up above the lake gauge
 // the first time a piece of the oscilloscope does something in a real
 // encounter (dialogScene.js showTip). It never blocks: the game keeps going
-// underneath, it goes away on its own, and a tap clears it early. A tiny
+// underneath, and it stays up until the player taps it closed. A tiny
 // picture of the thing it's about sits beside the words, and the scope
 // frames that piece in gold while the tip is up, so it reads at a glance.
 //
 // Tips describe, they never judge (docs: non-judgmental feedback).
-import { later, cancelLater } from '../shell/pauseBus.js';
 import { playFeelzPing } from '../shell/audio.js';
-
-const SHOW_MS = 5200;
 
 // 24×16 pictures, drawn in the tip's accent and white.
 function lissajous(a, b, phase = Math.PI / 4) {
@@ -32,7 +29,9 @@ const ICONS = {
          <rect x="13" y="6" width="4" height="5" fill="#ffd34d"/><rect x="19" y="5" width="4" height="7" fill="#9b6bff" stroke="#fff" stroke-width="0.8"/>`,
 };
 
-// { icon, text, onGone } -> { el, attach(stageEl), destroy() }
+// { icon, text, onGone } -> { el, attach(stageEl, floorEl?), destroy() }
+// floorEl: what the tip sits just above (the contacts row, else the lake),
+// so it never covers them.
 // The dialog scene clears its stage on every render, so the tip is a node it
 // re-attaches after each one (attach); the slide-in only plays the first time.
 export function createFeelzTip({ icon = 'shape', text = '', onGone } = {}) {
@@ -45,7 +44,9 @@ export function createFeelzTip({ icon = 'shape', text = '', onGone } = {}) {
       <p class="dx-tip__app">FEELZ · TIP</p>
       <p class="dx-tip__text"></p>
     </div>
+    <span class="dx-tip__close" aria-hidden="true">✕</span>
   `;
+  el.setAttribute('aria-label', 'FEELZ tip. Tap to close.');
   el.querySelector('.dx-tip__text').textContent = text;
   playFeelzPing();
   setTimeout(() => el.classList.remove('is-entering'), 450);
@@ -54,11 +55,9 @@ export function createFeelzTip({ icon = 'shape', text = '', onGone } = {}) {
   const close = () => {
     if (gone) return;
     gone = true;
-    cancelLater(timer);
     el.classList.add('is-leaving');
     setTimeout(() => { el.remove(); onGone?.(); }, 260);
   };
-  const timer = later(close, SHOW_MS);
   el.addEventListener('click', (e) => {
     e.stopPropagation(); // a tap on the tip isn't a tap on the dialog
     close();
@@ -66,7 +65,15 @@ export function createFeelzTip({ icon = 'shape', text = '', onGone } = {}) {
 
   return {
     el,
-    attach(stageEl) { if (!gone) stageEl.appendChild(el); },
-    destroy() { gone = true; cancelLater(timer); el.remove(); },
+    attach(stageEl, floorEl) {
+      if (gone) return;
+      stageEl.appendChild(el);
+      const host = el.offsetParent;
+      if (floorEl && host) {
+        const gap = host.getBoundingClientRect().bottom - floorEl.getBoundingClientRect().top;
+        el.style.bottom = `${Math.max(0, gap) + 3}px`;
+      }
+    },
+    destroy() { gone = true; el.remove(); },
   };
 }

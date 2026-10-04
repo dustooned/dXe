@@ -3,7 +3,7 @@
 // sequencer. See docs/SCENE_TYPES.md for the full contract.
 //
 // scene shape: { type: 'dialog', id: string, npc: <NPC content JSON> }
-import { resolveCard, resolveGatedNode } from '../engine/cardEngine.js';
+import { resolveCard, resolveGatedNode, restAfter } from '../engine/cardEngine.js';
 import { later, cancelLater, onPauseChange } from '../shell/pauseBus.js';
 import { composeReaction } from '../engine/reactions.js';
 import { composeSay } from '../engine/sayTone.js';
@@ -21,7 +21,7 @@ import { createFeelzNotification } from '../ui/feelzNotification.js';
 import { createItPopup, resolveItText } from '../ui/itPopup.js';
 import { sharpen } from '../engine/itSharpen.js';
 import { createStatusBar } from '../ui/statusBar.js';
-import { CONTACTS, contactsFor, therapistReachable, callFor } from '../engine/contacts.js';
+import { CONTACTS, contactsFor, therapistReachable, voicemailFor, callFor } from '../engine/contacts.js';
 import { createNpcPortrait } from '../ui/npcPortrait.js';
 import { createFeelzDartboard } from '../ui/feelzDartboard.js';
 import { EMOTIONS, emotionColor, emotionsForClass, getDominantEmotion } from '../engine/loadout.js';
@@ -182,6 +182,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // The opponent's weather (ui/opponentFx.js); picking their real feeling
   // settles it until this time.
   let opfx = null;
+  // Set on unmount, so a delayed tip can't land in the next scene.
+  let unmounted = false;
   let settleUntil = 0;
   let cozyThisEncounter = false;
   // Phone: the live status bar (rebuilt each render; its clock ticks), and
@@ -752,7 +754,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     stageEl.appendChild(screen);
     opfx ??= createOpponentFx({ npc: npc.npc, getLevel: fxLevel });
     opfx.attach(screen);
-    tip?.attach(stageEl); // the stage was just cleared; a tip stays up across renders
+    tip?.attach(stageEl, tipFloor()); // the stage was just cleared; a tip stays up across renders
     placeScopeBand(screen, scopeCanvas, portrait.el);
 
     // A HUD piece's first appearance is spotlit together with the line
@@ -829,7 +831,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     audio.stopFeelzDrone();
 
     const before = run.get();
-    const { edge, patch } = resolveCard(before, currentNode(), swipeKey, activeEmotion);
+    const { edge, patch } = resolveCard(before, currentNode(), swipeKey, activeEmotion, { fog: !npc.reveal }); // the tutorial doesn't fog the Wi-Fi
     run.set(patch);
     // Which way each node went, for anything later that reads it back —
     // today an outro beat's [node=truth|lie] condition.
@@ -998,13 +1000,19 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // something in a real encounter, the app says what it means, once a run,
   // and frames that piece in gold. The tutorial teaches these itself.
   function showTip(key, icon, text, highlight) {
-    if (npc.reveal || tip || !isRevealed('instruments')) return;
+    // Only when you're seeing clearly (Wi-Fi 4+, two arcs): a skipped tip isn't used up.
+    if (unmounted || npc.reveal || tip || !isRevealed('instruments') || (run.get().lucidity ?? 5) < 4) return;
     const shown = run.get().tipsShown ?? [];
     if (shown.includes(key)) return;
     run.set({ tipsShown: [...shown, key] });
     tipHighlight = highlight;
     tip = createFeelzTip({ icon, text, onGone: () => { tip = null; tipHighlight = null; } });
-    tip.attach(stageEl);
+    tip.attach(stageEl, tipFloor());
+  }
+
+  // A tip sits just above the contacts row (or the lake), never over them.
+  function tipFloor() {
+    return stageEl.querySelector('.dx-game-content > .dx-dock:not(.is-concealed)') ?? stageEl.querySelector('.dx-game-content > .dx-lake');
   }
 
   // What the feeling you just picked does to the scope, said the first time.
@@ -1035,6 +1043,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
         e.stopPropagation();
         if (itPopup || calledThisEncounter.has(who)) return;
         if (offline) {
+          // Once an encounter, his voicemail says why; after that, just the fail.
+          if (!voicemailHeard) { voicemailHeard = true; placeVoicemail(); return; }
           audio.playCallFailed();
           btn.classList.add('is-failed');
           setTimeout(() => btn.classList.remove('is-failed'), 900);
@@ -1182,6 +1192,54 @@ export function mount(stageEl, scene, { run, onComplete }) {
     });
   }
 
+  // He won't pick up (bars or Wi-Fi under 4): it rings out to his voicemail
+  // greeting, which tells you which one. No read, no advice, no call used up.
+  let voicemailHeard = false;
+  function placeVoicemail() {
+    clearStall();
+    const lines = voicemailFor(run.get());
+    const overlay = document.createElement('div');
+    overlay.className = 'dx-call is-voicemail';
+    overlay.style.setProperty('--contact', contactColor('THERAPIST'));
+    overlay.innerHTML = '<p class="dx-call__who">CALLING THERAPIST…</p>';
+    stageEl.appendChild(overlay);
+    liftAboveLake(overlay);
+    itPopup = { destroy: () => overlay.remove() };
+    // It rings out: twice as long as a call that connects, then the greeting.
+    const ringMs = audio.playRingtone('THERAPIST');
+    later(() => audio.playRingtone('THERAPIST'), ringMs);
+    const box = document.createElement('div');
+    box.className = 'dx-call__box';
+    const avatar = document.createElement('div');
+    avatar.className = 'dx-call__avatar';
+    avatar.textContent = 'T';
+    const p = document.createElement('p');
+    p.className = 'dx-text';
+    box.append(avatar, p);
+    let i = 0;
+    let tw = null;
+    function next() {
+      if (i >= lines.length) {
+        audio.playHangup();
+        overlay.remove();
+        itPopup = null;
+        startStall();
+        return;
+      }
+      tw = createTypewriter(p, lines[i], { onChar: audio.playTypewriterTick });
+      i += 1;
+    }
+    later(() => {
+      overlay.querySelector('.dx-call__who').textContent = 'VOICEMAIL · THERAPIST';
+      overlay.appendChild(box);
+      next();
+      overlay.addEventListener('click', () => {
+        if (tw && !tw.isDone()) tw.finish();
+        else next();
+      });
+    }, ringMs * 2);
+  }
+
   // A call: it rings, then greeting, their read (that slice glows on the
   // wheel), their advice. Tap through; the wheel and card wait underneath.
   function placeCall(who) {
@@ -1216,7 +1274,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
         startStall();
         return;
       }
-      // Deep water: the read comes through, but the wheel doesn't light.
+      // Low Wi-Fi: the read comes through, but the wheel doesn't light.
       if (i === 1 && !call.fogged) { hintedEmotion = call.read; dartboard?.hint(call.read); }
       tw = createTypewriter(p, quoteSpeech(call.lines[i]), { onChar: audio.playTypewriterTick });
       i += 1;
@@ -1590,7 +1648,43 @@ export function mount(stageEl, scene, { run, onComplete }) {
       return;
     }
 
-    showFindingIfAny(onComplete);
+    showFindingIfAny(() => showRest(onComplete));
+  }
+
+  // The walk out: a short beat showing what the battery got back
+  // (engine/cardEngine.js restAfter) — more if they let you in. Big pixel
+  // battery, the new cells charging in one by one, tap to go on.
+  function showRest(onDone) {
+    const before = run.get().stability ?? 5;
+    const connected = isTrusted(run.get().bonds?.[npc.npc]);
+    run.set(restAfter(run.get(), { connected }));
+    const after = run.get().stability ?? 5;
+    const gained = after - before;
+    const overlay = document.createElement('div');
+    overlay.className = 'dx-rest';
+    const title = connected ? 'THEY LET YOU IN' : gained > 0 ? 'YOU WALK IT OFF' : 'STILL CHARGED';
+    const line = connected
+      ? 'Being let in charges you up.'
+      : gained > 0 ? 'You catch your breath on the way.' : 'Nothing to recover. You keep walking.';
+    const cells = Array.from({ length: 10 }, (_, i) => {
+      const cls = i < before ? 'is-on' : i < after ? 'is-gain' : '';
+      const delay = i >= before && i < after ? ` style="animation-delay:${0.5 + (i - before) * 0.28}s"` : '';
+      return `<span class="dx-rest__cell ${cls}"${delay}></span>`;
+    }).join('');
+    overlay.innerHTML = `
+      <p class="dx-rest__title">${title}</p>
+      <div class="dx-rest__battery${after <= 2 ? ' is-low' : ''}"><div class="dx-rest__cells">${cells}</div><span class="dx-rest__nub"></span></div>
+      <p class="dx-rest__gain">${gained > 0 ? `+${gained} battery` : 'battery holding'}</p>
+      <p class="dx-text dx-rest__line">${line}</p>
+      <p class="dx-text dx-tap-hint">(tap to continue)</p>`;
+    stageEl.appendChild(overlay);
+    for (let i = 0; i < gained; i++) later(() => audio.playMeterChange([{ meter: 'stability', up: true }]), 500 + i * 280);
+    const shownAt = performance.now();
+    overlay.addEventListener('click', () => {
+      if (performance.now() - shownAt < 600) return; // the tap that got here doesn't count
+      overlay.remove();
+      onDone();
+    });
   }
 
   // End of encounter: IT and SO speak only if they've noticed something
@@ -1626,8 +1720,19 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // player's class and/or how a given node was answered. LINE/HANGUP draw
   // in the reaction slot, tap to continue; IT/SO pop up over whatever's on
   // screen, same popup the rest of the game uses.
+  // The parting watch-out (manuscript WATCH): the lake if it moved, else the
+  // weakest meter if it's low, else a word about everything holding.
+  function watchFor(state) {
+    if ((state.truthDebt ?? 0) >= 3) return 'lake';
+    const [worst, value] = ['stability', 'trust', 'lucidity', 'integrity']
+      .map((k) => [k, state[k] ?? 5])
+      .sort((a, b) => a[1] - b[1])[0];
+    return value <= 4 ? worst : 'steady';
+  }
+
   function outroBeatApplies(beat) {
     const state = run.get();
+    if (beat.watch && beat.watch !== watchFor(state)) return false;
     if (beat.when?.class && beat.when.class !== state.loadout) return false;
     const choice = beat.when?.choice;
     if (choice && state.choices?.[choice.node] !== choice.side) return false;
@@ -1725,6 +1830,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   enterNode();
 
   return function unmount() {
+    unmounted = true;
     tip?.destroy();
     opfx?.destroy();
     offPause();

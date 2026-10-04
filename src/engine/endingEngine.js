@@ -15,6 +15,15 @@ const STAT_BASELINE = 5;
 // ended up furthest from its starting value gets named at the ending.
 // The only thing currently reading the four meters back — everything
 // else about the ending is decided by Truth Debt alone.
+// The epilogue line for that meter, in the direction it went: endings.json
+// epilogues are { high, low } per meter (a plain string still works).
+export function getEpilogueLine(state, epilogues) {
+  const stat = getEpilogueStat(state);
+  const entry = epilogues?.[stat];
+  if (!entry || typeof entry === 'string') return entry ?? null;
+  return (state[stat] ?? STAT_BASELINE) >= STAT_BASELINE ? entry.high : entry.low;
+}
+
 export function getEpilogueStat(state) {
   let winner = EPILOGUE_STAT_KEYS[0];
   let winnerDeviation = -1;
