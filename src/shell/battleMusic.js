@@ -15,13 +15,14 @@ export function createBattleMusic(data, tuning = getTuning(data.id)) {
   const player = createArrangementPlayer(data, { tuning });
   const director = createTempoDirector(tuning.tempo ?? {});
   const known = new Set(player.sectionIds());
-  for (const st of director.config.states) {
+  for (const st of [...director.config.states, { id: 'early', section: director.config.earlySection }]) {
     if (!known.has(st.section)) throw new Error(`tempo state "${st.id}" wants section "${st.section}", which "${data.id}" doesn't have`);
   }
 
   let unsubscribe = null;
   let lastSection = null;
   let lastBpm = null;
+  let secretOn = false;
 
   function follow(s) {
     if (!player.playing || !s.active) return;
@@ -46,11 +47,23 @@ export function createBattleMusic(data, tuning = getTuning(data.id)) {
       unsubscribe?.();
       player.stop({ fade: 0.05 });
       const s = director.battleStarted(battle);
+      secretOn = false;
+      player.setSecret(false, 0.01);
       lastSection = section ?? s.section;
       lastBpm = s.targetBpm;
       player.start({ section: lastSection, bpm: s.targetBpm });
       unsubscribe = director.subscribe(follow);
       return s;
+    },
+    // How close the player is to a full connection (0..1, the scope's
+    // closeness). Near it, the secret track fades in — a sign they're almost
+    // there; it fades back out only if they drift well away again.
+    setCloseness(c) {
+      const { secretAt, secretHysteresis } = director.config;
+      if (!secretOn && c >= secretAt) secretOn = true;
+      else if (secretOn && c < secretAt - secretHysteresis) secretOn = false;
+      player.setSecret(secretOn, 4);
+      return secretOn;
     },
     // The confrontation is over and the battle begins: a fresh emotional
     // state, and the director takes the music from the intro onward.

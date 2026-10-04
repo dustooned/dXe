@@ -752,7 +752,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const stabilityDelta = (patch.stability ?? before.stability) - before.stability;
     if (before.stability > 2 && (patch.stability ?? before.stability) <= 2) audio.playLowBattery();
     audio.nudgeLeitmotifMood(trustDelta + stabilityDelta);
-    encounterMusic.react({ delta: trustDelta + stabilityDelta, caught: !!seen, missed: !synced && !turnedToward });
+    encounterMusic.react({ delta: trustDelta + stabilityDelta, caught: !!seen, missed: !synced && !turnedToward, closeness: connection(null, false).closeness });
     reactionDelta = seen ? -1 : trustDelta + stabilityDelta;
 
     // The impact lands on their reaction: how hard is how much their TRU
@@ -1064,28 +1064,96 @@ export function mount(stageEl, scene, { run, onComplete }) {
       box.appendChild(p);
       overlay.appendChild(box);
       let tw = createTypewriter(p, text, { onChar: audio.playTypewriterTick });
-      // Then the story they tell you (manuscript STORY lines): their bust
-      // comes up over the box, and each tap is the next beat.
+      // Then the story they tell you (manuscript STORY lines). It is told in
+      // silence — music, chord and typing all fall away — with their bust
+      // close and centered, the way they ask for your number; each tap is the
+      // next beat, and the sound fades back only when they are done.
       const story = npc.story ?? [];
       let beat = -1;
+      let told = false;
       overlay.addEventListener('click', () => {
+        if (told) return;
         if (!tw.isDone()) { tw.finish(); return; }
         tw.destroy();
         beat += 1;
         if (beat === 0 && story.length) {
+          audio.hush(0.6);
+          overlay.classList.add('is-asking');
           const bust = createNpcPortrait(npc.npc, npc.accentColor, npc.portrait);
-          bust.el.classList.add('dx-connect__bust', 'dx-connect__bust--story');
-          overlay.insertBefore(bust.el, box);
+          bust.el.classList.add('dx-connect__bust');
+          const name = document.createElement('p');
+          name.className = 'dx-connect__name';
+          name.textContent = npc.npc;
+          overlay.insertBefore(name, box);
+          overlay.insertBefore(bust.el, name);
           run.set({ storiesHeard: [...(run.get().storiesHeard ?? []), npc.npc] });
         }
         if (beat < story.length) {
-          tw = createTypewriter(p, story[beat], { onChar: audio.playTypewriterTick });
+          tw = createTypewriter(p, story[beat]); // no typing ticks: silence
           return;
         }
-        overlay.remove();
-        onDone();
+        told = true;
+        const finish = () => { audio.unhush(3); overlay.remove(); onDone(); };
+        if (story.length && npc.storyIt && npc.storySo) showStoryThoughts(finish);
+        else finish();
       });
     }, silence + 500);
+  }
+
+  // After their story, in the same silence: IT weighs how true it rings, SO
+  // doubts a corner of it without doubting them (manuscript STORYIT/STORYSO).
+  // No sting, no ticks, and not sharpened by the lake: this moment is about
+  // them, not about what the player owes.
+  function showStoryThoughts(onDone) {
+    const loadout = run.get().loadout;
+    itPopup = createItPopup(stageEl, {
+      text: npc.storyIt, loadout, flashClose: true, silent: true,
+      onClose: () => {
+        itPopup?.destroy();
+        itPopup = createItPopup(stageEl, {
+          text: npc.storySo, loadout, voice: 'so', silent: true,
+          onClose: () => { itPopup?.destroy(); itPopup = null; onDone(); },
+        });
+      },
+    });
+  }
+
+  // No connection this time: the same close-up as the number ask, but they
+  // push you away, and say what they wish someone had done just now — one
+  // feeling-colored word is the hint (manuscript PUSHAWAY, per class). Not a
+  // verdict: it's them telling you what would have reached them.
+  function showPushAway(onDone) {
+    const text = npc.pushAway[run.get().loadout] ?? Object.values(npc.pushAway)[0];
+    stageEl.innerHTML = '';
+    const overlay = document.createElement('div');
+    overlay.className = 'dx-connect is-asking is-pushing';
+    stageEl.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add('is-closing'));
+    const bust = createNpcPortrait(npc.npc, npc.accentColor, npc.portrait);
+    bust.el.classList.add('dx-connect__bust');
+    overlay.appendChild(bust.el);
+    const name = document.createElement('p');
+    name.className = 'dx-connect__name';
+    name.textContent = npc.npc;
+    overlay.appendChild(name);
+    const box = document.createElement('div');
+    box.className = 'dx-connect__beat';
+    const p = document.createElement('p');
+    p.className = 'dx-text';
+    box.appendChild(p);
+    let tw = null;
+    audio.playDrift();
+    setTimeout(() => {
+      overlay.appendChild(box);
+      tw = createTypewriter(p, text, { onChar: audio.playTypewriterTick });
+    }, 1300);
+    overlay.addEventListener('click', () => {
+      if (!tw) return;
+      if (!tw.isDone()) { tw.finish(); return; }
+      tw.destroy();
+      overlay.remove();
+      onDone();
+    });
   }
 
   // The last beat of an encounter where they came to trust you: the room
@@ -1291,6 +1359,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       else finishEncounter();
     };
     if (npc.contactAsk && isTrusted(run.get().bonds?.[npc.npc])) showContactAsk(afterAsk);
+    else if (npc.pushAway) showPushAway(afterAsk);
     else afterAsk();
   }
 
@@ -1448,6 +1517,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // audio bleeds into the next scene.
     audio.stopLeitmotif();
     audio.stopPulse();
+    audio.unhush(0.05); // never leave the game silent if a story was cut short
     encounterMusic.end();
     clearStall();
     statusBar?.destroy();

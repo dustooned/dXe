@@ -273,8 +273,34 @@ Rick's first two questions.
 
 `STORY: line`, repeatable, in the header: the cutscene the player earns by
 connecting, one line per beat, in order, the same for every class. It plays
-right after the CONNECT beat, with the NPC's bust up. Their words in quotes,
+right after the CONNECT beat, with the NPC's bust up close and every sound
+stopped; the sound fades back when it's over. Their words in quotes,
 directions in [ ].
+
+## STORYIT / STORYSO (header)
+
+`STORYIT: line` and `STORYSO: line`, one each, in the header: what IT and
+SO think, in the same silence, right after the STORY. IT weighs how true it
+rings (a detail people don't invent); SO doubts one corner of it, never the
+person, and ends on what still stands. No quotes (they're thoughts).
+
+```
+STORYIT: Seventeen. The bus stop. Five a.m. People don't invent the time of day.
+STORYSO: Maybe the principal wasn't that cruel. Maybe it got harder every time she told it. ...Her mother still walked out.
+```
+
+## PUSHAWAY (header)
+
+`PUSHAWAY [Guns|Bible|Crystals]: line`, one per class: the encounter ended
+and they didn't come to trust the player. Same close-up as CONTACT, but cold:
+they push the player away and say what they wish someone had done just now.
+Color ONE word in the feeling that would have reached them; it's a hint, not
+a grade. Write it to the class's habit (Guns braces, Bible holds on to the
+right words, Crystals absorbs everything).
+
+```
+PUSHAWAY [Guns]: [She turns back to the window.] "You never put it down. Not once. I needed you to put it {color:Fear}down{/color}." "Go on. I've got a wall to finish."
+```
 
 ## TRYCALL (outro)
 

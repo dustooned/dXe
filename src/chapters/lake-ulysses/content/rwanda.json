@@ -317,6 +317,13 @@
     "Bible": "\"If you ever want to see this finished, text me.\" She puts her number in your phone. \"I won't preach at you if you don't preach at me.\"",
     "Crystals": "\"Here. My number.\" She hands your phone back. \"Text me something that isn't a question sometime.\""
   },
+  "pushAway": {
+    "Guns": "[She turns back to the window.] \"You never put it down. Not once. I needed you to put it {color:Fear}down{/color}.\" \"Go on. I've got a wall to finish.\"",
+    "Bible": "[She turns back to the window.] \"You kept finding the right thing to say. I needed you to {color:Surprise}not know{/color}.\" \"Go on. I've got a wall to finish.\"",
+    "Crystals": "[She turns back to the window.] \"You felt everything I did. I couldn't tell which of it was {color:Sadness}mine{/color}.\" \"Go on. I've got a wall to finish.\""
+  },
+  "storyIt": "Seventeen. The bus stop. Five a.m. People don't invent the time of day.",
+  "storySo": "Maybe the principal wasn't that cruel. Maybe it got harder every time she told it. ...Her mother still walked out.",
   "opener": {
     "Guns": "\"Great. Another guy who looks like he wants to start something.\"",
     "Bible": "\"If you're here to save me, I'm booked.\"",

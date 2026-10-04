@@ -17,10 +17,19 @@ STORY: "Didn't hit me. Worse. Drove me straight to the lake. To Gabriel."
 STORY: "He walked me in, hand on my chest. Said he'd wash it out of me. Held me under till I quit fighting. When I came up, they were singing."
 STORY: "I joined the club that summer. Figured you can't wash off skin. So I made sure mine couldn't be."
 STORY: [He looks out toward the water.] "He's still down there every Sunday. You go near that lake, you don't let him put his hand on you."
+
+# After the story, in the silence: IT weighs it, SO doubts a corner of it (never the person).
+STORYIT: He showed you the old ink before he said a word. That's not a story he tells. That's a scar he shows.
+STORYSO: Maybe it wasn't the whole congregation singing. Maybe it was three people. ...He still won't go near the water.
 # Then they ask to stay in touch, and join your contacts.
 CONTACT [Guns]: He takes your phone right out of your hand, thumbs his number in, hands it back. "You didn't see me do that."
 CONTACT [Bible]: He takes your phone without asking and saves his number under a fake name. "Nobody from church needs to know."
 CONTACT [Crystals]: He takes your phone, types, and hands it back without looking at you. "In case. That's all. In case."
+
+# No connection: their bust comes up close and they push you away, saying what they wish someone had done.
+PUSHAWAY [Guns]: [He rolls the sleeve back down over the patch.] "You squared up the whole time. Men been squaring up at me my whole life. I needed one to {color:Fear}back down{/color} first." "We're done. Ride on."
+PUSHAWAY [Bible]: [He rolls the sleeve back down over the patch.] "You talked like Sunday. I needed one person who wouldn't {color:Disgust}preach{/color}." "We're done. Ride on."
+PUSHAWAY [Crystals]: [He rolls the sleeve back down over the patch.] "You felt sorry for me. I could see it. I needed you to look me in the {color:Anger}eye{/color}." "We're done. Ride on."
 
 # How they size up your class, before their first line.
 OPENER [Guns]: (He squares up.) "You looking for trouble or just built like it?"

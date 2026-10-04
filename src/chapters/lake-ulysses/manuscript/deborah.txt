@@ -13,10 +13,19 @@ STORY: "I was at the finance committee. We'd fought that week, about him leaving
 STORY: "He drove the lake road that night. They found the car in the morning."
 STORY: "Pastor said it was God's will. And I said amen. Because if it was God's will, then it wasn't my phone, face-down on that table."
 STORY: [She looks at you, finally, all the way.] "You're the first person I've told that it was face-down."
+
+# After the story, in the silence: IT weighs it, SO doubts a corner of it (never the person).
+STORYIT: Twice. She counted the calls. You only keep count of what you can't stop counting.
+STORYSO: Maybe the phone wasn't face-down. Maybe it was just in her purse. ...She's held it every night since, either way.
 # Then they ask to stay in touch, and join your contacts.
 CONTACT [Guns]: "You'll call me if you need anything. I mean it." She takes a pen and writes her number on the back of your hand. "There. So you can't lose it."
 CONTACT [Bible]: "Come by Wednesday night, we do a supper." She presses a card into your hand. "And that's my number, for the other six nights."
 CONTACT [Crystals]: "Can I have your number?" She laughs at herself. "I don't know why. I just want to know you're out there."
+
+# No connection: their bust comes up close and they push you away, saying what they wish someone had done.
+PUSHAWAY [Guns]: [She folds both hands over the bible.] "You came in braced like I was going to swing at you. I needed someone to just {color:Sadness}sit{/color} with me." "I have committee in the morning. You should go."
+PUSHAWAY [Bible]: [She folds both hands over the bible.] "You had a verse for every corner of it. I needed one person to let it be {color:Anger}unfair{/color}." "I have committee in the morning. You should go."
+PUSHAWAY [Crystals]: [She folds both hands over the bible.] "You took it all in like weather. I needed you to ask what I'm {color:Fear}afraid{/color} of." "I have committee in the morning. You should go."
 
 # How they size up your class, before their first line.
 OPENER [Guns]: (She steps back half a pace.) "Oh. You're one of the tough ones."

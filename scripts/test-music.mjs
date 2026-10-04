@@ -6,6 +6,10 @@ import { readFileSync } from 'node:fs';
 import { createClock, rampBpm } from '../src/engine/arrangementClock.js';
 import { createTempoDirector } from '../src/engine/tempoDirector.js';
 
+const data0 = JSON.parse(readFileSync(new URL('../src/chapters/lake-ulysses/content/arrangements/rwanda.json', import.meta.url), 'utf8'));
+
+// The emotion model is still there for experiments; its tests run in that mode.
+const EMO = { drive: 'emotion', fullAfterAnswers: 2 };
 let failed = 0;
 const check = (name, ok, detail = '') => {
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${detail ? '  — ' + detail : ''}`);
@@ -15,7 +19,7 @@ const near = (a, b, eps = 1e-6) => Math.abs(a - b) <= eps;
 
 // ── Tempo director ──────────────────────────────────────────────────────────
 {
-  const d = createTempoDirector();
+  const d = createTempoDirector(EMO);
   check('default battle starts at 100 BPM', near(d.state().targetBpm, 100) && d.state().stateId === 'guarded', `${d.state().targetBpm} ${d.state().stateId}`);
 
   let last = d.state().targetBpm;
@@ -41,17 +45,59 @@ const near = (a, b, eps = 1e-6) => Math.abs(a - b) <= eps;
   const o2 = d.tensionIncreased();
   check('changes move relative to the override', o2.targetBpm > 90 && o2.targetBpm < 100, `${o2.targetBpm.toFixed(1)}`);
 
+  const c0 = d.state();
+  const c1 = d.setConnection(0.9);
+  check('setConnection sets the connection outright and pulls the music calmer', near(c1.connection, 0.9) && c1.targetBpm < c0.targetBpm, `${c0.targetBpm.toFixed(0)} -> ${c1.targetBpm.toFixed(0)}`);
+  const e0 = d.state().tension; d.tensionEased();
+  check('tensionEased lowers tension', d.state().tension < e0);
+
+  const beforeEnd = d.state();
   d.battleEnded();
   const after = d.tensionIncreased();
-  check('events after battleEnded do nothing', after.active === false && near(after.tension, o2.tension));
+  check('events after battleEnded do nothing', after.active === false && near(after.tension, beforeEnd.tension));
 
   // state label hysteresis: the label flips later going up than it flips back going down
-  const h = createTempoDirector();
+  const h = createTempoDirector(EMO);
   let up = null;
   for (let i = 0; i < 200 && !up; i++) { const x = h.tensionIncreased(0.05); if (x.stateId !== 'guarded') up = x.level; }
   let back = null;
   for (let i = 0; i < 400 && !back; i++) { const x = h.connectionSucceeded(0.05); if (x.stateId === 'guarded') back = x.level; }
   check('state label has a dead zone (no flapping at a boundary)', up !== null && back !== null && back < up - 0.04, `flips up at level ${up?.toFixed(3)}, back at ${back?.toFixed(3)}`);
+
+  // Instruments build with the conversation, not the tension
+  const g = createTempoDirector(EMO);
+  const early = g.state().section;
+  g.connectionSucceeded(4); g.setConnection(0.9); // very warm, but no answers yet
+  check('before the full-band answers, the thin layer plays whatever the tension', g.state().section === 'intro_b' && early === 'intro_b', g.state().section);
+  g.answerGiven(); const one = g.state().section;
+  g.answerGiven(); const warmFull = g.state();
+  check('a warm run still grows into the full band (slow, gentle)', one === 'intro_b' && warmFull.section === 'intro_c' && warmFull.targetBpm <= 90, `${warmFull.section} ${warmFull.targetBpm.toFixed(0)} BPM`);
+  const h2 = createTempoDirector(EMO);
+  for (let i = 0; i < 10; i++) h2.tensionIncreased(2);
+  h2.answerGiven(); h2.answerGiven();
+  check('a cold run grows into the full band, harder and faster', h2.state().section === 'verse_002' && h2.state().targetBpm >= 130, `${h2.state().section} ${h2.state().targetBpm.toFixed(0)} BPM`);
+  const parts = (id) => Object.keys(data0.sections.find((s) => s.id === id).notes).length;
+  check('every full-band section carries all three parts', ['intro_c', 'intro_bridge', 'verse_001', 'verse_002'].every((s) => parts(s) === 3));
+  check('a new battle starts the band over', h2.battleStarted().answers === 0 && h2.state().section === 'intro_b');
+}
+
+// ── Phase-driven battle (the game's mode) ───────────────────────────────────
+{
+  const d = createTempoDirector(); // default drive: phase
+  const seq = [d.state()];
+  for (let i = 0; i < 4; i++) seq.push(d.answerGiven());
+  check('a battle opens on the thin layer at 100 BPM', seq[0].section === 'intro_b' && near(seq[0].targetBpm, 100), `${seq[0].section} ${seq[0].targetBpm}`);
+  check('each answer escalates one step: bridge, verse, verse 2', seq.slice(1).map((s) => s.section).join(' ') === 'intro_bridge verse_001 verse_002 verse_002', seq.slice(1).map((s) => s.section).join(' '));
+  check('tempo climbs with the phases and stops at the top', seq.map((s) => Math.round(s.targetBpm)).join(' ') === '100 110 125 140 140', seq.map((s) => Math.round(s.targetBpm)).join(' '));
+  const c = createTempoDirector();
+  c.setConnection(1); c.connectionSucceeded(4); c.tensionEased(4); c.opponentCalmed(4);
+  const before = c.state();
+  check('connection and warm answers do not change the music in phase mode', before.section === 'intro_b' && near(before.targetBpm, 100), `${before.section} ${before.targetBpm}`);
+  const w = createTempoDirector(); w.setConnection(1);
+  for (let i = 0; i < 3; i++) w.answerGiven();
+  const k = createTempoDirector(); k.tensionIncreased(4);
+  for (let i = 0; i < 3; i++) k.answerGiven();
+  check('a deeply connected run and a cold run escalate identically', w.state().section === k.state().section && near(w.state().targetBpm, k.state().targetBpm), `${w.state().section} / ${k.state().section}`);
 }
 
 // ── Arrangement clock ───────────────────────────────────────────────────────

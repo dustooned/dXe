@@ -168,7 +168,7 @@ function ensureContext() {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     ctx = new AudioCtx();
     masterGain = ctx.createGain();
-    masterGain.gain.value = turnPaused ? 0 : masterVolume;
+    masterGain.gain.value = turnPaused || hushed ? 0 : masterVolume;
     masterGain.connect(ctx.destination);
     // A parallel tap, not part of the output chain — masterGain still goes
     // straight to ctx.destination above regardless of whether anything
@@ -204,7 +204,7 @@ export function getAnalyser() {
 // something actually creates one.
 export function setMasterVolume(volume) {
   masterVolume = Math.min(1, Math.max(0, volume));
-  if (masterGain && !turnPaused) masterGain.gain.setTargetAtTime(masterVolume, ctx.currentTime, 0.01);
+  if (masterGain && !turnPaused && !hushed) masterGain.gain.setTargetAtTime(masterVolume, ctx.currentTime, 0.01);
 }
 
 // The game pauses into silence when a phone is held sideways (shell/
@@ -214,6 +214,27 @@ export function setMasterVolume(volume) {
 // before the volume returns.
 let turnPaused = false;
 let turnTimer = null;
+
+// A trauma story is told in silence (dialogScene.js showConnection): the whole
+// mix — music, chord, ticks — falls away, and fades back when it is over.
+let hushed = false;
+export function hush(fadeSec = 0.6) {
+  hushed = true;
+  if (!ctx || turnPaused) return;
+  const t = ctx.currentTime;
+  masterGain.gain.cancelScheduledValues(t);
+  masterGain.gain.setValueAtTime(masterGain.gain.value, t);
+  masterGain.gain.linearRampToValueAtTime(0.0001, t + fadeSec);
+}
+export function unhush(fadeSec = 2.5) {
+  if (!hushed) return;
+  hushed = false;
+  if (!ctx || turnPaused) return;
+  const t = ctx.currentTime;
+  masterGain.gain.cancelScheduledValues(t);
+  masterGain.gain.setValueAtTime(Math.max(0.0001, masterGain.gain.value), t);
+  masterGain.gain.linearRampToValueAtTime(masterVolume, t + Math.max(0.01, fadeSec));
+}
 export function pauseAudio() {
   turnPaused = true;
   clearTimeout(turnTimer);
@@ -226,7 +247,7 @@ export function resumeAudio() {
   clearTimeout(turnTimer);
   if (!ctx) return;
   const restore = () => setTimeout(() => {
-    if (!turnPaused) masterGain.gain.setTargetAtTime(masterVolume, ctx.currentTime, 0.08);
+    if (!turnPaused && !hushed) masterGain.gain.setTargetAtTime(masterVolume, ctx.currentTime, 0.08);
   }, 250);
   ctx.resume().then(restore, restore);
 }

@@ -382,6 +382,13 @@
     "Bible": "He takes your phone without asking and saves his number under a fake name. \"Nobody from church needs to know.\"",
     "Crystals": "He takes your phone, types, and hands it back without looking at you. \"In case. That's all. In case.\""
   },
+  "pushAway": {
+    "Guns": "[He rolls the sleeve back down over the patch.] \"You squared up the whole time. Men been squaring up at me my whole life. I needed one to {color:Fear}back down{/color} first.\" \"We're done. Ride on.\"",
+    "Bible": "[He rolls the sleeve back down over the patch.] \"You talked like Sunday. I needed one person who wouldn't {color:Disgust}preach{/color}.\" \"We're done. Ride on.\"",
+    "Crystals": "[He rolls the sleeve back down over the patch.] \"You felt sorry for me. I could see it. I needed you to look me in the {color:Anger}eye{/color}.\" \"We're done. Ride on.\""
+  },
+  "storyIt": "He showed you the old ink before he said a word. That's not a story he tells. That's a scar he shows.",
+  "storySo": "Maybe it wasn't the whole congregation singing. Maybe it was three people. ...He still won't go near the water.",
   "opener": {
     "Guns": "(He squares up.) \"You looking for trouble or just built like it?\"",
     "Bible": "\"Church kid. Figures.\"",

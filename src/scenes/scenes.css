@@ -1178,6 +1178,19 @@
   animation: dx-bust-in 1.2s ease-out both;
 }
 
+/* Pushed away: the same close-up, but cold — grey edge, no warm glow. */
+.dx-connect.is-pushing .dx-connect__beat {
+  border-color: #8a8f98;
+}
+
+.dx-connect.is-pushing .dx-portrait {
+  --accent: #8a8f98;
+}
+
+.dx-connect.is-pushing .dx-portrait__img {
+  filter: grayscale(1) brightness(0.8);
+}
+
 .dx-connect.is-asking .dx-connect__beat {
   align-self: stretch;
   margin-bottom: 0;
@@ -1357,23 +1370,6 @@
   margin: calc(-2 * var(--px)) 0 0 calc(-2 * var(--px));
   pointer-events: none;
   image-rendering: pixelated;
-}
-
-/* The earned story (dialogScene.js showConnection): their bust rises over
-   the box as they start telling it. */
-.dx-connect__bust--story {
-  animation: dx-story-bust 0.9s ease-out both;
-}
-
-@keyframes dx-story-bust {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: none; }
-}
-
-.dx-portrait.dx-connect__bust--story {
-  align-self: center;
-  width: 38%;
-  margin: 0 auto calc(10 * var(--px));
 }
 
 /* ── Ending (endingScene.js): one thing per screen ── */

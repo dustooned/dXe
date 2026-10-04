@@ -81,6 +81,9 @@ function parseManuscript(text, fileName) {
   const connect = {};
   const story = [];
   const contactAsk = {};
+  const pushAway = {};
+  let storyIt = null;
+  let storySo = null;
   const opener = {};
   const outro = [];
   let inOutro = false;
@@ -137,6 +140,19 @@ function parseManuscript(text, fileName) {
       const m = line.match(/^CONTACT \[(Guns|Bible|Crystals)\]:\s*(.*)$/);
       if (!m) throw new Error(`${fileName}:${lineNumber}: bad CONTACT line "${raw}" (CONTACT [Guns|Bible|Crystals]: text)`);
       contactAsk[m[1]] = parseText(m[2]);
+    } else if (line.startsWith('PUSHAWAY')) {
+      // The encounter ends without them trusting you: their bust comes up close
+      // and they push you away, saying what they wish someone had done just now
+      // (one {color:Feeling}word{/color} is the hint). One per class.
+      const m = line.match(/^PUSHAWAY \[(Guns|Bible|Crystals)\]:\s*(.*)$/);
+      if (!m) throw new Error(`${fileName}:${lineNumber}: bad PUSHAWAY line "${raw}" (PUSHAWAY [Guns|Bible|Crystals]: text)`);
+      pushAway[m[1]] = parseText(m[2]);
+    } else if (line.startsWith('STORYIT:')) {
+      // After their STORY, in the silence: IT weighs how true it rings.
+      storyIt = parseText(line.slice(8));
+    } else if (line.startsWith('STORYSO:')) {
+      // ...and SO doubts a corner of it, without doubting the person.
+      storySo = parseText(line.slice(8));
     } else if (line.startsWith('STORY:')) {
       // The cutscene you earn by connecting: right after the CONNECT beat,
       // they tell you, in their own words, the wound that led them here.
@@ -290,6 +306,9 @@ function parseManuscript(text, fileName) {
   if (Object.keys(connect).length) result.connect = connect;
   if (story.length) result.story = story;
   if (Object.keys(contactAsk).length) result.contactAsk = contactAsk;
+  if (Object.keys(pushAway).length) result.pushAway = pushAway;
+  if (storyIt) result.storyIt = storyIt;
+  if (storySo) result.storySo = storySo;
   if (Object.keys(opener).length) result.opener = opener;
   if (outro.length) result.outro = outro;
   return result;

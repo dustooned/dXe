@@ -13,10 +13,19 @@ STORY: "The real her. Tired. Beautiful. Furious about it. Best thing I ever made
 STORY: "Some parent called it 'too much' for the school show. Principal asked me to soften her face. Just a little. So I did. It won first place."
 STORY: "My mother came. Stood in front of it a long time. Said, 'That's not me.' Walked out."
 STORY: [She finally turns around.] "I've been sanding myself down for rooms ever since. You're the first room I didn't."
+
+# After the story, in the silence: IT weighs it, SO doubts a corner of it (never the person).
+STORYIT: Seventeen. The bus stop. Five a.m. People don't invent the time of day.
+STORYSO: Maybe the principal wasn't that cruel. Maybe it got harder every time she told it. ...Her mother still walked out.
 # Then they ask to stay in touch, and join your contacts.
 CONTACT [Guns]: "Give me your phone." She types her number in, then holds your eyes a second. "Don't make me regret that."
 CONTACT [Bible]: "If you ever want to see this finished, text me." She puts her number in your phone. "I won't preach at you if you don't preach at me."
 CONTACT [Crystals]: "Here. My number." She hands your phone back. "Text me something that isn't a question sometime."
+
+# No connection: their bust comes up close and they push you away, saying what they wish someone had done.
+PUSHAWAY [Guns]: [She turns back to the window.] "You never put it down. Not once. I needed you to put it {color:Fear}down{/color}." "Go on. I've got a wall to finish."
+PUSHAWAY [Bible]: [She turns back to the window.] "You kept finding the right thing to say. I needed you to {color:Surprise}not know{/color}." "Go on. I've got a wall to finish."
+PUSHAWAY [Crystals]: [She turns back to the window.] "You felt everything I did. I couldn't tell which of it was {color:Sadness}mine{/color}." "Go on. I've got a wall to finish."
 
 # How they size up your class, before their first line.
 OPENER [Guns]: "Great. Another guy who looks like he wants to start something."

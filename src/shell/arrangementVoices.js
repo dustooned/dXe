@@ -160,11 +160,13 @@ export function playDrum(ctx, dest, track, piece, when, velocity) {
   };
 
   switch (piece) {
+    // Balanced so a drums-only section (the intro) is clearly audible: the
+    // noisy pieces carry less energy per peak than the kick, so they sit higher.
     case 'kick': tone('sine', 150, 42, 0.2, 0.95 * v); break;
-    case 'snare': tone('triangle', 210, 140, 0.1, 0.35 * v); noise('bandpass', 1900, 0.16, 0.5 * v, 0.7); break;
-    case 'click': tone('square', 1500, 700, 0.03, 0.18 * v); break;
-    case 'openHat': noise('highpass', 6500, 0.22, 0.28 * v); break;
-    case 'hat': default: noise('highpass', 7500, 0.045, 0.24 * v); break;
+    case 'snare': tone('triangle', 210, 140, 0.12, 0.5 * v); noise('bandpass', 1900, 0.18, 0.9 * v, 0.7); break;
+    case 'click': tone('square', 1500, 700, 0.04, 0.5 * v); break;
+    case 'openHat': noise('highpass', 6000, 0.24, 0.8 * v); break;
+    case 'hat': default: noise('highpass', 7000, 0.06, 0.75 * v); break;
   }
   stopAt[0].onended = () => out.disconnect();
 }

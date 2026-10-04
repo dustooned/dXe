@@ -308,6 +308,13 @@
     "Bible": "\"Come by Wednesday night, we do a supper.\" She presses a card into your hand. \"And that's my number, for the other six nights.\"",
     "Crystals": "\"Can I have your number?\" She laughs at herself. \"I don't know why. I just want to know you're out there.\""
   },
+  "pushAway": {
+    "Guns": "[She folds both hands over the bible.] \"You came in braced like I was going to swing at you. I needed someone to just {color:Sadness}sit{/color} with me.\" \"I have committee in the morning. You should go.\"",
+    "Bible": "[She folds both hands over the bible.] \"You had a verse for every corner of it. I needed one person to let it be {color:Anger}unfair{/color}.\" \"I have committee in the morning. You should go.\"",
+    "Crystals": "[She folds both hands over the bible.] \"You took it all in like weather. I needed you to ask what I'm {color:Fear}afraid{/color} of.\" \"I have committee in the morning. You should go.\""
+  },
+  "storyIt": "Twice. She counted the calls. You only keep count of what you can't stop counting.",
+  "storySo": "Maybe the phone wasn't face-down. Maybe it was just in her purse. ...She's held it every night since, either way.",
   "opener": {
     "Guns": "(She steps back half a pace.) \"Oh. You're one of the tough ones.\"",
     "Bible": "(She brightens.) \"You've got a church face. I can always tell.\"",

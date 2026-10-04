@@ -321,6 +321,13 @@
     "Bible": "\"My number. Pray for me if you want.\" He shrugs. \"Or just call. Calling works better.\"",
     "Crystals": "\"Yo, gimme your phone.\" He types fast. \"There. Now you got a friend with a whole lot of free time.\""
   },
+  "pushAway": {
+    "Guns": "[He picks the rag back up.] \"You stood there ready to swing the whole time. I needed somebody to just {color:Sadness}stay{/color}.\" \"Last call. It isn't, but it is.\"",
+    "Bible": "[He picks the rag back up.] \"You kept looking for the lesson in it. I needed somebody to look at the {color:Disgust}mess{/color}.\" \"Last call. It isn't, but it is.\"",
+    "Crystals": "[He picks the rag back up.] \"You laughed at every joke I threw. I needed you to {color:Surprise}not buy{/color} one of them.\" \"Last call. It isn't, but it is.\""
+  },
+  "storyIt": "He said cartoons first. A nine-year-old remembers what he got up for.",
+  "storySo": "Maybe there was less glass than he remembers. Kids make rooms bigger. ...He still hasn't stopped cleaning.",
   "opener": {
     "Guns": "\"Easy, soldier. I'm unarmed. Mostly.\"",
     "Bible": "\"Don't pray at me, man. I'm working.\"",

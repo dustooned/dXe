@@ -13,7 +13,11 @@ import { DRUM_MAP, VOICE_SETS, playDrum, playMelodic } from './arrangementVoices
 
 const LOOKAHEAD_S = 0.25; // how far ahead notes are scheduled
 const INTERVAL_MS = 50; // how often the scheduler wakes up
-const LEVEL = 0.14; // the whole arrangement vs the rest of the mix (a leitmotif sits at 0.14)
+// The whole arrangement vs the rest of the mix. A leitmotif holds one tone at 0.14;
+// this is many short notes (a drums-only intro is mostly silence between hits), so
+// it sits higher to read as music at all. Measured at the confrontation.
+export const DEFAULT_LEVEL = 0.24;
+const LEVEL = DEFAULT_LEVEL;
 
 export function createArrangementPlayer(data, { voiceSet = data.id, tuning = {} } = {}) {
   // Tuning (shell/soundTuning.js) sits over the defaults and can change live.
@@ -28,7 +32,10 @@ export function createArrangementPlayer(data, { voiceSet = data.id, tuning = {} 
     if (bus && graph) bus.gain.setTargetAtTime(level, graph.ctx.currentTime, 0.03);
   };
   let clock = createClock(data);
-  const partState = new Map(data.parts.map((p) => [p.id, { volume: 1, muted: false, solo: false, gain: null }]));
+  const partState = new Map(data.parts.map((p) => [p.id, { volume: 1, muted: false, solo: false, secret: !!p.secret, gain: null }]));
+  // The secret track (a part flagged `secret`) stays silent until this is on.
+  let secretOn = false;
+  let secretFade = 3;
   const live = new Set(); // sounding nodes, so stop() can end them
   let graph = null;
   let bus = null;
@@ -44,15 +51,19 @@ export function createArrangementPlayer(data, { voiceSet = data.id, tuning = {} 
     if (!graph) return;
     const anySolo = [...partState.values()].some((p) => p.solo);
     for (const p of partState.values()) {
-      const audible = anySolo ? p.solo : !p.muted;
-      p.gain.gain.setTargetAtTime(audible ? p.volume : 0, graph.ctx.currentTime, 0.02);
+      const audible = (anySolo ? p.solo : !p.muted) && (!p.secret || secretOn);
+      p.gain.gain.setTargetAtTime(audible ? p.volume : 0, graph.ctx.currentTime, p.secret ? secretFade / 3 : 0.02);
     }
   }
 
   // `dest` defaults to the part's own mix channel; the sound player passes its own for auditions.
   function play(e, dest = partState.get(e.part)?.gain, g = graph) {
-    const cfg = voices[e.part];
-    if (!g || !dest || !cfg) return;
+    // A part with no tuned voice yet (say, a new Secret channel) still sounds.
+    const kind = data.parts.find((p) => p.id === e.part)?.kind;
+    const cfg = voices[e.part] ?? (kind === 'drums' ? { voice: 'drums', level: 0.7 } : { voice: 'organ', level: 1 });
+    if (!g || !dest) return;
+    const ps = partState.get(e.part);
+    if (ps) ps.lastWhen = e.when;
     if (cfg.voice === 'drums') {
       const piece = drumMap[e.key];
       if (piece && piece !== 'none') playDrum(g.ctx, dest, track, piece, e.when, e.velocity * cfg.level);
@@ -103,6 +114,11 @@ export function createArrangementPlayer(data, { voiceSet = data.id, tuning = {} 
 
     // Tempo and section changes — see engine/arrangementClock.js.
     setTuning: applyTuning,
+    // Bring the secret track in (or take it out) over `fade` seconds.
+    setSecret(on, fade = 3) { secretOn = !!on; secretFade = fade; applyMix(); },
+    hasSecret: () => data.parts.some((p) => p.secret),
+    // Each part's current output level (0 = silent), for checks and the sound player.
+    mix: () => Object.fromEntries([...partState].map(([id, p]) => [id, p.gain ? +p.gain.gain.value.toFixed(3) : 0])),
     // What the voices are set to right now (defaults plus tuning).
     config: () => ({ level, voices: structuredClone(voices), drumMap: { ...drumMap } }),
     // Sound one note now, playing or not — for checking a voice or a drum key.
@@ -124,7 +140,10 @@ export function createArrangementPlayer(data, { voiceSet = data.id, tuning = {} 
     partState: (id) => ({ ...partState.get(id), gain: undefined }),
 
     state() {
-      return { playing: !!timer, ...(graph ? clock.state(graph.ctx.currentTime) : clock.state(0)), voices: live.size };
+      const now = graph ? graph.ctx.currentTime : 0;
+      // Which parts have sounded in the last second, for the sound player's lights.
+      const active = Object.fromEntries([...partState].map(([id, p]) => [id, graph && p.lastWhen != null && now - p.lastWhen < 1 && p.lastWhen <= now + 0.3]));
+      return { playing: !!timer, ...clock.state(now), voices: live.size, active, secret: secretOn };
     },
   };
   return player;

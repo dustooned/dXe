@@ -14,13 +14,19 @@ function loadAll() {
   try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; }
 }
 
+// Saved tuning holds only what was changed from the code defaults (v2), so a
+// better default reaches everyone who never touched that setting. Version-1
+// saves stored every value, including the master level that was then the
+// default (0.14): drop that one, since it was never a choice.
 export function getTuning(id) {
-  return loadAll()[id] ?? {};
+  const t = { ...(loadAll()[id] ?? {}) };
+  if (t.v !== 2 && t.level === 0.14) delete t.level;
+  return t;
 }
 
 export function saveTuning(id, tuning) {
   const all = loadAll();
-  all[id] = tuning;
+  all[id] = { ...tuning, v: 2 };
   try { localStorage.setItem(KEY, JSON.stringify(all)); } catch { /* storage off: lasts this session only */ }
 }
 

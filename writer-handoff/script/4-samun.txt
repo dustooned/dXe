@@ -17,10 +17,19 @@ STORY: "Dad was on the kitchen floor. Breathing wrong. Bottles everywhere."
 STORY: "My little brother was still asleep. So I cleaned it. The glass, the smell, all of it. Told him Dad was 'sleeping in.'"
 STORY: "Been cleaning up ever since. The jokes started that morning too. If people are laughing, nobody looks at the floor."
 STORY: [He laughs, once, and it's not a deflection this time.] "Huh. You looked at the floor."
+
+# After the story, in the silence: IT weighs it, SO doubts a corner of it (never the person).
+STORYIT: He said cartoons first. A nine-year-old remembers what he got up for.
+STORYSO: Maybe there was less glass than he remembers. Kids make rooms bigger. ...He still hasn't stopped cleaning.
 # Then they ask to stay in touch, and join your contacts.
 CONTACT [Guns]: "Put my number in. Call me before you swing at somebody." He grins. "I'll talk you down. Somebody should."
 CONTACT [Bible]: "My number. Pray for me if you want." He shrugs. "Or just call. Calling works better."
 CONTACT [Crystals]: "Yo, gimme your phone." He types fast. "There. Now you got a friend with a whole lot of free time."
+
+# No connection: their bust comes up close and they push you away, saying what they wish someone had done.
+PUSHAWAY [Guns]: [He picks the rag back up.] "You stood there ready to swing the whole time. I needed somebody to just {color:Sadness}stay{/color}." "Last call. It isn't, but it is."
+PUSHAWAY [Bible]: [He picks the rag back up.] "You kept looking for the lesson in it. I needed somebody to look at the {color:Disgust}mess{/color}." "Last call. It isn't, but it is."
+PUSHAWAY [Crystals]: [He picks the rag back up.] "You laughed at every joke I threw. I needed you to {color:Surprise}not buy{/color} one of them." "Last call. It isn't, but it is."
 
 # How they size up your class, before their first line.
 OPENER [Guns]: "Easy, soldier. I'm unarmed. Mostly."

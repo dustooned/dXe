@@ -14,6 +14,10 @@
 // ticks at the project's PPQ. A section is its pattern, rounded up to whole
 // bars. Why a drum part is recognized by name: FL exports every channel on
 // MIDI channel 0, so there is no GM drum channel to go by.
+//
+// A channel whose name starts with "Secret" is the secret track: baked like
+// any part, but held silent in the game until the player is close to a full
+// connection (shell/battleMusic.js setCloseness).
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -33,7 +37,7 @@ const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g
 
 const parts = flp.channels
   .filter((c) => c.name)
-  .map((c) => ({ rack: c.index, id: slug(c.name), label: c.name, kind: /drum|kick|snare|hat|perc/i.test(c.name) ? 'drums' : 'melodic' }));
+  .map((c) => ({ rack: c.index, id: slug(c.name), label: c.name, kind: /drum|kick|snare|hat|perc/i.test(c.name) ? 'drums' : 'melodic', secret: /^secret/i.test(c.name) }));
 if (!parts.length) throw new Error('no named channels found');
 
 const sections = [];
@@ -59,7 +63,7 @@ const out = {
   bpm: flp.tempo ?? 100,
   beatsPerBar: BEATS_PER_BAR,
   ...(flags.tonic ? { tonic: flags.tonic } : {}),
-  parts: parts.map(({ id: pid, label, kind }) => ({ id: pid, label, kind })),
+  parts: parts.map(({ id: pid, label, kind, secret }) => ({ id: pid, label, kind, ...(secret ? { secret: true } : {}) })),
   sections,
 };
 

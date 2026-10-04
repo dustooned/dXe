@@ -12,6 +12,9 @@ import * as encounterMusic from '../shell/encounterMusic.js';
 import { createBattleMusic } from '../shell/battleMusic.js';
 import { getTuning, resetTuning, saveTuning } from '../shell/soundTuning.js';
 import { setPaused } from '../shell/pauseBus.js';
+import { DEFAULT_LEVEL } from '../shell/arrangement.js';
+import { DRUM_MAP, VOICE_SETS } from '../shell/arrangementVoices.js';
+import { DEFAULT_TEMPO_CONFIG } from '../engine/tempoDirector.js';
 
 /* global __AUDIO_FILES__ */
 const PIECES = ['kick', 'snare', 'click', 'hat', 'openHat', 'none'];
@@ -169,19 +172,23 @@ function arrangementView(box, data) {
       <span>position</span><span data-out="pos">–</span>
       <span>tension</span><span class="bar"><i data-bar="tension"></i></span>
       <span>agitation</span><span class="bar"><i data-bar="agitation"></i></span>
+      <span>answers</span><span data-out="answers">0</span>
       <span>connection</span><span class="bar"><i data-bar="connection"></i></span>
       <span>level</span><span class="bar"><i data-bar="level"></i></span>
       <span>voices</span><span data-out="voices">–</span>
+      <span>parts</span><span data-out="parts">–</span>
     </div>
     <h3>EVENTS</h3>
     <div class="row">
       <button data-ev="tensionIncreased">tension +</button><button data-ev="opponentAgitated">agitated +</button>
       <button data-ev="connectionSucceeded">connection +</button><button data-ev="connectionFailed">conn. failed</button>
-      <button data-ev="opponentCalmed">opp. calmed</button></div>
+      <button data-ev="opponentCalmed">opp. calmed</button>
+      <button data-ev="answerGiven">ANSWER given</button></div>
     <div class="row"><button data-auto="up">AUTO: ESCALATE</button><button data-auto="down">AUTO: CALM</button><small>one event / 1.2 s</small></div>
     <div class="row"><small>section</small><select data-in="section">${sectionOptions(player.sectionIds()[0])}</select><button data-act="goSection">QUEUE</button></div>
     <h3>MIX</h3>
-    ${data.parts.map((p) => `<div class="row" data-part="${p.id}"><span class="name">${p.label}</span>
+    ${player.hasSecret() ? '<div class="row"><button data-act="secret">SECRET TRACK</button><small>fades in near a full connection (closeness ≥ ' + cfg.secretAt + ')</small></div>' : '<small>No secret track yet: name an FL channel "Secret…" and rebake.</small>'}
+    ${data.parts.map((p) => `<div class="row" data-part="${p.id}"><span class="name">${p.secret ? '★ ' : ''}${p.label}</span>
       <input type="range" min="0" max="1.5" step="0.05" value="${voice.voices[p.id]?.level ?? 1}" data-tune="part"><b data-out="lvl">${(voice.voices[p.id]?.level ?? 1).toFixed(2)}</b>
       <button data-mute>M</button><button data-solo>S</button>
       ${p.kind === 'drums' ? '' : `<button data-note="${p.id}">▶</button>`}</div>`).join('')}
@@ -195,6 +202,7 @@ function arrangementView(box, data) {
       <label>max <input type="number" data-tune="max" value="${cfg.maxBpm}"></label>
       <label>ramp s <input type="number" data-tune="ramp" value="${cfg.rampSeconds}" step="0.5" min="0" max="20"></label></div>
     <div class="row">
+      <label>driven by <select data-tune="drive">${sel(['phase', 'emotion'], cfg.drive)}</select></label>
       <label>tempo on <select data-tune="quant">${sel(QUANT, cfg.quantize)}</select></label>
       <label>section on <select data-tune="squant">${sel(QUANT, cfg.sectionQuantize)}</select></label></div>
     <div class="row">
@@ -212,7 +220,7 @@ function arrangementView(box, data) {
     clearInterval(auto);
     auto = null;
     box.querySelectorAll('[data-auto]').forEach((b) => b.classList.toggle('on', b.dataset.auto === dir));
-    if (dir) auto = setInterval(() => (dir === 'up' ? director.tensionIncreased() : (director.connectionSucceeded(), director.opponentCalmed())), 1200);
+    if (dir) auto = setInterval(() => { (dir === 'up' ? director.tensionIncreased() : (director.connectionSucceeded(), director.opponentCalmed())); director.answerGiven(); }, 1200);
   };
 
   // Tuning edits: write into `tuning`, apply live.
@@ -222,6 +230,7 @@ function arrangementView(box, data) {
     cfg.minBpm = t.minBpm = num('[data-tune=min]');
     cfg.maxBpm = t.maxBpm = num('[data-tune=max]');
     cfg.rampSeconds = t.rampSeconds = num('[data-tune=ramp]');
+    cfg.drive = t.drive = $('[data-tune=drive]').value;
     cfg.quantize = t.quantize = $('[data-tune=quant]').value;
     cfg.sectionQuantize = t.sectionQuantize = $('[data-tune=squant]').value;
     cfg.step = t.step = num('[data-tune=step]');
@@ -248,7 +257,22 @@ function arrangementView(box, data) {
     });
     player.setTuning(tuning);
   }
-  const clean = () => JSON.parse(JSON.stringify(tuning));
+  // Only what differs from the code defaults is kept, so later default
+  // improvements still reach settings you never changed.
+  const clean = () => {
+    const t = JSON.parse(JSON.stringify(tuning));
+    if (t.level === DEFAULT_LEVEL) delete t.level;
+    for (const [part, v] of Object.entries(t.voices ?? {})) {
+      if (v.level === VOICE_SETS[data.id]?.[part]?.level) delete t.voices[part];
+    }
+    for (const [k, piece] of Object.entries(t.drums ?? {})) if (piece === DRUM_MAP[k]) delete t.drums[k];
+    const d = DEFAULT_TEMPO_CONFIG;
+    for (const k of ['minBpm', 'maxBpm', 'rampSeconds', 'quantize', 'sectionQuantize', 'step', 'drive']) if (t.tempo?.[k] === d[k]) delete t.tempo[k];
+    if (t.tempo?.weights?.connection === d.weights.connection) delete t.tempo.weights;
+    if (t.tempo?.states && JSON.stringify(t.tempo.states) === JSON.stringify(d.states)) delete t.tempo.states;
+    for (const k of ['voices', 'drums', 'tempo']) if (t[k] && !Object.keys(t[k]).length) delete t[k];
+    return t;
+  };
 
   const onClick = (e) => {
     const t = e.target.closest('button');
@@ -259,6 +283,7 @@ function arrangementView(box, data) {
       music.start(bpm ? { bpm, section: cfg.introSection } : { section: cfg.introSection });
       music.engage(bpm ? { bpm } : {});
     } else if (act === 'end') { setAuto(null); music.end({ fade: 0.2 }); }
+    else if (act === 'secret') { const on = !t.classList.contains('on'); t.classList.toggle('on', on); player.setSecret(on, 2); }
     else if (act === 'goSection') player.queueSection($('[data-in=section]').value, 'pattern');
     else if (act === 'save') { saveTuning(data.id, clean()); out('saved', 'saved on this device'); }
     else if (act === 'reset') { resetTuning(data.id); out('saved', 'reset — reopen the track to see the defaults'); }
@@ -286,9 +311,11 @@ function arrangementView(box, data) {
     out('bpm', p.playing ? p.bpm.toFixed(1) : '–');
     out('target', `${s.targetBpm.toFixed(1)}${p.playing ? ` (clock → ${p.targetBpm.toFixed(0)})` : ''}`);
     out('state', `${s.label}${s.active ? '' : ' · ended'}`);
+    out('answers', `${s.answers} (full band from ${director.config.fullAfterAnswers})`);
     out('section', `${p.section}${p.pendingSection ? ` → ${p.pendingSection}` : ''}`);
     out('pos', p.playing ? `bar ${p.bar}/${p.bars} beat ${p.beat}` : 'stopped');
     out('voices', String(p.voices));
+    out('parts', data.parts.map((x) => `${p.active?.[x.id] ? '●' : '○'} ${x.label}`).join('  '));
     ['tension', 'agitation', 'connection', 'level'].forEach((k) => bar(k, s[k]));
   }, 100);
 

@@ -182,5 +182,6 @@ export function mount(stageEl, { exit, restart, startSceneId }) {
     // Leaving mid-confrontation must not leave an NPC's music behind.
     encounterMusic.end({ fade: 0.3 });
     audio.stopLeitmotif();
+    audio.unhush(0.05);
   };
 }
