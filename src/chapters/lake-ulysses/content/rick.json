@@ -54,7 +54,10 @@
         "elseNodeId": "rick_shut_down"
       },
       "mood": "Fear",
-      "mask": "Anger"
+      "mask": "Anger",
+      "bid": [
+        "lie"
+      ]
     },
     "rick_02_enabled": {
       "id": "rick_02_enabled",
@@ -93,7 +96,10 @@
         }
       },
       "mood": "Disgust",
-      "mask": "Anger"
+      "mask": "Anger",
+      "bid": [
+        "lie"
+      ]
     },
     "rick_02_confronted": {
       "id": "rick_02_confronted",
@@ -254,7 +260,10 @@
         "value": 3,
         "elseNodeId": "rick_shut_down"
       },
-      "mood": "Anger"
+      "mood": "Anger",
+      "bid": [
+        "lie"
+      ]
     },
     "rick_03": {
       "id": "rick_03",
@@ -303,7 +312,8 @@
       },
       "mood": "Fear",
       "bid": [
-        "truth"
+        "truth",
+        "lie"
       ]
     },
     "rick_04": {

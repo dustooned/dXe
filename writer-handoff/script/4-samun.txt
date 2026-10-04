@@ -40,6 +40,8 @@ OPENER [Crystals]: "Ooh, good vibes. Sit, sit."
 PROMPT: "Man, everyone's {color:Fear}hooked{/color} on something. Mine's just more honest."
 MOOD: Fear
 MASK: Happy
+# A comforting lie: what they want to hear. It turns toward them now; the lake pays later.
+BID: lie
 
 -- TRUTH
 SAY: Honest or not, you're still killing yourself slowly.
@@ -61,6 +63,8 @@ NEXT: samun_02_enabled
 PROMPT: "See? You get it. Nobody else does. They all want me {color:Disgust}fixed{/color}."
 MOOD: Disgust
 MASK: Happy
+# A comforting lie: what they want to hear. It turns toward them now; the lake pays later.
+BID: lie
 
 -- TRUTH
 SAY: Maybe fixed is the wrong word. But not this — not this either.
@@ -103,6 +107,8 @@ NEXT: samun_03
 PROMPT: "Business? Business is {color:Disgust}great{/color}, man. Look around. Everybody's real busy."
 MOOD: Disgust
 MASK: Happy
+# A comforting lie: what they want to hear. It turns toward them now; the lake pays later.
+BID: lie
 
 -- TRUTH
 SAY: There's nobody here, Samun.

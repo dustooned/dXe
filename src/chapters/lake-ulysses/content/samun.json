@@ -43,7 +43,10 @@
         }
       },
       "mood": "Fear",
-      "mask": "Happy"
+      "mask": "Happy",
+      "bid": [
+        "lie"
+      ]
     },
     "samun_02_enabled": {
       "id": "samun_02_enabled",
@@ -82,7 +85,10 @@
         }
       },
       "mood": "Disgust",
-      "mask": "Happy"
+      "mask": "Happy",
+      "bid": [
+        "lie"
+      ]
     },
     "samun_02_confronted": {
       "id": "samun_02_confronted",
@@ -158,7 +164,10 @@
         }
       },
       "mood": "Disgust",
-      "mask": "Happy"
+      "mask": "Happy",
+      "bid": [
+        "lie"
+      ]
     },
     "samun_01_hard": {
       "id": "samun_01_hard",

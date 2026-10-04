@@ -316,7 +316,7 @@ PUSHAWAY [Guns]: [She turns back to the window.] "You never put it down. Not onc
 
 ## TRYFEEL (outro)
 
-`TRYFEEL [Guns|Bible|Crystals]: {feel:Feeling}"line"` inside `=== OUTRO`: the wheel comes back without a card and the line waits while the player tries feelings and watches the vectorscope. `{feel:X}` is the speaker's own feeling (never shown, and it must be on that class's wheel); picking it closes the vectorscope into a still circle, and only then does a tap go on. Describe the feeling, never name it. Used once, as the therapist's last exercise.
+`TRYFEEL [Guns|Bible|Crystals]: {feel:Feeling}"line"` inside `=== OUTRO`: the wheel comes back without a card and the line waits while the player tries feelings and watches the vectorscope. `{feel:X}` is the speaker's own feeling (never shown, and it must be on that class's wheel); picking it closes the vectorscope into a still circle, and only then does a tap go on. Describe the feeling, never name it. Optional tags: `{mask:Y}` makes the line wear Y's color while X stays what the shape answers to (on a match step, X then flickers underneath, as a battle mask does); `{want:miss}` turns the step around: any feeling but X moves on (to show what apart looks like), and picking X asks for a different one. The therapist's exercise is two steps: a `{want:miss}` step, then a find step.
 
 ## The intake read
 

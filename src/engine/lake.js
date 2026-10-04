@@ -11,6 +11,13 @@
 import { clamp } from './util.js';
 
 export const LAKE_MAX_DEBT = 10;
+
+// How far into the warm, groggy water the player has sunk (0..1): nothing
+// until the first couple of lies, then a haze that thickens with every one.
+// Deep water is cozy on purpose — the cost is what it blurs, not a wall.
+export function hazeFor(truthDebt) {
+  return clamp((truthDebt - 1) / 9, 0, 1);
+}
 // The chart's own tick labels (ui/lakeGauge.js).
 export const PPM_TICKS = [0, 100, 200, 300, 400, 500];
 

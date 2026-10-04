@@ -281,7 +281,7 @@
     },
     {
       "kind": "line",
-      "text": "\"Make a real friend out there and they'll show up next to me. They'll tell you what they think. Doesn't mean they're right.\""
+      "text": "\"Make a real friend out there and they'll show up next to me. Everybody reads people their own way, so listen to how they put it. Doesn't mean they're right.\""
     },
     {
       "kind": "line",
@@ -289,32 +289,73 @@
     },
     {
       "kind": "line",
+      "text": "\"And I'll be straight with you. Out there, lying is going to feel good. Warm. Easy. Everybody smiles. I won't pretend it doesn't.\""
+    },
+    {
+      "kind": "line",
+      "text": "\"Nobody stops you. The water just gets thicker. Your calls come in blurry, your friends lose track of your story, and it all comes due at the end.\""
+    },
+    {
+      "kind": "line",
       "text": "\"I'll have FEELZ send you a reminder, so you can't pretend you forgot.\""
     },
     {
       "kind": "tryfeel",
-      "text": "{feel:Sadness}\"Last thing, before I go. Find me on your wheel. Forty people today, and it isn't even four. Watch the little screen beside me while you look.\"",
+      "text": "{feel:Sadness}{mask:Happy}{want:miss}\"Last thing, before I go. Pick any feeling on your wheel. Doesn't matter which. Watch the little screen beside me.\"",
       "when": {
         "class": "Guns"
       }
     },
     {
       "kind": "tryfeel",
-      "text": "{feel:Anxiety}\"Last thing, before I go. Find me on your wheel. Three calls behind, two forms unsigned, and my coffee's cold. Watch the little screen beside me while you look.\"",
+      "text": "{feel:Anxiety}{mask:Happy}{want:miss}\"Last thing, before I go. Pick any feeling on your wheel. Doesn't matter which. Watch the little screen beside me.\"",
       "when": {
         "class": "Bible"
       }
     },
     {
       "kind": "tryfeel",
-      "text": "{feel:Anxiety}\"Last thing, before I go. Find me on your wheel. Three calls behind, two forms unsigned, and my coffee's cold. Watch the little screen beside me while you look.\"",
+      "text": "{feel:Anxiety}{mask:Happy}{want:miss}\"Last thing, before I go. Pick any feeling on your wheel. Doesn't matter which. Watch the little screen beside me.\"",
       "when": {
         "class": "Crystals"
       }
     },
     {
       "kind": "line",
-      "text": "\"There. A circle that holds still. That's what it looks like when you've actually got someone. Go find a few more.\""
+      "text": "\"See that? Not a circle. The further apart two feelings are on that wheel, the busier the shape gets.\""
+    },
+    {
+      "kind": "line",
+      "text": "\"And the needle on the left. Leaning right, you're moving together. Leaning left, you're pulling apart.\""
+    },
+    {
+      "kind": "tryfeel",
+      "text": "{feel:Sadness}{mask:Happy}\"Now. I've told you I'm fine all call. Watch my line: every few seconds another color flickers under it. That's the real one. Find it.\"",
+      "when": {
+        "class": "Guns"
+      }
+    },
+    {
+      "kind": "tryfeel",
+      "text": "{feel:Anxiety}{mask:Happy}\"Now. I've told you I'm fine all call. Watch my line: every few seconds another color flickers under it. That's the real one. Find it.\"",
+      "when": {
+        "class": "Bible"
+      }
+    },
+    {
+      "kind": "tryfeel",
+      "text": "{feel:Anxiety}{mask:Happy}\"Now. I've told you I'm fine all call. Watch my line: every few seconds another color flickers under it. That's the real one. Find it.\"",
+      "when": {
+        "class": "Crystals"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"There. A circle that holds still. My line said fine. The shape doesn't lie. People do that out there too, so read the color underneath.\""
+    },
+    {
+      "kind": "line",
+      "text": "\"And the little blocks under it are what you've picked so far. Go find a few more.\""
     },
     {
       "kind": "hangup",

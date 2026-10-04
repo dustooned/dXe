@@ -12,6 +12,11 @@
 //              read: {feel} becomes the colored image of the mood they see.
 //   byClass    a tip aimed at your class's habit (Guns braces, Bible holds on
 //              to the right words, Crystals absorbs everything).
+//   moods      how they put each feeling into words — their own voice, never
+//              the feeling's name.
+// Deep water (debt at FOG_DEBT or more) quietly costs the call its clarity:
+// the read comes through uncolored, the wheel doesn't light, and the friend
+// says something that shows your story is getting hard to follow (foggy).
 // PLACEHOLDER PROSE throughout (first drafts, for the writer).
 import { isTrusted } from './trust.js';
 import { ppmFor } from './lake.js';
@@ -54,18 +59,11 @@ function healthLine(state) {
   return pick(HEALTH_LINES[key]).replace('{ppm}', ppmFor(debt));
 }
 
-// Plain-language images for a mood, so a contact can describe it without
-// naming the feeling.
-const MOOD_IMAGES = {
-  Happy: 'putting a bright face on something',
-  Trust: 'more open than they usually let themselves be',
-  Fear: 'scared, underneath it',
-  Surprise: 'caught off guard',
-  Sadness: 'carrying something heavy',
-  Disgust: 'sick to their stomach about something',
-  Anger: 'running hot',
-  Anxiety: 'wound tight',
-};
+// The feelings a contact can read (each contact words them in `moods`).
+const MOODS = ['Happy', 'Trust', 'Fear', 'Surprise', 'Sadness', 'Disgust', 'Anger', 'Anxiety'];
+
+// Deep enough in the lake that calls lose their color (engine/lake.js: HIGH).
+export const FOG_DEBT = 6;
 
 // bias: chance they tell you to lie. sight: how reliably they read a mood
 // before your bond adds to it. dominant: the feeling they live in — their
@@ -83,6 +81,17 @@ export const CONTACTS = {
     truth: ["Tell them the true thing. Gently. It usually costs less than you think.", "Say what's real. Then let the silence do some work."],
     lie: ["Sometimes people need a soft landing first. That's allowed. Just don't live there."],
     tired: "And you sound tired. Go easy on yourself too.",
+    foggy: "You sound far away. Like you're answering me from underwater.",
+    moods: {
+      Happy: 'performing fine. Watch the gap between the smile and the eyes',
+      Trust: 'letting a little more in than usual',
+      Fear: 'scared, and managing it',
+      Surprise: "thrown. Something didn't go the way it was rehearsed",
+      Sadness: "carrying a weight that hasn't been set down in years",
+      Disgust: 'repelled by something. Maybe by themselves',
+      Anger: 'holding a lot of heat behind the eyes',
+      Anxiety: 'braced for the next thing to go wrong',
+    },
     afterLast: {
       connected: "I saw {who}'s number go into your phone. FEELZ tells me things. Good.",
       pushed: "{who} showed you out? That happens. Doors close. Most of them aren't locked.",
@@ -109,6 +118,17 @@ export const CONTACTS = {
     truth: ["Tell them the truth. I wish somebody had told me sooner."],
     lie: ["Tell them what they need to hear. The Lord can sort out the rest.", "Be kind first. Honest can wait a day."],
     tired: "And you eat something today, you hear me?",
+    foggy: "Honey, you told me that already, didn't you? Or was it something else...",
+    moods: {
+      Happy: "smiling like it's Sunday and the casserole came out right",
+      Trust: "softening, sugar. Don't you waste it",
+      Fear: 'scared as a cat in a thunderstorm',
+      Surprise: 'all flustered, like somebody moved the furniture',
+      Sadness: 'grieving something. I know that look, I wear it',
+      Disgust: 'gone sour, like milk left out',
+      Anger: 'fit to be tied',
+      Anxiety: "wringing a dish towel that isn't there",
+    },
     afterLast: {
       connected: "Oh, I heard about you and {who}. This town talks, honey. That's a good thing, for once.",
       pushed: "{who} sent you off? Oh, sugar. Some folks have to push before they can pull.",
@@ -135,6 +155,17 @@ export const CONTACTS = {
     truth: ["Don't sand it down for them. Say it straight.", "Tell them. People can handle more than you think if you don't flinch."],
     lie: ["Honestly? Let them have this one. Not every fight's yours."],
     tired: "Also you sound wrecked. Sit down somewhere.",
+    foggy: "Your story keeps changing colors. I can't get a read on you, let alone them.",
+    moods: {
+      Happy: 'too bright. Like a fresh coat over water damage',
+      Trust: "in warmer tones. Don't make me say it twice",
+      Fear: 'cold blue at the edges',
+      Surprise: 'a splash nobody planned',
+      Sadness: 'all grey wash, no highlights',
+      Disgust: 'a color that went muddy',
+      Anger: 'red. Cadmium red',
+      Anxiety: 'all tight little brushstrokes',
+    },
     afterLast: {
       connected: "So {who} let you in. Huh. Maybe you're less trouble than you look.",
       pushed: "{who} showed you the door? Yeah. Nobody likes being looked at that close.",
@@ -142,7 +173,7 @@ export const CONTACTS = {
     },
     knows: {
       SAMUN: 'Samun let me paint the back wall of the bar, then hung a dartboard on it. Right now he\'s {feel}.',
-      RICK: "Rick had me paint his tank once. Paid cash, wouldn't look at it. He's {feel}, but that's the coat, not the guy.",
+      RICK: "Rick had me paint his tank once. Paid cash, wouldn't look at it. Right now he's {feel}. That's the coat, though, not the guy.",
     },
     byClass: {
       Guns: "And quit squaring up. You look like you're waiting to get punched.",
@@ -160,6 +191,17 @@ export const CONTACTS = {
     truth: ["Just say it, man. Four days taught me that much."],
     lie: ["Play along. People hate being fixed. Trust me.", "Tell 'em what goes down easy. Deal with the rest later."],
     tired: "And you gotta sleep, bro. I can hear it.",
+    foggy: "Bro, you're telling me stuff I'm pretty sure you made up. It's cool. It's cool.",
+    moods: {
+      Happy: 'doing the smile thing. I invented the smile thing',
+      Trust: "kinda letting you in. Don't make it weird",
+      Fear: 'spooked. Laughing a little too fast',
+      Surprise: 'like somebody switched the playlist mid-song',
+      Sadness: 'last-call sad. Lights on, nobody leaving',
+      Disgust: 'making the face I make at well vodka',
+      Anger: 'one bad joke away from flipping a table',
+      Anxiety: 'checking the door every five seconds',
+    },
     afterLast: {
       connected: 'Yo, word is you and {who} are tight now. Look at you, making friends.',
       pushed: '{who} kicked you out? Ha. Join the club, we got jackets.',
@@ -184,6 +226,17 @@ export const CONTACTS = {
     truth: ["Fine. Say it. But say it like you mean it or don't bother."],
     lie: ["Lie. Everybody does. The ones who don't get eaten.", "Give 'em the story they want. Keeps you breathing."],
     tired: "And quit looking like you're about to fold.",
+    foggy: "You sound like a guy I used to be. I didn't trust him either.",
+    moods: {
+      Happy: "grinning. Don't trust it",
+      Trust: "not swinging. That's something",
+      Fear: 'spooked. Hides it worse than me',
+      Surprise: 'blindsided',
+      Sadness: "sunk. Don't poke it",
+      Disgust: 'sick of all of it. Join the club',
+      Anger: 'pissed. I know pissed',
+      Anxiety: 'twitchy. Keeps a hand near the door',
+    },
     afterLast: {
       connected: "Heard {who} gave you the time of day. Don't let it go to your head.",
       pushed: '{who} cut you loose. Happens. Get back on the bike.',
@@ -222,10 +275,9 @@ export function callFor(contact, { state, currentName, currentKey, mood }) {
   const c = CONTACTS[contact];
   const bond = state.bonds?.[contact];
   const reliability = Math.min(0.95, c.sight + ((bond?.syncs ?? 0) + (bond?.bids ?? 0)) * 0.08);
-  const moods = Object.keys(MOOD_IMAGES);
   // A misread is their own feeling, projected (unless that's the real
   // mood, or they have none: then any wrong one).
-  const misread = c.dominant && c.dominant !== mood ? c.dominant : pick(moods.filter((m) => m !== mood));
+  const misread = c.dominant && c.dominant !== mood ? c.dominant : pick(MOODS.filter((m) => m !== mood));
   const read = mood && Math.random() < reliability ? mood : misread;
   const lean = Math.random() < c.bias ? 'lie' : 'truth';
   // How you left the last person: them (they just gave you their number),
@@ -236,8 +288,11 @@ export function callFor(contact, { state, currentName, currentKey, mood }) {
     : last.npc === contact ? c.afterLast?.me
     : c.afterLast?.[last.outcome]?.replace('{who}', lastName);
   // The image is colored the feeling it describes, matching the slice that
-  // glows on the wheel; their history with this person frames it if they have one.
-  const image = `{color:${read}}${MOOD_IMAGES[read]}{/color}`;
+  // glows on the wheel; their history with this person frames it if they have
+  // one. In deep water it comes through uncolored and the wheel stays dark.
+  const fogged = (state.truthDebt ?? 0) >= FOG_DEBT;
+  const words = c.moods[read];
+  const image = fogged ? words : `{color:${read}}${words}{/color}`;
   const knows = c.knows?.[currentKey];
   const lines = [
     greet ?? pick(c.greet),
@@ -249,6 +304,7 @@ export function callFor(contact, { state, currentName, currentKey, mood }) {
   lines.push(pick(c[lean]));
   const tip = c.byClass?.[state.loadout];
   if (tip) lines.push(tip);
+  if (fogged) lines.push(c.foggy);
   if (contact !== 'THERAPIST' && (state.stability ?? 10) <= 3) lines.push(c.tired);
-  return { lines, read, lean };
+  return { lines, read, lean, fogged };
 }

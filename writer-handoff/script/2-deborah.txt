@@ -35,6 +35,8 @@ OPENER [Crystals]: (Her smile tightens.) "You're not from our congregation, are 
 === deborah_01
 PROMPT: "God took my boy when He needed him. I just have to {color:Trust}trust{/color} that."
 MOOD: Sadness
+# A comforting lie: what they want to hear. It turns toward them now; the lake pays later.
+BID: lie
 
 -- TRUTH
 SAY: Your faith didn't protect him. Someone failed him.
@@ -55,6 +57,8 @@ NEXT: deborah_02_denial
 === deborah_02_denial
 PROMPT: "I knew you'd {color:Trust}understand{/color}. Most people don't want to hear it."
 MOOD: Happy
+# A comforting lie: what they want to hear. It turns toward them now; the lake pays later.
+BID: lie
 
 -- TRUTH
 SAY: I lied to you. Your grief deserves better than that.

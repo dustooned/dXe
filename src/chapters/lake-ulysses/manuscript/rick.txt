@@ -41,6 +41,8 @@ GATE: trust < 3 -> rick_shut_down
 PROMPT: "Guy looked at me {color:Fear}wrong{/color} outside. Now he's got a busted jaw and I got my patch back. That's just how it works out here."
 MOOD: Fear
 MASK: Anger
+# A comforting lie: what they want to hear. It turns toward them now; the lake pays later.
+BID: lie
 
 -- TRUTH
 SAY: That's not how it works. You just wanted a reason.
@@ -63,6 +65,8 @@ NEXT: rick_02_enabled
 PROMPT: "See, that's why I run with guys like you. Most people get {color:Disgust}soft{/color}, start asking questions."
 MOOD: Disgust
 MASK: Anger
+# A comforting lie: what they want to hear. It turns toward them now; the lake pays later.
+BID: lie
 
 -- TRUTH
 SAY: Maybe the questions are the only thing keeping you human.
@@ -146,6 +150,8 @@ NEXT: rick_02_enabled
 GATE: trust < 3 -> rick_shut_down
 PROMPT: "The guy outside." (He wipes his {color:Anger}knuckles{/color} on his jeans, slow, so that you watch him do it.) "What about him."
 MOOD: Anger
+# A comforting lie: what they want to hear. It turns toward them now; the lake pays later.
+BID: lie
 
 -- TRUTH
 SAY: You put him down and you want somebody to have seen you do it.
@@ -166,7 +172,7 @@ NEXT: rick_02_enabled
 === rick_03
 PROMPT: (He turns the empty glass in a slow circle.) "You know why I got the patch tattooed instead of just wearing it? Can't take off {color:Fear}skin{/color}."
 MOOD: Fear
-BID: truth
+BID: both
 
 -- TRUTH
 SAY: Sounds less like loyalty and more like you don't trust yourself to leave.

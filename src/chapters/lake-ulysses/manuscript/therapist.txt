@@ -151,17 +151,29 @@ LINE [therapist_02=lie]: "The dream can wait. Dreams are patient. Lakes are more
 TRYCALL: "One more thing. See the bottom of your screen? That's me. Go on, tap it."
 LINE: "Okay. You're calling me while I'm on the phone with you. Now there's two of me. Nobody needs two of me."
 LINE: "When you're stuck out there, call. I'll tell you what I'm reading off you, and off them. If your bars and Wi-Fi drop too low, I won't pick up. That's not me ignoring you. That's you not letting anyone in."
-LINE: "Make a real friend out there and they'll show up next to me. They'll tell you what they think. Doesn't mean they're right."
+LINE: "Make a real friend out there and they'll show up next to me. Everybody reads people their own way, so listen to how they put it. Doesn't mean they're right."
 LINE: "And if your carrier goes from 5G down to No Service? That's the lake talking, not your phone."
+# Lying is meant to feel good out there (warm haze, a soft chime, IT and SO
+# cheering a streak); he says so plainly, and names the quiet cost.
+LINE: "And I'll be straight with you. Out there, lying is going to feel good. Warm. Easy. Everybody smiles. I won't pretend it doesn't."
+LINE: "Nobody stops you. The water just gets thicker. Your calls come in blurry, your friends lose track of your story, and it all comes due at the end."
 LINE: "I'll have FEELZ send you a reminder, so you can't pretend you forgot."
-# His last exercise: the wheel comes back, no card. The player tries feelings
-# and watches the little screen; his feeling ({feel:X}, never shown) closes it
-# into a still circle, and only then does the call go on. One per class (each
-# class's wheel holds the feeling).
-TRYFEEL [Guns]: {feel:Sadness}"Last thing, before I go. Find me on your wheel. Forty people today, and it isn't even four. Watch the little screen beside me while you look."
-TRYFEEL [Bible]: {feel:Anxiety}"Last thing, before I go. Find me on your wheel. Three calls behind, two forms unsigned, and my coffee's cold. Watch the little screen beside me while you look."
-TRYFEEL [Crystals]: {feel:Anxiety}"Last thing, before I go. Find me on your wheel. Three calls behind, two forms unsigned, and my coffee's cold. Watch the little screen beside me while you look."
-LINE: "There. A circle that holds still. That's what it looks like when you've actually got someone. Go find a few more."
+# His last exercise, in two parts, teaching what every battle's scope does.
+# The wheel comes back, no card. His line wears "fine" ({mask:Happy}); his
+# real feeling ({feel:X}, never shown, on that class's wheel) is what the
+# shape answers to. Part one ({want:miss}): pick anything but him and see
+# apart (a busier shape, the needle). Part two: the real color starts to
+# flicker under his line; find it and the shape closes into a still circle.
+TRYFEEL [Guns]: {feel:Sadness}{mask:Happy}{want:miss}"Last thing, before I go. Pick any feeling on your wheel. Doesn't matter which. Watch the little screen beside me."
+TRYFEEL [Bible]: {feel:Anxiety}{mask:Happy}{want:miss}"Last thing, before I go. Pick any feeling on your wheel. Doesn't matter which. Watch the little screen beside me."
+TRYFEEL [Crystals]: {feel:Anxiety}{mask:Happy}{want:miss}"Last thing, before I go. Pick any feeling on your wheel. Doesn't matter which. Watch the little screen beside me."
+LINE: "See that? Not a circle. The further apart two feelings are on that wheel, the busier the shape gets."
+LINE: "And the needle on the left. Leaning right, you're moving together. Leaning left, you're pulling apart."
+TRYFEEL [Guns]: {feel:Sadness}{mask:Happy}"Now. I've told you I'm fine all call. Watch my line: every few seconds another color flickers under it. That's the real one. Find it."
+TRYFEEL [Bible]: {feel:Anxiety}{mask:Happy}"Now. I've told you I'm fine all call. Watch my line: every few seconds another color flickers under it. That's the real one. Find it."
+TRYFEEL [Crystals]: {feel:Anxiety}{mask:Happy}"Now. I've told you I'm fine all call. Watch my line: every few seconds another color flickers under it. That's the real one. Find it."
+LINE: "There. A circle that holds still. My line said fine. The shape doesn't lie. People do that out there too, so read the color underneath."
+LINE: "And the little blocks under it are what you've picked so far. Go find a few more."
 HANGUP: The call ends mid-sentence, the way his calls do. FEELZ goes dark in your hand, and the lake is very quiet.
 NOTIFY: FEELZ · HOMEWORK\nToday's practice: reach out\nSay hello to one neighbor.\nNotice what they care about. Ask about it.\nListen a little longer than feels comfortable.\nYou don't have to fix anything.
 IT [therapist_02=truth]: He's writing it down. Everything you said. Somewhere a file with your name on it just got thicker.

@@ -41,7 +41,10 @@
           "nextNodeId": "deborah_02_denial"
         }
       },
-      "mood": "Sadness"
+      "mood": "Sadness",
+      "bid": [
+        "lie"
+      ]
     },
     "deborah_02_denial": {
       "id": "deborah_02_denial",
@@ -79,7 +82,10 @@
           "nextNodeId": "deborah_03"
         }
       },
-      "mood": "Happy"
+      "mood": "Happy",
+      "bid": [
+        "lie"
+      ]
     },
     "deborah_02_confronted": {
       "id": "deborah_02_confronted",

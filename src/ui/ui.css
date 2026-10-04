@@ -607,6 +607,7 @@
 }
 
 .dx-status__clock {
+  position: relative;
   font-size: calc(8 * var(--fs));
   text-align: center;
 }
@@ -626,6 +627,7 @@
 /* Pixel sprites: each SVG cell is one "pixel"; dim cells show the empty
    part of the meter. Height sets the pixel size (8 rows). */
 .dx-status__icon {
+  position: relative;
   display: inline-flex;
   align-items: flex-end;
 }
@@ -639,10 +641,13 @@
 .dx-status__px .is-off { fill: rgba(255, 255, 255, 0.18); }
 .dx-status__icon.is-low .is-on { fill: #ff4d4d; }
 
-/* A meter moved: up pulses bright, down flickers. */
+/* A meter moved, readable without the words. Up: the icon swells with a
+   warm glow, its new cells charge in one by one (bright flash, then lit),
+   and pixel sparks float off it. Down: the icon glitches (shake, red/blue
+   split) and its lost cells flicker red and go dark. */
 .dx-status__icon.is-up,
 .dx-status__clock.is-up {
-  animation: dx-meter-up 0.9s ease-out;
+  animation: dx-meter-up 1.2s ease-out;
 }
 
 .dx-status__icon.is-down,
@@ -652,13 +657,53 @@
 
 @keyframes dx-meter-up {
   0% { transform: scale(1); filter: none; }
-  20% { transform: scale(1.45); filter: drop-shadow(0 0 4px #ffffff); }
+  18% { transform: scale(1.5); filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 7px #ffe27a); }
+  45% { transform: scale(1.15); filter: drop-shadow(0 0 4px #ffe27a); }
   100% { transform: scale(1); filter: none; }
 }
 
 @keyframes dx-meter-down {
-  0%, 30%, 60% { opacity: 0.15; }
-  15%, 45%, 100% { opacity: 1; }
+  0% { transform: translate(0, 0); filter: none; }
+  10% { transform: translate(-2px, 1px); filter: drop-shadow(2px 0 #ff3b1f) drop-shadow(-2px 0 #1e90ff); opacity: 0.4; }
+  22% { transform: translate(2px, -1px); opacity: 1; }
+  34% { transform: translate(-1px, 0); filter: drop-shadow(-2px 0 #ff3b1f) drop-shadow(2px 0 #1e90ff); opacity: 0.3; }
+  50% { transform: translate(1px, 1px); opacity: 1; }
+  66% { transform: translate(0, 0); filter: none; opacity: 0.6; }
+  100% { transform: none; filter: none; opacity: 1; }
+}
+
+.dx-status__px rect.is-gain { animation: dx-cell-gain 0.7s steps(1, end) both; }
+.dx-status__px rect.is-loss { animation: dx-cell-loss 0.9s steps(1, end) both; }
+
+@keyframes dx-cell-gain {
+  0% { fill: rgba(255, 255, 255, 0.18); }
+  15%, 45% { fill: #ffe27a; }
+  30% { fill: rgba(255, 255, 255, 0.18); }
+  60%, 100% { fill: var(--color-white); }
+}
+
+@keyframes dx-cell-loss {
+  0%, 30% { fill: #ff4d4d; }
+  15%, 45% { fill: rgba(255, 255, 255, 0.05); }
+  60% { fill: #ff4d4d; }
+  100% { fill: rgba(255, 255, 255, 0.18); }
+}
+
+.dx-status__spark {
+  position: absolute;
+  bottom: 30%;
+  width: calc(2 * var(--px));
+  height: calc(2 * var(--px));
+  background: #ffe27a;
+  box-shadow: 0 0 3px #ffe27a;
+  pointer-events: none;
+  opacity: 0;
+  animation: dx-spark 0.9s ease-out both;
+}
+
+@keyframes dx-spark {
+  0% { opacity: 1; transform: translate(0, 0); }
+  100% { opacity: 0; transform: translate(var(--sx, 0), calc(-22 * var(--px))); }
 }
 
 /* The word for what moved, under the bar, then gone. */
@@ -688,7 +733,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .dx-status__icon.is-up, .dx-status__icon.is-down,
-  .dx-status__clock.is-up, .dx-status__clock.is-down { animation: none; }
+  .dx-status__clock.is-up, .dx-status__clock.is-down,
+  .dx-status__px rect.is-gain, .dx-status__px rect.is-loss { animation: none; }
+  .dx-status__spark { display: none; }
 }
 
 .dx-status__dot {
@@ -1324,3 +1371,23 @@ svg .is-hinted path {
 }
 
 .dx-chapter-ask__back { opacity: 0.7; }
+
+/* Endings reached, on the chapter card (main.js endingsRow). */
+.dx-chapter-card__endings {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(4 * var(--px));
+  margin-top: calc(4 * var(--px));
+}
+.dx-chapter-card__ending {
+  font-size: calc(5.5 * var(--fs));
+  padding: calc(2 * var(--px)) calc(4 * var(--px));
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  opacity: 0.5;
+}
+.dx-chapter-card__ending.is-seen {
+  opacity: 1;
+  border-color: #fff;
+}

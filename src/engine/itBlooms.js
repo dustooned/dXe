@@ -20,9 +20,11 @@ export const BLOOM_IT_TEXT = {
     Bible: "You're not going to walk away from this clean. You know that now.",
     Crystals: 'Everything feels closer to the surface than it should.',
   },
+  // A full lake no longer ends anything early (the chapter goes on), so
+  // the last bloom is the bottom: warm, quiet, and not a verdict yet.
   10: {
-    Guns: 'Out of room. Time to answer for it.',
-    Bible: 'This is the reckoning you built, one comfortable lie at a time.',
-    Crystals: "There's nowhere left to put it. It's all coming up at once.",
+    Guns: "Bottom of the lake. Funny. It's warm down here.",
+    Bible: "All the way under now. It feels like rest. It isn't.",
+    Crystals: "Everything's gone soft and quiet. You could stay down here forever.",
   },
 };

@@ -13,9 +13,12 @@
 // Same contract as the old meter group: { el, destroy }.
 //
 // The icons are lo-fi pixel sprites (hard-edged SVG cells, no curves).
-// When a meter moves, its icon pops (up: a bright pulse; down: a flicker),
-// a word under the bar says what moved ("▲ connected"), and a two-note
-// blip rises or falls, pitched per meter so each is learnable by ear.
+// When a meter moves you can see it without reading a word: going up, the
+// newly lit cells charge in one by one with a flash and pixel sparks float
+// off the icon; going down, the icon glitches (shake, color split) and the
+// lost cells flicker out. A word under the bar says what moved ("▲
+// connected"), and a two-note blip rises or falls, pitched per meter so
+// each is learnable by ear.
 // `quiet` (meters not revealed yet) records the values without any of it.
 import { playMeterChange } from '../shell/audio.js';
 
@@ -27,15 +30,21 @@ let lastSeen = null;
 
 // A pixel sprite from rows of characters: '.' is empty, a digit is a cell
 // that lights when the level is at least that digit (0 = always lit).
-function sprite(rows, level, cls) {
+// `prev` (the level the last bar showed) marks the cells that just changed:
+// is-gain cells charge in, is-loss cells flicker out, staggered by level.
+function sprite(rows, level, cls, prev = level) {
   const h = rows.length;
   const w = rows[0].length;
   let cells = '';
   rows.forEach((row, y) => {
     [...row].forEach((ch, x) => {
       if (ch === '.') return;
-      const on = level >= Number(ch);
-      cells += `<rect x="${x}" y="${y}" width="1" height="1" class="${on ? 'is-on' : 'is-off'}"/>`;
+      const n = Number(ch);
+      const on = level >= n;
+      const was = prev >= n;
+      const moved = on && !was ? ' is-gain' : !on && was ? ' is-loss' : '';
+      const delay = moved ? ` style="animation-delay:${(on ? n - prev - 1 : prev - n) * 0.12}s"` : '';
+      cells += `<rect x="${x}" y="${y}" width="1" height="1" class="${on ? 'is-on' : 'is-off'}${moved}"${delay}/>`;
     });
   });
   return `<svg class="dx-status__px ${cls}" viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" aria-hidden="true">${cells}</svg>`;
@@ -83,6 +92,25 @@ function carrierFor(debt) {
   return 'No Service';
 }
 
+// Icon levels from meter values (0..10).
+const LEVELS = {
+  trust: (v) => Math.ceil(v / 2.5),
+  lucidity: (v) => Math.ceil(v / 3.4),
+  stability: (v) => Math.ceil(Math.max(0, Math.min(10, v)) / 2.5),
+};
+
+// Pixel sparks that float up off an icon that just rose.
+function sparks(icon) {
+  for (let i = 0; i < 6; i++) {
+    const s = document.createElement('span');
+    s.className = 'dx-status__spark';
+    s.style.setProperty('--sx', `${Math.round((Math.random() - 0.5) * 22)}px`);
+    s.style.left = `${15 + Math.random() * 70}%`;
+    s.style.animationDelay = `${i * 0.07}s`;
+    icon.appendChild(s);
+  }
+}
+
 function pad(n) {
   return String(n).padStart(2, '0');
 }
@@ -95,6 +123,9 @@ export function createStatusBar(stats, { typing = false, airplane = false, quiet
   const lucidity = stats.lucidity ?? 0;
   const stability = stats.stability ?? 0;
   const debt = stats.truthDebt ?? 0;
+  // What the last bar showed, so the cells that just changed can animate.
+  const prev = !quiet && lastSeen ? lastSeen : { trust, lucidity, stability };
+  const prevLevel = (m, v) => (airplane ? 0 : LEVELS[m](v));
 
   const el = document.createElement('div');
   el.className = `dx-status${airplane ? ' is-airplane' : ''}`;
@@ -103,12 +134,12 @@ export function createStatusBar(stats, { typing = false, airplane = false, quiet
 
   el.innerHTML = `
     <span class="dx-status__carrier">${airplane ? '✈' : carrierFor(debt)}</span>
-    <span class="dx-status__clock" data-meter="integrity"></span>
+    <span class="dx-status__clock" data-meter="integrity"><span class="dx-status__time"></span></span>
     <span class="dx-status__right">
       ${typing ? '<span class="dx-status__dot"></span>' : ''}
-      <span class="dx-status__icon" data-meter="trust">${sprite(SIGNAL, airplane ? 0 : Math.ceil(trust / 2.5), 'dx-status__signal')}</span>
-      <span class="dx-status__icon" data-meter="lucidity">${sprite(WIFI, airplane ? 0 : Math.ceil(lucidity / 3.4), 'dx-status__wifi')}</span>
-      <span class="dx-status__icon${stability <= 2 ? ' is-low' : ''}" data-meter="stability">${sprite(BATTERY, Math.ceil(Math.max(0, Math.min(10, stability)) / 2.5), 'dx-status__battery')}</span>
+      <span class="dx-status__icon" data-meter="trust">${sprite(SIGNAL, airplane ? 0 : LEVELS.trust(trust), 'dx-status__signal', prevLevel('trust', prev.trust))}</span>
+      <span class="dx-status__icon" data-meter="lucidity">${sprite(WIFI, airplane ? 0 : LEVELS.lucidity(lucidity), 'dx-status__wifi', prevLevel('lucidity', prev.lucidity))}</span>
+      <span class="dx-status__icon${stability <= 2 ? ' is-low' : ''}" data-meter="stability">${sprite(BATTERY, LEVELS.stability(stability), 'dx-status__battery', prevLevel('stability', prev.stability))}</span>
     </span>
   `;
 
@@ -126,7 +157,9 @@ export function createStatusBar(stats, { typing = false, airplane = false, quiet
     const words = document.createElement('span');
     words.className = 'dx-status__words';
     for (const { meter, up } of changes) {
-      el.querySelector(`[data-meter="${meter}"]`)?.classList.add(up ? 'is-up' : 'is-down');
+      const icon = el.querySelector(`[data-meter="${meter}"]`);
+      icon?.classList.add(up ? 'is-up' : 'is-down');
+      if (up && icon) sparks(icon);
       const w = document.createElement('span');
       w.className = up ? 'is-up' : 'is-down';
       w.textContent = `${up ? '▲' : '▼'} ${WORDS[meter]}`;
@@ -142,6 +175,7 @@ export function createStatusBar(stats, { typing = false, airplane = false, quiet
   // starts to slip: some ticks show the wrong minutes; near the bottom it
   // can't hold a time at all.
   const clock = el.querySelector('.dx-status__clock');
+  const time = el.querySelector('.dx-status__time'); // its own span, so sparks on the clock survive each tick
   function tick() {
     const now = new Date();
     let text = `${now.getHours() % 12 || 12}:${pad(now.getMinutes())}`;
@@ -154,7 +188,7 @@ export function createStatusBar(stats, { typing = false, airplane = false, quiet
     } else {
       clock.classList.remove('is-glitch');
     }
-    clock.textContent = text;
+    time.textContent = text;
   }
   tick();
   const timer = setInterval(tick, 1000);
@@ -179,6 +213,7 @@ export function createStatusBar(stats, { typing = false, airplane = false, quiet
     icon?.classList.remove('is-up', 'is-down');
     void icon?.offsetWidth;
     icon?.classList.add('is-up');
+    if (icon) sparks(icon);
     el.querySelector('.dx-status__words')?.remove();
     const words = document.createElement('span');
     words.className = 'dx-status__words';

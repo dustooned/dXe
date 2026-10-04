@@ -21,6 +21,9 @@ const CHAPTERS = {
     banner: { src: '/assets/shared/title/spr_title_bg.png', frames: 7, tile: [500, 288], tint: '#1f8a8a' },
     // Where 'skip the story' starts a returning player.
     skipTo: 'feelz-launch',
+    // Its endings, shallow to deep: the card shows which you've reached, the
+    // rest as ??? (a reason to go back and go under).
+    endings: [['CLEAN_CUT', 'CLEAN CUT'], ['FUNCTIONAL_MASK', 'FUNCTIONAL MASK'], ['COLLAPSE', 'COLLAPSE'], ['LIVING_LIE', 'LIVING LIE']],
     // Hovering its card: the lake's ambience, low, and a few watery notes.
     ambience: { src: '/assets/lake-ulysses/audio/lk_01.mp3', motif: [['E4', 420], ['G4', 420], ['B4', 620], ['A4', 1000]] },
   },
@@ -315,6 +318,15 @@ function beginTransition(destination) {
 
 // ─── Chapter select ───────────────────────────────────────────────────────────
 
+// The chapter's endings as a row of chips: the ones you've reached by name,
+// the rest as ??? — from the shallowest water to the deepest.
+function endingsRow(chapter, save) {
+  if (!chapter.endings) return '';
+  const seen = new Set(save.endingsSeen);
+  const chips = chapter.endings.map(([key, name]) => `<span class="dx-chapter-card__ending${seen.has(key) ? ' is-seen' : ''}">${seen.has(key) ? name : '???'}</span>`).join('');
+  return `<span class="dx-chapter-card__endings" aria-label="Endings reached">${chips}</span>`;
+}
+
 function renderMenu() {
   teardown();
   const save = loadSave();
@@ -386,7 +398,7 @@ function renderMenu() {
       btn.style.setProperty('--tint', b.tint ?? 'transparent');
     }
     const done = save.chaptersCompleted.includes(chapterId);
-    btn.innerHTML = `<span class="dx-chapter-card__bg" aria-hidden="true"><span class="dx-chapter-card__strip"></span></span><span class="dx-chapter-card__title"></span><span class="dx-chapter-card__meta">${done ? 'PLAYED ✓' : 'NEW'}</span>`;
+    btn.innerHTML = `<span class="dx-chapter-card__bg" aria-hidden="true"><span class="dx-chapter-card__strip"></span></span><span class="dx-chapter-card__title"></span><span class="dx-chapter-card__meta">${done ? 'PLAYED ✓' : 'NEW'}</span>${endingsRow(chapter, save)}`;
     btn.querySelector('.dx-chapter-card__title').textContent = chapter.title;
     btn.addEventListener('click', () => {
       // Mouse: straight in. Touch: the art fills the screen first and it

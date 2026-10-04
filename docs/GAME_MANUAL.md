@@ -178,8 +178,28 @@ Nearly every lie adds to it (+2 to +4), and **every truth clears it by
 play. The player sees it as the lake gauge (§2): its five statuses
 (IDEAL / MARGINAL / HIGH / CONTAMINATED / OVER LIMIT) line up exactly with
 the four endings, so a status change means the ending they're heading
-toward just changed. Hit 10 anywhere, mid-NPC or not, and the game cuts
-straight to the Reckoning — no more encounters, no matter who's left.
+toward just changed. Debt tops out at 10 but never ends the chapter
+early: every NPC is still met, and the debt only picks the ending.
+
+**Lying feels good, on purpose** (2026-10-04). Avoidance pays off now and
+costs later, so the game does too:
+- **Relief:** every lie plays a soft, warm chord (`audio.playRelief`). The
+  truth gets none.
+- **Warm water:** as debt rises an amber haze breathes in from the screen's
+  edges and the whole mix goes muffled, like hearing it from under the
+  surface (`engine/lake.js hazeFor`, `audio.setHaze`, `.dx-haze`). Cozy,
+  not scary.
+- **Cheering:** two lies in a row and IT and SO turn co-conspirators
+  ("Smooth. They didn't even blink." / "See? Easier."), once an encounter,
+  never sharpened by the lake (`COZY_LINES` in `dialogScene.js`). A truth
+  resets the streak (`run.lieStreak`).
+- **Comforting lies are bids** for Deborah, Samun and Rick, so a liar can
+  still connect (Rwanda only warms to the truth).
+- **The quiet cost:** from debt 6 calls come through uncolored, the wheel
+  doesn't light, and the friend can't follow your story (`foggy` lines in
+  `engine/contacts.js`). The rest comes due at the Reckoning and ending.
+The debt-10 IT/SO bloom is the bottom of the lake, warm and quiet, not a
+verdict. The Therapist explains all of this at the end of the tutorial.
 Every lie big enough to matter is also logged, quietly, to a running
 **Truth Ledger** the player never sees until it comes due.
 
@@ -202,8 +222,10 @@ always there, but only picks up when your bars and Wi-Fi are both 4 or
 more; otherwise the call fails. Anyone who **trusts** you joins after
 their stay-in-touch moment (below). A call rings, then the caller (their
 avatar on the left of the box) greets you in their own way, reads the
-person you're facing (their mood's slice glows on the wheel; the read is
-more reliable the stronger your bond), and advises truth or lie from
+person you're facing in their own words (each contact has their own
+phrase for all eight feelings: Rwanda sees "red. Cadmium red," Rick
+just "pissed. I know pissed"; the mood's slice glows on the wheel; the
+read is more reliable the stronger your bond), and advises truth or lie from
 their own bias (Rick pushes lies, Rwanda pushes truth). The Therapist
 also reads your weakest vital. One call per contact per encounter.
 Content: `engine/contacts.js`.
@@ -213,8 +235,8 @@ heard (connected: "I heard about you and Rwanda"; pushed away: "Samun
 kicked you out? Join the club"; or it was them: "Missed me already?").
 **Who you're facing:** each contact has history with the others and
 frames the read through it ("Rick had me paint his tank once. Paid cash,
-wouldn't look at it. He's *running hot*, but that's the coat, not the
-guy"). **Your class:** a closing tip aimed at your habit (Guns braces,
+wouldn't look at it. Right now he's *red. Cadmium red*. That's the coat,
+though, not the guy"). **Your class:** a closing tip aimed at your habit (Guns braces,
 Bible reaches for the right words, Crystals soaks up everyone's weather).
 
 ### IT and SO watch your pace
@@ -255,7 +277,7 @@ section.
 
 ### The Reckoning
 
-Once Truth Debt maxes out (or the four NPCs are done), the player is
+Once the four NPCs are done, the player is
 called down to the water by **Pastor Gabriel** (§5), standing waist-deep
 in the lake. **His entrance:** in the dark, the death clock ticks
 11:59:56 → 11:59:59, then strikes midnight: three C64 bell tolls (after
@@ -324,7 +346,13 @@ A heart-monitor band runs across the portrait. Their line sits on top, yours und
 **Two instruments either side of the portrait** (borrowed from audio engineering; both describe the two of you, neither grades you):
 
 - **Correlation needle (left):** from − (pulling against each other) through 0 (unrelated) to + (moving as one). It leans by how your feeling sits against theirs, and wanders less the closer you are; full trust with their feeling pins it at +.
-- **Vectorscope (right):** your signal plotted against theirs, a Lissajous figure. The shape is the ratio between your feeling and the one they're showing, on Plutchik's wheel (the FEELZ wheel's own order): the same feeling is a circle (1:1), a neighbor a knot (2:3), two apart a weave (8:9), three apart a denser loop (4:5), opposites a tangle that never settles (7:5, the tritone). How still it holds is closeness: drifting when far apart, locked when close, a still glowing circle at full trust. No feeling held, or shut out: a flat line.
+- **Vectorscope (right):** your signal plotted against theirs, a Lissajous figure. The shape is the ratio between your feeling and the one they're really in (not a mask: the line can lie, the shape can't), on Plutchik's wheel (the FEELZ wheel's own order): the same feeling is a circle (1:1), a neighbor a knot (2:3), two apart a weave (8:9), three apart a denser loop (4:5), opposites a tangle that never settles (7:5, the tritone). How still it holds is closeness: drifting when far apart, locked when close, a still glowing circle at full trust. No feeling held, or shut out: a flat line.
+
+**Masks** show one color on their line and flicker the real one underneath (about every two seconds); only the real one syncs, and the vectorscope answers to it.
+
+**How it's taught (2026-10-04).** The Therapist's last exercise has two parts. First he asks you to pick any feeling but his (his line wears a "fine" mask) and names what apart looks like: a busier shape, the needle leaning left. Then his real color starts to flicker under his line and you find it: a still circle. "My line said fine. The shape doesn't lie." In real encounters, a **FEELZ tip** (`ui/feelzTip.js`) slides up above the lake the first time each piece does something (a mask, a busy shape, the needle left, a clean circle, the pick blocks), once a run, with a tiny picture of the thing, while the scope frames that piece in a pulsing gold box (`getHighlight`). It never blocks and goes away on its own.
+
+**Meters you can see move (2026-10-04).** When a status-bar meter rises, its new cells charge in one by one with a gold flash and pixel sparks float off the icon; when it drops, the icon glitches (shake, red/blue split) and the lost cells flicker red and go dark. The small words under the bar stay, but you don't need them.
 
 ### The music of an encounter
 

@@ -1669,3 +1669,88 @@
 }
 
 .dx-fax__more.is-up svg { transform: scaleY(-1); }
+
+/* Deep water (dialogScene.js, engine/lake.js hazeFor): a warm, drowsy haze
+   closes in from the edges as the lake fills — amber, soft, slowly
+   breathing. Cozy, not threatening; the center stays clear to read. */
+.dx-haze {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 45%,
+    transparent calc(70% - 40% * var(--haze, 0)),
+    rgba(255, 170, 90, calc(0.18 + 0.32 * var(--haze, 0))) 100%);
+  mix-blend-mode: screen;
+  opacity: calc(0.35 + 0.65 * var(--haze, 0));
+  animation: dx-haze-breathe 7s ease-in-out infinite alternate;
+}
+
+@keyframes dx-haze-breathe {
+  from { transform: scale(1); }
+  to { transform: scale(1.04); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-haze { animation: none; }
+}
+
+/* FEELZ tips (ui/feelzTip.js): the app's banner, low on the screen above
+   the lake, so the scope it's talking about stays in view up top.
+   Big, short, high-contrast; a tiny picture of the thing on the left, in
+   the same gold as the frame the scope draws around it. */
+.dx-tip {
+  position: absolute;
+  bottom: calc(82 * var(--px));
+  left: calc(14 * var(--px));
+  right: calc(14 * var(--px));
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: calc(10 * var(--px));
+  padding: calc(9 * var(--px)) calc(10 * var(--px));
+  background: rgba(10, 10, 14, 0.94);
+  border: 1px solid rgba(255, 226, 122, 0.55);
+  border-left: calc(4 * var(--px)) solid #ffe27a;
+  box-shadow: 0 calc(4 * var(--px)) calc(14 * var(--px)) rgba(0, 0, 0, 0.6);
+  color: #ffe27a;
+  cursor: pointer;
+}
+
+.dx-tip.is-entering { animation: dx-tip-in 0.4s steps(6, end) both; }
+.dx-tip.is-leaving { animation: dx-tip-out 0.25s steps(4, end) both; }
+
+.dx-tip__icon {
+  flex: none;
+  width: calc(36 * var(--px));
+  height: calc(24 * var(--px));
+  color: #ffe27a;
+}
+
+.dx-tip__body p { margin: 0; }
+
+.dx-tip__app {
+  font-size: calc(6 * var(--fs));
+  letter-spacing: 0.12em;
+  opacity: 0.7;
+  margin-bottom: calc(4 * var(--px)) !important;
+}
+
+.dx-tip__text {
+  font-size: calc(8 * var(--fs));
+  line-height: 1.55;
+  color: var(--color-white);
+}
+
+@keyframes dx-tip-in {
+  from { opacity: 0; transform: translateY(calc(14 * var(--px))); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes dx-tip-out {
+  to { opacity: 0; transform: translateY(calc(10 * var(--px))); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-tip.is-entering, .dx-tip.is-leaving { animation: none; }
+}

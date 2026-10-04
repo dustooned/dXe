@@ -80,6 +80,11 @@ export function react({ delta = 0, caught = false, missed = false, closeness } =
   d.answerGiven(); // the band grows with the conversation, not with the tension
 }
 
+// The music steps back (a trauma story is told over silence-but-for-voices).
+export function duck(on, fade = 0.8) {
+  active?.music.player.duck(on, fade);
+}
+
 export function end(opts = { fade: 0.8 }) {
   if (!active) return;
   active.music.end(opts);

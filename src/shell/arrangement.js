@@ -114,6 +114,11 @@ export function createArrangementPlayer(data, { voiceSet = data.id, tuning = {} 
 
     // Tempo and section changes — see engine/arrangementClock.js.
     setTuning: applyTuning,
+    // Fade the whole arrangement out (and back) without stopping its clock.
+    duck(on, fade = 0.8) {
+      if (!bus || !graph) return;
+      bus.gain.setTargetAtTime(on ? 0.0001 : level, graph.ctx.currentTime, Math.max(0.01, fade / 3));
+    },
     // Bring the secret track in (or take it out) over `fade` seconds.
     setSecret(on, fade = 3) { secretOn = !!on; secretFade = fade; applyMix(); },
     hasSecret: () => data.parts.some((p) => p.secret),

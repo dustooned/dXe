@@ -49,6 +49,9 @@ let encounterMood = 0;
 let currentDissonance = 0;
 let ambientSource = null;
 let ambientGain = null;
+let ambientBase = 0;
+// Deep water muffles the whole mix (setHaze); the analyser still hears it clean.
+let hazeFilter = null;
 let titleSources = [];
 
 let ambientGeneration = 0;
@@ -169,7 +172,11 @@ function ensureContext() {
     ctx = new AudioCtx();
     masterGain = ctx.createGain();
     masterGain.gain.value = turnPaused || hushed ? 0 : masterVolume;
-    masterGain.connect(ctx.destination);
+    hazeFilter = ctx.createBiquadFilter();
+    hazeFilter.type = 'lowpass';
+    hazeFilter.frequency.value = 20000;
+    hazeFilter.Q.value = 0.5;
+    masterGain.connect(hazeFilter).connect(ctx.destination);
     // A parallel tap, not part of the output chain — masterGain still goes
     // straight to ctx.destination above regardless of whether anything
     // ever reads from this. ui/oscilloscope.js reads it to draw whatever's
@@ -188,6 +195,37 @@ function ensureContext() {
 export function getAudioGraph() {
   const c = ensureContext();
   return { ctx: c, out: masterGain };
+}
+
+// Lies sink the player into warm, groggy water (engine/lake.js hazeFor):
+// the whole mix rolls off its highs as if heard from under the surface.
+// 0 is clear; 1 is about 2.4 kHz. Eases there over a couple of seconds.
+export function setHaze(amount = 0, fadeSec = 2) {
+  if (!ctx || !hazeFilter) return;
+  const a = clamp(amount, 0, 1);
+  hazeFilter.frequency.setTargetAtTime(20000 * Math.pow(2400 / 20000, a), ctx.currentTime, Math.max(0.01, fadeSec / 3));
+}
+
+// The little warm exhale of a lie that went down easy: a soft major chord
+// struck high and left to ring, rolled bottom to top. Relief, not reward —
+// it never plays for the truth, which has to stand on its own.
+export function playRelief() {
+  const audioCtx = ensureContext();
+  const t = audioCtx.currentTime + 0.05;
+  [523.25, 659.25, 783.99, 1046.5].forEach((hz, i) => {
+    const at = t + i * 0.07;
+    const osc = audioCtx.createOscillator();
+    osc.type = 'triangle';
+    osc.frequency.value = hz;
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0.0001, at);
+    g.gain.exponentialRampToValueAtTime(0.045, at + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, at + 1.6);
+    osc.connect(g).connect(masterGain);
+    osc.start(at);
+    osc.stop(at + 1.7);
+    osc.onended = () => g.disconnect();
+  });
 }
 
 // Read-only handle onto the live master mix — see ensureContext's analyser
@@ -274,6 +312,7 @@ export async function startAmbient(url, volume = AMBIENT_MUSIC_GAIN) {
   if (generation !== ambientGeneration) return; // stopped or replaced mid-load
   ambientGain = audioCtx.createGain();
   ambientGain.gain.value = volume;
+  ambientBase = volume;
   ambientGain.connect(masterGain);
   ambientSource = audioCtx.createBufferSource();
   ambientSource.buffer = buffer;
@@ -633,6 +672,8 @@ export async function startLeitmotif(npcKey) {
     source.connect(gain);
     source.start();
     activeLeitmotif = {
+      gain,
+      base: targetGain,
       stop() {
         gain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.08);
         setTimeout(() => { try { source.stop(); } catch (_) {} gain.disconnect(); }, 400);
@@ -673,6 +714,8 @@ export async function startLeitmotif(npcKey) {
   playNote();
 
   activeLeitmotif = {
+    gain,
+    base: LEITMOTIF_GAIN,
     stop() {
       stopped = true;
       cancelLater(timer);
@@ -703,6 +746,18 @@ export function nudgeLeitmotifMood(delta) {
 // calculations that could drift apart.
 export function getLeitmotifMood() {
   return encounterMood;
+}
+
+// Music only — ambient bed and leitmotif — fades out and back (a trauma story
+// is told over it: shell/encounterMusic.js ducks an arrangement the same way).
+// Typing, voices, IT and SO keep sounding.
+export function duckMusic(on, fadeSec = 0.8) {
+  if (!ctx) return;
+  const t = ctx.currentTime;
+  const tc = Math.max(0.01, fadeSec / 3);
+  if (ambientGain) ambientGain.gain.setTargetAtTime(on ? 0.0001 : ambientBase, t, tc);
+  const lm = activeLeitmotif;
+  if (lm?.gain) lm.gain.gain.setTargetAtTime(on ? 0.0001 : lm.base, t, tc);
 }
 
 // An encounter whose music is a baked arrangement (shell/encounterMusic.js)

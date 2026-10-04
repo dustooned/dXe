@@ -35,9 +35,8 @@ import endings from './content/endings.json';
 export const id = 'lake-ulysses';
 export const title = 'Truth Debt: Lake Ulysses';
 
-// The chapter is just this list, in order. `jumpTo` (see sceneSequencer.js)
-// lets a dialog scene skip straight to 'reckoning' when Truth Debt maxes
-// out mid-NPC. Adding a cutscene before an NPC, or a mini-game between two,
+// The chapter is just this list, in order. A full lake no longer cuts the
+// chapter short: every NPC is met, and the debt picks the ending. Adding a cutscene before an NPC, or a mini-game between two,
 // is just another entry here — see docs/SCENE_TYPES.md.
 //
 // 'it-intro' is IT introducing itself — three class-neutral lines, before
@@ -112,6 +111,12 @@ const initialRunState = {
   stability: 5,
   lucidity: 5,
   truthDebt: 0,
+  // Lies in a row (a truth resets it): IT and SO cheer a streak on.
+  lieStreak: 0,
+  // FEELZ tips already shown this run (dialogScene.js showTip), each once.
+  tipsShown: [],
+  // How many of IT/SO's co-conspirator lines this run has used.
+  cozySaid: 0,
   ledger: [],
   bloomsFired: [],
   lakeHealth: 1,

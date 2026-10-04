@@ -35,9 +35,9 @@ export const SO_BLOOM_TEXT = {
     Crystals: 'Should, according to what. You made that number up.',
   },
   10: {
-    Guns: 'Answer to who. Nobody actually asked you anything.',
-    Bible: 'Built, or it just happened and you needed a story with you at the center of it.',
-    Crystals: "Or it was always this size and you're only noticing it now that you're looking.",
+    Guns: 'Or this is just what peace feels like. Nobody said it had to be dry.',
+    Bible: "Or it is rest. Who's to say? Stay a while.",
+    Crystals: "Or forever's fine. Nobody's asking you to come up.",
   },
 };
 

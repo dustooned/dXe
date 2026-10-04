@@ -12,7 +12,7 @@ import { BLOOM_IT_TEXT } from '../engine/itBlooms.js';
 import { emotionLeanText } from '../engine/itEmotionLean.js';
 import { SO_BLOOM_TEXT, soEmotionLeanText } from '../engine/soRebuttals.js';
 import { FLIP_TEXT, encounterSide } from '../engine/itFindings.js';
-import { fillReadings } from '../engine/lake.js';
+import { fillReadings, hazeFor } from '../engine/lake.js';
 import { recordTrust, shouldUnlockTrust, isTrusted } from '../engine/trust.js';
 import { giftFor } from '../engine/unlocks.js';
 import { STALL_MARKS, FAST_MS, FAST_STREAK, SKIM_STREAK, pressureLine } from '../engine/itPressure.js';
@@ -27,7 +27,7 @@ import { createFeelzDartboard } from '../ui/feelzDartboard.js';
 import { EMOTIONS, emotionColor, emotionsForClass, getDominantEmotion } from '../engine/loadout.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
-import { createOscilloscope } from '../ui/oscilloscope.js';
+import { createOscilloscope, wheelSteps } from '../ui/oscilloscope.js';
 import { createSpotlight } from '../ui/spotlight.js';
 import { loadSettings } from '../shell/settings.js';
 import * as encounterMusic from '../shell/encounterMusic.js';
@@ -35,6 +35,7 @@ import * as fx from '../shell/fx.js';
 import * as audio from '../shell/audio.js';
 import * as voices from '../shell/voices.js';
 import { quoteSpeech } from '../ui/speech.js';
+import { createFeelzTip } from '../ui/feelzTip.js';
 
 // Weak vs strong hit feedback is derived from how big a swipe's effects
 // are, not from truth/lie — intensity signals weight, not judgment.
@@ -58,6 +59,17 @@ function moodHex(mood) {
 
 // What each NPC says when they catch you contradicting yourself and the
 // answer has no CAUGHT line of its own.
+// IT and SO turn co-conspirators on a lie streak: [IT, SO], one pair per
+// encounter, in order across the run. They make lying feel good, which is
+// the point — the cost shows up later and quietly (the haze, foggy calls,
+// the ending), never as a scolding here.
+const COZY_LINES = [
+  ["Smooth. They didn't even blink.", 'See? Easier. Nobody drowns from one more.'],
+  ["Feel that? Warm. That's what it's like when nobody's mad at you.", "And they're smiling. You did that. Why fix what works?"],
+  ["The water's nice down here. Quiet.", "The truth can wait. It's patient. You're tired."],
+  ["You're good at this. Like, actually good.", "Everybody's happier. That's not a lie. That's a fact."],
+];
+
 const CAUGHT_FALLBACK = {
   DEBORAH: '"That\'s not what you said a minute ago, honey."',
   RWANDA: '"Huh. That\'s a different answer."',
@@ -161,6 +173,12 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // This NPC's own callout, when they catch you contradicting yourself in
   // front of them: shown as the last page of their reaction.
   let pendingCaught = null;
+  // IT and SO cheering a lie streak on (COZY_LINES), shown after the reaction.
+  let pendingCozy = null;
+  // The FEELZ tip on screen (ui/feelzTip.js) and the scope piece it frames.
+  let tip = null;
+  let tipHighlight = null;
+  let cozyThisEncounter = false;
   // Phone: the live status bar (rebuilt each render; its clock ticks), and
   // who's already been called this encounter (one call per contact).
   let statusBar = null;
@@ -266,6 +284,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // then on the oscilloscope (the tell), and only the real one syncs.
     easeMoodTo(shownMood(currentNode()));
     drama.under = currentNode().mask ? moodHex(currentNode().mood) : null;
+    if (currentNode().mask) {
+      const at = currentNodeId;
+      later(() => { if (stage === 'prompt' && currentNodeId === at) showTip('mask', 'mask', 'Two colors on their line. One is a cover. The one flickering underneath is real, and the shape follows it.', 'trace'); }, 1800);
+    }
     // The heartbeat would fight an arrangement's own drums.
     if (!encounterMusic.claims(npc.npc)) audio.startPulse(() => drama.tension);
     audio.strikeChord(emotionsForClass(run.get().loadout, run.get().unlocked), harmonicFunction());
@@ -377,7 +399,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
       getHistory: () => encounterPicks.map(moodHex),
       // The feelings the vectorscope and correlation needle compare: yours
       // (held, else the last you picked) against the one they're showing.
-      getFeelings: () => ({ mine: activeEmotion ?? encounterPicks.at(-1) ?? null, theirs: (stage === 'outro' && trial ? trial.target : shownMood(currentNode())) ?? null }),
+      // Theirs is the real feeling, not a mask: the line can lie, the shape
+      // can't (the same feeling that syncs, so the tutorial's lesson holds).
+      getFeelings: () => ({ mine: activeEmotion ?? encounterPicks.at(-1) ?? null, theirs: (stage === 'outro' && trial ? trial.target : currentNode()?.mood ?? shownMood(currentNode())) ?? null }),
+      getHighlight: () => tipHighlight,
       getVisibility: npc.reveal ? () => ({ traces: isRevealed('scope'), instruments: isRevealed('instruments') }) : undefined,
     });
 
@@ -422,7 +447,12 @@ export function mount(stageEl, scene, { run, onComplete }) {
       const tryFeel = outroBeat.kind === 'tryfeel';
       if (tryCall) tapHint.textContent = '(tap his contact)';
       if (tryCall) fireCue('dock');
-      if (tryFeel) tapHint.textContent = trial.matched ? '(tap to continue)' : '(find him on your wheel)';
+      if (tryFeel) {
+        tapHint.textContent = trial.matched ? '(tap to continue)'
+          : trial.want === 'miss' ? (activeEmotion ? '(try a different one)' : '(pick any feeling)')
+          : '(find him on your wheel)';
+        if (trial.drawn) tapHint.hidden = false; // a re-render after a pick: the line is already up
+      }
       typewriter = createTypewriter(line, outroBeat.text, {
         onChar: audio.playTypewriterTick,
         onDone: () => { tapHint.hidden = false; if (trial) trial.drawn = true; },
@@ -442,9 +472,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
           onSelect: (emotion) => {
             activeEmotion = emotion;
             trial.pickedAt = performance.now();
-            if (emotion === trial.target && !trial.matched) {
+            // want:miss is done by any feeling but his; want:match by his.
+            const done = trial.want === 'miss' ? emotion !== trial.target : emotion === trial.target;
+            if (done && !trial.matched) {
               trial.matched = true;
-              audio.playSyncChime();
+              if (trial.want !== 'miss') audio.playSyncChime();
             }
             render();
           },
@@ -607,6 +639,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
             else audio.playSyncChime();
           }
           render();
+          scopeTip(emotion);
         },
       });
       interactive.appendChild(dartboard.el);
@@ -699,7 +732,18 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
     if (stage === 'prompt' && isRevealed('meters') && isRevealed('dock')) content.appendChild(createDock(runState));
     content.appendChild(lake);
+    // Deep water: a warm haze closes in from the edges and the sound goes
+    // soft, the deeper the lake gets. Cozy, not threatening.
+    const haze = hazeFor(runState.truthDebt ?? 0);
+    audio.setHaze(haze);
+    if (haze > 0) {
+      const hazeEl = document.createElement('div');
+      hazeEl.className = 'dx-haze';
+      hazeEl.style.setProperty('--haze', haze.toFixed(2));
+      screen.appendChild(hazeEl);
+    }
     stageEl.appendChild(screen);
+    tip?.attach(stageEl); // the stage was just cleared; a tip stays up across renders
     placeScopeBand(screen, scopeCanvas, portrait.el);
 
     // A HUD piece's first appearance is spotlit together with the line
@@ -851,6 +895,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     run.set({ emotionCounts: { ...counts, [activeEmotion]: (counts[activeEmotion] ?? 0) + 1 } });
     // In order, for the oscilloscope's history strip (this encounter only).
     encounterPicks.push(activeEmotion);
+    if (encounterPicks.length === 2) later(() => showTip('dots', 'dots', 'Each block under the scope is a feeling you picked in this talk.', 'dots'), 900);
 
     pendingEdge = edge;
     reactionEmotion = activeEmotion;
@@ -869,6 +914,23 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // this choice just left it — the answer to the swipe, not a repeat of
     // where things stood before it.
     audio.strikeChord(emotionsForClass(run.get().loadout, run.get().unlocked), harmonicFunction());
+
+    // A lie goes down easy: a warm exhale, and the water gets a little
+    // cozier. Two in a row and IT and SO start cheering (once an encounter,
+    // never in the tutorial). A truth breaks the streak.
+    if (swipeKey === 'lie') {
+      audio.playRelief();
+      const streak = (run.get().lieStreak ?? 0) + 1;
+      run.set({ lieStreak: streak });
+      const said = run.get().cozySaid ?? 0;
+      if (streak >= 2 && !cozyThisEncounter && !npc.reveal && said < COZY_LINES.length) {
+        pendingCozy = COZY_LINES[said];
+        cozyThisEncounter = true;
+        run.set({ cozySaid: said + 1 });
+      }
+    } else {
+      run.set({ lieStreak: 0 });
+    }
 
     // Freeze frame: the committed card hangs for a beat before anything
     // answers it.
@@ -906,6 +968,28 @@ export function mount(stageEl, scene, { run, onComplete }) {
     });
     freshFeeling = gift;
     return gift;
+  }
+
+  // FEELZ tips (ui/feelzTip.js): the first time each piece of the scope does
+  // something in a real encounter, the app says what it means, once a run,
+  // and frames that piece in gold. The tutorial teaches these itself.
+  function showTip(key, icon, text, highlight) {
+    if (npc.reveal || tip || !isRevealed('instruments')) return;
+    const shown = run.get().tipsShown ?? [];
+    if (shown.includes(key)) return;
+    run.set({ tipsShown: [...shown, key] });
+    tipHighlight = highlight;
+    tip = createFeelzTip({ icon, text, onGone: () => { tip = null; tipHighlight = null; } });
+    tip.attach(stageEl);
+  }
+
+  // What the feeling you just picked does to the scope, said the first time.
+  function scopeTip(emotion) {
+    const steps = wheelSteps(emotion, currentNode()?.mood ?? shownMood(currentNode()));
+    if (steps === null) return;
+    if (steps === 0) showTip('circle', 'circle', "A clean circle: you've found the feeling they're really in.", 'scope');
+    else if (steps >= 3) showTip('needle', 'needle', 'Needle leaning left: you two are pulling apart.', 'needle');
+    else showTip('shape', 'shape', 'The busier the shape, the further apart you are. A still circle means you found them.', 'scope');
   }
 
   // Contacts dock (engine/contacts.js): the Therapist always, reachable only
@@ -958,7 +1042,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // mood nor turned toward a bid. Holding a feeling previews it: theirs
   // pulls the lines in a little, a different one pushes them apart.
   function connection(mood, shutOut) {
-    if (stage === 'outro' && trial) return trial.matched ? { closeness: 1, merged: true, shutOut: false } : { closeness: 0.25, merged: false, shutOut: false };
+    if (stage === 'outro' && trial) return trial.matched && trial.want !== 'miss' ? { closeness: 1, merged: true, shutOut: false } : { closeness: 0.25, merged: false, shutOut: false };
     const bond = run.get().bonds?.[npc.npc] ?? { syncs: 0, bids: 0 };
     if (isTrusted(bond)) return { closeness: 1, merged: true, shutOut };
     let c = Math.min(1, (bond.syncs / 2) * 0.6 + bond.bids * 0.4) - missesHere * 0.12;
@@ -1108,7 +1192,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
         startStall();
         return;
       }
-      if (i === 1) { hintedEmotion = call.read; dartboard?.hint(call.read); }
+      // Deep water: the read comes through, but the wheel doesn't light.
+      if (i === 1 && !call.fogged) { hintedEmotion = call.read; dartboard?.hint(call.read); }
       tw = createTypewriter(p, quoteSpeech(call.lines[i]), { onChar: audio.playTypewriterTick });
       i += 1;
     }
@@ -1143,10 +1228,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
       box.appendChild(p);
       overlay.appendChild(box);
       let tw = createTypewriter(p, text, { onChar: audio.playTypewriterTick });
-      // Then the story they tell you (manuscript STORY lines). It is told in
-      // silence — music, chord and typing all fall away — with their bust
-      // close and centered, the way they ask for your number; each tap is the
-      // next beat, and the sound fades back only when they are done.
+      // Then the story they tell you (manuscript STORY lines). The music falls
+      // away so it can be heard — their words still type out with their sound,
+      // and IT and SO still sound — with their bust close and centered, the way
+      // they ask for your number; each tap is the next beat, and the music
+      // fades back only when they are done.
       const story = npc.story ?? [];
       let beat = -1;
       let told = false;
@@ -1156,7 +1242,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
         tw.destroy();
         beat += 1;
         if (beat === 0 && story.length) {
-          audio.hush(0.6);
+          audio.duckMusic(true);
+          encounterMusic.duck(true);
           overlay.classList.add('is-asking');
           const bust = createNpcPortrait(npc.npc, npc.accentColor, npc.portrait);
           bust.el.classList.add('dx-connect__bust');
@@ -1168,29 +1255,29 @@ export function mount(stageEl, scene, { run, onComplete }) {
           run.set({ storiesHeard: [...(run.get().storiesHeard ?? []), npc.npc] });
         }
         if (beat < story.length) {
-          tw = createTypewriter(p, story[beat]); // no typing ticks: silence
+          tw = createTypewriter(p, story[beat], { onChar: audio.playTypewriterTick });
           return;
         }
         told = true;
-        const finish = () => { audio.unhush(3); overlay.remove(); onDone(); };
+        const finish = () => { audio.duckMusic(false, 3); encounterMusic.duck(false, 3); overlay.remove(); onDone(); };
         if (story.length && npc.storyIt && npc.storySo) showStoryThoughts(finish);
         else finish();
       });
     }, silence + 500);
   }
 
-  // After their story, in the same silence: IT weighs how true it rings, SO
-  // doubts a corner of it without doubting them (manuscript STORYIT/STORYSO).
-  // No sting, no ticks, and not sharpened by the lake: this moment is about
-  // them, not about what the player owes.
+  // After their story, with the music still down: IT weighs how true it rings,
+  // SO doubts a corner of it without doubting them (manuscript STORYIT/STORYSO).
+  // Their usual sting and typing, but not sharpened by the lake: this moment is
+  // about them, not about what the player owes.
   function showStoryThoughts(onDone) {
     const loadout = run.get().loadout;
     itPopup = createItPopup(stageEl, {
-      text: npc.storyIt, loadout, flashClose: true, silent: true,
+      text: npc.storyIt, loadout, flashClose: true,
       onClose: () => {
         itPopup?.destroy();
         itPopup = createItPopup(stageEl, {
-          text: npc.storySo, loadout, voice: 'so', silent: true,
+          text: npc.storySo, loadout, voice: 'so',
           onClose: () => { itPopup?.destroy(); itPopup = null; onDone(); },
         });
       },
@@ -1276,9 +1363,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
   // Every IT/SO popup in an encounter goes through here, so their lines
-  // sharpen as the lake worsens (engine/itSharpen.js).
+  // sharpen as the lake worsens (engine/itSharpen.js) — except their
+  // co-conspirator lines (opts.cozy), which stay warm all the way down.
   function sayIt(opts) {
-    const text = sharpen(resolveItText(opts.text, run.get().loadout), opts.voice ?? 'it', run.get().truthDebt);
+    const resolved = resolveItText(opts.text, run.get().loadout);
+    const text = opts.cozy ? resolved : sharpen(resolved, opts.voice ?? 'it', run.get().truthDebt);
     return createItPopup(stageEl, { ...opts, text });
   }
 
@@ -1359,6 +1448,12 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // one intrusion, not a stack of them.
     if (bloom.newlyFired.length > 0) {
       bloomedThisEncounter = true;
+      // One voice at a time: the cheer waits for the next lie.
+      if (pendingCozy) {
+        pendingCozy = null;
+        cozyThisEncounter = false;
+        run.set({ cozySaid: Math.max(0, (run.get().cozySaid ?? 0) - 1) });
+      }
       showBloomIt(Math.max(...bloom.newlyFired), () => proceed(edge));
       return;
     }
@@ -1376,12 +1471,13 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // already used before SO existed. `onClose` only fires once SO's own
   // popup is dismissed, so callers don't need to know a second popup is
   // involved at all.
-  function showItThenSo(itText, soText, onClose) {
+  function showItThenSo(itText, soText, onClose, { cozy = false } = {}) {
     const debt = run.get().truthDebt;
     itPopup = sayIt({
       text: fillReadings(itText, debt),
       loadout: run.get().loadout,
       flashClose: true,
+      cozy,
       onClose: () => {
         itPopup?.destroy();
         itPopup = sayIt({
@@ -1389,6 +1485,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
           loadout: run.get().loadout,
           flashClose: false, // last one in the sequence
           voice: 'so',
+          cozy,
           onClose: () => {
             itPopup?.destroy();
             itPopup = null;
@@ -1406,7 +1503,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // An answer can carry its own IT/SO reaction (manuscript IT:/SO: under a
   // swipe), shown after the NPC's reaction and before anything else moves.
   function proceed(edge) {
-    if (edge.itText && edge.soText) {
+    const cozy = pendingCozy;
+    pendingCozy = null;
+    if (cozy && !edge.itText && !edge.soText) {
+      showItThenSo(cozy[0], cozy[1], () => proceedAfterIt(edge), { cozy: true });
+    } else if (edge.itText && edge.soText) {
       showItThenSo(edge.itText, edge.soText, () => proceedAfterIt(edge));
     } else if (edge.itText || edge.soText) {
       itPopup = sayIt({
@@ -1425,11 +1526,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
   function proceedAfterIt(edge) {
-    if (run.get().truthDebt >= 10) {
-      onComplete({ jumpTo: 'reckoning' });
-      return;
-    }
-
     if (edge.nextNodeId) {
       currentNodeId = resolveGatedNode(edge.nextNodeId, npc, run.get());
       enterNode();
@@ -1526,12 +1622,16 @@ export function mount(stageEl, scene, { run, onComplete }) {
       return;
     }
     if (beat.kind === 'tryfeel') {
-      // {feel:X} names the feeling he's in (never shown); his line wears its color.
-      const m = beat.text.match(/\{feel:(\w+)\}/);
-      trial = { target: m?.[1] ?? null, matched: false, drawn: false, pickedAt: 0 };
-      beat = { ...beat, text: beat.text.replace(/\{feel:\w+\}/, '') }; // a copy: the script stays intact for a replay
+      // {feel:X} names the feeling he's in (never shown); his line wears its
+      // color, or {mask:Y}'s. {want:miss} asks for any feeling but his (to see
+      // what apart looks like); otherwise his is the one to find, and a mask
+      // starts flickering his real color underneath, the way it does in battle.
+      const tag = (k) => beat.text.match(new RegExp(`\\{${k}:(\\w+)\\}`))?.[1] ?? null;
+      trial = { target: tag('feel'), mask: tag('mask'), want: tag('want') ?? 'match', matched: false, drawn: false, pickedAt: 0 };
+      beat = { ...beat, text: beat.text.replace(/\{(feel|mask|want):\w+\}/g, '') }; // a copy: the script stays intact for a replay
       activeEmotion = null;
-      if (trial.target) easeMoodTo(trial.target);
+      easeMoodTo(trial.mask ?? trial.target);
+      drama.under = trial.mask && trial.want !== 'miss' ? moodHex(trial.target) : null;
     }
     if (beat.kind === 'it' || beat.kind === 'so') {
       const next = outroQueue[0];
@@ -1601,6 +1701,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   enterNode();
 
   return function unmount() {
+    tip?.destroy();
     offPause();
     typewriter?.destroy();
     pickTypewriter?.destroy();
@@ -1614,6 +1715,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     audio.stopLeitmotif();
     audio.stopPulse();
     audio.unhush(0.05); // never leave the game silent if a story was cut short
+    audio.duckMusic(false, 0.05);
+    audio.setHaze(0, 1.5);
     encounterMusic.end();
     clearStall();
     statusBar?.destroy();

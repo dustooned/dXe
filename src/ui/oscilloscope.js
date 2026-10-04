@@ -84,7 +84,7 @@ const WHEEL = ['Happy', 'Trust', 'Fear', 'Surprise', 'Sadness', 'Disgust', 'Ange
 // The tritone is drawn as 7:5 (the just tritone, 583 cents): close to the
 // equal-tempered one, and few enough loops to read as a shape, not a fill.
 const RATIOS = [[1, 1], [2, 3], [8, 9], [4, 5], [5, 7]];
-function wheelSteps(a, b) {
+export function wheelSteps(a, b) {
   const i = WHEEL.indexOf(a);
   const j = WHEEL.indexOf(b);
   if (i < 0 || j < 0) return null;
@@ -100,6 +100,9 @@ export function createOscilloscope(
     // { traces, instruments }: what's been introduced yet (the tutorial
     // reveals them one at a time). Read every frame; each fades in once.
     getVisibility,
+    // () => 'scope' | 'needle' | 'dots' | 'trace' | null: a FEELZ tip is
+    // pointing at that piece (dialogScene.js showTip); it gets a pulsing frame.
+    getHighlight,
   } = {}
 ) {
   let gapNow = null;
@@ -183,7 +186,7 @@ export function createOscilloscope(
     // A mask (dialogScene.js drama.under): every few seconds, for a blink,
     // the trace shows the real feeling's color underneath.
     const under = getDrama?.()?.under;
-    const blink = under && performance.now() % 2600 < 170;
+    const blink = under && performance.now() % 2200 < 420;
     ctx2d.strokeStyle = npcFlat < 1 ? 'rgba(255,255,255,0.3)' : blink ? under : npcColorNow;
     traceNpcPath(w, h, 0);
     ctx2d.filter = 'none';
@@ -265,6 +268,8 @@ export function createOscilloscope(
   let phase = Math.PI / 2;
   let lastT = null;
   let needle = 0;
+  // Where each piece was last drawn, for getHighlight's frame.
+  const boxes = {};
   const FONT = '"Press Start 2P", monospace';
 
   function instrumentBox(x, y, bw, bh) {
@@ -299,6 +304,7 @@ export function createOscilloscope(
     const cx = w - sideW / 2;
     const cy = h / 2;
     instrumentBox(cx - s / 2, cy - s / 2, s, s);
+    boxes.scope = [cx - s / 2, cy - s / 2, s, s];
     ctx2d.strokeStyle = 'rgba(255,255,255,0.12)';
     ctx2d.beginPath();
     ctx2d.moveTo(cx - s / 2 + 3, cy); ctx2d.lineTo(cx + s / 2 - 3, cy);
@@ -346,6 +352,7 @@ export function createOscilloscope(
     const mx = sideW / 2 - mw / 2;
     const my = h / 2 - mh / 2;
     instrumentBox(mx, my, mw, mh);
+    boxes.needle = [mx, my, mw, mh];
     const x0 = mx + mw * 0.12;
     const x1 = mx + mw * 0.88;
     const base = my + mh * 0.62;
@@ -429,6 +436,7 @@ export function createOscilloscope(
     const segW = Math.min(24, (w - 16) / HISTORY_MAX);
     const total = segW * picks.length;
     let x = (w - total) / 2;
+    boxes.dots = [x, h - 12, total + 2, 12];
     picks.forEach((color, i) => {
       const bx = Math.round(x) + 2;
       const bw = Math.max(2, Math.round(segW) - 4);
@@ -450,6 +458,22 @@ export function createOscilloscope(
     if (!getVisibility) return 1;
     shownAt[key] ??= now;
     return clamp((now - shownAt[key]) / 1000, 0, 1);
+  }
+
+  // A pulsing gold frame around whatever a FEELZ tip is talking about.
+  function drawHighlight(w, h, now) {
+    const which = getHighlight?.();
+    if (!which) return;
+    const box = which === 'trace' ? [2, 2, w - 4, h - 4] : boxes[which];
+    if (!box) return;
+    const pulse = 0.55 + 0.45 * Math.sin(now * 0.008);
+    const pad = 3 + pulse * 2;
+    ctx2d.strokeStyle = `rgba(255,226,122,${0.5 + 0.5 * pulse})`;
+    ctx2d.lineWidth = 2;
+    ctx2d.shadowColor = '#ffe27a';
+    ctx2d.shadowBlur = 8;
+    ctx2d.strokeRect(box[0] - pad, box[1] - pad, box[2] + pad * 2, box[3] + pad * 2);
+    ctx2d.shadowBlur = 0;
   }
 
   function draw(timeMs) {
@@ -477,6 +501,7 @@ export function createOscilloscope(
       drawRings(w, h, now, drama);
       drawHistory(w, h);
     }
+    drawHighlight(w, h, now);
     rafId = requestAnimationFrame(draw);
   }
   rafId = requestAnimationFrame(draw);
