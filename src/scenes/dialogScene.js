@@ -1080,7 +1080,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     clearStall();
     const node = currentNode();
     const name = npc.npc.charAt(0) + npc.npc.slice(1).toLowerCase();
-    const call = callFor(who, { state: run.get(), currentName: name, mood: node.mood });
+    const call = callFor(who, { state: run.get(), currentName: name, currentKey: npc.npc, mood: node.mood });
     const overlay = document.createElement('div');
     overlay.className = 'dx-call';
     overlay.style.setProperty('--contact', contactColor(who));
@@ -1440,8 +1440,14 @@ export function mount(stageEl, scene, { run, onComplete }) {
       if (shouldUnlockTrust(run.get())) showTrustUnlock(() => finishEncounter());
       else finishEncounter();
     };
-    if (npc.contactAsk && isTrusted(run.get().bonds?.[npc.npc])) showContactAsk(afterAsk);
-    else if (npc.pushAway) showPushAway(afterAsk);
+    // How you left this person: the next contact you call will know (engine/contacts.js afterLast).
+    if (npc.contactAsk && isTrusted(run.get().bonds?.[npc.npc])) {
+      run.set({ lastParting: { npc: npc.npc, outcome: 'connected' } });
+      showContactAsk(afterAsk);
+    } else if (npc.pushAway) {
+      run.set({ lastParting: { npc: npc.npc, outcome: 'pushed' } });
+      showPushAway(afterAsk);
+    }
     else afterAsk();
   }
 

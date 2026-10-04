@@ -3,7 +3,16 @@
 // A call gives their greeting, their read on whoever you're facing (the
 // feeling is never named — its slice glows on the wheel), and advice from
 // their own lens, which isn't always what the lake would want.
-// PLACEHOLDER PROSE throughout.
+//
+// Each call is shaped by three things, so no two play the same:
+//   afterLast  how you left the last person (connected, pushed away, or it
+//              was them): run.lastParting, set by dialogScene at an
+//              encounter's end. {who} is that person's name.
+//   knows      their history with whoever you're facing now, carrying the
+//              read: {feel} becomes the colored image of the mood they see.
+//   byClass    a tip aimed at your class's habit (Guns braces, Bible holds on
+//              to the right words, Crystals absorbs everything).
+// PLACEHOLDER PROSE throughout (first drafts, for the writer).
 import { isTrusted } from './trust.js';
 import { ppmFor } from './lake.js';
 
@@ -74,6 +83,21 @@ export const CONTACTS = {
     truth: ["Tell them the true thing. Gently. It usually costs less than you think.", "Say what's real. Then let the silence do some work."],
     lie: ["Sometimes people need a soft landing first. That's allowed. Just don't live there."],
     tired: "And you sound tired. Go easy on yourself too.",
+    afterLast: {
+      connected: "I saw {who}'s number go into your phone. FEELZ tells me things. Good.",
+      pushed: "{who} showed you out? That happens. Doors close. Most of them aren't locked.",
+    },
+    knows: {
+      DEBORAH: 'Deborah came to my Tuesday group twice and organized the snacks both times. Right now she\'s {feel}.',
+      RWANDA: "Rwanda doesn't do groups. She does walls. Right now she's {feel}.",
+      SAMUN: "Samun makes everybody laugh so nobody looks at him. Right now he's {feel}.",
+      RICK: "Rick's not on my caseload. He should be. Right now he's {feel}.",
+    },
+    byClass: {
+      Guns: "You're bracing again. I can hear it. Unclench your jaw before you answer.",
+      Bible: "You don't need the right words. You need your words.",
+      Crystals: "You're carrying their weather. Set it down for one answer and see what's yours.",
+    },
   },
   DEBORAH: {
     name: 'Deborah',
@@ -85,6 +109,21 @@ export const CONTACTS = {
     truth: ["Tell them the truth. I wish somebody had told me sooner."],
     lie: ["Tell them what they need to hear. The Lord can sort out the rest.", "Be kind first. Honest can wait a day."],
     tired: "And you eat something today, you hear me?",
+    afterLast: {
+      connected: "Oh, I heard about you and {who}. This town talks, honey. That's a good thing, for once.",
+      pushed: "{who} sent you off? Oh, sugar. Some folks have to push before they can pull.",
+      me: "You're calling already? Well, I'm not complaining.",
+    },
+    knows: {
+      RWANDA: 'Rwanda painted the mural on the fellowship hall and they made her paint over it. Right now she\'s {feel}.',
+      SAMUN: "Samun carried my groceries last winter and wouldn't take a dime. Right now he's {feel}.",
+      RICK: "Rick's mother sat two pews up from me for twenty years. Right now he's {feel}.",
+    },
+    byClass: {
+      Guns: 'And put your fists in your pockets, baby. Nobody opens up to a clenched hand.',
+      Bible: "And don't quote at them. The Lord didn't need footnotes and neither do you.",
+      Crystals: "And don't soak up all their hurt like a dish towel. You'll wring yourself out.",
+    },
   },
   RWANDA: {
     name: 'Rwanda',
@@ -96,6 +135,20 @@ export const CONTACTS = {
     truth: ["Don't sand it down for them. Say it straight.", "Tell them. People can handle more than you think if you don't flinch."],
     lie: ["Honestly? Let them have this one. Not every fight's yours."],
     tired: "Also you sound wrecked. Sit down somewhere.",
+    afterLast: {
+      connected: "So {who} let you in. Huh. Maybe you're less trouble than you look.",
+      pushed: "{who} showed you the door? Yeah. Nobody likes being looked at that close.",
+      me: "Calling me already? Don't make it weird.",
+    },
+    knows: {
+      SAMUN: 'Samun let me paint the back wall of the bar, then hung a dartboard on it. Right now he\'s {feel}.',
+      RICK: "Rick had me paint his tank once. Paid cash, wouldn't look at it. He's {feel}, but that's the coat, not the guy.",
+    },
+    byClass: {
+      Guns: "And quit squaring up. You look like you're waiting to get punched.",
+      Bible: 'And put the verses down a minute. Say it in your own words. People can smell a sermon.',
+      Crystals: 'And stop mirroring them. Have your own face for once.',
+    },
   },
   SAMUN: {
     name: 'Samun',
@@ -107,6 +160,19 @@ export const CONTACTS = {
     truth: ["Just say it, man. Four days taught me that much."],
     lie: ["Play along. People hate being fixed. Trust me.", "Tell 'em what goes down easy. Deal with the rest later."],
     tired: "And you gotta sleep, bro. I can hear it.",
+    afterLast: {
+      connected: 'Yo, word is you and {who} are tight now. Look at you, making friends.',
+      pushed: '{who} kicked you out? Ha. Join the club, we got jackets.',
+      me: 'Missed me already? Understandable.',
+    },
+    knows: {
+      RICK: "Rick drinks at my bar, tips in quarters, never says thanks. Right now he's {feel}.",
+    },
+    byClass: {
+      Guns: "And unclench, man. You walk in everywhere like it's a raid.",
+      Bible: "And don't try to save 'em. Just hang out. Saving's exhausting for everybody.",
+      Crystals: "And don't laugh at their jokes if they ain't funny. I can tell. So can they.",
+    },
   },
   RICK: {
     name: 'Rick',
@@ -118,6 +184,17 @@ export const CONTACTS = {
     truth: ["Fine. Say it. But say it like you mean it or don't bother."],
     lie: ["Lie. Everybody does. The ones who don't get eaten.", "Give 'em the story they want. Keeps you breathing."],
     tired: "And quit looking like you're about to fold.",
+    afterLast: {
+      connected: "Heard {who} gave you the time of day. Don't let it go to your head.",
+      pushed: '{who} cut you loose. Happens. Get back on the bike.',
+      me: '...You again. Fine.',
+    },
+    knows: {},
+    byClass: {
+      Guns: "And don't swing first. Swing second. Swing never, if you can.",
+      Bible: "And skip the scripture. I've had enough of it held over my head.",
+      Crystals: "And quit feeling sorry for people. They can tell. It's an insult.",
+    },
   },
 };
 
@@ -141,7 +218,7 @@ function pick(list) {
 
 // One call's content. `mood` is the NPC's real mood right now; the contact
 // reads it correctly more often the stronger your bond with them.
-export function callFor(contact, { state, currentName, mood }) {
+export function callFor(contact, { state, currentName, currentKey, mood }) {
   const c = CONTACTS[contact];
   const bond = state.bonds?.[contact];
   const reliability = Math.min(0.95, c.sight + ((bond?.syncs ?? 0) + (bond?.bids ?? 0)) * 0.08);
@@ -151,16 +228,27 @@ export function callFor(contact, { state, currentName, mood }) {
   const misread = c.dominant && c.dominant !== mood ? c.dominant : pick(moods.filter((m) => m !== mood));
   const read = mood && Math.random() < reliability ? mood : misread;
   const lean = Math.random() < c.bias ? 'lie' : 'truth';
+  // How you left the last person: them (they just gave you their number),
+  // someone you connected with, or someone who showed you out.
+  const last = state.lastParting;
+  const lastName = last && (CONTACTS[last.npc]?.name ?? last.npc);
+  const greet = !last ? null
+    : last.npc === contact ? c.afterLast?.me
+    : c.afterLast?.[last.outcome]?.replace('{who}', lastName);
+  // The image is colored the feeling it describes, matching the slice that
+  // glows on the wheel; their history with this person frames it if they have one.
+  const image = `{color:${read}}${MOOD_IMAGES[read]}{/color}`;
+  const knows = c.knows?.[currentKey];
   const lines = [
-    pick(c.greet),
-    // The image is colored the feeling it describes, matching the slice
-    // that glows on the wheel.
-    `${c.read.replace('{who}', currentName)} {color:${read}}${MOOD_IMAGES[read]}{/color}.`,
+    greet ?? pick(c.greet),
+    knows ? knows.replace('{feel}', image) : `${c.read.replace('{who}', currentName)} ${image}.`,
   ];
   // The Therapist always checks your vitals; friends only notice when
   // you're visibly running low.
   if (contact === 'THERAPIST') lines.push(healthLine(state));
   lines.push(pick(c[lean]));
+  const tip = c.byClass?.[state.loadout];
+  if (tip) lines.push(tip);
   if (contact !== 'THERAPIST' && (state.stability ?? 10) <= 3) lines.push(c.tired);
   return { lines, read, lean };
 }

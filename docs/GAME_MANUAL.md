@@ -208,6 +208,15 @@ their own bias (Rick pushes lies, Rwanda pushes truth). The Therapist
 also reads your weakest vital. One call per contact per encounter.
 Content: `engine/contacts.js`.
 
+Calls vary with three things. **How you left the last person:** they've
+heard (connected: "I heard about you and Rwanda"; pushed away: "Samun
+kicked you out? Join the club"; or it was them: "Missed me already?").
+**Who you're facing:** each contact has history with the others and
+frames the read through it ("Rick had me paint his tank once. Paid cash,
+wouldn't look at it. He's *running hot*, but that's the coat, not the
+guy"). **Your class:** a closing tip aimed at your habit (Guns braces,
+Bible reaches for the right words, Crystals soaks up everyone's weather).
+
 ### IT and SO watch your pace
 
 Sit on a choice and they lean in: IT at 30s, SO at 45s, IT at 60s, SO at
