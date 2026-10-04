@@ -171,7 +171,10 @@
   },
   "reveal": {
     "meters": "therapist_01",
-    "debt": "therapist_02"
+    "debt": "therapist_02",
+    "scope": "cue",
+    "instruments": "cue",
+    "dock": "cue"
   },
   "outro": [
     {
@@ -226,7 +229,11 @@
     },
     {
       "kind": "line",
-      "text": "\"See the two lines across their picture? That's you and them. The closer the lines, the closer you are. The little screen beside them draws the two of you together. When it holds still, you're there.\""
+      "text": "\"{cue:scope}See the two lines across their picture? That's you and them. The closer the lines, the closer you are.\""
+    },
+    {
+      "kind": "line",
+      "text": "\"{cue:instruments}The little screen beside them draws the two of you together. When it holds still, you're there. The needle leans right when you move as one.\""
     },
     {
       "kind": "line",
@@ -283,6 +290,31 @@
     {
       "kind": "line",
       "text": "\"I'll have FEELZ send you a reminder, so you can't pretend you forgot.\""
+    },
+    {
+      "kind": "tryfeel",
+      "text": "{feel:Sadness}\"Last thing, before I go. Find me on your wheel. Forty people today, and it isn't even four. Watch the little screen beside me while you look.\"",
+      "when": {
+        "class": "Guns"
+      }
+    },
+    {
+      "kind": "tryfeel",
+      "text": "{feel:Anxiety}\"Last thing, before I go. Find me on your wheel. Three calls behind, two forms unsigned, and my coffee's cold. Watch the little screen beside me while you look.\"",
+      "when": {
+        "class": "Bible"
+      }
+    },
+    {
+      "kind": "tryfeel",
+      "text": "{feel:Anxiety}\"Last thing, before I go. Find me on your wheel. Three calls behind, two forms unsigned, and my coffee's cold. Watch the little screen beside me while you look.\"",
+      "when": {
+        "class": "Crystals"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"There. A circle that holds still. That's what it looks like when you've actually got someone. Go find a few more.\""
     },
     {
       "kind": "hangup",

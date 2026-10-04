@@ -1178,6 +1178,12 @@
   animation: dx-bust-in 1.2s ease-out both;
 }
 
+/* The intake read: the wheel is up but asleep; each slice lights as he names it. */
+.dx-dartboard.is-dormant svg > g { opacity: 0.14; pointer-events: none; transition: opacity 0.5s; }
+.dx-dartboard.is-dormant svg > g.is-lit { opacity: 1; animation: dx-slice-lit 0.6s steps(4, end); }
+.dx-dartboard.is-dormant { pointer-events: none; }
+@keyframes dx-slice-lit { from { opacity: 0.14; } 50% { opacity: 1; filter: brightness(1.8); } to { opacity: 1; } }
+
 /* Pushed away: the same close-up, but cold — grey edge, no warm glow. */
 .dx-connect.is-pushing .dx-connect__beat {
   border-color: #8a8f98;

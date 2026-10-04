@@ -22,6 +22,10 @@ ACCENT: var(--color-therapist)
 # is spotlit the moment it appears, alongside the line that introduces it.
 REVEAL: meters after therapist_01
 REVEAL: debt after therapist_02
+# One piece at a time: each appears the moment he names it.
+REVEAL: scope on cue
+REVEAL: instruments on cue
+REVEAL: dock on cue
 
 # His read on your class is the intake: {intake} below is replaced with
 # the read the FEELZ evaluation produced (questionnaireScene.js DIAGNOSES),
@@ -135,7 +139,8 @@ LINE [Guns]: "This week, ask one person a question about their day. Then wait fo
 LINE [Bible]: "Try getting curious about someone this week. Ask how they're doing, then ask a follow-up. People can tell when you mean it."
 LINE [Crystals]: "Take an interest in somebody this week. Notice what they're doing and ask about it. Curiosity's a good place to start."
 LINE: "People wear their weather on the outside. Listen for the word that doesn't match the face."
-LINE: "See the two lines across their picture? That's you and them. The closer the lines, the closer you are. The little screen beside them draws the two of you together. When it holds still, you're there."
+LINE: "{cue:scope}See the two lines across their picture? That's you and them. The closer the lines, the closer you are."
+LINE: "{cue:instruments}The little screen beside them draws the two of you together. When it holds still, you're there. The needle leans right when you move as one."
 LINE: "These talks get louder the longer they go. If you hear something new come in, something that wasn't there before, you're almost there with them."
 LINE: "If someone shows you the door, listen to the last thing they say. People tell you what they needed on their way out."
 LINE: "Get all the way in with someone and they might tell you why they are the way they are. Just listen. Don't fix it."
@@ -149,6 +154,14 @@ LINE: "When you're stuck out there, call. I'll tell you what I'm reading off you
 LINE: "Make a real friend out there and they'll show up next to me. They'll tell you what they think. Doesn't mean they're right."
 LINE: "And if your carrier goes from 5G down to No Service? That's the lake talking, not your phone."
 LINE: "I'll have FEELZ send you a reminder, so you can't pretend you forgot."
+# His last exercise: the wheel comes back, no card. The player tries feelings
+# and watches the little screen; his feeling ({feel:X}, never shown) closes it
+# into a still circle, and only then does the call go on. One per class (each
+# class's wheel holds the feeling).
+TRYFEEL [Guns]: {feel:Sadness}"Last thing, before I go. Find me on your wheel. Forty people today, and it isn't even four. Watch the little screen beside me while you look."
+TRYFEEL [Bible]: {feel:Anxiety}"Last thing, before I go. Find me on your wheel. Three calls behind, two forms unsigned, and my coffee's cold. Watch the little screen beside me while you look."
+TRYFEEL [Crystals]: {feel:Anxiety}"Last thing, before I go. Find me on your wheel. Three calls behind, two forms unsigned, and my coffee's cold. Watch the little screen beside me while you look."
+LINE: "There. A circle that holds still. That's what it looks like when you've actually got someone. Go find a few more."
 HANGUP: The call ends mid-sentence, the way his calls do. FEELZ goes dark in your hand, and the lake is very quiet.
 NOTIFY: FEELZ · HOMEWORK\nToday's practice: reach out\nSay hello to one neighbor.\nNotice what they care about. Ask about it.\nListen a little longer than feels comfortable.\nYou don't have to fix anything.
 IT [therapist_02=truth]: He's writing it down. Everything you said. Somewhere a file with your name on it just got thicker.

@@ -97,6 +97,9 @@ export function createOscilloscope(
   {
     npcColor = '#ffffff', playerColor = '#4fd6ff', lineWidth = 2, getPlayerStats, isSynced, getDrama,
     getConnection, getPlayerColor, getHistory, getFeelings,
+    // { traces, instruments }: what's been introduced yet (the tutorial
+    // reveals them one at a time). Read every frame; each fades in once.
+    getVisibility,
   } = {}
 ) {
   let gapNow = null;
@@ -440,6 +443,15 @@ export function createOscilloscope(
     });
   }
 
+  // A held-back piece fades in over a second the first frame it's allowed;
+  // pieces visible from the start (no getVisibility) are at full strength.
+  const shownAt = {};
+  function fadeIn(key, now) {
+    if (!getVisibility) return 1;
+    shownAt[key] ??= now;
+    return clamp((now - shownAt[key]) / 1000, 0, 1);
+  }
+
   function draw(timeMs) {
     syncSize();
     const w = canvas.width;
@@ -449,11 +461,22 @@ export function createOscilloscope(
     const drama = applyDrama(now);
     const dissonance = getDissonance();
     updateGap();
-    drawNpcTrace(w, h, dissonance);
-    drawPlayerTrace(w, h, timeMs, dissonance);
-    drawInstruments(w, h, timeMs);
-    drawRings(w, h, now, drama);
-    drawHistory(w, h);
+    const vis = getVisibility?.() ?? { traces: true, instruments: true };
+    if (vis.traces) {
+      ctx2d.globalAlpha = fadeIn('traces', now);
+      drawNpcTrace(w, h, dissonance);
+      drawPlayerTrace(w, h, timeMs, dissonance);
+      ctx2d.globalAlpha = 1;
+    }
+    if (vis.instruments) {
+      ctx2d.globalAlpha = fadeIn('instruments', now);
+      drawInstruments(w, h, timeMs);
+      ctx2d.globalAlpha = 1;
+    }
+    if (vis.traces) {
+      drawRings(w, h, now, drama);
+      drawHistory(w, h);
+    }
     rafId = requestAnimationFrame(draw);
   }
   rafId = requestAnimationFrame(draw);

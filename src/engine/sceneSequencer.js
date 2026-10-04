@@ -68,7 +68,10 @@ export function createSceneSequencer({ scenes, handlers, context, transitionFn, 
   }
 
   function isSkippable() {
-    return SKIPPABLE_TYPES.has(scenes[index]?.type);
+    // `unskippable` on a scene overrides its type: the FEELZ evaluation is a
+    // cutscene, but its answers shape the run, so it always plays.
+    const scene = scenes[index];
+    return SKIPPABLE_TYPES.has(scene?.type) && !scene?.unskippable;
   }
 
   return {

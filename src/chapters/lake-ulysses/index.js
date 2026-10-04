@@ -70,7 +70,7 @@ const SCENES = [
   // The buzz from the prologue's last beat, answered: the FEELZ app opens,
   // and everything after it (intake quiz, Therapist, the HUD itself) is
   // happening inside that app.
-  { type: 'cutscene', id: 'feelz-launch', beats: feelzLaunch.beats },
+  { type: 'cutscene', id: 'feelz-launch', beats: feelzLaunch.beats, unskippable: true },
   { type: 'questionnaire', id: 'questionnaire' },
   { type: 'dialog', id: 'therapist', npc: therapist },
   // The call ends and the player steps out into Lake Ulysses, walking home

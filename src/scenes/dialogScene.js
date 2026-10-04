@@ -117,6 +117,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // Set once a TRYCALL outro beat has put the therapist's own contact in
   // the dock; it stays on screen for the rest of the call.
   let dockIntroduced = false;
+  // Slices lit so far by the Therapist's intake read (see promptText's lit_ cues).
+  const intakeLit = new Set();
+  // The tutorial's last exercise (outro TRYFEEL): find him on your wheel
+  // and watch the vectorscope. { target, matched, drawn, pickedAt }.
+  let trial = null;
   // Set once the player turns toward one of this NPC's bids; warms the
   // portrait for the rest of the encounter (engine/trust.js).
   let turnedTowardThisEncounter = false;
@@ -273,8 +278,20 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // pointing at any of it. Debt also shows early the moment it's non-zero —
   // a lie shouldn't land invisibly. NPCs without `reveal` show everything.
   let lakeCued = false;
+  // Pieces revealed `on cue` ({cue:scope}, {cue:instruments}, the TRYCALL
+  // for the dock, and each meter's {cue:stability|trust|lucidity|integrity}).
+  const cuesFired = new Set();
+  const METERS = ['stability', 'trust', 'lucidity', 'integrity'];
+  function fireCue(name) {
+    const first = !cuesFired.has(name);
+    cuesFired.add(name);
+    if (METERS.includes(name)) {
+      if (first) statusBar?.reveal?.(name); else statusBar?.flash?.(name);
+    }
+  }
   function isRevealed(kind) {
     const gateNode = npc.reveal?.[kind];
+    if (gateNode === 'cue') return cuesFired.has(kind);
     // After its gate node — or earlier, when a reaction reaches a
     // {mark:lake} cue (a lie put debt on the lake before its turn: the
     // therapist finishes the bars first, then points at the lake).
@@ -360,7 +377,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
       getHistory: () => encounterPicks.map(moodHex),
       // The feelings the vectorscope and correlation needle compare: yours
       // (held, else the last you picked) against the one they're showing.
-      getFeelings: () => ({ mine: activeEmotion ?? encounterPicks.at(-1) ?? null, theirs: shownMood(currentNode()) ?? null }),
+      getFeelings: () => ({ mine: activeEmotion ?? encounterPicks.at(-1) ?? null, theirs: (stage === 'outro' && trial ? trial.target : shownMood(currentNode())) ?? null }),
+      getVisibility: npc.reveal ? () => ({ traces: isRevealed('scope'), instruments: isRevealed('instruments') }) : undefined,
     });
 
     const content = document.createElement('div');
@@ -369,7 +387,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
     statusBar?.destroy();
     const shutOut = stage === 'prompt' && /(_shut_down|_closed|_hard)$/.test(currentNodeId ?? '');
-    statusBar = createStatusBar(runState, { typing: itTyping, airplane: shutOut, quiet: !isRevealed('meters') });
+    // In the tutorial, the meters come in one at a time as he names them.
+    const hiddenMeters = npc.reveal?.meters ? METERS.filter((m) => !cuesFired.has(m)) : [];
+    statusBar = createStatusBar(runState, { typing: itTyping, airplane: shutOut, quiet: !isRevealed('meters'), hidden: hiddenMeters });
     if (shutOut && !signalLostAt.has(currentNodeId)) {
       signalLostAt.add(currentNodeId);
       audio.playSignalLost();
@@ -399,15 +419,46 @@ export function mount(stageEl, scene, { run, onComplete }) {
       content.appendChild(tapHint);
 
       const tryCall = outroBeat.kind === 'trycall';
+      const tryFeel = outroBeat.kind === 'tryfeel';
       if (tryCall) tapHint.textContent = '(tap his contact)';
+      if (tryCall) fireCue('dock');
+      if (tryFeel) tapHint.textContent = trial.matched ? '(tap to continue)' : '(find him on your wheel)';
       typewriter = createTypewriter(line, outroBeat.text, {
         onChar: audio.playTypewriterTick,
-        onDone: () => { tapHint.hidden = false; },
+        onDone: () => { tapHint.hidden = false; if (trial) trial.drawn = true; },
+        onMark: fireCue, // {cue:scope} / {cue:instruments}: the scope pieces appear as he names them
+        startRevealed: tryFeel && trial.drawn, // re-renders on each pick don't replay the line
       });
+
+      // His last exercise: the wheel comes back without a card. Each pick
+      // redraws the vectorscope against his feeling; his own feeling closes
+      // it into a still circle, and only then does the call move on.
+      if (tryFeel) {
+        const board = createFeelzDartboard({
+          loadout: run.get().loadout,
+          unlocked: run.get().unlocked,
+          selected: activeEmotion,
+          harmonicFunction: 'tonic',
+          onSelect: (emotion) => {
+            activeEmotion = emotion;
+            trial.pickedAt = performance.now();
+            if (emotion === trial.target && !trial.matched) {
+              trial.matched = true;
+              audio.playSyncChime();
+            }
+            render();
+          },
+        });
+        dartboard = board;
+        content.appendChild(board.el);
+      }
 
       screen.addEventListener('click', () => {
         if (typewriter && !typewriter.isDone()) typewriter.finish();
-        else if (!tryCall) nextOutroBeat();
+        else if (tryFeel) {
+          // The tap that picked a slice also lands here; it doesn't count.
+          if (trial.matched && performance.now() - (trial.pickedAt ?? 0) > 700) { audio.stopFeelzDrone(); nextOutroBeat(); }
+        } else if (!tryCall) nextOutroBeat();
       });
     } else if (stage === 'say') {
       // Its own bordered box, in the same screen slot the swipe card and
@@ -470,7 +521,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
             if (name === 'lake') cueLake(screen, reaction);
             if (name === 'caught') landCaught(screen);
             // {cue:stability|trust|lucidity|integrity}: flash that icon.
-            statusBar?.flash?.(name);
+            fireCue(name);
           },
         },
       );
@@ -539,6 +590,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
         dropTarget: card,
         selected: activeEmotion,
         harmonicFunction: harmonicFunction(),
+        lit: [...intakeLit], // slices the intake read already lit, if this redraws mid-read
         // Both tap and drag color the card now — a tap that changes nothing
         // visible reads as broken, not as restraint. (`source` is kept in
         // the callback signature in case a future pass wants to bring back
@@ -560,11 +612,25 @@ export function mount(stageEl, scene, { run, onComplete }) {
       interactive.appendChild(dartboard.el);
       if (hintedEmotion) dartboard.hint(hintedEmotion);
 
+      // The intake read ({intake} in the prompt): the wheel is up but asleep,
+      // the card not yet, and each feeling he names in your read lights its
+      // slice, the way the FEELZ profile screen did, before he says "See the
+      // three lighting up?" The wheel wakes when the prompt is done.
+      const intakeReading = !promptRevealed && currentNode().prompt?.includes('{intake}') && !!run.get().intakeRead;
+      if (intakeReading) {
+        interactive.hidden = false;
+        card.el.style.visibility = 'hidden';
+        dartboard.el.classList.add('is-dormant');
+      }
+
       // Re-renders triggered by picking a FEELZ emotion reuse this same node's
       // prompt — startRevealed skips replaying the draw from scratch.
       const promptChars = promptText().replace(/{[^}]*}/g, '').length || 1;
       let typed = 0;
       typewriter = createTypewriter(prompt, promptText(), {
+        onMark: (name) => {
+          if (name.startsWith('lit_')) { intakeLit.add(name.slice(4)); dartboard?.light(name.slice(4)); }
+        },
         onChar: () => {
           audio.playTypewriterTick();
           typed += 1;
@@ -576,6 +642,15 @@ export function mount(stageEl, scene, { run, onComplete }) {
           promptRevealed = true;
           drama.tension = 1;
           interactive.hidden = false;
+          if (intakeReading) {
+            // Any of the class's feelings the read didn't name light now, then it wakes.
+            emotionsForClass(run.get().loadout).forEach((e) => dartboard?.light(e));
+            dartboard?.wake();
+            // ...and it closes on the class's own sound from the evaluation (the
+            // gunshot, the bowl, the choir): a throwback to where it came from.
+            audio.playClassSigil(run.get().loadout);
+            card.el.style.visibility = '';
+          }
           // Wheel and card fade in the first time they appear on a node,
           // not on every re-render a pick triggers.
           if (!wasRevealed) {
@@ -622,7 +697,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       content.appendChild(dock);
       if (outroBeat.kind === 'trycall') spotlitHud.push(dock);
     }
-    if (stage === 'prompt' && isRevealed('meters')) content.appendChild(createDock(runState));
+    if (stage === 'prompt' && isRevealed('meters') && isRevealed('dock')) content.appendChild(createDock(runState));
     content.appendChild(lake);
     stageEl.appendChild(screen);
     placeScopeBand(screen, scopeCanvas, portrait.el);
@@ -883,6 +958,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // mood nor turned toward a bid. Holding a feeling previews it: theirs
   // pulls the lines in a little, a different one pushes them apart.
   function connection(mood, shutOut) {
+    if (stage === 'outro' && trial) return trial.matched ? { closeness: 1, merged: true, shutOut: false } : { closeness: 0.25, merged: false, shutOut: false };
     const bond = run.get().bonds?.[npc.npc] ?? { syncs: 0, bids: 0 };
     if (isTrusted(bond)) return { closeness: 1, merged: true, shutOut };
     let c = Math.min(1, (bond.syncs / 2) * 0.6 + bond.bids * 0.4) - missesHere * 0.12;
@@ -1218,7 +1294,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // {intake}: the intake read saved by the questionnaire, quoted as his
     // own words (therapist_01). Nothing saved (a debug jump) = dropped.
     const read = run.get().intakeRead;
-    parts.push(node.prompt.replace('{intake}', read ? `"${read}"` : ''));
+    // Each feeling-colored word in the read carries a cue that lights its slice.
+    // A beat after each one, so the player can watch it land.
+    const cued = read?.replace(/\{color:(\w+)\}/g, '{cue:lit_$1}{color:$1}').replace(/\{\/color\}/g, '{/color}{pause:550}');
+    parts.push(node.prompt.replace('{intake}', cued ? `"${cued}"` : ''));
     return parts.join(' ');
   }
 
@@ -1435,10 +1514,18 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
   function nextOutroBeat() {
-    const beat = outroQueue.shift();
+    let beat = outroQueue.shift();
     if (!beat) {
       onComplete();
       return;
+    }
+    if (beat.kind === 'tryfeel') {
+      // {feel:X} names the feeling he's in (never shown); his line wears its color.
+      const m = beat.text.match(/\{feel:(\w+)\}/);
+      trial = { target: m?.[1] ?? null, matched: false, drawn: false, pickedAt: 0 };
+      beat = { ...beat, text: beat.text.replace(/\{feel:\w+\}/, '') }; // a copy: the script stays intact for a replay
+      activeEmotion = null;
+      if (trial.target) easeMoodTo(trial.target);
     }
     if (beat.kind === 'it' || beat.kind === 'so') {
       const next = outroQueue[0];

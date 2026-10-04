@@ -87,7 +87,9 @@ function pad(n) {
   return String(n).padStart(2, '0');
 }
 
-export function createStatusBar(stats, { typing = false, airplane = false, quiet = false } = {}) {
+// `hidden`: meters not introduced yet (the tutorial names them one by one);
+// they stay invisible, and silent, until reveal(meter).
+export function createStatusBar(stats, { typing = false, airplane = false, quiet = false, hidden = [] } = {}) {
   const integrity = stats.integrity ?? 0;
   const trust = stats.trust ?? 0;
   const lucidity = stats.lucidity ?? 0;
@@ -114,7 +116,7 @@ export function createStatusBar(stats, { typing = false, airplane = false, quiet
   const now = { integrity, trust, lucidity, stability };
   const changes = [];
   if (lastSeen && !quiet) {
-    for (const meter of Object.keys(WORDS)) {
+    for (const meter of Object.keys(WORDS).filter((m) => !hidden.includes(m))) {
       const d = now[meter] - lastSeen[meter];
       if (d) changes.push({ meter, up: d > 0 });
     }
@@ -133,6 +135,8 @@ export function createStatusBar(stats, { typing = false, airplane = false, quiet
     el.appendChild(words);
     playMeterChange(changes);
   }
+
+  for (const meter of hidden) el.querySelector(`[data-meter="${meter}"]`)?.classList.add('is-concealed');
 
   // The clock keeps real time while you're honest. Below 7 Integrity it
   // starts to slip: some ticks show the wrong minutes; near the bottom it
@@ -186,5 +190,15 @@ export function createStatusBar(stats, { typing = false, airplane = false, quiet
     playMeterChange([{ meter, up: true }]);
   }
 
-  return { el, setTyping, flash, destroy: () => clearInterval(timer) };
+  // The first time a meter is named: it appears, then flashes like any cue.
+  function reveal(meter) {
+    const icon = el.querySelector(`[data-meter="${meter}"]`);
+    if (icon?.classList.contains('is-concealed')) {
+      icon.classList.remove('is-concealed');
+      icon.classList.add('is-revealing');
+    }
+    flash(meter);
+  }
+
+  return { el, setTyping, flash, reveal, destroy: () => clearInterval(timer) };
 }

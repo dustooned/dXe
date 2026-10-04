@@ -12,10 +12,12 @@ const GATE_PATTERN = /^(integrity|trust|stability|lucidity)\s*(<=|>=|<|>)\s*(\d+
 const EMOTIONS = ['Happy', 'Trust', 'Fear', 'Surprise', 'Sadness', 'Disgust', 'Anger', 'Anxiety'];
 const CLASSES = ['Guns', 'Bible', 'Crystals'];
 const PICK_PATTERN = /^PICK\s+(\w+):\s*(.*)$/;
-const REVEAL_PATTERN = /^(meters|debt)\s+after\s+(\S+)$/;
+// REVEAL: <piece> after <node>  — shows once that node is answered
+// REVEAL: <piece> on cue        — shows when a line reaches {cue:<piece>}
+const REVEAL_PATTERN = /^(meters|debt|scope|instruments|dock)\s+(?:after\s+(\S+)|on\s+cue)$/;
 // Inside `=== OUTRO`: LINE / HANGUP / NOTIFY / IT / SO / TRYCALL, each with an optional
 // [condition] before the colon — see docs/SCRIPT_FORMAT.md.
-const OUTRO_PATTERN = /^(LINE|HANGUP|NOTIFY|IT|SO|TRYCALL)(?:\s*\[([^\]]*)\])?:\s*(.*)$/;
+const OUTRO_PATTERN = /^(LINE|HANGUP|NOTIFY|IT|SO|TRYCALL|TRYFEEL)(?:\s*\[([^\]]*)\])?:\s*(.*)$/;
 
 // "[Guns]", "[therapist_02=lie]", or both comma-separated — every part has
 // to hold for the beat to play.
@@ -167,7 +169,7 @@ function parseManuscript(text, fileName) {
     } else if (line.startsWith('REVEAL:')) {
       const match = line.slice(7).trim().match(REVEAL_PATTERN);
       if (!match) throw new Error(`${fileName}:${lineNumber}: bad REVEAL line "${raw}"`);
-      reveal[match[1]] = match[2];
+      reveal[match[1]] = match[2] ?? 'cue';
     } else if (line.startsWith('===')) {
       commitNode();
       const id = line.replace(/^=+/, '').trim();

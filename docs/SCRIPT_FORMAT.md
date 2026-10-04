@@ -198,7 +198,15 @@ changes.
   that node has been answered, so the NPC can introduce them. Debt also
   shows early the moment it goes above 0. When it appears, it's
   spotlit (everything else dims) along with the NPC's reaction line, so
-  write that reaction to be the line that introduces it.
+  write that reaction to be the line that introduces it. When meters are
+  gated, each icon stays hidden until a line reaches its cue
+  (`{cue:stability}` battery, `{cue:trust}` bars, `{cue:lucidity}` Wi-Fi,
+  `{cue:integrity}` clock), so they arrive one at a time as they're named.
+- `REVEAL: scope on cue` / `REVEAL: instruments on cue` /
+  `REVEAL: dock on cue` — kept off screen until a line reaches
+  `{cue:scope}` (the two lines across the portrait), `{cue:instruments}`
+  (the needle and the vectorscope), or the TRYCALL beat (the contacts dock).
+  Used by the tutorial so the player meets one piece at a time.
 - `SPOTLIGHT: wheel, card` — inside a node. Before a feeling is picked,
   the screen dims except the wheel and the prompt. After a pick, it dims
   except the card and the `PICK` line. Use either one or both.
@@ -305,3 +313,11 @@ PUSHAWAY [Guns]: [She turns back to the window.] "You never put it down. Not onc
 ## TRYCALL (outro)
 
 `TRYCALL: "line"` inside `=== OUTRO`: the speaker's own contact pops into the dock (spotlit, pulsing) and the line waits for the player to tap it instead of tapping on. Tapping rings, connects, and his "Hello?" echoes back twice with feedback (the phone calling the phone it's on). The next LINE carries the joke. Used once, in the therapist's outro, to teach the contacts dock.
+
+## TRYFEEL (outro)
+
+`TRYFEEL [Guns|Bible|Crystals]: {feel:Feeling}"line"` inside `=== OUTRO`: the wheel comes back without a card and the line waits while the player tries feelings and watches the vectorscope. `{feel:X}` is the speaker's own feeling (never shown, and it must be on that class's wheel); picking it closes the vectorscope into a still circle, and only then does a tap go on. Describe the feeling, never name it. Used once, as the therapist's last exercise.
+
+## The intake read
+
+A prompt containing `{intake}` (the therapist's first) shows the wheel asleep while he reads the player's evaluation: each feeling-colored word in the read lights its slice in turn, and the read closes on the class's evaluation sound. Nothing to author beyond `{intake}` itself.

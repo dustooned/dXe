@@ -84,7 +84,10 @@ function isOverEl(el, x, y) {
 
 // `fresh` (optional): a feeling just unlocked this run — its slice lights up
 // with a glow the first time the wheel shows it (engine/unlocks.js).
-export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dropTarget, onSelect, selected, harmonicFunction = 'tonic' }) {
+// `dormant`: shown but asleep (dim, not pickable) — the Therapist's intake read
+// lights the class's slices one at a time with light(), echoing the FEELZ
+// profile screen, before the wheel wakes for the first pick.
+export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dropTarget, onSelect, selected, harmonicFunction = 'tonic', dormant = false, lit = [] }) {
   const activeEmotions = new Set([...(CLASSES[loadout]?.emotions ?? []), ...unlocked]);
   // Same order engine/loadout.js's emotionsForClass() returns (Set preserves
   // insertion order) — has to match dialogScene.js's own ordering exactly,
@@ -93,7 +96,7 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
   const activeEmotionsOrder = [...activeEmotions];
 
   const wrapper = document.createElement('div');
-  wrapper.className = 'dx-dartboard';
+  wrapper.className = dormant ? 'dx-dartboard is-dormant' : 'dx-dartboard';
 
   const svg = svgEl('svg', { viewBox: '0 0 200 200', role: 'group', 'aria-label': 'FEELZ' });
   wrapper.appendChild(svg);
@@ -297,9 +300,20 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
     svg.appendChild(ring);
   }
 
+  for (const e of lit) segments[e]?.g.classList.add('is-lit');
+
   return {
     el: wrapper,
     reset,
+    // Light one slice while dormant, with its own tone, like the profile screen did.
+    light(emotion) {
+      const g = segments[emotion]?.g;
+      if (!g || g.classList.contains('is-lit')) return;
+      g.classList.add('is-lit');
+      audio.playFeelzSelectTone(emotion, activeEmotionsOrder, harmonicFunction);
+      audio.stopFeelzDrone();
+    },
+    wake() { wrapper.classList.remove('is-dormant'); },
     // A contact's read on the other person's mood (engine/contacts.js):
     // glow that slice, lit or not, without selecting it.
     hint(emotion) {
