@@ -249,6 +249,8 @@ compose around. Most of them are a few lines to fix.
 
 ## Stems (battle music, from 2026-10-09)
 
+Full pipeline (settings file, how the game plays it, steps): docs/MUSIC_PIPELINE.md.
+
 Battle music is exported from FL as audio and played as recorded. Per NPC, one folder:
 
 ```

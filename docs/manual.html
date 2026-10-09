@@ -135,7 +135,7 @@ mark { background: var(--mark); color: var(--fg); }
 <nav class="sidebar" id="sidebar">
   <div class="brand">
     <h1>Dream Xtreme</h1>
-    <p>Project manual · 19 documents</p>
+    <p>Project manual · 20 documents</p>
   </div>
   <button class="menu-toggle" id="menuToggle" aria-expanded="true">Menu</button>
   <div class="search-wrap">
@@ -150,7 +150,7 @@ mark { background: var(--mark); color: var(--fg); }
       </div><div class="nav-group">
         <h2>Authoring</h2>
         <p class="nav-blurb">Writing dialog and understanding the numbers behind it.</p>
-        <ul><li><a class="nav-doc" href="#doc-script_key" data-doc="doc-script_key">Script Key (writer quick reference)</a></li><li><a class="nav-doc" href="#doc-script_format" data-doc="doc-script_format">Script Format</a></li><li><a class="nav-doc" href="#doc-content_schema" data-doc="doc-content_schema">Content Schema</a></li><li><a class="nav-doc" href="#doc-stat_math" data-doc="doc-stat_math">Stat Math</a></li></ul>
+        <ul><li><a class="nav-doc" href="#doc-script_key" data-doc="doc-script_key">Script Key (writer quick reference)</a></li><li><a class="nav-doc" href="#doc-script_format" data-doc="doc-script_format">Script Format</a></li><li><a class="nav-doc" href="#doc-content_schema" data-doc="doc-content_schema">Content Schema</a></li><li><a class="nav-doc" href="#doc-stat_math" data-doc="doc-stat_math">Stat Math</a></li><li><a class="nav-doc" href="#doc-music_pipeline" data-doc="doc-music_pipeline">Music Pipeline (FL to game)</a></li></ul>
       </div><div class="nav-group">
         <h2>Planning</h2>
         <p class="nav-blurb">Backlog, unbuilt feature designs, and the GameMaker port reference.</p>
@@ -1672,7 +1672,7 @@ last page with no opening one.</li>
 <li><strong>(Superseded by the phase drive above) Instruments build with the conversation, tension only picks tempo and flavor:</strong> the confrontation plays Intro_A (drums); the battle opens on Intro_B (+bass); from the 2nd answer (<code>fullAfterAnswers</code>) every state&#39;s section carries all three parts (calm/guarded Intro_C, uneasy Intro_Bridge, tense Verse_001, agitated Verse_002). So a warm run grows into the whole band at 80 BPM instead of thinning out, and a cold run grows into it harder and faster (130-140). <code>director.answerGiven()</code> counts answers (called from <code>encounterMusic.react</code>); the sound player has an ANSWER button and shows the count. Verified live on Rwanda: drums &gt; +bass &gt; all three at 110 &gt; 114 BPM.</li>
 <li><strong>What the music follows:</strong> tension comes from how each answer lands (trust+stability delta: warm eases, cold raises, a miss or being caught raises); connection is set outright to the scope&#39;s closeness (syncs, bids, misses; 1 once they trust you), so tempo and section track how close you actually are. Checked on Rwanda&#39;s real deltas: all cold = guarded &gt; uneasy &gt; tense &gt; tense (130 BPM); all warm = calm (80 BPM) by the second answer.</li>
 <li><strong>(Revised 2026-10-04) Trauma stories: the music steps back, the voices stay.</strong> Total silence read as dead, so only the music ducks (<code>audio.duckMusic</code>, <code>encounterMusic.duck</code>: ambient, leitmotif, arrangement); their words type out with the usual ticks and IT/SO pop up with their sting. Verified live: typing 0.019, idle between lines 0 (music out), IT sting 0.12. The split intake reads now name all three class feelings (Guns: heavy/Sadness, Bible: bad taste/Disgust).</li>
-<li><strong>Music direction (decided 2026-10-09).</strong> The in-browser MIDI/SID synth sound isn&#39;t right for the soundtrack (best for UI). The OST moves to audio stems exported from FL, one folder per NPC, played by one simple stem player; the synth/chip voices stay for UI sounds (stings, blips, call tones). Per NPC: an intro loop, one loop per battle phase at that phase&#39;s real tempo (e.g. 100 / 110 / 125 / 140 BPM; the player swaps on a bar line) or layer stems (drums / bass / lead) faded in per phase, and a secret layer that joins when you&#39;re close to connecting. A small settings file per NPC holds bpm, which stems play per phase, volumes, fade times. Live tempo nudges of +3–5% via playbackRate (raises pitch slightly, reads as tension); no time-stretching (multiple stretched stems drift). The debug Sound Player stays for live level tweaks. Rwanda keeps the FLP synth player until her stems exist. <strong>Waiting on:</strong> Rwanda&#39;s stems from FL. Export spec: sound-handoff/README.md &quot;Stems&quot;.</li>
+<li><strong>Music direction (decided 2026-10-09).</strong> The in-browser MIDI/SID synth sound isn&#39;t right for the soundtrack (best for UI). The OST moves to audio stems exported from FL, one folder per NPC, played by one simple stem player; the synth/chip voices stay for UI sounds (stings, blips, call tones). Per NPC: an intro loop, one loop per battle phase at that phase&#39;s real tempo (e.g. 100 / 110 / 125 / 140 BPM; the player swaps on a bar line) or layer stems (drums / bass / lead) faded in per phase, and a secret layer that joins when you&#39;re close to connecting. A small settings file per NPC holds bpm, which stems play per phase, volumes, fade times. Live tempo nudges of +3–5% via playbackRate (raises pitch slightly, reads as tension); no time-stretching (multiple stretched stems drift). The debug Sound Player stays for live level tweaks. Rwanda keeps the FLP synth player until her stems exist. <strong>Waiting on:</strong> Rwanda&#39;s stems from FL. Export spec: sound-handoff/README.md &quot;Stems&quot;; full pipeline: docs/MUSIC_PIPELINE.md.</li>
 <li><strong>Reduce effects setting (2026-10-09).</strong> Settings &gt; REDUCE EFFECTS (settings.reduceEffects, class is-reduced-effects on <html>): no shakes or flashes (fx.js), no opponent weather, lie haze, feeling tints, meter pops or speaking pulse. Meters, numbers and the gold pointers stay. Next up (agreed): music moves to FL-exported stems per NPC with a small per-NPC settings file (tempo, layers per phase, volumes, secret layer); Rwanda keeps the current FLP synth player until her stems exist.</li>
 <li><strong>Playtest feedback (2026-10-09).</strong> Settings &gt; FEEDBACK: the player types a note, COPY REPORT puts it on the clipboard with the time, chapter/scene and class/readings from the checkpoint, screen size, browser and text speed (shell/hud.js <code>feedbackReport</code>). No clipboard access: the report fills the box, selected, to copy by hand. Nothing is sent anywhere; testers paste it to you.</li>
 <li><strong>Checkpoints / autosave (2026-10-09).</strong> Every scene start writes a checkpoint (shell/save.js <code>saveCheckpoint</code>: chapter, scene id, the whole run state; key dreamxtreme:checkpoint), cleared at the ending. The HUD shows a pixel spinner + SAVING top left beside the skip button (<code>hud.showSaving</code>); the first time on a device it says &quot;AUTOSAVING. If the game closes, CONTINUE picks up here.&quot; The title gets CONTINUE (and ENTER becomes NEW GAME) when a checkpoint exists; it queues the saved state (debug.js <code>queueRunState</code>) and enters at that scene. A reload mid-chapter (crash, reopened tab) now resumes the checkpoint instead of restarting the chapter fresh, which is the likely cause of the playtest&#39;s &quot;restarted in the apartment&quot;; an explicit link to a different scene still works for debugging. Mid-scene progress isn&#39;t saved (the scene restarts). Tests: 5 checkpoint checks in test:engine.</li>
@@ -5386,6 +5386,142 @@ on screen exactly as its DOM already said it should.</p>
 
       <nav class="pager">
         <a href="#doc-content_schema" data-doc="doc-content_schema"><span>Previous</span>Content Schema</a>
+        <a class="next" href="#doc-music_pipeline" data-doc="doc-music_pipeline"><span>Next</span>Music Pipeline (FL to game)</a>
+      </nav>
+    </article>
+<article class="doc" id="doc-music_pipeline" data-title="Music Pipeline (FL to game)" data-file="MUSIC_PIPELINE.md" hidden>
+      <p class="doc-source">Authoring · <code>docs/MUSIC_PIPELINE.md</code></p>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-music_pipeline--1-the-three-kinds-of-sound">1. The three kinds of sound</a></li><li><a href="#doc-music_pipeline--2-battle-music-the-stem-pipeline-decided-not-built-yet">2. Battle music: the stem pipeline (decided, not built yet)</a></li><li><a href="#doc-music_pipeline--3-what-exists-today-until-stems-replace-it">3. What exists today (until stems replace it)</a></li><li><a href="#doc-music_pipeline--4-ui-sounds-code">4. UI sounds (code)</a></li></ul></nav>
+      <h1 id="doc-music_pipeline--music-pipeline"><a class="anchor" href="#doc-music_pipeline--music-pipeline" aria-label="Link to this section">#</a>Music pipeline</h1>
+<p>How music and sound get from FL Studio into Dream Xtreme: what exists today,
+what&#39;s decided, and the exact steps for each kind of sound.</p>
+<p><strong>Decided 2026-10-09:</strong> the soundtrack (battle music, OST) is <strong>audio exported
+from FL</strong>, played as recorded. The browser&#39;s own chip/synth voices are for
+<strong>UI sounds</strong> only (stings, blips, call tones, the wheel&#39;s feeling tones).</p>
+<hr>
+<h2 id="doc-music_pipeline--1-the-three-kinds-of-sound"><a class="anchor" href="#doc-music_pipeline--1-the-three-kinds-of-sound" aria-label="Link to this section">#</a>1. The three kinds of sound</h2>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>What it is</th>
+<th>Made where</th>
+<th>Plays through</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>UI sounds</strong></td>
+<td>Short cues: typing ticks, meter blips, ringtones, IT/SO stings, the wheel&#39;s tones, the relief chord, interval demos</td>
+<td>Code (<code>src/shell/audio.js</code>), chip-style synth</td>
+<td>Web Audio, live</td>
+</tr>
+<tr>
+<td><strong>Ambient / cutscene audio</strong></td>
+<td>Room tone and story beds (<code>lk_01.mp3</code>, <code>ann_01.mp3</code>, <code>heavens_waiting_room.mp3</code>)</td>
+<td>FL or recorded, exported as audio</td>
+<td><code>public/assets/&lt;chapter&gt;/audio/</code>, played as files</td>
+</tr>
+<tr>
+<td><strong>Battle music (OST)</strong></td>
+<td>Each NPC&#39;s theme during their encounter</td>
+<td><strong>FL, exported as stems</strong> (new)</td>
+<td>One stem player (to be built)</td>
+</tr>
+</tbody></table>
+<p>UI sounds stay in code because they react live (pitch per feeling, per meter,
+per class). Everything that should sound like <em>your</em> production comes from FL
+as audio.</p>
+<hr>
+<h2 id="doc-music_pipeline--2-battle-music-the-stem-pipeline-decided-not-built-yet"><a class="anchor" href="#doc-music_pipeline--2-battle-music-the-stem-pipeline-decided-not-built-yet" aria-label="Link to this section">#</a>2. Battle music: the stem pipeline (decided, not built yet)</h2>
+<h3 id="doc-music_pipeline--what-you-export-per-npc"><a class="anchor" href="#doc-music_pipeline--what-you-export-per-npc" aria-label="Link to this section">#</a>What you export, per NPC</h3>
+<pre><code>public/assets/&lt;chapter&gt;/music/&lt;npc&gt;/     e.g. public/assets/lake-ulysses/music/rwanda/
+  intro.ogg      the confrontation opener
+  phase1.ogg     one loop per battle phase, each at that phase&#39;s real tempo
+  phase2.ogg       (each answer moves the battle one phase up)
+  phase3.ogg
+  phase4.ogg
+  secret.ogg     the secret layer: joins when the player is close to a full connection
+</code></pre>
+<p>Or, instead of whole-phase loops, <strong>layer stems</strong> that share one tempo and
+length (<code>drums.ogg</code>, <code>bass.ogg</code>, <code>lead.ogg</code>, ...), with the settings file
+saying which layers play in each phase.</p>
+<h3 id="doc-music_pipeline--export-rules-fl"><a class="anchor" href="#doc-music_pipeline--export-rules-fl" aria-label="Link to this section">#</a>Export rules (FL)</h3>
+<ol>
+<li><strong>OGG</strong> (Vorbis, ~160 kbps) preferred; WAV is fine and gets converted.</li>
+<li>Every loop is a <strong>whole number of bars</strong>, cut exactly on the bar line.</li>
+<li><strong>No tail past the end</strong> (turn off &quot;leave remainder&quot;), or the loop clicks.</li>
+<li>Layer stems in a set start on the <strong>same bar</strong> and have the <strong>same length</strong>.</li>
+<li>The secret layer matches the <strong>tempo and length</strong> of what it plays over.</li>
+<li>Leave headroom; the final mix is set in the game&#39;s Sound Player.</li>
+</ol>
+<h3 id="doc-music_pipeline--the-settings-file-per-npc"><a class="anchor" href="#doc-music_pipeline--the-settings-file-per-npc" aria-label="Link to this section">#</a>The settings file, per NPC</h3>
+<p><code>public/assets/&lt;chapter&gt;/music/&lt;npc&gt;/music.json</code> (shape planned; adjust when
+the player is built):</p>
+<pre><code class="language-json">{
+  &quot;bpm&quot;: { &quot;intro&quot;: 100, &quot;phase1&quot;: 100, &quot;phase2&quot;: 110, &quot;phase3&quot;: 125, &quot;phase4&quot;: 140 },
+  &quot;bars&quot;: { &quot;intro&quot;: 4, &quot;phase1&quot;: 8, &quot;phase2&quot;: 8, &quot;phase3&quot;: 8, &quot;phase4&quot;: 8 },
+  &quot;phases&quot;: [&quot;phase1&quot;, &quot;phase2&quot;, &quot;phase3&quot;, &quot;phase4&quot;],
+  &quot;secret&quot;: { &quot;file&quot;: &quot;secret.ogg&quot;, &quot;joinsAt&quot;: 0.6, &quot;fadeSec&quot;: 2 },
+  &quot;volumes&quot;: { &quot;phase1&quot;: 0.8, &quot;secret&quot;: 0.7 },
+  &quot;nudge&quot;: 0.04
+}
+</code></pre>
+<ul>
+<li><strong>phases:</strong> the loop for each step of the battle (or, with layer stems, a
+list of layers per phase: <code>[[&quot;drums&quot;], [&quot;drums&quot;, &quot;bass&quot;], ...]</code>).</li>
+<li><strong>joinsAt:</strong> the closeness (0..1) at which the secret layer fades in.</li>
+<li><strong>nudge:</strong> small live speed-up as tension builds (0.04 = 4%). It raises the
+pitch slightly, which reads as tension. No time-stretching: stretched stems
+drift apart.</li>
+</ul>
+<h3 id="doc-music_pipeline--how-the-game-plays-it-the-player-to-build"><a class="anchor" href="#doc-music_pipeline--how-the-game-plays-it-the-player-to-build" aria-label="Link to this section">#</a>How the game plays it (the player to build)</h3>
+<ul>
+<li>The confrontation cutscene plays <code>intro</code>; the battle starts <code>phase1</code>.</li>
+<li>Each answer queues the next phase; the swap happens <strong>on the next bar line</strong>
+so it lands on the beat.</li>
+<li>The secret layer fades in at <code>joinsAt</code> closeness and out if you drift away.</li>
+<li><code>bpm</code> drives anything that pulses on the beat (the opponent&#39;s screen
+effects already pulse with loudness).</li>
+<li>When someone tells you their story, the music ducks (<code>encounterMusic.duck</code>),
+and comes back after.</li>
+<li>Phones: files load when the encounter&#39;s confrontation starts, not at boot.</li>
+</ul>
+<h3 id="doc-music_pipeline--steps-when-a-new-npc39s-stems-arrive"><a class="anchor" href="#doc-music_pipeline--steps-when-a-new-npc39s-stems-arrive" aria-label="Link to this section">#</a>Steps when a new NPC&#39;s stems arrive</h3>
+<ol>
+<li>Drop the files in <code>public/assets/lake-ulysses/music/&lt;npc&gt;/</code>.</li>
+<li>Write <code>music.json</code> (bpm and bars per loop, phases, secret).</li>
+<li>Point that NPC&#39;s encounter at the stem player (one line in the chapter&#39;s
+music setup; until then, the old player or the leitmotif runs).</li>
+<li>Play the encounter, open <strong>Settings → DEBUG → SOUND PLAYER</strong>, set levels by
+ear, COPY the numbers into <code>music.json</code>.</li>
+<li>Check: loops don&#39;t click, phases swap on the beat, the secret layer fits.</li>
+</ol>
+<hr>
+<h2 id="doc-music_pipeline--3-what-exists-today-until-stems-replace-it"><a class="anchor" href="#doc-music_pipeline--3-what-exists-today-until-stems-replace-it" aria-label="Link to this section">#</a>3. What exists today (until stems replace it)</h2>
+<ul>
+<li><strong>Rwanda:</strong> her FL project is read directly (<code>scripts/lib/flp.mjs</code>,
+<code>npm run build:arrangement</code>) into <code>content/arrangements/rwanda.json</code>, and
+re-played by browser chip voices (<code>shell/arrangement.js</code>,
+<code>arrangementVoices.js</code>), with a tempo ladder by phase
+(<code>engine/tempoDirector.js</code>) and a secret part. It keeps working until her
+stems exist; then her encounter switches to the stem player.</li>
+<li><strong>Everyone else:</strong> a short leitmotif played by chip voices, built from MIDI
+(<code>npm run build:leitmotifs</code> → <code>content/leitmotifs.json</code>).</li>
+<li><strong>Sound Player</strong> (Settings → DEBUG): every track in memory, with levels and
+voices to tune; saves per device, COPY JSON to bake defaults.</li>
+</ul>
+<p>Once every NPC has stems, the arrangement/leitmotif code can be retired for
+battle music (keep the chip voices for UI sounds).</p>
+<hr>
+<h2 id="doc-music_pipeline--4-ui-sounds-code"><a class="anchor" href="#doc-music_pipeline--4-ui-sounds-code" aria-label="Link to this section">#</a>4. UI sounds (code)</h2>
+<p>All in <code>src/shell/audio.js</code>. To add one: a short function built from
+<code>blip()</code> / oscillators, struck and ringing rather than droning
+(see the audio-texture rule), routed through <code>masterGain</code> so volume, mute,
+haze and the turn-pause all apply. Never a right/wrong sound: feedback is
+atmosphere, not a score.</p>
+
+      <nav class="pager">
+        <a href="#doc-stat_math" data-doc="doc-stat_math"><span>Previous</span>Stat Math</a>
         <a class="next" href="#doc-jobs" data-doc="doc-jobs"><span>Next</span>Jobs Backlog</a>
       </nav>
     </article>
@@ -5634,7 +5770,7 @@ End) need the same mapping decision before they can be assigned to scenes.</p>
 </ul>
 
       <nav class="pager">
-        <a href="#doc-stat_math" data-doc="doc-stat_math"><span>Previous</span>Stat Math</a>
+        <a href="#doc-music_pipeline" data-doc="doc-music_pipeline"><span>Previous</span>Music Pipeline (FL to game)</a>
         <a class="next" href="#doc-it_design" data-doc="doc-it_design"><span>Next</span>IT — Design Document</a>
       </nav>
     </article>
@@ -8951,7 +9087,7 @@ format details.</p>
 
 <script>
 (function () {
-  var ORDER = ["doc-game_manual","doc-handoff","doc-architecture","doc-scene_types","doc-asset_guidelines","doc-asset_manifest","doc-script_key","doc-script_format","doc-content_schema","doc-stat_math","doc-jobs","doc-it_design","doc-gm_build","doc-dx-bible","doc-dx_demo_build_spec","doc-dx-mechanics","doc-dreamxtreme-game-development-demo-doc","doc-attic","doc-art_guide"];
+  var ORDER = ["doc-game_manual","doc-handoff","doc-architecture","doc-scene_types","doc-asset_guidelines","doc-asset_manifest","doc-script_key","doc-script_format","doc-content_schema","doc-stat_math","doc-music_pipeline","doc-jobs","doc-it_design","doc-gm_build","doc-dx-bible","doc-dx_demo_build_spec","doc-dx-mechanics","doc-dreamxtreme-game-development-demo-doc","doc-attic","doc-art_guide"];
   var docs = ORDER.map(function (id) { return document.getElementById(id); }).filter(Boolean);
   var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-doc'));
   var search = document.getElementById('search');

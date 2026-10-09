@@ -42,6 +42,7 @@ const GROUPS = [
       ['SCRIPT_FORMAT.md', 'Script Format'],
       ['CONTENT_SCHEMA.md', 'Content Schema'],
       ['STAT_MATH.md', 'Stat Math'],
+      ['MUSIC_PIPELINE.md', 'Music Pipeline (FL to game)'],
     ],
   },
   {
