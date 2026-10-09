@@ -16,6 +16,12 @@ export function jumpTo(chapterId, sceneId, overrides = {}) {
   jumpFn?.(chapterId, sceneId);
 }
 
+// Queue a run state for the next chapter mount without navigating (the
+// title's CONTINUE navigates itself, through its start transition).
+export function queueRunState(state) {
+  pending = state;
+}
+
 // The chapter reads this once as it builds its run.
 export function takeDebugOverrides() {
   const o = pending;

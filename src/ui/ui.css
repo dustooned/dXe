@@ -1407,3 +1407,59 @@ svg .is-hinted path {
   opacity: 1;
   border-color: #fff;
 }
+
+/* Autosave (shell/hud.js showSaving): top left beside the skip button, a
+   pixel spinner and SAVING; the first time, a sentence saying what it means. */
+.dx-hud-save {
+  position: absolute;
+  top: calc(14 * var(--px));
+  left: calc(48 * var(--px));
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: calc(6 * var(--px));
+  max-width: calc(240 * var(--px));
+  color: var(--color-white);
+  font-size: calc(7 * var(--fs));
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  pointer-events: none;
+  opacity: 0.85;
+}
+.dx-hud-save[hidden] { display: none; }
+.dx-hud-save.is-explaining {
+  padding: calc(4 * var(--px)) calc(6 * var(--px));
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  opacity: 1;
+}
+.dx-hud-save__spin {
+  flex: none;
+  width: calc(10 * var(--px));
+  height: calc(10 * var(--px));
+  border: calc(2 * var(--px)) solid var(--color-white);
+  border-right-color: transparent;
+  animation: dx-save-spin 0.8s steps(4, end) infinite;
+}
+@keyframes dx-save-spin {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dx-hud-save__spin { animation: none; }
+}
+
+/* Playtest feedback page (shell/hud.js renderFeedbackPage). */
+.dx-hud-feedback__hint { font-size: calc(8 * var(--fs)); line-height: 1.5; margin: 0; }
+.dx-hud-feedback__note {
+  width: 100%;
+  box-sizing: border-box;
+  padding: calc(8 * var(--px));
+  background: var(--color-black);
+  color: var(--color-white);
+  border: 2px solid var(--color-white);
+  font-family: inherit;
+  font-size: calc(8 * var(--fs));
+  line-height: 1.5;
+  resize: vertical;
+}
+.dx-hud-feedback__status { font-size: calc(7 * var(--fs)); color: #ffe27a; min-height: 1em; margin: 0; }

@@ -9,6 +9,11 @@ import { getEndingKey, getEpilogueLine } from '../src/engine/endingEngine.js';
 import { CONTACTS, callFor, voicemailFor, therapistReachable, FOG_WIFI } from '../src/engine/contacts.js';
 import { hazeFor } from '../src/engine/lake.js';
 
+// A stand-in localStorage for the save checks below.
+const mem = new Map();
+globalThis.localStorage = { getItem: (k) => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => mem.set(k, String(v)), removeItem: (k) => mem.delete(k) };
+const { saveCheckpoint, loadCheckpoint, clearCheckpoint } = await import('../src/shell/save.js');
+
 let passed = 0;
 let failed = 0;
 function check(name, ok, detail = '') {
@@ -72,6 +77,17 @@ const first = callFor('THERAPIST', { state: { ...base }, currentName: 'Rick', cu
 const again = callFor('THERAPIST', { state: { ...base, scopeExplained: true }, currentName: 'Rick', currentKey: 'RICK', mood: 'Anger' });
 check('therapist explains once', first.explained && first.lines.some((l) => l.includes('tone_unison')) && !again.explained && !again.lines.some((l) => l.includes('tone_')));
 check('explain science line', typeof CONTACTS.THERAPIST.explain.all === 'string');
+
+// Checkpoint: a run's scene and whole state survive a round trip; an ending clears it.
+check('checkpoint empty at first', loadCheckpoint() === null);
+const state = { ...base, truthDebt: 4, choices: { deborah_01: 'lie' }, unlocked: ['Trust'] };
+check('checkpoint saves', saveCheckpoint({ chapterId: 'lake-ulysses', sceneId: 'rwanda', state }));
+const cp = loadCheckpoint();
+check('checkpoint loads scene and state', cp?.sceneId === 'rwanda' && cp.state.truthDebt === 4 && cp.state.choices.deborah_01 === 'lie' && cp.state.unlocked[0] === 'Trust');
+clearCheckpoint();
+check('checkpoint clears', loadCheckpoint() === null);
+mem.set('dreamxtreme:checkpoint', '{not json');
+check('checkpoint survives junk', loadCheckpoint() === null);
 
 // Lake haze: none when clean, full at the bottom, monotonic.
 check('haze range', hazeFor(0) === 0 && hazeFor(10) === 1 && hazeFor(5) > hazeFor(3));

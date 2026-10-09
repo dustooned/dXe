@@ -2,7 +2,8 @@ import './style.css';
 import './ui/ui.css';
 import './scenes/scenes.css';
 import { onRouteChange, navigate, getCurrentRoute } from './shell/router.js';
-import { loadSave } from './shell/save.js';
+import { loadSave, loadCheckpoint } from './shell/save.js';
+import { queueRunState } from './shell/debug.js';
 import { initFx, fadeToBlack, flash, shake } from './shell/fx.js';
 import { initFeelzWord } from './shell/feelzWord.js';
 import { setJumpHandler } from './shell/debug.js';
@@ -116,7 +117,20 @@ function afterLogo() {
   // Only a chapter deep-link is honored (useful for jumping to a scene).
   // A stale #/menu or #/about is ignored — those are hashes the app wrote
   // itself on a previous visit, and obeying them strands you past the intro.
-  if (route && route.screen === 'chapter') { dispatch(route); return; }
+  // A reload in the middle of a run (a crash, a closed tab reopened) comes back
+  // to that chapter: if there's a checkpoint for it, pick up there with the
+  // saved state instead of starting the chapter over. An explicit link to a
+  // different scene (a debug jump) is still honored as-is.
+  if (route && route.screen === 'chapter') {
+    const cp = loadCheckpoint();
+    if (cp && cp.chapterId === route.param && (!route.startAt || route.startAt === cp.sceneId)) {
+      queueRunState(cp.state);
+      dispatch({ ...route, startAt: cp.sceneId });
+      return;
+    }
+    dispatch(route);
+    return;
+  }
 
   // Everything else lands on the title screen, every time: it's the front
   // door. ENTER from there decides (first time: straight into the story;
@@ -281,9 +295,23 @@ function renderTitleMenu() {
   const menu = document.createElement('div');
   menu.className = 'dx-menu';
 
+  // A run in progress (the autosave checkpoint): CONTINUE picks it up at the
+  // start of the scene it was in, with everything as it was.
+  const checkpoint = loadCheckpoint();
+  if (checkpoint) {
+    const continueBtn = document.createElement('button');
+    continueBtn.className = 'dx-btn';
+    continueBtn.textContent = 'CONTINUE';
+    continueBtn.addEventListener('click', () => {
+      queueRunState(checkpoint.state);
+      beginTransition(`chapter/${checkpoint.chapterId}/${checkpoint.sceneId}`);
+    });
+    menu.appendChild(continueBtn);
+  }
+
   const enterBtn = document.createElement('button');
   enterBtn.className = 'dx-btn';
-  enterBtn.textContent = 'ENTER';
+  enterBtn.textContent = checkpoint ? 'NEW GAME' : 'ENTER';
   // First time: straight into the story. Played before: chapter select,
   // where each chapter asks before it starts (and offers to skip the story).
   enterBtn.addEventListener('click', () => {

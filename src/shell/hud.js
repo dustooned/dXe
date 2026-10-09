@@ -6,6 +6,7 @@
 // rebuilt — or even known about — by any scene handler.
 import { navigate } from './router.js';
 import { loadSettings, updateSettings } from './settings.js';
+import { loadCheckpoint } from './save.js';
 import { setMasterVolume } from './audio.js';
 import { jumpTo } from './debug.js';
 
@@ -59,6 +60,25 @@ const SKIP_SVG = pixelIcon([
   '.............',
 ]);
 
+// The autosave indicator, top left (opposite the gear): a pixel spinner and
+// SAVING while a checkpoint is written. The very first time on this device
+// it says what it means, so the player knows a crash won't cost the run.
+let saveEl = null;
+let saveTimer = null;
+const SAVE_EXPLAINED_KEY = 'dreamxtreme:saveExplained';
+export function showSaving() {
+  if (!saveEl) return;
+  let first = false;
+  try { first = !localStorage.getItem(SAVE_EXPLAINED_KEY); localStorage.setItem(SAVE_EXPLAINED_KEY, '1'); } catch { /* fine */ }
+  saveEl.querySelector('.dx-hud-save__text').textContent = first
+    ? 'AUTOSAVING. If the game closes, CONTINUE picks up here.'
+    : 'SAVING';
+  saveEl.classList.toggle('is-explaining', first);
+  saveEl.hidden = false;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => { saveEl.hidden = true; }, first ? 5200 : 1400);
+}
+
 export function initHud(el) {
   hostEl = el;
 
@@ -80,6 +100,13 @@ export function initHud(el) {
 
   hostEl.appendChild(gearBtn);
   hostEl.appendChild(ffBtn);
+
+  saveEl = document.createElement('div');
+  saveEl.className = 'dx-hud-save';
+  saveEl.setAttribute('role', 'status');
+  saveEl.innerHTML = '<span class="dx-hud-save__spin" aria-hidden="true"></span><span class="dx-hud-save__text"></span>';
+  saveEl.hidden = true;
+  hostEl.appendChild(saveEl);
 
   setMasterVolume(loadSettings().muted ? 0 : loadSettings().volume);
 }
@@ -117,6 +144,54 @@ function closePanel() {
   panelEl = null;
 }
 
+// Playtest feedback: the player writes a note, and COPY REPORT puts it on the
+// clipboard together with where they are (the autosave checkpoint: chapter,
+// scene, class, readings), their screen and browser, so a report like "it
+// crashed in the hallway" arrives with everything needed to chase it.
+function feedbackReport(note) {
+  const cp = loadCheckpoint();
+  const s = cp?.state ?? {};
+  const lines = [
+    'DREAM XTREME FEEDBACK',
+    `When: ${new Date().toLocaleString()}`,
+    `Note: ${note.trim() || '(none)'}`,
+    `Where: ${cp ? `${cp.chapterId} / ${cp.sceneId}` : location.hash || 'title'}`,
+    cp ? `Class: ${s.loadout}  Battery ${s.stability}  Bars ${s.trust}  Wi-Fi ${s.lucidity}  Clock ${s.integrity}  Lake ${s.truthDebt}` : null,
+    `Screen: ${window.innerWidth}x${window.innerHeight} @${window.devicePixelRatio}x`,
+    `Browser: ${navigator.userAgent}`,
+    `Text speed: ${loadSettings().textSpeed}`,
+  ];
+  return lines.filter(Boolean).join('\n');
+}
+
+function renderFeedbackPage() {
+  const box = panelEl.querySelector('.dx-hud-panel__box');
+  box.innerHTML = `
+    <h3 class="dx-hud-panel__title">FEEDBACK</h3>
+    <p class="dx-text dx-hud-feedback__hint">What happened? What felt off? Then copy the report and send it to the developer.</p>
+    <textarea class="dx-hud-feedback__note" rows="5" maxlength="1200" placeholder="It froze when..."></textarea>
+    <button type="button" class="dx-btn dx-hud-feedback__copy">COPY REPORT</button>
+    <p class="dx-text dx-hud-feedback__status" aria-live="polite"></p>
+    <button type="button" class="dx-btn dx-hud-feedback__back">BACK</button>
+  `;
+  const note = box.querySelector('.dx-hud-feedback__note');
+  const status = box.querySelector('.dx-hud-feedback__status');
+  box.querySelector('.dx-hud-feedback__copy').addEventListener('click', async () => {
+    const report = feedbackReport(note.value);
+    try {
+      await navigator.clipboard.writeText(report);
+      status.textContent = 'Copied. Paste it in a message to the developer.';
+    } catch {
+      // No clipboard access: show the report selected, ready to copy by hand.
+      note.value = report;
+      note.select();
+      status.textContent = 'Select all and copy this report by hand.';
+    }
+  });
+  box.querySelector('.dx-hud-feedback__back').addEventListener('click', () => { closePanel(); renderSettingsPanel(); });
+  note.focus();
+}
+
 function renderSettingsPanel() {
   const settings = loadSettings();
 
@@ -134,6 +209,7 @@ function renderSettingsPanel() {
       <button type="button" class="dx-btn dx-hud-speed"></button>
       ${chapterActive ? '<button type="button" class="dx-btn dx-hud-restart">RESTART CHAPTER</button>' : ''}
       <button type="button" class="dx-btn dx-hud-chapters">QUIT TO TITLE</button>
+      <button type="button" class="dx-btn dx-hud-feedback">FEEDBACK</button>
       <button type="button" class="dx-btn dx-hud-debug">DEBUG</button>
       <button type="button" class="dx-btn dx-hud-resume">RESUME</button>
     </div>
@@ -159,6 +235,8 @@ function renderSettingsPanel() {
     const cur = loadSettings().textSpeed;
     syncSpeed(updateSettings({ textSpeed: SPEEDS[(SPEEDS.indexOf(cur) + 1) % SPEEDS.length] }));
   });
+
+  panelEl.querySelector('.dx-hud-feedback').addEventListener('click', renderFeedbackPage);
 
   volumeSlider.addEventListener('input', () => {
     const next = updateSettings({ volume: Number(volumeSlider.value), muted: false });

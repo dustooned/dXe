@@ -1,7 +1,7 @@
 import { createStore } from '../../shell/state.js';
 import { takeDebugOverrides } from '../../shell/debug.js';
 import { createSceneSequencer } from '../../engine/sceneSequencer.js';
-import { recordEnding } from '../../shell/save.js';
+import { recordEnding, saveCheckpoint, clearCheckpoint } from '../../shell/save.js';
 import * as hud from '../../shell/hud.js';
 import * as audio from '../../shell/audio.js';
 import * as encounterMusic from '../../shell/encounterMusic.js';
@@ -181,7 +181,13 @@ export function mount(stageEl, { exit, restart, startSceneId }) {
     // Keeps the HUD's fast-forward icon (shell/hud.js) in sync with whether
     // the *current* scene has anything safe to skip — see sceneSequencer.js's
     // isSkippable() for which scene types that is.
-    onSceneChange: () => hud.setSkip(sequencer.isSkippable() ? sequencer.skip : null),
+    onSceneChange: (scene) => {
+      hud.setSkip(sequencer.isSkippable() ? sequencer.skip : null);
+      // Checkpoint at the start of every scene (shell/save.js): a crash loses
+      // at most the scene in progress. An ending means the run is done.
+      if (scene.type === 'ending') clearCheckpoint();
+      else if (saveCheckpoint({ chapterId: id, sceneId: scene.id, state: run.get() })) hud.showSaving();
+    },
   });
 
   hud.setChapterActive({ onRestart: restart });
