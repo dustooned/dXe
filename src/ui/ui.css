@@ -1478,3 +1478,13 @@ svg .is-hinted path {
 .is-reduced-effects .dx-status__icon.is-down,
 .is-reduced-effects .dx-portrait.is-speaking { animation: none !important; }
 .is-reduced-effects .dx-status__spark { display: none; }
+
+/* Lite mode (shell/perf.js, phones and low-end devices): no blend modes or
+   animated filters on the live layers; the same look, cheaper to paint. */
+.is-lite .dx-haze { mix-blend-mode: normal; animation: none; }
+.is-lite .dx-opfx--deborah .dx-game-content .dx-portrait,
+.is-lite .dx-opfx--rwanda .dx-game-content .dx-portrait,
+.is-lite .dx-opfx--rick .dx-game-content .dx-portrait,
+.is-lite .dx-opfx--deborah .dx-scope-band { filter: none; }
+.is-lite .dx-portrait.is-speaking,
+.is-lite .dx-call__avatar.is-speaking { animation: none; }

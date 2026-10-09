@@ -34,6 +34,7 @@
 // competing for the same line. First use: confrontation cutscenes'
 // otherwise-empty background (scenes/cutsceneScene.js).
 import { getAnalyser, getDissonance } from '../shell/audio.js';
+import { LITE, LITE_FRAME_MS } from '../shell/perf.js';
 
 function clamp(v, min, max) {
   return Math.min(max, Math.max(min, v));
@@ -100,8 +101,8 @@ export function createOscilloscope(
     // { traces, instruments }: what's been introduced yet (the tutorial
     // reveals them one at a time). Read every frame; each fades in once.
     getVisibility,
-    // () => 'scope' | 'needle' | 'dots' | 'trace' | null: a FEELZ tip is
-    // pointing at that piece (dialogScene.js showTip); it gets a pulsing frame.
+    // () => 'scope' | 'needle' | 'dots' | 'trace' | null: something is
+    // pointing at that piece (a Therapist call or his exercise); it gets a pulsing frame.
     getHighlight,
   } = {}
 ) {
@@ -154,12 +155,14 @@ export function createOscilloscope(
     const sliceWidth = w / bufferLength;
     let x = xOffset;
     const reach = h * 0.34;
-    for (let i = 0; i < bufferLength; i++) {
+    // Lite (phones): every 4th sample is plenty at this size.
+    const step = LITE ? 4 : 1;
+    for (let i = 0; i < bufferLength; i += step) {
       const v = data[i] / 128; // 0..2, 1.0 = silence (midline)
       const y = h * npcMid + clamp(((v - 1) * h * ampScale * npcFlat) / 2, -reach, reach);
       if (i === 0) ctx2d.moveTo(x, y);
       else ctx2d.lineTo(x, y);
-      x += sliceWidth;
+      x += sliceWidth * step;
     }
     ctx2d.stroke();
   }
@@ -169,7 +172,8 @@ export function createOscilloscope(
     const dissonance = clamp(rawDissonance, 0, 1);
 
     ctx2d.lineWidth = lineWidth;
-    ctx2d.filter = dissonance > 0 ? `blur(${dissonance * MAX_BLUR_PX}px)` : 'none';
+    // Canvas blur is costly on phones; lite mode skips it (the split still shows).
+    ctx2d.filter = dissonance > 0 && !LITE ? `blur(${dissonance * MAX_BLUR_PX}px)` : 'none';
 
     // Channels pull apart only once the chord is genuinely unresolved, so
     // the neutral opening still reads as a single clean signal.
@@ -248,7 +252,7 @@ export function createOscilloscope(
     const glow = synced || merged;
     ctx2d.lineWidth = glow ? lineWidth + 1 : lineWidth;
     ctx2d.shadowColor = glow ? `rgb(${r},${g},${b})` : 'transparent';
-    ctx2d.shadowBlur = glow ? 8 : 0;
+    ctx2d.shadowBlur = glow && !LITE ? 8 : 0;
     const mid = h * (1 - npcMid);
     ctx2d.strokeStyle = `rgb(${r},${g},${b})`;
     ctx2d.beginPath();
@@ -315,7 +319,7 @@ export function createOscilloscope(
     ctx2d.strokeStyle = own;
     ctx2d.lineWidth = 1.5;
     ctx2d.shadowColor = own;
-    ctx2d.shadowBlur = close > 0.9 && steps !== null ? 6 : 0;
+    ctx2d.shadowBlur = close > 0.9 && steps !== null && !LITE ? 6 : 0;
     ctx2d.beginPath();
     if (steps === null) {
       // No feeling held, or shut out: only one signal, so a flat line.
@@ -324,7 +328,7 @@ export function createOscilloscope(
       ctx2d.lineTo(cx + r, cy);
     } else {
       const [a, b] = RATIOS[steps];
-      const n = steps === 2 ? 720 : 480;
+      const n = (steps === 2 ? 720 : 480) / (LITE ? 2 : 1);
       for (let i = 0; i <= n; i++) {
         const t = (i / n) * Math.PI * 2;
         const x = cx + Math.sin(a * t + phase) * r * (1 + (Math.random() - 0.5) * jitter);
@@ -476,7 +480,11 @@ export function createOscilloscope(
     ctx2d.shadowBlur = 0;
   }
 
+  let lastDrawn = -Infinity;
   function draw(timeMs) {
+    // Lite: 30 fps.
+    if (LITE && timeMs - lastDrawn < LITE_FRAME_MS) { rafId = requestAnimationFrame(draw); return; }
+    lastDrawn = timeMs;
     syncSize();
     const w = canvas.width;
     const h = canvas.height;

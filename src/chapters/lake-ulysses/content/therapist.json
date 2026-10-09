@@ -221,7 +221,7 @@
     },
     {
       "kind": "tryfeel",
-      "text": "{feel:Sadness}{mask:Happy}\"I've told you I'm fine all call. Watch my line. Another color flickers under it. Find that one on your wheel.\"",
+      "text": "{feel:Anger}{mask:Happy}\"I've told you I'm fine all call. Watch my line. Another color flickers under it. Find that one on your wheel.\"",
       "when": {
         "class": "Guns"
       }

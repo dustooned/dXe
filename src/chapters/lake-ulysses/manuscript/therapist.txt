@@ -146,7 +146,7 @@ LINE [Crystals]: "{cue:scope}{cue:instruments}Last thing. See the lines across m
 # flickers underneath. Each pick is explained by the hint under his line
 # (busy shape: close; needle left: pulling apart) until the shape closes
 # into a still circle.
-TRYFEEL [Guns]: {feel:Sadness}{mask:Happy}"I've told you I'm fine all call. Watch my line. Another color flickers under it. Find that one on your wheel."
+TRYFEEL [Guns]: {feel:Anger}{mask:Happy}"I've told you I'm fine all call. Watch my line. Another color flickers under it. Find that one on your wheel."
 TRYFEEL [Bible]: {feel:Anxiety}{mask:Happy}"I've told you I'm fine all call. Watch my line. Another color flickers under it. Find that one on your wheel."
 TRYFEEL [Crystals]: {feel:Anxiety}{mask:Happy}"I've told you I'm fine all call. Watch my line. Another color flickers under it. Find that one on your wheel."
 # While you look: his class metaphor on a close pick (a busy shape), his

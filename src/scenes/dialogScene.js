@@ -35,7 +35,6 @@ import * as fx from '../shell/fx.js';
 import * as audio from '../shell/audio.js';
 import * as voices from '../shell/voices.js';
 import { quoteSpeech } from '../ui/speech.js';
-import { createFeelzTip } from '../ui/feelzTip.js';
 import { createOpponentFx } from '../ui/opponentFx.js';
 
 // Weak vs strong hit feedback is derived from how big a swipe's effects
@@ -178,12 +177,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let pendingCaught = null;
   // IT and SO cheering a lie streak on (COZY_LINES), shown after the reaction.
   let pendingCozy = null;
-  // The FEELZ tip on screen (ui/feelzTip.js) and the scope piece it frames.
-  let tip = null;
-  let tipHighlight = null;
-  // FEELZ tip popups are switched off for now (playtest: they didn't land);
-  // coach lines below teach the same moments in place.
-  const TIPS_ENABLED = false;
   // A coach line (first-time moment): one short line in the dialog itself,
   // under their words, with the piece it's about glowing gold, until the
   // player does the thing it asks (until: 'sync' | 'pick' | 'swipe' | 'call')
@@ -194,7 +187,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // The opponent's weather (ui/opponentFx.js); picking their real feeling
   // settles it until this time.
   let opfx = null;
-  // Set on unmount, so a delayed tip can't land in the next scene.
+  // Set on unmount, so a delayed call can't land in the next scene.
   let unmounted = false;
   let settleUntil = 0;
   let cozyThisEncounter = false;
@@ -420,7 +413,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       // Theirs is the real feeling, not a mask: the line can lie, the shape
       // can't (the same feeling that syncs, so the tutorial's lesson holds).
       getFeelings: () => ({ mine: activeEmotion ?? encounterPicks.at(-1) ?? null, theirs: (stage === 'outro' && trial ? trial.target : currentNode()?.mood ?? shownMood(currentNode())) ?? null }),
-      getHighlight: () => coach?.highlight ?? trialHighlight() ?? tipHighlight,
+      getHighlight: () => coach?.highlight ?? trialHighlight(),
       getVisibility: npc.reveal ? () => ({ traces: isRevealed('scope'), instruments: isRevealed('instruments') }) : undefined,
     });
 
@@ -677,7 +670,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
           // A coach waiting on a pick (or on finding their feeling) is done.
           coachDid('pick'); // any feeling tried: what it means is the player's call
           render();
-          scopeTip(emotion);
         },
       });
       interactive.appendChild(dartboard.el);
@@ -786,7 +778,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
     stageEl.appendChild(screen);
     opfx ??= createOpponentFx({ npc: npc.npc, getLevel: fxLevel });
     opfx.attach(screen);
-    tip?.attach(stageEl, tipFloor()); // the stage was just cleared; a tip stays up across renders
     later(placeTask, 60); // after layout: the "try this" line by its target
     placeScopeBand(screen, scopeCanvas, portrait.el);
 
@@ -941,7 +932,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
     run.set({ emotionCounts: { ...counts, [activeEmotion]: (counts[activeEmotion] ?? 0) + 1 } });
     // In order, for the oscilloscope's history strip (this encounter only).
     encounterPicks.push(activeEmotion);
-    if (encounterPicks.length === 2) later(() => showTip('dots', 'dots', 'Each block under the scope is a feeling you picked in this talk.', 'dots'), 900);
 
     pendingEdge = edge;
     reactionEmotion = activeEmotion;
@@ -1031,20 +1021,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
     return level;
   }
 
-  // FEELZ tips (ui/feelzTip.js): the first time each piece of the scope does
-  // something in a real encounter, the app says what it means, once a run,
-  // and frames that piece in gold. The tutorial teaches these itself.
-  function showTip(key, icon, text, highlight) {
-    if (!TIPS_ENABLED) return;
-    // Only when you're seeing clearly (Wi-Fi 4+, two arcs): a skipped tip isn't used up.
-    if (unmounted || npc.reveal || tip || !isRevealed('instruments') || (run.get().lucidity ?? 5) < 4) return;
-    const shown = run.get().tipsShown ?? [];
-    if (shown.includes(key)) return;
-    run.set({ tipsShown: [...shown, key] });
-    tipHighlight = highlight;
-    tip = createFeelzTip({ icon, text, onGone: () => { tip = null; tipHighlight = null; } });
-    tip.attach(stageEl, tipFloor());
-  }
 
   // ── Who's talking ──
   // Their words sit in a bubble on the left with their name on a tag in
@@ -1313,19 +1289,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
     return wheelSteps(activeEmotion, trial.target) >= 3 ? 'needle' : 'scope';
   }
 
-  // A tip sits just above the contacts row (or the lake), never over them.
-  function tipFloor() {
-    return stageEl.querySelector('.dx-game-content > .dx-dock:not(.is-concealed)') ?? stageEl.querySelector('.dx-game-content > .dx-lake');
-  }
-
-  // What the feeling you just picked does to the scope, said the first time.
-  function scopeTip(emotion) {
-    const steps = wheelSteps(emotion, currentNode()?.mood ?? shownMood(currentNode()));
-    if (steps === null) return;
-    if (steps === 0) showTip('circle', 'circle', "A clean circle: you've found the feeling they're really in.", 'scope');
-    else if (steps >= 3) showTip('needle', 'needle', 'Needle leaning left: you two are pulling apart.', 'needle');
-    else showTip('shape', 'shape', 'The busier the shape, the further apart you are. A still circle means you found them.', 'scope');
-  }
 
   // Contacts dock (engine/contacts.js): the Therapist always, reachable only
   // with enough bars (Trust) and Wi-Fi (Lucidity); anyone who trusts you.
@@ -2145,7 +2108,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   return function unmount() {
     unmounted = true;
-    tip?.destroy();
     opfx?.destroy();
     offPause();
     typewriter?.destroy();

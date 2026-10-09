@@ -7,6 +7,7 @@
 import { navigate } from './router.js';
 import { loadSettings, updateSettings, applyEffectsSetting } from './settings.js';
 import { loadCheckpoint } from './save.js';
+import { applyPerfClass } from './perf.js';
 import { setMasterVolume } from './audio.js';
 import { jumpTo } from './debug.js';
 
@@ -110,6 +111,7 @@ export function initHud(el) {
 
   setMasterVolume(loadSettings().muted ? 0 : loadSettings().volume);
   applyEffectsSetting();
+  applyPerfClass();
 }
 
 // main.js calls this once the preloader (spinner + logo video) is done —

@@ -15,6 +15,7 @@
 // on the music's beat. CSS does the per-element part (ui.css .dx-opfx--*,
 // driven by --fx); a canvas behind the content does the particles.
 import { getAnalyser } from '../shell/audio.js';
+import { LITE, LITE_FRAME_MS } from '../shell/perf.js';
 
 const MAX_ALPHA = 0.42; // the background layer never gets louder than this
 
@@ -123,8 +124,11 @@ export function createOpponentFx({ npc, getLevel }) {
     return Math.sqrt(sum / (buf.length / 4));
   }
 
+  let size = null; // the screen's size, measured on attach and now and then, not every frame
+  let measuredAt = 0;
   function frame(now) {
     raf = requestAnimationFrame(frame);
+    if (LITE && now - last < LITE_FRAME_MS) return; // lite: 30 fps
     const dt = Math.min(0.1, (now - last) / 1000);
     last = now;
     level += ((getLevel?.() ?? 0) - level) * Math.min(1, dt * 2.5); // ease, never snap
@@ -136,14 +140,17 @@ export function createOpponentFx({ npc, getLevel }) {
       screen.style.setProperty('--fx', (reduced ? strength * 0.5 : strength).toFixed(3));
     }
     if (!kind || !screen) return;
-    const r = screen.getBoundingClientRect();
-    const w = Math.round(r.width);
-    const h = Math.round(r.height);
+    if (!size || now - measuredAt > 1000) {
+      const r = screen.getBoundingClientRect();
+      size = { w: Math.round(r.width), h: Math.round(r.height) };
+      measuredAt = now;
+    }
+    const { w, h } = size;
     if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
     ctx.clearRect(0, 0, w, h);
     if (reduced || strength < 0.02) { parts = []; return; }
     owed += kind.rate * strength * dt;
-    while (owed >= 1 && parts.length < 90) { parts.push(kind.spawn(w, h)); owed -= 1; }
+    while (owed >= 1 && parts.length < (LITE ? 40 : 90)) { parts.push(kind.spawn(w, h)); owed -= 1; }
     const a = MAX_ALPHA * strength;
     parts = parts.filter((p) => kind.step(p, dt, w, h, pulse));
     for (const p of parts) kind.draw(ctx, p, a, pulse);
@@ -156,6 +163,7 @@ export function createOpponentFx({ npc, getLevel }) {
     // opponent's class on the new one (behind the content, under the scope).
     attach(screenEl) {
       screen = screenEl;
+      size = null; // a new screen: measure it on the next frame
       screen.classList.add('dx-opfx-on', `dx-opfx--${String(npc).toLowerCase()}`);
       screen.style.setProperty('--fx', (level * 0.85).toFixed(3));
       screen.prepend(canvas);

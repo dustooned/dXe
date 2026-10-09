@@ -114,8 +114,6 @@ const initialRunState = {
   truthDebt: 0,
   // Lies in a row (a truth resets it): IT and SO cheer a streak on.
   lieStreak: 0,
-  // FEELZ tips already shown this run (dialogScene.js showTip), each once.
-  tipsShown: [],
   // Coach lines already shown (dialogScene.js startCoach), answers given meter
   // tags so far, and whether the Therapist has explained the little screen.
   coachSeen: [],
