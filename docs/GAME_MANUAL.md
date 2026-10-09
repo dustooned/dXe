@@ -372,6 +372,8 @@ Only the portrait, their words (a faint ghost via text-shadow, never moved), the
 
 ### The music of an encounter
 
+**Coming (decided 2026-10-09):** battle music moves to stems exported from FL (one folder per NPC: intro, a loop per phase at its own tempo or layer stems, a secret layer), played as recorded; the chip/synth sounds stay for UI. What follows describes the current synth player, still used for Rwanda until her stems exist.
+
 Each NPC with a composed arrangement (Rwanda so far) has a song that follows the fight, not your score. The confrontation opens on the intro (drums), the battle on the next layer, and every answer moves it one step up: more parts, faster (100 → 110 → 125 → 140 BPM). If you get close to a full connection, a **secret track** fades in (a part the composer hides in FL as "Secret…"), the sign you're almost there. When someone trusts you and tells you their story, every sound stops; IT and SO weigh it in the silence (IT on how true it rings, SO doubting a corner, never the person); then the sound fades back.
 
 ### Pushed away

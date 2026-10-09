@@ -245,3 +245,26 @@ Ask rather than working around something. If the format is fighting you —
 a melody that won't fit monophonic, a key the game keeps guessing wrong, a
 cue that needs to sustain — that's a limit worth changing, not one to
 compose around. Most of them are a few lines to fix.
+
+
+## Stems (battle music, from 2026-10-09)
+
+Battle music is exported from FL as audio and played as recorded. Per NPC, one folder:
+
+```
+music/<npc>/            e.g. music/rwanda/
+  intro.ogg             the confrontation opener (plays once, or loops until the battle starts)
+  phase1.ogg            one loop per battle phase, each at that phase's real tempo
+  phase2.ogg            (or, instead of phases: drums.ogg, bass.ogg, lead.ogg, ... layer stems
+  phase3.ogg             that all share one tempo and length; the game fades them in per phase)
+  phase4.ogg
+  secret.ogg            the secret layer: joins when the player is close to a full connection
+```
+
+Export rules:
+- **Format:** OGG (Vorbis, ~160 kbps) preferred; WAV is fine and gets converted.
+- **Loops:** each loop is a whole number of bars, cut exactly on the bar line, no reverb tail baked past the end (or the loop clicks). Turn off FL's "leave remainder" when exporting.
+- **Layer stems:** every stem in a set starts at the same bar and has the same length, so they stay locked together.
+- **Secret layer:** same tempo and length as the loop it plays over.
+- **Tell me per NPC:** the BPM of each loop, how many bars, and which layers you want in each phase.
+- **Levels:** export at a sensible level and leave headroom; the game's Sound Player sets the final mix.
