@@ -128,9 +128,10 @@ export function parseSegments(raw) {
   return segments;
 }
 
-// Pages hold whole sentences, up to about this many characters. A single
-// sentence longer than this still gets its own page rather than being cut.
-const PAGE_CHARS = 140;
+// Pages hold whole sentences, up to about this many characters (fewer at
+// LARGE text, so a page still fits). A single sentence longer than this
+// still gets its own page rather than being cut.
+const pageChars = () => (loadSettings().textSize === 'large' ? 110 : 140);
 const SENTENCE_END = /[.!?…]/;
 const CLOSERS = /["')\]”’]/;
 
@@ -161,12 +162,12 @@ export function paginate(segments) {
   let start = 0;
   let lastFit = null;
   for (const b of [...breaks, segments.length]) {
-    if (charCount(start, b) <= PAGE_CHARS) { lastFit = b; continue; }
+    if (charCount(start, b) <= pageChars()) { lastFit = b; continue; }
     if (lastFit !== null) {
       pages.push(segments.slice(start, lastFit));
       start = lastFit;
     }
-    if (charCount(start, b) <= PAGE_CHARS) {
+    if (charCount(start, b) <= pageChars()) {
       lastFit = b;
     } else {
       // One sentence longer than a page: it gets a page to itself.

@@ -8,6 +8,7 @@ import { navigate } from './router.js';
 import { loadSettings, updateSettings, applyEffectsSetting } from './settings.js';
 import { loadCheckpoint } from './save.js';
 import { applyPerfClass } from './perf.js';
+import { meterGlyph } from '../ui/statusBar.js';
 import { setMasterVolume } from './audio.js';
 import { jumpTo } from './debug.js';
 
@@ -147,6 +148,47 @@ function closePanel() {
   panelEl = null;
 }
 
+// The FEELZ guide: every piece of the screen in one place, a picture and a
+// line or two each, to look up any time (playtest: "unsure what effect my
+// action would take"). Describes, never judges: no piece is a score.
+function lissajousSvg(a, b, phase) {
+  const pts = [];
+  for (let i = 0; i <= 120; i++) {
+    const t = (i / 120) * Math.PI * 2;
+    pts.push(`${(12 + Math.sin(a * t + phase) * 9).toFixed(1)},${(8 - Math.sin(b * t) * 6).toFixed(1)}`);
+  }
+  return `<svg viewBox="0 0 24 16" class="dx-guide__svg"><polyline points="${pts.join(' ')}" fill="none" stroke="#ffe27a" stroke-width="1"/></svg>`;
+}
+const GUIDE = [
+  ['BATTERY', () => meterGlyph('stability'), 'How steady you are. The truth often costs charge. It recovers between people, more when they let you in.'],
+  ['BARS', () => meterGlyph('trust'), 'How connected people feel to you. Below 4, some doors stay shut and the Therapist can\'t get through.'],
+  ['WI-FI', () => meterGlyph('lucidity'), 'How clearly you see. Every lie fogs it a little. Below 4, calls come in blurry and the Therapist goes to voicemail.'],
+  ['CLOCK', () => '<span class="dx-guide__clock">12:00</span>', 'Keeps honest time while you do. Lie enough and the minutes start to skip.'],
+  ['+1 / -1', () => '<span class="dx-guide__delta"><b>+1</b> <i>-1</i></span>', 'After an answer, how much it moved each meter.'],
+  ['THE LAKE', () => '<span class="dx-guide__lake"></span>', 'Everything you told people, as water. Lies fill it, truths clear it a little. It decides how the chapter ends.'],
+  ['THE LINES', () => '<svg viewBox="0 0 24 16" class="dx-guide__svg"><path d="M0 5 Q4 1 8 5 T16 5 T24 5" stroke="#9b6bff" fill="none"/><path d="M0 11 Q4 7 8 11 T16 11 T24 11" stroke="#4fd6ff" fill="none"/></svg>', 'Across their picture: their line on top, yours under it. The closer they run, the closer you are.'],
+  ['LITTLE SCREEN', () => lissajousSvg(4, 5, Math.PI / 4), 'Your feeling against theirs. A busier shape means further apart; a circle that holds still means you found what they feel.'],
+  ['NEEDLE', () => '<svg viewBox="0 0 24 16" class="dx-guide__svg"><path d="M3 13 H21 M3 13 V10 M12 13 V10 M21 13 V10" stroke="#fff" stroke-opacity="0.5" fill="none"/><path d="M12 13 L19 4" stroke="#ffe27a" stroke-width="1.6"/></svg>', 'Right: you\'re moving together. Left: pulling apart.'],
+  ['MASKS', () => '<svg viewBox="0 0 24 16" class="dx-guide__svg"><path d="M0 8 Q4 4 8 8 T16 8 T24 8" stroke="#ffd34d" fill="none" stroke-width="1.4"/><path d="M0 9 Q4 5 8 9 T16 9 T24 9" stroke="#4d8bff" fill="none" stroke-width="1" stroke-dasharray="2 2"/></svg>', 'Some people show one feeling and carry another. The color that flickers under their line is what\'s going on inside.'],
+  ['CALLS', () => '<span class="dx-guide__call">T</span>', 'Tap a contact for their read on who you\'re facing, in their own words. One call each per conversation.'],
+  ['THE WHEEL', () => lissajousSvg(1, 1, Math.PI / 2), 'Pick how you feel before you answer. Hold a slice to hear it. New feelings arrive when people share theirs.'],
+];
+
+function renderGuidePage() {
+  const box = panelEl.querySelector('.dx-hud-panel__box');
+  box.innerHTML = `
+    <h3 class="dx-hud-panel__title">FEELZ GUIDE</h3>
+    <div class="dx-guide">${GUIDE.map(([name, pic, text]) => `
+      <div class="dx-guide__row">
+        <span class="dx-guide__pic">${pic()}</span>
+        <div><p class="dx-guide__name">${name}</p><p class="dx-text dx-guide__text">${text}</p></div>
+      </div>`).join('')}
+    </div>
+    <button type="button" class="dx-btn dx-hud-guide__back">BACK</button>
+  `;
+  box.querySelector('.dx-hud-guide__back').addEventListener('click', () => { closePanel(); renderSettingsPanel(); });
+}
+
 // Playtest feedback: the player writes a note, and COPY REPORT puts it on the
 // clipboard together with where they are (the autosave checkpoint: chapter,
 // scene, class, readings), their screen and browser, so a report like "it
@@ -211,6 +253,8 @@ function renderSettingsPanel() {
       <button type="button" class="dx-btn dx-hud-mute"></button>
       <button type="button" class="dx-btn dx-hud-speed"></button>
       <button type="button" class="dx-btn dx-hud-effects"></button>
+      <button type="button" class="dx-btn dx-hud-textsize"></button>
+      <button type="button" class="dx-btn dx-hud-guide">FEELZ GUIDE</button>
       ${chapterActive ? '<button type="button" class="dx-btn dx-hud-restart">RESTART CHAPTER</button>' : ''}
       <button type="button" class="dx-btn dx-hud-chapters">QUIT TO TITLE</button>
       <button type="button" class="dx-btn dx-hud-feedback">FEEDBACK</button>
@@ -241,6 +285,17 @@ function renderSettingsPanel() {
   });
 
   panelEl.querySelector('.dx-hud-feedback').addEventListener('click', renderFeedbackPage);
+
+  // Text size: NORMAL / LARGE, all body text a step bigger.
+  const sizeBtn = panelEl.querySelector('.dx-hud-textsize');
+  const syncSize = (s) => { sizeBtn.textContent = `TEXT SIZE: ${s.textSize === 'large' ? 'LARGE' : 'NORMAL'}`; };
+  syncSize(settings);
+  sizeBtn.addEventListener('click', () => {
+    const next = updateSettings({ textSize: loadSettings().textSize === 'large' ? 'normal' : 'large' });
+    applyEffectsSetting(next);
+    syncSize(next);
+  });
+  panelEl.querySelector('.dx-hud-guide').addEventListener('click', renderGuidePage);
 
   // Reduce effects: ON stops shakes, flashes, opponent weather, haze and tints.
   const effectsBtn = panelEl.querySelector('.dx-hud-effects');

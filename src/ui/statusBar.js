@@ -116,6 +116,12 @@ function sparks(icon) {
   }
 }
 
+// A meter's pixel icon, full, for the FEELZ guide (shell/hud.js).
+export function meterGlyph(meter) {
+  const rows = { trust: SIGNAL, lucidity: WIFI, stability: BATTERY }[meter];
+  return rows ? sprite(rows, 4, 'dx-status__px') : '';
+}
+
 function pad(n) {
   return String(n).padStart(2, '0');
 }

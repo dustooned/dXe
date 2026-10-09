@@ -8,7 +8,7 @@
       "id": "therapist_01",
       "npc": "THERAPIST",
       "location": 1,
-      "prompt": "The screen lights up. A voice, tired but warm, cuts through the ringing in your ears. Keys clacking somewhere behind it. \"Got your intake up.\" A pause while he reads. {intake}\n\"You're still there? Good. I've got you until the top of the hour.\"\n\"See the three lighting up? Those are the ones you reach for. The rest are still there. You just don't pick them up much.\"\n\"So. How are you walking in today? Don't think about it. Just point.\"",
+      "prompt": "The screen lights up. A voice, tired but warm, cuts through the ringing in your ears. Keys clacking somewhere behind it. \"Got your intake up.\" A pause while he reads. {intake}\n\"You're still there? Good. I've got you until the top of the hour.\"\n\"See the three lighting up? Those are the ones you reach for. The rest are still there. You just don't pick them up much.\"{mark:page}\"So. How are you walking in today? Don't think about it. Just point.\"",
       "swipes": {
         "truth": {
           "playerText": "Not great. I woke up on the side of the road.",

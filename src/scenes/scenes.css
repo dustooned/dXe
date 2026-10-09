@@ -199,15 +199,6 @@
   background: var(--color-black);
 }
 
-.dx-say-label {
-  /* (retired: the YOU tag is the bubble's name tag now) */
-  text-align: right;
-  font-size: calc(7 * var(--fs));
-  opacity: 0.5;
-  letter-spacing: 0.08em;
-  margin: 0;
-}
-
 .dx-game-screen .dx-say {
   text-align: right;
 }
@@ -1896,21 +1887,7 @@
   50% { opacity: 0.35; }
 }
 
-/* Coach lines (dialogScene.js startCoach / meterTags): first-time moments
-   said in place, under their words. Gold, short, never a popup. */
-.dx-coach {
-  margin: 0;
-  padding: calc(4 * var(--px)) calc(8 * var(--px));
-  border-left: calc(3 * var(--px)) solid #ffe27a;
-  color: #ffe27a;
-  font-size: calc(8 * var(--fs));
-  line-height: 1.5;
-  animation: dx-coach-in 0.35s steps(4, end) both;
-}
-@keyframes dx-coach-in {
-  from { opacity: 0; transform: translateY(calc(4 * var(--px))); }
-  to { opacity: 1; transform: none; }
-}
+/* The friend a Therapist call pointed at pulses in the dock. */
 .dx-dock__contact.is-coached {
   animation: dx-dock-coach 1.1s ease-in-out infinite;
 }
@@ -1919,7 +1896,6 @@
   50% { box-shadow: 0 0 calc(10 * var(--px)) calc(3 * var(--px)) rgba(255, 226, 122, 0.85); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .dx-coach { animation: none; }
   .dx-dock__contact.is-coached { animation: none; box-shadow: 0 0 0 calc(2 * var(--px)) #ffe27a; }
 }
 

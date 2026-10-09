@@ -33,7 +33,7 @@ REVEAL: dock on cue
 
 === therapist_01
 SPOTLIGHT: wheel, card
-PROMPT: The screen lights up. A voice, tired but warm, cuts through the ringing in your ears. Keys clacking somewhere behind it. "Got your intake up." A pause while he reads. {intake}\n"You're still there? Good. I've got you until the top of the hour."\n"See the three lighting up? Those are the ones you reach for. The rest are still there. You just don't pick them up much."\n"So. How are you walking in today? Don't think about it. Just point."
+PROMPT: The screen lights up. A voice, tired but warm, cuts through the ringing in your ears. Keys clacking somewhere behind it. "Got your intake up." A pause while he reads. {intake}\n"You're still there? Good. I've got you until the top of the hour."\n"See the three lighting up? Those are the ones you reach for. The rest are still there. You just don't pick them up much."{mark:page}"So. How are you walking in today? Don't think about it. Just point."
 PICK Happy: "Bright. The sun doesn't ask permission either. Okay."
 PICK Trust: "Open hands. Hard to hold anything that way. Hard to drop anything, too."
 PICK Fear: "Small and quick. Like something under a porch. It can stay there a while."

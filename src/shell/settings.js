@@ -11,10 +11,13 @@ const defaultSettings = {
   // Reduce effects: no screen shake or flashes, no opponent weather, haze or
   // screen tints (for motion-sensitive players). Applied as a class on <html>.
   reduceEffects: false,
+  // Text size: 'normal' | 'large' (all body text a step bigger).
+  textSize: 'normal',
 };
 
 export function applyEffectsSetting(s = loadSettings()) {
   document.documentElement.classList.toggle('is-reduced-effects', !!s.reduceEffects);
+  document.documentElement.classList.toggle('is-large-text', s.textSize === 'large');
 }
 
 export function loadSettings() {

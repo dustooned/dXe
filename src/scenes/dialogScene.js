@@ -182,8 +182,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // player does the thing it asks (until: 'sync' | 'pick' | 'swipe' | 'call')
   // or the moment passes. Each key once a run (run.coachSeen); never popups.
   let coach = null;
-  // What the last answer moved, for the reaction's meter tags (first answers only).
-  let answerChanges = null;
   // The opponent's weather (ui/opponentFx.js); picking their real feeling
   // settles it until this time.
   let opfx = null;
@@ -911,7 +909,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
     audio.nudgeLeitmotifMood(trustDelta + stabilityDelta);
     encounterMusic.react({ delta: trustDelta + stabilityDelta, caught: !!seen, missed: !synced && !turnedToward, closeness: connection(null, false).closeness });
     reactionDelta = seen ? -1 : trustDelta + stabilityDelta;
-    answerChanges = { before, after: run.get(), lie: swipeKey === 'lie' };
     coach = null;
 
     // The impact lands on their reaction: how hard is how much their TRU
