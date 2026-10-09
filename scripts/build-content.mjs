@@ -17,7 +17,7 @@ const PICK_PATTERN = /^PICK\s+(\w+):\s*(.*)$/;
 const REVEAL_PATTERN = /^(meters|debt|scope|instruments|dock)\s+(?:after\s+(\S+)|on\s+cue)$/;
 // Inside `=== OUTRO`: LINE / HANGUP / NOTIFY / IT / SO / TRYCALL, each with an optional
 // [condition] before the colon — see docs/SCRIPT_FORMAT.md.
-const OUTRO_PATTERN = /^(LINE|HANGUP|NOTIFY|IT|SO|TRYCALL|TRYFEEL|WATCH)(?:\s*\[([^\]]*)\])?:\s*(.*)$/;
+const OUTRO_PATTERN = /^(LINE|HANGUP|NOTIFY|IT|SO|TRYCALL|TRYFEEL|TRYNEAR|TRYFAR|WATCH)(?:\s*\[([^\]]*)\])?:\s*(.*)$/;
 // WATCH [stability|trust|lucidity|integrity|lake|steady]: a parting watch-out;
 // only the one matching how the player's readings ended plays (dialogScene.js watchFor).
 const WATCH_KEYS = ['stability', 'trust', 'lucidity', 'integrity', 'lake', 'steady'];

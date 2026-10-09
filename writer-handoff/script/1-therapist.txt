@@ -45,14 +45,14 @@ PICK Anxiety: "Braced already, and nothing's even happened yet. Okay."
 
 -- TRUTH
 SAY: Not great. I woke up on the side of the road.
-REACT: "Okay. Thank you." The keys keep going; he types while you talk, the way you learn to with forty people on your caseload. "Look at the top of your screen. {cue:stability}Battery's how steady you're holding up. Let it run low and the people you call get tired of carrying you. It charges back between people, more if they let you in. {cue:trust}Bars are how connected people feel to you. Some people won't open up to you below a certain number. {cue:lucidity}Wi-Fi's how clearly you're seeing things. Every lie fogs it a little. You need bars and Wi-Fi for a call to go through. {cue:integrity}And the clock keeps honest time, as long as you do. Lie enough and you'll watch the minutes skip." A beat. "Weather, not a verdict."
+REACT: "Okay. Thank you." The keys keep going; he types while you talk, the way you learn to with forty people on your caseload. "Top of your screen. {cue:stability}Battery. {cue:trust}Bars. {cue:lucidity}Wi-Fi. {cue:integrity}Clock. That's how FEELZ reads you. Watch what moves when you answer." A beat. "Weather, not a verdict."
 EFFECTS: trust+1 lucidity+1 stability-1
 DEBT: 0
 NEXT: therapist_intrusive
 
 -- LIE
 SAY: Fine. I'm fine.
-REACT: "Fine." The keys don't stop. "Everyone's fine. My whole caseload is fine." A tired almost-laugh. "Top of your screen. {cue:stability}Battery: how steady. Run it down and your calls get heavy. It charges between people, faster if they let you in. {cue:trust}Bars: how connected. Some doors stay shut below a certain number. {cue:lucidity}Wi-Fi: how clear. Every lie fogs it a little. No bars and Wi-Fi, no calls. They move whether you tell me the truth or not. {cue:integrity}And if the clock starts skipping, that one's on you." {mark:lake}A pause. "That reading at the bottom is the lake. FEELZ pulls it off the county sensors. It doesn't care how anybody feels."
+REACT: "Fine." The keys don't stop. "Everyone's fine. My whole caseload is fine." A tired almost-laugh. "Top of your screen. {cue:stability}Battery. {cue:trust}Bars. {cue:lucidity}Wi-Fi. {cue:integrity}Clock. Watch what moves." {mark:lake}A pause. "And that reading at the bottom is the lake. It keeps count."
 EFFECTS: stability+1 trust-1
 DEBT: +1
 TAGS: Deflection
@@ -114,84 +114,61 @@ CLASS [Crystals]: "Last one. Let whatever comes up come up."
 
 -- TRUTH
 SAY: I don't know. Water. Something underneath it. I couldn't breathe.
-REACT: A pause. Then, quieter: "Thank you. Most people give me the short version." A soft click, a chart opening. "That's the lake, at the bottom. FEELZ reads it off the county sensors. It doesn't care how you feel. It stays clear when you don't have to remember what you told people." A breath. "The fish were the county's idea. Somebody decided data needed a mascot."
+REACT: A pause. Then, quieter: "Thank you. Most people give me the short version." A soft click. "That's the lake, at the bottom. It stays clear when you don't have to remember what you told people." A breath. "The fish were the county's idea. Somebody decided data needed a mascot."
 EFFECTS: integrity+2 lucidity+2 stability-1 trust+2
 DEBT: 0
 NEXT: (end)
 
 -- LIE
 SAY: Nothing, really. I don't remember.
-REACT: "Mm-hm." A pause just a beat too long. "We can leave it there. I'll write 'client deferred.' I write that a lot." Another soft click. "That's the lake, at the bottom. FEELZ reads it off the county sensors. It doesn't care how anyone feels about it. It just keeps count." A breath. "The fish were the county's idea. Watch the fish."
+REACT: "Mm-hm." A pause just a beat too long. "I'll write 'client deferred.' I write that a lot." A soft click. "That's the lake, at the bottom. It keeps count. Watch the fish."
 EFFECTS: integrity-1 stability+1 trust-1
 DEBT: +1
 TAGS: Denial
 LEDGER: You told your therapist you didn't remember the dream.
 NEXT: (end)
 
-# After the last reaction: homework by class, a closing line by how the
-# dream question went, the call ends, then IT and SO get the last word.
+# After the last reaction: homework, one hands-on exercise with the little
+# screen, his contact, a parting watch-out, the hangup, then IT and SO. Short
+# on purpose (playtest 2026-10-09: too much talk, not enough doing). What he
+# used to explain here is now taught in the battles as it first happens
+# (coach lines and meter tags, dialogScene.js), and the science of the
+# screen waits for the first time you call him (engine/contacts.js explain).
 === OUTRO
-LINE: "I give everyone homework. Almost nobody does it. Here's yours anyway."
-LINE [Guns]: "You're good at bracing. This week, try listening instead."
-LINE [Bible]: "You're good at showing up for people. Let someone show up for you."
-LINE [Crystals]: "You feel everything in a room. Pick one person and stay with them."
-LINE [Guns]: "This week, ask one person a question about their day. Then wait for the answer. You don't have to fix anything. Just listen."
-LINE [Bible]: "Try getting curious about someone this week. Ask how they're doing, then ask a follow-up. People can tell when you mean it."
-LINE [Crystals]: "Take an interest in somebody this week. Notice what they're doing and ask about it. Curiosity's a good place to start."
-LINE: "People wear their weather on the outside. Listen for the word that doesn't match the face."
-LINE: "{cue:scope}See the two lines across their picture? That's you and them. The closer the lines, the closer you are."
-LINE: "{cue:instruments}The little screen beside them draws the two of you together. When it holds still, you're there. The needle leans right when you move as one."
-LINE: "These talks get louder the longer they go. If you hear something new come in, something that wasn't there before, you're almost there with them."
-LINE: "If someone shows you the door, listen to the last thing they say. People tell you what they needed on their way out."
-LINE: "Get all the way in with someone and they might tell you why they are the way they are. Just listen. Don't fix it."
-LINE [therapist_02=truth]: "You told me about the water. It heard you too."
-LINE [therapist_02=lie]: "The dream can wait. Dreams are patient. Lakes are more patient."
+LINE [Guns]: "I give everyone homework. Almost nobody does it. Here's yours anyway. You're good at bracing. This week, ask one person about their day, then wait for the answer. You don't have to fix anything. Just listen."
+LINE [Bible]: "I give everyone homework. Almost nobody does it. Here's yours anyway. You're good at showing up for people. Let someone show up for you. Ask how they're doing, then ask a follow-up. People can tell when you mean it."
+LINE [Crystals]: "I give everyone homework. Almost nobody does it. Here's yours anyway. You feel everything in a room. Pick one person and stay with them. Notice what they care about and ask about it."
+LINE [Guns]: "{cue:scope}{cue:instruments}Last thing. See the lines across my picture, and the little screen beside me? That's you and me. I don't own a gun. You're within your rights to, and I respect that. But think of it like sighting in: the closer we line up, the stiller it holds. Let's practice."
+LINE [Bible]: "{cue:scope}{cue:instruments}Last thing. See the lines across my picture, and the little screen beside me? That's you and me. I'm not religious. I don't hold that against anyone, I want that on the record. But bear with me, I'm driven by data. Think of it like two people saying the same prayer: the closer we line up, the stiller it holds. Let's practice."
+LINE [Crystals]: "{cue:scope}{cue:instruments}Last thing. See the lines across my picture, and the little screen beside me? That's you and me. My mom was into all that. Crystals, energy, the whole shelf. I didn't inherit it. But think of it like two tuning forks: the closer we line up, the stiller it holds. Let's practice."
+# His exercise: the wheel comes back, no card. His line wears "fine"
+# ({mask:Happy}) while his real feeling ({feel:X}, on that class's wheel)
+# flickers underneath. Each pick is explained by the hint under his line
+# (busy shape: close; needle left: pulling apart) until the shape closes
+# into a still circle.
+TRYFEEL [Guns]: {feel:Sadness}{mask:Happy}"I've told you I'm fine all call. Watch my line. Another color flickers under it. Find that one on your wheel."
+TRYFEEL [Bible]: {feel:Anxiety}{mask:Happy}"I've told you I'm fine all call. Watch my line. Another color flickers under it. Find that one on your wheel."
+TRYFEEL [Crystals]: {feel:Anxiety}{mask:Happy}"I've told you I'm fine all call. Watch my line. Another color flickers under it. Find that one on your wheel."
+# While you look: his class metaphor on a close pick (a busy shape), his
+# needle joke on a far one (the needle leaning left). He hates doing this.
+TRYNEAR [Guns]: "Close. It's like rifling. Almost the same twist in the barrel, and the grooves still don't line up. That's the knot."
+TRYFAR [Guns]: "Needle's leaning left. We're aiming at each other. Please don't take that literally."
+TRYNEAR [Bible]: "Close. This is Jacob and the angel on graph paper. Still wrestling. No blessing yet."
+TRYFAR [Bible]: "Needle's leaning left. We're praying for opposite things. Monks called that the devil's interval. I call it Thursday."
+TRYNEAR [Crystals]: "Close. Two tuning forks, almost the same pitch. Hear the wobble? That's the knot. Waveforms. Not energies."
+TRYFAR [Crystals]: "Needle's leaning left. Two auras out of phase. My mother would be thrilled I said that. I need to stop talking."
+LINE: "There. A circle that holds still. My line said fine. The shape doesn't lie. People wear their weather on the outside. Listen for the word that doesn't match the face."
 # TRYCALL: his own contact pops into the dock and waits for a tap. Calling
 # him while he's on the line echoes his "Hello?" back twice (dialogScene.js).
-TRYCALL: "One more thing. See the bottom of your screen? That's me. Go on, tap it."
-LINE: "Okay. You're calling me while I'm on the phone with you. Now there's two of me. Nobody needs two of me."
-LINE: "When you're stuck out there, call. I'll tell you what I'm reading off you, and off them. If your bars and Wi-Fi drop too low, I won't pick up. You'll get my voicemail. That's not me ignoring you. That's you not letting anyone in."
-LINE: "Make a real friend out there and they'll show up next to me. Everybody reads people their own way, so listen to how they put it. Doesn't mean they're right."
-LINE: "And if your carrier goes from 5G down to No Service? That's the lake talking, not your phone."
-# Lying is meant to feel good out there (warm haze, a soft chime, IT and SO
-# cheering a streak); he says so plainly, and names the quiet cost.
-LINE: "And I'll be straight with you. Out there, lying is going to feel good. Warm. Easy. Everybody smiles. I won't pretend it doesn't."
-LINE: "Nobody stops you. The water just gets thicker. Your calls come in blurry, your friends lose track of your story, and it all comes due at the end."
-LINE: "I'll have FEELZ send you a reminder, so you can't pretend you forgot."
-# His last exercise, in two parts, teaching what every battle's scope does.
-# The wheel comes back, no card. His line wears "fine" ({mask:Happy}); his
-# real feeling ({feel:X}, never shown, on that class's wheel) is what the
-# shape answers to. Part one ({want:miss}): pick anything but him and see
-# apart (a busier shape, the needle). Part two: the real color starts to
-# flicker under his line; find it and the shape closes into a still circle.
-TRYFEEL [Guns]: {feel:Sadness}{mask:Happy}{want:miss}"Last thing, before I go. Pick any feeling on your wheel. Doesn't matter which. Watch the little screen beside me."
-TRYFEEL [Bible]: {feel:Anxiety}{mask:Happy}{want:miss}"Last thing, before I go. Pick any feeling on your wheel. Doesn't matter which. Watch the little screen beside me."
-TRYFEEL [Crystals]: {feel:Anxiety}{mask:Happy}{want:miss}"Last thing, before I go. Pick any feeling on your wheel. Doesn't matter which. Watch the little screen beside me."
-LINE: "See that? Not a circle. The further apart two feelings are on that wheel, the busier the shape gets."
-# The science, plainly (he's a data person), then a metaphor for your class
-# that he clearly doesn't want to give: shape (Lissajous ratio), then needle
-# (phase correlation).
-LINE: "Technically, that's a Lissajous figure. Your feeling moves the dot side to side. Mine moves it up and down. Same speed, {cue:tone_unison}it draws a circle."
-LINE: "Different speeds, and they keep missing each other, so the path tangles. Neighbors on the wheel are simple ratios, {cue:tone_fifth}like two notes in harmony. Opposites are the tritone, {cue:tone_tritone}the most restless interval in music."
-LINE [Guns]: "I don't own a gun. You're within your rights to, and I respect that. So: rifling. The spiral cut inside a barrel. Same twist, the grooves line up. Different twists, they never do. That's the knot."
-LINE [Bible]: "I'm not religious. I don't hold that against anyone, I want that on the record. But bear with me, I'm driven by data. Jacob wrestling the angel, plotted on graph paper. Two forces at right angles, all night. When they finally match, the blessing is a circle."
-LINE [Crystals]: "My mom was into all that. Crystals, energy, the whole shelf. I didn't inherit it. But this I can explain to you with total confidence: two tuning forks, yours and mine. Same pitch, they hum one circle. Different pitch, the waveforms interfere. Waveforms. Not energies."
-LINE: "And the needle on the left measures whether we rise and fall together. Leaning right, in step. Leaning left, mirror images, pulling apart."
-LINE [Guns]: "Leaning right, you're both aiming at the same target. Leaning left, you're aiming at each other. Please don't take that literally."
-LINE [Bible]: "Leaning right, you're praying for the same thing. Leaning left, for opposite things. Monks called that tritone the devil's interval. I call it Thursday."
-LINE [Crystals]: "Leaning right, two auras in phase. Leaning left, out of phase. My mother would be thrilled. I need to stop talking."
-TRYFEEL [Guns]: {feel:Sadness}{mask:Happy}"Now. I've told you I'm fine all call. Watch my line: every few seconds another color flickers under it. That's the real one. Find it."
-TRYFEEL [Bible]: {feel:Anxiety}{mask:Happy}"Now. I've told you I'm fine all call. Watch my line: every few seconds another color flickers under it. That's the real one. Find it."
-TRYFEEL [Crystals]: {feel:Anxiety}{mask:Happy}"Now. I've told you I'm fine all call. Watch my line: every few seconds another color flickers under it. That's the real one. Find it."
-LINE: "There. A circle that holds still. My line said fine. The shape doesn't lie. People do that out there too, so read the color underneath."
-LINE: "And the little blocks under it are what you've picked so far. Go find a few more."
+TRYCALL: "That's me at the bottom. Tap it."
+LINE: "Okay. You're calling me while I'm on the phone with you. Now there's two of me. Nobody needs two of me. Call when you're stuck out there. I'll explain the little screen properly then. I'll have FEELZ send you a reminder, so you can't pretend you forgot."
 # A parting watch-out, picked by how the readings ended this session: the
 # lake if it moved, else the weakest meter at 4 or below, else "steady".
 WATCH [stability]: "Before you go. Your battery's low, and honesty did that. The truth costs charge. Rest between people, or your calls get heavy. That's not a metaphor. Okay, it's a little bit a metaphor."
 WATCH [trust]: "Before you go. Your bars are low. People aren't sure about you yet, and some doors stay shut below a certain number. Mine too, technically. Turn toward what they offer you."
 WATCH [lucidity]: "Before you go. Your Wi-Fi's weak. You're not seeing clearly, and FEELZ goes quiet when you can't. So do I. One true thing clears it a little."
 WATCH [integrity]: "Before you go. Your clock's slipping. When the minutes start skipping, that's you, not the phone. I checked. I check things."
-WATCH [lake]: "Before you go. The lake moved while we talked. I'm not grading you, I'm reading a sensor. Sensors don't round down."
+WATCH [lake]: "Before you go. The lake moved while we talked. I'm not grading you, I'm reading a sensor. And I'll be straight with you: out there, lying is going to feel good. Warm. Easy. I won't pretend it doesn't. Sensors don't round down."
 WATCH [steady]: "Before you go. Everything's holding. Statistically, that's when people get careless. I would know. I'm people."
 HANGUP: The call ends mid-sentence, the way his calls do. FEELZ goes dark in your hand, and the lake is very quiet.
 NOTIFY: FEELZ · HOMEWORK\nToday's practice: reach out\nSay hello to one neighbor.\nNotice what they care about. Ask about it.\nListen a little longer than feels comfortable.\nYou don't have to fix anything.

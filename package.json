@@ -13,7 +13,8 @@
     "manual": "node scripts/build-manual.mjs",
     "handoff": "node scripts/build-writer-handoff.mjs",
     "build:arrangement": "node scripts/build-arrangement.mjs",
-    "test:music": "node scripts/test-music.mjs"
+    "test:music": "node scripts/test-music.mjs",
+    "test:engine": "node scripts/test-engine.mjs"
   },
   "devDependencies": {
     "@breezystack/lamejs": "^1.2.7",

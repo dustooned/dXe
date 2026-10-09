@@ -16,8 +16,7 @@
 // When a meter moves you can see it without reading a word: going up, the
 // newly lit cells charge in one by one with a flash and pixel sparks float
 // off the icon; going down, the icon glitches (shake, color split) and the
-// lost cells flicker out. A word under the bar says what moved ("▲
-// connected"), and a two-note blip rises or falls, pitched per meter so
+// lost cells flicker out. The number floats off the icon (+1 / -1), and a two-note blip rises or falls, pitched per meter so
 // each is learnable by ear.
 // `quiet` (meters not revealed yet) records the values without any of it.
 import { playMeterChange } from '../shell/audio.js';
@@ -155,23 +154,23 @@ export function createStatusBar(stats, { typing = false, airplane = false, quiet
   if (lastSeen && !quiet) {
     for (const meter of Object.keys(WORDS).filter((m) => !hidden.includes(m))) {
       const d = now[meter] - lastSeen[meter];
-      if (d) changes.push({ meter, up: d > 0 });
+      if (d) changes.push({ meter, up: d > 0, d });
     }
   }
   lastSeen = now;
   if (changes.length) {
-    const words = document.createElement('span');
-    words.className = 'dx-status__words';
-    for (const { meter, up } of changes) {
+    for (const { meter, up, d } of changes) {
       const icon = el.querySelector(`[data-meter="${meter}"]`);
       icon?.classList.add(up ? 'is-up' : 'is-down');
       if (up && icon) sparks(icon);
-      const w = document.createElement('span');
-      w.className = up ? 'is-up' : 'is-down';
-      w.textContent = `${up ? '▲' : '▼'} ${WORDS[meter]}`;
-      words.appendChild(w);
+      // The number floats off the icon: +1 rising gold, -1 sinking red.
+      if (icon) {
+        const n = document.createElement('span');
+        n.className = `dx-status__delta ${up ? 'is-up' : 'is-down'}`;
+        n.textContent = `${d > 0 ? '+' : ''}${d}`;
+        icon.appendChild(n);
+      }
     }
-    el.appendChild(words);
     playMeterChange(changes);
   }
 

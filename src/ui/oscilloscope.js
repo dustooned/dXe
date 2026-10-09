@@ -507,6 +507,15 @@ export function createOscilloscope(
   rafId = requestAnimationFrame(draw);
 
   return {
+    // A piece's box ('scope' | 'needle' | 'dots') in page coordinates, as last drawn.
+    rectOf(which) {
+      const b = boxes[which];
+      if (!b) return null;
+      const c = canvas.getBoundingClientRect();
+      const sx = c.width / (canvas.width || 1);
+      const sy = c.height / (canvas.height || 1);
+      return { left: c.left + b[0] * sx, top: c.top + b[1] * sy, width: b[2] * sx, height: b[3] * sy };
+    },
     destroy() {
       cancelAnimationFrame(rafId);
     },

@@ -22,6 +22,23 @@ const LEAN_PX = 90; // same as attachSwipe's commit threshold
 // overrides the pair (the intake uses one neutral color for both, so the
 // lean never hints at a class). `tapHints` makes the labels tappable as a
 // second way to answer.
+// The pixel font has no arrow glyphs (they fell back to another font, small
+// and low), so a label's leading "← " / trailing " →" becomes a pixel arrow
+// drawn at the text's own size and centered on it.
+const ARROW_ROWS = ['..X....', '.XX....', 'XXXXXXX', '.XX....', '..X....'];
+function pixelArrow(dir) {
+  const cells = ARROW_ROWS.flatMap((row, y) => [...row].map((c, x) => (c === 'X'
+    ? `<rect x="${dir === 'right' ? 6 - x : x}" y="${y}" width="1" height="1"/>` : ''))).join('');
+  return `<svg class="dx-swipe-card__arrow" viewBox="0 0 7 5" shape-rendering="crispEdges" aria-hidden="true">${cells}</svg>`;
+}
+function escapeHtml(t) {
+  return t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+}
+function hintHtml(label) {
+  const m = label.match(/^\s*(←)?\s*(.*?)\s*(→)?\s*$/);
+  return `${m[1] ? pixelArrow('left') : ''}<span>${escapeHtml(m[2])}</span>${m[3] ? pixelArrow('right') : ''}`;
+}
+
 export function createSwipeCard({ promptText, onSwipe, hints, stamps, colors, tapHints = false }) {
   const leftLabel  = hints?.left  ?? '← TRUTH';
   const rightLabel = hints?.right ?? 'LIE →';
@@ -43,8 +60,8 @@ export function createSwipeCard({ promptText, onSwipe, hints, stamps, colors, ta
   `;
   el.style.setProperty('--side-left', sideColors.left);
   el.style.setProperty('--side-right', sideColors.right);
-  el.querySelector('.dx-swipe-card__hint--truth').textContent = leftLabel;
-  el.querySelector('.dx-swipe-card__hint--lie').textContent   = rightLabel;
+  el.querySelector('.dx-swipe-card__hint--truth').innerHTML = hintHtml(leftLabel);
+  el.querySelector('.dx-swipe-card__hint--lie').innerHTML   = hintHtml(rightLabel);
   el.querySelector('.dx-swipe-card__text').textContent = promptText;
 
   // The card itself — what actually drags/rotates and carries the border.

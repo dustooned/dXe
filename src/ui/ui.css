@@ -114,12 +114,28 @@
      instant a drag crosses the threshold, not fade in. */
 }
 
+.dx-swipe-card__hint {
+  display: flex;
+  align-items: center;
+  gap: calc(6 * var(--px));
+}
+
 .dx-swipe-card__hint--truth {
   text-align: left;
+  justify-content: flex-start;
 }
 
 .dx-swipe-card__hint--lie {
   text-align: right;
+  justify-content: flex-end;
+}
+
+/* Pixel arrows (swipeCard.js pixelArrow), the height of a capital letter. */
+.dx-swipe-card__arrow {
+  flex: none;
+  height: calc(9 * var(--fs));
+  width: auto;
+  fill: currentColor;
 }
 
 .dx-swipe-card-wrap.is-truth .dx-swipe-card__hint--truth,

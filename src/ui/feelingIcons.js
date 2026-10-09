@@ -209,15 +209,22 @@ export function showBody(emotion, { onPick = false, loadout } = {}) {
   el.className = 'dx-feel-body';
   el.style.setProperty('--feel', `var(--color-feelz-${emotion.toLowerCase()})`);
   el.textContent = line;
-  // Just under the wheel when it's on screen; otherwise the lower screen.
+  // In the gap under the wheel when it's on screen, never over the contacts
+  // row or the lake below it; otherwise the lower screen.
   const wheel = document.querySelector('.dx-dartboard');
+  host.appendChild(el);
   if (wheel) {
     const hb = host.getBoundingClientRect();
     const wb = wheel.getBoundingClientRect();
-    el.style.top = `${Math.min(wb.bottom - hb.top + 6, hb.height - 40)}px`;
+    const below = [...document.querySelectorAll('.dx-game-content > .dx-dock, .dx-game-content > .dx-lake')]
+      .map((e) => e.getBoundingClientRect().top).filter((t) => t > wb.bottom);
+    const floor = below.length ? Math.min(...below) : hb.bottom - 8;
+    const h = el.getBoundingClientRect().height;
+    // Centered in the gap; if it doesn't fit, it sits just above the floor.
+    const top = Math.min(wb.bottom + Math.max(2, (floor - wb.bottom - h) / 2), floor - h - 4);
+    el.style.top = `${top - hb.top}px`;
     el.style.bottom = 'auto';
   }
-  host.appendChild(el);
   clearTimeout(captionTimer);
   captionTimer = setTimeout(() => el.remove(), 2200);
 }

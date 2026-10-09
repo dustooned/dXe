@@ -114,6 +114,12 @@ export const CONTACTS = {
       Bible: "You don't need the right words. You need your words.",
       Crystals: "You're carrying their weather. Set it down for one answer and see what's yours.",
     },
+    // The first time you call him in a battle (run.scopeExplained), he
+    // explains the little screen, plainly (his class metaphors already came
+    // up in the tutorial's exercise). {cue:tone_*} plays the interval.
+    explain: {
+      all: "Quick science, since you called. I'm a data person, bear with me. The little screen plots your feeling against theirs. Same feeling, {cue:tone_unison}a circle. Close on the wheel, {cue:tone_fifth}a simple knot. Opposites, {cue:tone_tritone}a tangle that never settles. The needle: right, you rise and fall together. Left, you're pulling apart.",
+    },
   },
   DEBORAH: {
     name: 'Deborah',
@@ -328,6 +334,9 @@ export function callFor(contact, { state, currentName, currentKey, mood }) {
     greet ?? pick(c.greet),
     knows ? knows.replace('{feel}', image) : `${c.read.replace('{who}', currentName)} ${image}.`,
   ];
+  // The first call to him in a battle: the little screen, explained once.
+  const explained = contact === 'THERAPIST' && !state.scopeExplained && !!c.explain;
+  if (explained) lines.push(c.explain.all);
   // The Therapist always checks your vitals; friends only notice when
   // you're visibly running low.
   if (contact === 'THERAPIST') lines.push(healthLine(state));
@@ -336,5 +345,5 @@ export function callFor(contact, { state, currentName, currentKey, mood }) {
   if (tip) lines.push(tip);
   if (fogged) lines.push(c.foggy);
   if (contact !== 'THERAPIST' && (state.stability ?? 10) <= 3) lines.push(c.tired);
-  return { lines, read, lean, fogged };
+  return { lines, read, lean, fogged, explained };
 }

@@ -116,6 +116,11 @@ const initialRunState = {
   lieStreak: 0,
   // FEELZ tips already shown this run (dialogScene.js showTip), each once.
   tipsShown: [],
+  // Coach lines already shown (dialogScene.js startCoach), answers given meter
+  // tags so far, and whether the Therapist has explained the little screen.
+  coachSeen: [],
+  taggedAnswers: 0,
+  scopeExplained: false,
   // How many of IT/SO's co-conspirator lines this run has used.
   cozySaid: 0,
   ledger: [],

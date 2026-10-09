@@ -318,6 +318,10 @@ PUSHAWAY [Guns]: [She turns back to the window.] "You never put it down. Not onc
 
 `WATCH [stability|trust|lucidity|integrity|lake|steady]: "line"` inside `=== OUTRO`: a parting watch-out. Write one per key; only one plays, picked by how the readings ended: `lake` if Truth Debt is 3 or more, else the lowest meter if it's 4 or below, else `steady`. Used by the therapist just before HANGUP.
 
+## TRYNEAR / TRYFAR (outro)
+
+`TRYNEAR [class]: "line"` and `TRYFAR [class]: "line"` inside `=== OUTRO`: what the speaker says while the player hunts for their feeling in a TRYFEEL step. TRYNEAR plays on a pick that's close on the wheel (a busy shape), TRYFAR on one that's far (the needle leaning left). They never play as beats of their own; the hint under the line still says what the shape means.
+
 ## TRYFEEL (outro)
 
 `TRYFEEL [Guns|Bible|Crystals]: {feel:Feeling}"line"` inside `=== OUTRO`: the wheel comes back without a card and the line waits while the player tries feelings and watches the vectorscope. `{feel:X}` is the speaker's own feeling (never shown, and it must be on that class's wheel); picking it closes the vectorscope into a still circle, and only then does a tap go on. Describe the feeling, never name it. Optional tags: `{mask:Y}` makes the line wear Y's color while X stays what the shape answers to (on a match step, X then flickers underneath, as a battle mask does); `{want:miss}` turns the step around: any feeling but X moves on (to show what apart looks like), and picking X asks for a different one. The therapist's exercise is two steps: a `{want:miss}` step, then a find step.

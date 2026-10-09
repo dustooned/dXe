@@ -135,6 +135,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // The tutorial's last exercise (outro TRYFEEL): find him on your wheel
   // and watch the vectorscope. { target, matched, drawn, pickedAt }.
   let trial = null;
+  // His comments while you look for him (manuscript TRYNEAR / TRYFAR).
+  let trialComments = { near: null, far: null };
   // Set once the player turns toward one of this NPC's bids; warms the
   // portrait for the rest of the encounter (engine/trust.js).
   let turnedTowardThisEncounter = false;
@@ -179,6 +181,16 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // The FEELZ tip on screen (ui/feelzTip.js) and the scope piece it frames.
   let tip = null;
   let tipHighlight = null;
+  // FEELZ tip popups are switched off for now (playtest: they didn't land);
+  // coach lines below teach the same moments in place.
+  const TIPS_ENABLED = false;
+  // A coach line (first-time moment): one short line in the dialog itself,
+  // under their words, with the piece it's about glowing gold, until the
+  // player does the thing it asks (until: 'sync' | 'pick' | 'swipe' | 'call')
+  // or the moment passes. Each key once a run (run.coachSeen); never popups.
+  let coach = null;
+  // What the last answer moved, for the reaction's meter tags (first answers only).
+  let answerChanges = null;
   // The opponent's weather (ui/opponentFx.js); picking their real feeling
   // settles it until this time.
   let opfx = null;
@@ -291,10 +303,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // then on the oscilloscope (the tell), and only the real one syncs.
     easeMoodTo(shownMood(currentNode()));
     drama.under = currentNode().mask ? moodHex(currentNode().mood) : null;
-    if (currentNode().mask) {
-      const at = currentNodeId;
-      later(() => { if (stage === 'prompt' && currentNodeId === at) showTip('mask', 'mask', 'Two colors on their line. One is a cover. The one flickering underneath is real, and the shape follows it.', 'trace'); }, 1800);
-    }
+    coach = null;
     // The heartbeat would fight an arrangement's own drums.
     if (!encounterMusic.claims(npc.npc)) audio.startPulse(() => drama.tension);
     audio.strikeChord(emotionsForClass(run.get().loadout, run.get().unlocked), harmonicFunction());
@@ -411,7 +420,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       // Theirs is the real feeling, not a mask: the line can lie, the shape
       // can't (the same feeling that syncs, so the tutorial's lesson holds).
       getFeelings: () => ({ mine: activeEmotion ?? encounterPicks.at(-1) ?? null, theirs: (stage === 'outro' && trial ? trial.target : currentNode()?.mood ?? shownMood(currentNode())) ?? null }),
-      getHighlight: () => tipHighlight,
+      getHighlight: () => coach?.highlight ?? trialHighlight() ?? tipHighlight,
       getVisibility: npc.reveal ? () => ({ traces: isRevealed('scope'), instruments: isRevealed('instruments') }) : undefined,
     });
 
@@ -444,7 +453,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (stage === 'outro') {
       const line = document.createElement('p');
       line.className = `dx-text dx-reaction${outroBeat.kind === 'hangup' ? ' dx-hangup-line' : ''}`;
-      content.appendChild(line);
+      if (outroBeat.kind === 'hangup') content.appendChild(line);
+      else speechBubble(content, 'them').appendChild(line);
 
       const tapHint = document.createElement('p');
       tapHint.className = 'dx-text dx-tap-hint';
@@ -457,10 +467,23 @@ export function mount(stageEl, scene, { run, onComplete }) {
       if (tryCall) tapHint.textContent = '(tap his contact)';
       if (tryCall) fireCue('dock');
       if (tryFeel) {
-        tapHint.textContent = trial.matched ? '(tap to continue)'
+        // Each pick is explained by what it drew: the lesson is in the doing.
+        const steps = activeEmotion ? wheelSteps(activeEmotion, trial.target) : null;
+        tapHint.textContent = trial.matched
+          ? (trial.want === 'miss' ? '(tap to continue)' : '(a still circle: you found him. Tap to continue)')
           : trial.want === 'miss' ? (activeEmotion ? '(try a different one)' : '(pick any feeling)')
-          : '(find him on your wheel)';
+          : steps === null ? '(watch the color flickering under his line, then find it on your wheel)'
+          : steps >= 3 ? '(the needle leans left: you two are pulling apart. Try another)'
+          : '(a busy shape: close, not there yet. Try another)';
         if (trial.drawn) tapHint.hidden = false; // a re-render after a pick: the line is already up
+      }
+      // While you look for him, he reacts to each pick in his own way.
+      if (tryFeel && trial.comment && !trial.matched) {
+        const said = document.createElement('p');
+        said.className = 'dx-text dx-pick-line';
+        content.insertBefore(said, tapHint);
+        pickTypewriter = createTypewriter(said, trial.comment, { onChar: audio.playTypewriterTick, startRevealed: !trial.commentFresh });
+        trial.commentFresh = false;
       }
       typewriter = createTypewriter(line, outroBeat.text, {
         onChar: audio.playTypewriterTick,
@@ -468,6 +491,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
         onMark: fireCue, // {cue:scope} / {cue:instruments}: the scope pieces appear as he names them
         startRevealed: tryFeel && trial.drawn, // re-renders on each pick don't replay the line
       });
+      if (outroBeat.kind !== 'hangup') markSpeaking(portrait.el, typewriter);
 
       // His last exercise: the wheel comes back without a card. Each pick
       // redraws the vectorscope against his feeling; his own feeling closes
@@ -486,6 +510,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
             if (done && !trial.matched) {
               trial.matched = true;
               if (trial.want !== 'miss') audio.playSyncChime();
+            }
+            if (!done && trial.want !== 'miss') {
+              const comment = wheelSteps(emotion, trial.target) >= 3 ? trialComments.far : trialComments.near;
+              if (comment && comment !== trial.comment) { trial.comment = comment; trial.commentFresh = true; }
             }
             render();
           },
@@ -506,18 +534,14 @@ export function mount(stageEl, scene, { run, onComplete }) {
       // dartboard just occupied — the player's line replaces the choice UI
       // rather than appearing as loose text, so it reads as "this is what
       // that choice was" in the exact place the choice just happened.
-      const sayBox = document.createElement('div');
-      sayBox.className = 'dx-say-box';
-      content.appendChild(sayBox);
-
-      const sayLabel = document.createElement('p');
-      sayLabel.className = 'dx-text dx-say-label';
-      sayLabel.textContent = 'YOU';
-      sayBox.appendChild(sayLabel);
+      const sayBox = speechBubble(content, 'you');
+      sayBox.classList.add('dx-say-box');
+      portrait.el.classList.add('is-listening'); // your turn: their picture steps back
 
       const say = document.createElement('p');
       say.className = 'dx-text dx-say';
       sayBox.appendChild(say);
+
 
       const tapHint = document.createElement('p');
       tapHint.className = 'dx-text dx-tap-hint';
@@ -542,7 +566,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     } else if (stage === 'reaction') {
       const reaction = document.createElement('p');
       reaction.className = 'dx-text dx-reaction';
-      content.appendChild(reaction);
+      speechBubble(content, 'them').appendChild(reaction);
+
 
       const tapHint = document.createElement('p');
       tapHint.className = 'dx-text dx-tap-hint';
@@ -566,6 +591,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
           },
         },
       );
+      markSpeaking(portrait.el, typewriter);
 
       screen.addEventListener('click', () => {
         if (typewriter && !typewriter.isDone()) tapLine(typewriter);
@@ -574,7 +600,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     } else {
       const prompt = document.createElement('p');
       prompt.className = 'dx-text dx-prompt';
-      content.appendChild(prompt);
+      const promptBubble = speechBubble(content, 'them');
+      promptBubble.appendChild(prompt);
 
       // The Therapist's read of the feeling just picked — imagery, never the
       // emotion's name (feelings are symbols only). Only nodes with PICK
@@ -583,7 +610,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       if (pickText) {
         const pickLine = document.createElement('p');
         pickLine.className = 'dx-text dx-pick-line';
-        content.appendChild(pickLine);
+        promptBubble.appendChild(pickLine);
         pickTypewriter = createTypewriter(pickLine, pickText, {
           onChar: audio.playTypewriterTick,
           startRevealed: !justPicked,
@@ -599,7 +626,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       const wasRevealed = promptRevealed;
 
       const card = createSwipeCard({
-        promptText: activeEmotion ? 'Drag to respond.' : 'Pick a feeling first.',
+        promptText: activeEmotion ? 'Swipe to respond.' : 'Pick a feeling first.',
         onSwipe: (key) => {
           if (!activeEmotion) {
             // A completed swipe with no feeling picked yet doesn't count as
@@ -647,6 +674,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
             if (drama.mismatch) audio.playGrind();
             else { audio.playSyncChime(); settleUntil = performance.now() + 1400; }
           }
+          // A coach waiting on a pick (or on finding their feeling) is done.
+          coachDid('pick'); // any feeling tried: what it means is the player's call
           render();
           scopeTip(emotion);
         },
@@ -684,6 +713,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
           promptRevealed = true;
           drama.tension = 1;
           interactive.hidden = false;
+          // A new mechanic here? He calls once the question and the wheel are up.
+          if (!npc.reveal) { const at = currentNodeId; later(() => { if (stage === 'prompt' && currentNodeId === at) nodeCoach(); }, 500); }
           if (intakeReading) {
             // Any of the class's feelings the read didn't name light now, then it wakes.
             emotionsForClass(run.get().loadout).forEach((e) => dartboard?.light(e));
@@ -722,6 +753,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
         },
         startRevealed: promptRevealed,
       });
+      if (!wasRevealed) markSpeaking(portrait.el, typewriter);
 
       screen.addEventListener('click', () => {
         if (typewriter && !typewriter.isDone()) tapLine(typewriter);
@@ -755,6 +787,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     opfx ??= createOpponentFx({ npc: npc.npc, getLevel: fxLevel });
     opfx.attach(screen);
     tip?.attach(stageEl, tipFloor()); // the stage was just cleared; a tip stays up across renders
+    later(placeTask, 60); // after layout: the "try this" line by its target
     placeScopeBand(screen, scopeCanvas, portrait.el);
 
     // A HUD piece's first appearance is spotlit together with the line
@@ -887,6 +920,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     audio.nudgeLeitmotifMood(trustDelta + stabilityDelta);
     encounterMusic.react({ delta: trustDelta + stabilityDelta, caught: !!seen, missed: !synced && !turnedToward, closeness: connection(null, false).closeness });
     reactionDelta = seen ? -1 : trustDelta + stabilityDelta;
+    answerChanges = { before, after: run.get(), lie: swipeKey === 'lie' };
+    coach = null;
 
     // The impact lands on their reaction: how hard is how much their TRU
     // and STB moved; the new color is the mood this answer sends them into
@@ -1000,6 +1035,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // something in a real encounter, the app says what it means, once a run,
   // and frames that piece in gold. The tutorial teaches these itself.
   function showTip(key, icon, text, highlight) {
+    if (!TIPS_ENABLED) return;
     // Only when you're seeing clearly (Wi-Fi 4+, two arcs): a skipped tip isn't used up.
     if (unmounted || npc.reveal || tip || !isRevealed('instruments') || (run.get().lucidity ?? 5) < 4) return;
     const shown = run.get().tipsShown ?? [];
@@ -1008,6 +1044,273 @@ export function mount(stageEl, scene, { run, onComplete }) {
     tipHighlight = highlight;
     tip = createFeelzTip({ icon, text, onGone: () => { tip = null; tipHighlight = null; } });
     tip.attach(stageEl, tipFloor());
+  }
+
+  // ── Who's talking ──
+  // Their words sit in a bubble on the left with their name on a tag in
+  // their color and a tail up toward their picture; yours sit on the right
+  // under a YOU tag. Narration (a hangup) gets no bubble and no name.
+  function speechBubble(content, side) {
+    const b = document.createElement('div');
+    b.className = `dx-speech dx-speech--${side}`;
+    if (side === 'them') b.style.setProperty('--speaker', npc.accentColor || 'var(--color-white)');
+    const tag = document.createElement('span');
+    tag.className = 'dx-speech__name';
+    tag.textContent = side === 'them' ? npc.npc : 'YOU';
+    b.appendChild(tag);
+    content.appendChild(b);
+    return b;
+  }
+
+  // The speaker's picture (or call avatar) glows while their words type.
+  function markSpeaking(el, tw) {
+    if (!el || !tw || tw.isDone()) return;
+    el.classList.add('is-speaking');
+    const check = () => { if (tw.isDone()) el.classList.remove('is-speaking'); else later(check, 120); };
+    later(check, 120);
+  }
+
+  // ── Coach lines ──
+  // Start one (each key once a run, one at a time, not in the tutorial,
+  // which teaches these itself) and redraw so it shows under their words.
+  // His call about a mechanic, step by step: each line lights up the exact
+  // thing he's talking about (the rest of the screen dims, a label points at
+  // it) and the call box moves out of its way. When he hangs up, one plain
+  // "try this" line stays by the thing until you've tried it (coach.task).
+  // He shows what to watch, never which answer is right: what the player
+  // does with it is theirs.
+  function startCoach(key, guide) {
+    if (unmounted || npc.reveal || coach || itPopup) return;
+    const seen = run.get().coachSeen ?? [];
+    if (seen.includes(key)) return;
+    run.set({ coachSeen: [...seen, key] });
+    coach = { key, guide, task: null, until: [], highlight: null, pulseWho: null };
+    placeIncoming(guide.steps);
+  }
+
+  // A guide target as an element: their line (the scope band), the little
+  // screen (a stand-in box over where it's drawn), the wheel, the card, or a
+  // contact in the dock ('who:DEBORAH').
+  function guideTarget(name, screen = stageEl.querySelector('.dx-game-screen')) {
+    if (!name || !screen) return null;
+    if (name === 'trace') return screen.querySelector('.dx-scope-band');
+    if (name === 'wheel') return screen.querySelector('.dx-dartboard');
+    if (name === 'card') return screen.querySelector('.dx-swipe-card');
+    if (name.startsWith('who:')) return screen.querySelector(`.dx-dock__contact[data-who="${name.slice(4)}"]`);
+    if (name === 'scope' || name === 'needle') {
+      const r = oscilloscope?.rectOf?.(name);
+      if (!r) return null;
+      screen.querySelector('.dx-guide-ghost')?.remove();
+      const s = screen.getBoundingClientRect();
+      const ghost = document.createElement('div');
+      ghost.className = 'dx-guide-ghost';
+      Object.assign(ghost.style, { left: `${r.left - s.left}px`, top: `${r.top - s.top}px`, width: `${r.width}px`, height: `${r.height}px` });
+      screen.appendChild(ghost);
+      return ghost;
+    }
+    return null;
+  }
+
+  // A label with a pixel arrow, just above (or below) a target, inside host.
+  function guideLabel(host, target, text, cls = 'dx-guide-label') {
+    const label = document.createElement('div');
+    label.className = cls;
+    label.textContent = text;
+    host.appendChild(label);
+    const h = host.getBoundingClientRect();
+    const r = target.getBoundingClientRect();
+    const above = r.top - h.top > 70;
+    label.classList.add(above ? 'is-above' : 'is-below');
+    const center = r.left - h.left + r.width / 2;
+    label.style.left = `${Math.max(8, Math.min(h.width - 8, center))}px`;
+    if (above) label.style.bottom = `${h.bottom - r.top + 8}px`;
+    else label.style.top = `${r.bottom - h.top + 8}px`;
+    return label;
+  }
+
+  // After the call: the "try this" line stays by its target across redraws.
+  function placeTask() {
+    stageEl.querySelector('.dx-guide-task')?.remove();
+    if (!coach?.task || stage !== 'prompt' || itPopup || unmounted) return;
+    const target = guideTarget(coach.task.target);
+    if (!target || target.closest('[hidden]')) return;
+    guideLabel(stageEl, target, coach.task.text, 'dx-guide-task');
+  }
+
+  // A coach waiting on something the player did: 'pick', 'call' or 'swipe'.
+  function coachDid(event) {
+    if (coach?.until.includes(event)) coach = null;
+  }
+
+  // His incoming call: rings (on repeat) until tapped, then his lines one
+  // step at a time, then he hangs up. Nothing else moves while it's up.
+  // steps: [{ say, target?, label? }] (a plain string is one untargeted step).
+  function placeIncoming(steps) {
+    clearStall();
+    const said = (Array.isArray(steps) ? steps : [steps]).map((s) => (typeof s === 'string' ? { say: s } : s));
+    const overlay = document.createElement('div');
+    overlay.className = 'dx-call is-incoming';
+    overlay.style.setProperty('--contact', contactColor('THERAPIST'));
+    overlay.innerHTML = '<p class="dx-call__who">THERAPIST CALLING…</p><p class="dx-text dx-tap-hint">(tap to answer)</p>';
+    stageEl.appendChild(overlay);
+    liftAboveLake(overlay);
+    // His T, lit above the dim right where it sits in your dock, ringing.
+    const dockT = [...stageEl.querySelectorAll('.dx-dock__contact')].find((b) => b.textContent === 'T');
+    const ringIcon = document.createElement('span');
+    ringIcon.className = 'dx-call__ringing';
+    ringIcon.textContent = 'T';
+    if (dockT) {
+      dockT.style.visibility = 'hidden'; // one T: the lit one stands in for it while it rings
+      const s = overlay.getBoundingClientRect(); // the icon is placed inside the overlay
+      const r = dockT.getBoundingClientRect();
+      ringIcon.style.left = `${r.left - s.left}px`;
+      ringIcon.style.top = `${r.top - s.top}px`;
+      ringIcon.style.width = `${r.width}px`;
+      ringIcon.style.height = `${r.height}px`;
+    } else {
+      ringIcon.classList.add('is-floating');
+    }
+    overlay.appendChild(ringIcon);
+    itPopup = { destroy: () => overlay.remove() };
+    let answered = false;
+    let ringTimer = null;
+    const ring = () => {
+      if (answered || !overlay.isConnected) return;
+      ringTimer = later(ring, audio.playRingtone('THERAPIST') + 400);
+    };
+    ring();
+    const box = document.createElement('div');
+    box.className = 'dx-call__box';
+    const avatar = document.createElement('div');
+    avatar.className = 'dx-call__avatar';
+    avatar.textContent = 'T';
+    const p = document.createElement('p');
+    p.className = 'dx-text';
+    box.append(avatar, p);
+    let i = 0;
+    let tw = null;
+    let spot = null;
+    let label = null;
+    // One step: light up what he's talking about, label it, keep the box clear of it.
+    function showStep(step) {
+      spot?.destroy();
+      spot = null;
+      label?.remove();
+      label = null;
+      const screen = stageEl.querySelector('.dx-game-screen');
+      const target = guideTarget(step.target, screen);
+      overlay.classList.toggle('is-guiding', !!target);
+      if (coach) coach.highlight = ['trace', 'scope', 'needle'].includes(step.target) ? step.target : null;
+      if (target && screen) {
+        spot = createSpotlight(screen, [target]);
+        if (step.label) label = guideLabel(overlay, target, step.label);
+        const ov = overlay.getBoundingClientRect();
+        const r = target.getBoundingClientRect();
+        overlay.classList.toggle('is-top', r.top + r.height / 2 > ov.top + ov.height * 0.5);
+      } else {
+        overlay.classList.remove('is-top');
+      }
+    }
+    function next() {
+      if (i >= said.length) {
+        spot?.destroy();
+        stageEl.querySelector('.dx-guide-ghost')?.remove();
+        audio.playHangup();
+        overlay.remove();
+        itPopup = null;
+        if (coach) {
+          coach.task = coach.guide?.task ?? null;
+          coach.until = coach.task?.until ?? [];
+          coach.highlight = coach.task?.glow ?? null;
+          coach.pulseWho = coach.task?.pulseWho ?? null;
+          if (!coach.task) coach = null;
+        }
+        render(); // the "try this" line and any glow come up with the redraw
+        startStall();
+        return;
+      }
+      const step = said[i];
+      showStep(step);
+      tw = createTypewriter(p, quoteSpeech(step.say), { onChar: audio.playTypewriterTick });
+      markSpeaking(avatar, tw);
+      i += 1;
+    }
+    overlay.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!answered) {
+        answered = true;
+        cancelLater(ringTimer);
+        overlay.querySelector('.dx-call__who').textContent = 'THERAPIST';
+        overlay.querySelector('.dx-tap-hint').remove();
+        ringIcon.remove();
+        if (dockT) dockT.style.visibility = '';
+        overlay.appendChild(box);
+        voices.say('THERAPIST', 'greet', { phone: true });
+        next();
+        return;
+      }
+      if (tw && !tw.isDone()) tw.finish();
+      else next();
+    });
+  }
+
+  // He calls about something new: the little screen once it's for real
+  // (first battle, a reminder of his exercise), a mask, a new friend in your
+  // phone. Runs once the question's words
+  // are up and the wheel is showing.
+  let coachCheckedFor = null;
+  function nodeCoach() {
+    if (coachCheckedFor === currentNodeId) return;
+    coachCheckedFor = currentNodeId;
+    const node = currentNode();
+    const facing = npc.npc.charAt(0) + npc.npc.slice(1).toLowerCase();
+    // The first real battle: the little screen again, now that it's real (his
+    // exercise taught it; this points at each piece in place).
+    if (isRevealed('instruments') && !(run.get().coachSeen ?? []).includes('scope')) {
+      startCoach('scope', {
+        steps: [
+          { say: "It's me. Quick one, now that it's for real." },
+          { say: `That line across the picture is ${facing}. The one under it is you.`, target: 'trace', label: `${facing.toUpperCase()} · YOU` },
+          { say: 'Same as with me. Try feelings and watch the little screen.', target: 'scope', label: 'LITTLE SCREEN' },
+          { say: "And the needle: moving together, or pulling apart. It's not grading you. It's just showing you. Okay. Bye.", target: 'needle', label: 'NEEDLE' },
+        ],
+        task: { text: 'Try a feeling. Watch the little screen.', target: 'wheel', glow: 'scope', until: ['pick', 'swipe'] },
+      });
+      return;
+    }
+    if (node.mask) {
+      startCoach('mask', {
+        steps: [
+          { say: "It's me. I'm between clients, this'll be quick. Something new." },
+          { say: "See their line across the picture? Look close. It's showing two colors.", target: 'trace', label: 'THEIR LINE' },
+          { say: "One is what they're showing you. The one that flickers underneath is what's going on inside.", target: 'trace', label: 'THE FLICKER' },
+          { say: 'Try a few feelings on your wheel.', target: 'wheel', label: 'YOUR WHEEL' },
+          { say: 'And watch the little screen while you do. What you make of it is up to you. Okay. Bye.', target: 'scope', label: 'LITTLE SCREEN' },
+        ],
+        task: { text: 'Try a feeling. Watch the little screen.', target: 'wheel', glow: 'scope', until: ['pick', 'swipe'] },
+      });
+      return;
+    }
+    const friends = contactsFor(run.get(), npc.npc).filter((w) => w !== 'THERAPIST');
+    const who = friends.at(-1);
+    if (who && isRevealed('dock')) {
+      const name = CONTACTS[who].name;
+      startCoach(`friend:${who}`, {
+        steps: [
+          { say: `It's me. FEELZ tells me ${name}'s in your phone now.`, target: `who:${who}`, label: name.toUpperCase() },
+          { say: `Tap them anytime for their read on ${facing}. Their own way. Doesn't mean they're right. Okay. Bye.`, target: `who:${who}`, label: name.toUpperCase() },
+        ],
+        task: { text: `${name} is here when you want a read.`, target: `who:${who}`, pulseWho: who, until: ['call', 'swipe'] },
+      });
+    }
+  }
+
+  // The Therapist's find-me exercise: the piece of the little screen your
+  // last pick is about glows, the same way a coach line points.
+  function trialHighlight() {
+    if (stage !== 'outro' || !trial || trial.matched) return null;
+    if (!activeEmotion) return 'trace';
+    return wheelSteps(activeEmotion, trial.target) >= 3 ? 'needle' : 'scope';
   }
 
   // A tip sits just above the contacts row (or the lake), never over them.
@@ -1036,6 +1339,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
       btn.textContent = CONTACTS[who].name.charAt(0);
       btn.setAttribute('aria-label', `Call ${CONTACTS[who].name}`);
       btn.style.setProperty('--contact', contactColor(who));
+      btn.dataset.who = who;
+      if (coach?.pulseWho === who) btn.classList.add('is-coached');
       const offline = who === 'THERAPIST' && !therapistReachable(state);
       if (offline) btn.classList.add('is-offline');
       if (calledThisEncounter.has(who)) btn.classList.add('is-used');
@@ -1227,6 +1532,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
         return;
       }
       tw = createTypewriter(p, lines[i], { onChar: audio.playTypewriterTick });
+      markSpeaking(avatar, tw);
       i += 1;
     }
     later(() => {
@@ -1244,9 +1550,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // wheel), their advice. Tap through; the wheel and card wait underneath.
   function placeCall(who) {
     clearStall();
+    coachDid('call');
     const node = currentNode();
     const name = npc.npc.charAt(0) + npc.npc.slice(1).toLowerCase();
     const call = callFor(who, { state: run.get(), currentName: name, currentKey: npc.npc, mood: node.mood });
+    if (call.explained) run.set({ scopeExplained: true }); // the science is said once a run
     const overlay = document.createElement('div');
     overlay.className = 'dx-call';
     overlay.style.setProperty('--contact', contactColor(who));
@@ -1276,7 +1584,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
       }
       // Low Wi-Fi: the read comes through, but the wheel doesn't light.
       if (i === 1 && !call.fogged) { hintedEmotion = call.read; dartboard?.hint(call.read); }
-      tw = createTypewriter(p, quoteSpeech(call.lines[i]), { onChar: audio.playTypewriterTick });
+      tw = createTypewriter(p, quoteSpeech(call.lines[i]), { onChar: audio.playTypewriterTick, onMark: fireCue });
+      markSpeaking(avatar, tw);
       i += 1;
     }
     setTimeout(() => {
@@ -1740,7 +2049,12 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
   function startOutro() {
-    outroQueue = npc.outro.filter(outroBeatApplies);
+    // TRYNEAR / TRYFAR aren't beats: they're his comments during the exercise.
+    trialComments = {
+      near: npc.outro.find((b) => b.kind === 'trynear' && outroBeatApplies(b))?.text ?? null,
+      far: npc.outro.find((b) => b.kind === 'tryfar' && outroBeatApplies(b))?.text ?? null,
+    };
+    outroQueue = npc.outro.filter((b) => b.kind !== 'trynear' && b.kind !== 'tryfar' && outroBeatApplies(b));
     nextOutroBeat();
   }
 
