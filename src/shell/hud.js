@@ -5,7 +5,7 @@
 // wholesale on every one of its own re-renders, so neither has to be
 // rebuilt — or even known about — by any scene handler.
 import { navigate } from './router.js';
-import { loadSettings, updateSettings } from './settings.js';
+import { loadSettings, updateSettings, applyEffectsSetting } from './settings.js';
 import { loadCheckpoint } from './save.js';
 import { setMasterVolume } from './audio.js';
 import { jumpTo } from './debug.js';
@@ -109,6 +109,7 @@ export function initHud(el) {
   hostEl.appendChild(saveEl);
 
   setMasterVolume(loadSettings().muted ? 0 : loadSettings().volume);
+  applyEffectsSetting();
 }
 
 // main.js calls this once the preloader (spinner + logo video) is done —
@@ -207,6 +208,7 @@ function renderSettingsPanel() {
       </label>
       <button type="button" class="dx-btn dx-hud-mute"></button>
       <button type="button" class="dx-btn dx-hud-speed"></button>
+      <button type="button" class="dx-btn dx-hud-effects"></button>
       ${chapterActive ? '<button type="button" class="dx-btn dx-hud-restart">RESTART CHAPTER</button>' : ''}
       <button type="button" class="dx-btn dx-hud-chapters">QUIT TO TITLE</button>
       <button type="button" class="dx-btn dx-hud-feedback">FEEDBACK</button>
@@ -237,6 +239,16 @@ function renderSettingsPanel() {
   });
 
   panelEl.querySelector('.dx-hud-feedback').addEventListener('click', renderFeedbackPage);
+
+  // Reduce effects: ON stops shakes, flashes, opponent weather, haze and tints.
+  const effectsBtn = panelEl.querySelector('.dx-hud-effects');
+  const syncEffects = (s) => { effectsBtn.textContent = `REDUCE EFFECTS: ${s.reduceEffects ? 'ON' : 'OFF'}`; effectsBtn.classList.toggle('is-active', !!s.reduceEffects); };
+  syncEffects(settings);
+  effectsBtn.addEventListener('click', () => {
+    const next = updateSettings({ reduceEffects: !loadSettings().reduceEffects });
+    applyEffectsSetting(next);
+    syncEffects(next);
+  });
 
   volumeSlider.addEventListener('input', () => {
     const next = updateSettings({ volume: Number(volumeSlider.value), muted: false });

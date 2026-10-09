@@ -1463,3 +1463,18 @@ svg .is-hinted path {
   resize: vertical;
 }
 .dx-hud-feedback__status { font-size: calc(7 * var(--fs)); color: #ffe27a; min-height: 1em; margin: 0; }
+
+/* Reduce effects (settings): the screen holds still. No opponent weather,
+   no lie haze, no feeling tints or jolts, no flashes or shakes (fx.js). The
+   information (meters, numbers, glows that point at things) stays. */
+.is-reduced-effects .dx-opfx,
+.is-reduced-effects .dx-haze { display: none !important; }
+.is-reduced-effects .dx-game-screen { --fx: 0 !important; }
+.is-reduced-effects .dx-opfx-on .dx-game-content .dx-portrait,
+.is-reduced-effects .dx-opfx-on .dx-scope-band,
+.is-reduced-effects .dx-stage[class*="dx-feel--"],
+.is-reduced-effects .dx-stage[class*="dx-feel--"]::after,
+.is-reduced-effects .dx-status__icon.is-up,
+.is-reduced-effects .dx-status__icon.is-down,
+.is-reduced-effects .dx-portrait.is-speaking { animation: none !important; }
+.is-reduced-effects .dx-status__spark { display: none; }

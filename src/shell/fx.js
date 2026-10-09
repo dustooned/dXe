@@ -17,8 +17,11 @@ const SHAKE_DISTANCE_PX = { subtle: 2, weak: 4, strong: 10 };
 
 // `color` (optional, any CSS color) tints the flash — the swipe uses the
 // picked feeling's color. It's the player's own color, not a verdict.
+// Reduce effects (settings): no flashes or shakes at all.
+const reduced = () => document.documentElement.classList.contains('is-reduced-effects');
+
 export function flash(intensity = 'weak', color) {
-  if (!canvasEl) return;
+  if (!canvasEl || reduced()) return;
   const overlay = document.createElement('div');
   overlay.className = 'dx-fx-flash';
   if (color) overlay.style.background = color;
@@ -74,7 +77,7 @@ export function fadeToBlack(durationMs, onComplete) {
 }
 
 export function shake(intensity = 'weak') {
-  if (!canvasEl) return;
+  if (!canvasEl || reduced()) return;
   const d = SHAKE_DISTANCE_PX[intensity] ?? SHAKE_DISTANCE_PX.weak;
   canvasEl.animate(
     [
