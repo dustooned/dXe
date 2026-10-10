@@ -11,7 +11,9 @@ Source assets live at `E:\2025\Games\BackUp\1_28_2025\` unless noted.
 
 Newest first; details in HANDOFF.md.
 
-1. **Opening confrontations: built for all four (2026-10-09).** Look at them on screen as each class (art is still placeholder); the restore hints and secret lines are first drafts for the writer pass.
+1. **Listen and look (2026-10-10):** every new sound has only been tested muted: swipes (slow vs fast), room objects, door, quick beats, chapter-page loading bleeps and room ambience, confrontation openers, prologue and walk home. Tune by ear in `src/shell/audio.js` (SFX, playClassBleep, startOpenerAmbience, playOpenerTheme).
+2. **Art drop-ins:** chapter plates (`plates/plate_<npc>.png`, 240x150 1-bit) and everything in `docs/ASSET_SIZES.md`.
+0. **Opening confrontations: built for all four (2026-10-09).** Look at them on screen as each class (art is still placeholder); the restore hints and secret lines are first drafts for the writer pass.
 2. **Later: interactive way in before each marker page** (skippable; the moment is highlighted and says exactly what to do; the page turns in only after it). Arcade "READY? START!" energy, but literary.
    - **Deborah:** turn a bible page (or twist the hall lightbulb in).
    - **Rwanda:** brush a spray-paint mask across a wall to reveal it, spray SFX.

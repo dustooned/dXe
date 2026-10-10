@@ -1,5 +1,8 @@
 # Art Guide — every asset, its size, and its template
 
+**Just need sizes?** [`ASSET_SIZES.md`](ASSET_SIZES.md) is the one-page quick
+reference (every asset, the size to draw it at, where it goes).
+
 The one page for artists (and for us): every image the game uses or still
 needs, the size to draw it at, how it's shown, the file format, and which
 template to start from. Templates live in [`art-templates/`](../art-templates/)

@@ -30,6 +30,7 @@ const GROUPS = [
       ['HANDOFF.md', 'Handoff / Project Status'],
       ['ARCHITECTURE.md', 'Architecture'],
       ['SCENE_TYPES.md', 'Scene Types'],
+      ['ASSET_SIZES.md', 'Asset Sizes (quick reference)'],
       ['ART_GUIDE.md', 'Art Guide (every asset, size and template)'],
       ['ASSET_GUIDELINES.md', 'Asset Guidelines'],
       ['ASSET_MANIFEST.md', 'Asset Manifest (Chapter 1 checklist)'],

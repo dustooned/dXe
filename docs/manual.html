@@ -135,7 +135,7 @@ mark { background: var(--mark); color: var(--fg); }
 <nav class="sidebar" id="sidebar">
   <div class="brand">
     <h1>Dream Xtreme</h1>
-    <p>Project manual · 20 documents</p>
+    <p>Project manual · 21 documents</p>
   </div>
   <button class="menu-toggle" id="menuToggle" aria-expanded="true">Menu</button>
   <div class="search-wrap">
@@ -146,7 +146,7 @@ mark { background: var(--mark); color: var(--fg); }
   <div id="nav"><div class="nav-group">
         <h2>Start here</h2>
         <p class="nav-blurb">The working documentation for what is actually built.</p>
-        <ul><li><a class="nav-doc" href="#doc-game_manual" data-doc="doc-game_manual">Game Manual</a></li><li><a class="nav-doc" href="#doc-handoff" data-doc="doc-handoff">Handoff / Project Status</a></li><li><a class="nav-doc" href="#doc-architecture" data-doc="doc-architecture">Architecture</a></li><li><a class="nav-doc" href="#doc-scene_types" data-doc="doc-scene_types">Scene Types</a></li><li><a class="nav-doc" href="#doc-art_guide" data-doc="doc-art_guide">Art Guide (every asset, size and template)</a></li><li><a class="nav-doc" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines">Asset Guidelines</a></li><li><a class="nav-doc" href="#doc-asset_manifest" data-doc="doc-asset_manifest">Asset Manifest (Chapter 1 checklist)</a></li></ul>
+        <ul><li><a class="nav-doc" href="#doc-game_manual" data-doc="doc-game_manual">Game Manual</a></li><li><a class="nav-doc" href="#doc-handoff" data-doc="doc-handoff">Handoff / Project Status</a></li><li><a class="nav-doc" href="#doc-architecture" data-doc="doc-architecture">Architecture</a></li><li><a class="nav-doc" href="#doc-scene_types" data-doc="doc-scene_types">Scene Types</a></li><li><a class="nav-doc" href="#doc-asset_sizes" data-doc="doc-asset_sizes">Asset Sizes (quick reference)</a></li><li><a class="nav-doc" href="#doc-art_guide" data-doc="doc-art_guide">Art Guide (every asset, size and template)</a></li><li><a class="nav-doc" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines">Asset Guidelines</a></li><li><a class="nav-doc" href="#doc-asset_manifest" data-doc="doc-asset_manifest">Asset Manifest (Chapter 1 checklist)</a></li></ul>
       </div><div class="nav-group">
         <h2>Authoring</h2>
         <p class="nav-blurb">Writing dialog and understanding the numbers behind it.</p>
@@ -1733,6 +1733,7 @@ last page with no opening one.</li>
 <li><strong>Effort replaces the change-of-mind cost (2026-10-10):</strong> switching on the wheel is free again (SECOND_GUESS_COST removed, sim&#39;s <code>hesitate</code> gone). <code>loadout.js effortCost(emotion, loadout, counts)</code>, charged in <code>resolveCard</code> on the swipe (not in the tutorial): a gift that clashes with one of your class&#39;s own (the wheel opposite) costs <code>CLASH_COST</code> 1 until you&#39;ve answered with it <code>USED_TO</code> 1 time; own feelings, Trust and other gifts are free. The user first approved gift 1 / clash 2, but the sim ran honest players empty in 80-100% of runs; this setting lands at Guns 30% / Bible 9% / Crystals 47% empty (old: 41/14/29). The Therapist&#39;s &quot;Practical stuff&quot; line says it per class. Tests: 118.</li>
 <li><strong>Tutorial gaps filled (2026-10-10):</strong> his Wi-Fi line now says every lie fogs it and that fogged you see what people want to hear instead of what they feel (all class voices). The first room (Deborah&#39;s hallway, <code>room.tip</code>) adds one plain line after its intro when TIPS is on: clear, &quot;tinted by how she will feel... look twice&quot; (the restore hint); fogged, &quot;the warm things are what she would like to hear&quot;. Plates can now be real art: <code>public/assets/lake-ulysses/plates/plate_&lt;npc&gt;.png</code> (240x150, pure 1-bit), the code placeholder until the file exists.</li>
 <li><strong>Sound effects and secret hints (2026-10-10):</strong> <code>audio.playSfx(name)</code>, 32 retro synth sounds (square + stepped noise, hard attacks), placed with <code>{sfx:name}</code> in any line (typewriterText.js; skipped when tapped through), <code>sound:</code> on room hotspots and quick beats, <code>&quot;sound&quot;:</code> on cutscene beats. Placed: all 12 room objects, the door reveal (clunk) and open, the four quick beats, each confrontation&#39;s first beat (door, street, rag, glass), the prologue (gravel, phone vibrate), the walk home (footsteps, sprinklers, dog), and one example per NPC dialog. The swipe card plays <code>swipeFast</code> for a flick under 260 ms and <code>swipeSlow</code> for a decided drag, with a one-frame look each. Restore hints: once every object is open, your class&#39;s object plays a faint echo of your class sigil (also when fogged) and, TIPS on, IT whispers a class line; a missed restore makes the NPC mention the object in the confrontation and (TIPS on) IT says you walked past it (<code>unrestored</code> / <code>tip</code> beats); the repeat Therapist notes if you restored nothing last run (<code>lastRun.restored</code>).</li>
+<li><strong>Cutscene portraits + asset sizes (2026-10-10):</strong> a cutscene beat can carry <code>portrait: { npc, accent, url }</code> (ui/npcPortrait.js); the repeat-client Therapist uses it, so his &quot;T&quot; avatar shows instead of a black screen. <code>docs/ASSET_SIZES.md</code> is the new one-page size reference (every asset, draw-at size at 2x, format, path), linked from ART_GUIDE and in the manual&#39;s front group.</li>
 <li><strong>Repeat client (2026-10-10):</strong> the ending saves <code>save.lastRun</code> (class, ending, debt, baptism confessed/doubled from <code>run.reckoningChoices</code>). With a lastRun, <code>therapistReturn.js</code> (a cutscene) takes the &#39;therapist&#39; slot and the original tutorial follows as &#39;therapist-tutorial&#39;: he reads the file back (how wet you came out, the ppm, the baptism, same or new class), says you&#39;re doing it again, then asks two things: check in on you? (sets TIPS) and run the exercise again? (yes: the tutorial plays; no: <code>jumpTo</code> walk-home, after the class homework). <strong>TIPS</strong> (Settings, <code>guideHighlights</code>) now controls all of his tip calls in battles plus the lesson highlights; calls you make yourself are unaffected. Verified both paths in the browser.</li>
 <li><strong>Therapist is early-game only</strong> (<code>dialogScene.js</code> nodeCoach): the new-friend call is one call per run (key <code>friend</code>, was <code>friend:&lt;who&gt;</code>; old keys still count) and only in the first three encounters, so he never calls during Rick. A first friend who arrives later pulses quietly in the dock for that card instead. His other calls are the first battle (scope) and the first mask (Samun). Verified: Rick with a fresh contact gets no call; Rwanda with Deborah in the phone does.</li>
 <li><strong>Rooms</strong> (<code>minigames/*.js</code> via <code>engine/walkSequencer.js</code> <code>mountNpcWalk</code>; <code>ui/walkRoom.js</code>): each object names an opener; it glows in that opener&#39;s first feeling for your class, its close-up is washed in it with the NPC&#39;s class glyph in the corner, and each class&#39;s caption is its own perception with that feeling&#39;s word colored (tests check the color matches). One object per class can be restored: once all three are opened, yours calls in your class color; open it again for a hint in your class&#39;s voice, tap the picture to do it (class sigil sound, done line, stamp). That writes <code>run.secrets[npc]</code>.</li>
@@ -2851,6 +2852,258 @@ new scene type.</p>
 
       <nav class="pager">
         <a href="#doc-architecture" data-doc="doc-architecture"><span>Previous</span>Architecture</a>
+        <a class="next" href="#doc-asset_sizes" data-doc="doc-asset_sizes"><span>Next</span>Asset Sizes (quick reference)</a>
+      </nav>
+    </article>
+<article class="doc" id="doc-asset_sizes" data-title="Asset Sizes (quick reference)" data-file="ASSET_SIZES.md" hidden>
+      <p class="doc-source">Start here · <code>docs/ASSET_SIZES.md</code></p>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-asset_sizes--three-rules">Three rules</a></li><li><a href="#doc-asset_sizes--full-screen">Full screen</a></li><li><a href="#doc-asset_sizes--characters">Characters</a></li><li><a href="#doc-asset_sizes--chapter-pages-the-novel-page-before-each-room">Chapter pages (the novel page before each room)</a></li><li><a href="#doc-asset_sizes--room-objects">Room objects</a></li><li><a href="#doc-asset_sizes--title-menus-and-ending">Title, menus and ending</a></li><li><a href="#doc-asset_sizes--animated-art">Animated art</a></li></ul></nav>
+      <h1 id="doc-asset_sizes--asset-sizes-quick-reference"><a class="anchor" href="#doc-asset_sizes--asset-sizes-quick-reference" aria-label="Link to this section">#</a>Asset Sizes — quick reference</h1>
+<p>Every image the game takes, with the size to draw it at and where it goes.
+For templates, status and the reasons behind each size, see
+<a href="#doc-art_guide" data-doc="doc-art_guide"><a class="doc-ref" href="#doc-art_guide" data-doc="doc-art_guide"><code>ART_GUIDE.md</code></a></a>.</p>
+<h2 id="doc-asset_sizes--three-rules"><a class="anchor" href="#doc-asset_sizes--three-rules" aria-label="Link to this section">#</a>Three rules</h2>
+<ol>
+<li><strong>The screen is 390 × 844</strong> (a portrait phone). Draw at <strong>2×</strong> (<strong>780 × 1688</strong>)
+unless a row says otherwise.</li>
+<li><strong>The look:</strong> white on black, 1-bit pixel art and dither. Hard edges, no
+soft gradients, no glows. The game adds the color tints and retro effects.</li>
+<li><strong>Replace, don&#39;t rename:</strong> drop real art at the listed path (the
+placeholder there now is replaced automatically).</li>
+</ol>
+<p>Paths below are under <code>public/assets/lake-ulysses/</code> unless they start with
+<code>public/</code>.</p>
+<hr>
+<h2 id="doc-asset_sizes--full-screen"><a class="anchor" href="#doc-asset_sizes--full-screen" aria-label="Link to this section">#</a>Full screen</h2>
+<table>
+<thead>
+<tr>
+<th align="left">What</th>
+<th align="left">Draw at</th>
+<th align="left">Format</th>
+<th align="left">Put it in</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Room background (6 frames)</td>
+<td align="left"><strong>780 × 1688</strong></td>
+<td align="left">WebP</td>
+<td align="left"><code>sprites/spr_&lt;room&gt;_bg/spr_&lt;room&gt;_bg_0000</code> … <code>0005</code></td>
+</tr>
+<tr>
+<td align="left">Cutscene background</td>
+<td align="left"><strong>780 × 1688</strong></td>
+<td align="left">WebP</td>
+<td align="left"><code>backgrounds/</code></td>
+</tr>
+<tr>
+<td align="left">Object close-up</td>
+<td align="left"><strong>780 × 1440</strong></td>
+<td align="left">WebP</td>
+<td align="left"><code>sprites/&lt;room&gt;_&lt;object&gt;_closeup</code></td>
+</tr>
+</tbody></table>
+<p>Keep the <strong>top 96 px</strong> (at 2×) clear: the skip and settings buttons sit there.</p>
+<h2 id="doc-asset_sizes--characters"><a class="anchor" href="#doc-asset_sizes--characters" aria-label="Link to this section">#</a>Characters</h2>
+<table>
+<thead>
+<tr>
+<th align="left">What</th>
+<th align="left">Draw at</th>
+<th align="left">Format</th>
+<th align="left">Put it in</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Dialog portrait (also the call avatar and story bust)</td>
+<td align="left"><strong>192 × 192</strong></td>
+<td align="left">WebP, transparent</td>
+<td align="left"><code>sprites/portrait_&lt;name&gt;</code></td>
+</tr>
+<tr>
+<td align="left">Confrontation bust</td>
+<td align="left"><strong>600 × 1200</strong></td>
+<td align="left">WebP, transparent</td>
+<td align="left"><code>sprites/npc_&lt;name&gt;</code></td>
+</tr>
+<tr>
+<td align="left">Pastor Gabriel bust</td>
+<td align="left"><strong>480 × 384</strong></td>
+<td align="left">WebP or PNG</td>
+<td align="left"><code>sprites/bust_pastor</code></td>
+</tr>
+<tr>
+<td align="left">Bob Baiter (10 frames)</td>
+<td align="left"><strong>600 × 600</strong></td>
+<td align="left">WebP</td>
+<td align="left"><code>sprites/spr_bb/</code></td>
+</tr>
+</tbody></table>
+<p>Busts stand on the bottom edge: they may bleed off the sides, <strong>never off the bottom</strong>.</p>
+<h2 id="doc-asset_sizes--chapter-pages-the-novel-page-before-each-room"><a class="anchor" href="#doc-asset_sizes--chapter-pages-the-novel-page-before-each-room" aria-label="Link to this section">#</a>Chapter pages (the novel page before each room)</h2>
+<table>
+<thead>
+<tr>
+<th align="left">What</th>
+<th align="left">Draw at</th>
+<th align="left">Format</th>
+<th align="left">Put it in</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Plate × 4</td>
+<td align="left"><strong>240 × 150</strong> (actual pixels)</td>
+<td align="left">PNG, <strong>pure black and white only</strong> (no gray, no antialiasing)</td>
+<td align="left"><code>plates/plate_deborah.png</code> · <code>plate_rwanda.png</code> · <code>plate_samun.png</code> · <code>plate_rick.png</code></td>
+</tr>
+</tbody></table>
+<p>Draw it flat. The loading bands, scanlines, tape border and fog tint are added in code.</p>
+<h2 id="doc-asset_sizes--room-objects"><a class="anchor" href="#doc-asset_sizes--room-objects" aria-label="Link to this section">#</a>Room objects</h2>
+<p>Draw at the <strong>2×</strong> size. Clean <strong>white-line art on transparent</strong>: the game tints
+it with the feeling color, so don&#39;t bake color in. Each object also needs a
+close-up (<strong>780 × 1440</strong>, see Full screen).</p>
+<p><strong>Hallway (Deborah)</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Object</th>
+<th align="left">Draw at</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>hallway_diploma</code></td>
+<td align="left"><strong>148 × 192</strong></td>
+</tr>
+<tr>
+<td align="left"><code>hallway_doormat</code></td>
+<td align="left"><strong>216 × 88</strong></td>
+</tr>
+<tr>
+<td align="left"><code>hallway_lightbulb</code></td>
+<td align="left"><strong>104 × 124</strong></td>
+</tr>
+<tr>
+<td align="left"><code>hallway_door</code> (the way on)</td>
+<td align="left"><strong>200 × 560</strong></td>
+</tr>
+</tbody></table>
+<p><strong>Alley (Rwanda)</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Object</th>
+<th align="left">Draw at</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>alley_neon</code></td>
+<td align="left"><strong>192 × 116</strong></td>
+</tr>
+<tr>
+<td align="left"><code>alley_payphone</code></td>
+<td align="left"><strong>108 × 236</strong></td>
+</tr>
+<tr>
+<td align="left"><code>alley_mural</code></td>
+<td align="left"><strong>176 × 264</strong></td>
+</tr>
+<tr>
+<td align="left"><code>alley_gate</code> (the way on)</td>
+<td align="left"><strong>192 × 600</strong></td>
+</tr>
+</tbody></table>
+<p><strong>Garage (Samun)</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Object</th>
+<th align="left">Draw at</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>garage_drum</code></td>
+<td align="left"><strong>156 × 224</strong></td>
+</tr>
+<tr>
+<td align="left"><code>garage_calendar</code></td>
+<td align="left"><strong>132 × 176</strong></td>
+</tr>
+<tr>
+<td align="left"><code>garage_radio</code></td>
+<td align="left"><strong>136 × 92</strong></td>
+</tr>
+<tr>
+<td align="left"><code>garage_bay</code> (the way on)</td>
+<td align="left"><strong>200 × 600</strong></td>
+</tr>
+</tbody></table>
+<p><strong>Bar lot (Rick)</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Object</th>
+<th align="left">Draw at</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>barlot_bike</code></td>
+<td align="left"><strong>232 × 192</strong></td>
+</tr>
+<tr>
+<td align="left"><code>barlot_ashtray</code></td>
+<td align="left"><strong>112 × 80</strong></td>
+</tr>
+<tr>
+<td align="left"><code>barlot_flyer</code></td>
+<td align="left"><strong>116 × 156</strong></td>
+</tr>
+<tr>
+<td align="left"><code>barlot_door</code> (the way on)</td>
+<td align="left"><strong>192 × 592</strong></td>
+</tr>
+</tbody></table>
+<p>All room files go in <code>sprites/</code>.</p>
+<h2 id="doc-asset_sizes--title-menus-and-ending"><a class="anchor" href="#doc-asset_sizes--title-menus-and-ending" aria-label="Link to this section">#</a>Title, menus and ending</h2>
+<table>
+<thead>
+<tr>
+<th align="left">What</th>
+<th align="left">Draw at</th>
+<th align="left">Format</th>
+<th align="left">Put it in</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Title logo (13 frames)</td>
+<td align="left"><strong>1260 × 551</strong> per frame</td>
+<td align="left">palette PNG sheet</td>
+<td align="left"><code>public/assets/shared/title/spr_game_title.png</code></td>
+</tr>
+<tr>
+<td align="left">Title / chapter banner panorama (7 frames)</td>
+<td align="left"><strong>1280 × 576</strong> per frame</td>
+<td align="left">palette PNG vertical sheet</td>
+<td align="left"><code>public/assets/shared/title/</code></td>
+</tr>
+<tr>
+<td align="left">Ending slide (one per ending line)</td>
+<td align="left"><strong>800 × 600</strong></td>
+<td align="left">WebP</td>
+<td align="left"><code>endings/</code> (then list it in <code>endings.json</code>)</td>
+</tr>
+<tr>
+<td align="left">Announcement symbol (Bob Baiter)</td>
+<td align="left"><strong>384 × 384</strong></td>
+<td align="left">WebP</td>
+<td align="left"><code>sprites/spr_&lt;symbol&gt;/</code></td>
+</tr>
+</tbody></table>
+<h2 id="doc-asset_sizes--animated-art"><a class="anchor" href="#doc-asset_sizes--animated-art" aria-label="Link to this section">#</a>Animated art</h2>
+<p>Numbered frames, all the same size, in a folder named after the sprite:
+<code>name_0000.webp</code>, <code>name_0001.webp</code>, …</p>
+
+      <nav class="pager">
+        <a href="#doc-scene_types" data-doc="doc-scene_types"><span>Previous</span>Scene Types</a>
         <a class="next" href="#doc-art_guide" data-doc="doc-art_guide"><span>Next</span>Art Guide (every asset, size and template)</a>
       </nav>
     </article>
@@ -2858,6 +3111,8 @@ new scene type.</p>
       <p class="doc-source">Start here · <code>docs/ART_GUIDE.md</code></p>
       <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-art_guide--the-rules-read-these-first">The rules (read these first)</a></li><li><a href="#doc-art_guide--title-and-menus">Title and menus</a></li><li><a href="#doc-art_guide--characters">Characters</a></li><li><a href="#doc-art_guide--walk-rooms-one-per-npc-hallway-alley-garage-bar-lot">Walk rooms (one per NPC: hallway, alley, garage, bar lot)</a></li><li><a href="#doc-art_guide--chapter-pages-one-per-npc">Chapter pages (one per NPC)</a></li><li><a href="#doc-art_guide--cutscenes">Cutscenes</a></li><li><a href="#doc-art_guide--ending">Ending</a></li><li><a href="#doc-art_guide--interface-art-drawn-in-code-optional-to-replace">Interface art drawn in code (🎨, optional to replace)</a></li><li><a href="#doc-art_guide--templates-art-templates">Templates (art-templates/)</a></li><li><a href="#doc-art_guide--audio-for-reference">Audio (for reference)</a></li><li><a href="#doc-art_guide--handing-art-over">Handing art over</a></li></ul></nav>
       <h1 id="doc-art_guide--art-guide-every-asset-its-size-and-its-template"><a class="anchor" href="#doc-art_guide--art-guide-every-asset-its-size-and-its-template" aria-label="Link to this section">#</a>Art Guide — every asset, its size, and its template</h1>
+<p><strong>Just need sizes?</strong> <a href="#doc-asset_sizes" data-doc="doc-asset_sizes"><a class="doc-ref" href="#doc-asset_sizes" data-doc="doc-asset_sizes"><code>ASSET_SIZES.md</code></a></a> is the one-page quick
+reference (every asset, the size to draw it at, where it goes).</p>
 <p>The one page for artists (and for us): every image the game uses or still
 needs, the size to draw it at, how it&#39;s shown, the file format, and which
 template to start from. Templates live in <a href="../art-templates/"><code>art-templates/</code></a>
@@ -3345,7 +3600,7 @@ format details.</p>
 </ol>
 
       <nav class="pager">
-        <a href="#doc-scene_types" data-doc="doc-scene_types"><span>Previous</span>Scene Types</a>
+        <a href="#doc-asset_sizes" data-doc="doc-asset_sizes"><span>Previous</span>Asset Sizes (quick reference)</a>
         <a class="next" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><span>Next</span>Asset Guidelines</a>
       </nav>
     </article>
@@ -9277,7 +9532,7 @@ change to shell/chapter responsibilities and deserves its own decision.</p>
 
 <script>
 (function () {
-  var ORDER = ["doc-game_manual","doc-handoff","doc-architecture","doc-scene_types","doc-art_guide","doc-asset_guidelines","doc-asset_manifest","doc-script_key","doc-script_format","doc-content_schema","doc-stat_math","doc-music_pipeline","doc-jobs","doc-it_design","doc-gm_build","doc-dx-bible","doc-dx_demo_build_spec","doc-dx-mechanics","doc-dreamxtreme-game-development-demo-doc","doc-attic"];
+  var ORDER = ["doc-game_manual","doc-handoff","doc-architecture","doc-scene_types","doc-asset_sizes","doc-art_guide","doc-asset_guidelines","doc-asset_manifest","doc-script_key","doc-script_format","doc-content_schema","doc-stat_math","doc-music_pipeline","doc-jobs","doc-it_design","doc-gm_build","doc-dx-bible","doc-dx_demo_build_spec","doc-dx-mechanics","doc-dreamxtreme-game-development-demo-doc","doc-attic"];
   var docs = ORDER.map(function (id) { return document.getElementById(id); }).filter(Boolean);
   var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-doc'));
   var search = document.getElementById('search');
