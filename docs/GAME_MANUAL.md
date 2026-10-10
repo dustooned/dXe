@@ -514,9 +514,16 @@ whether people can rely on you, and it's built three ways:
   never a catch. 8 pairs: two each for Deborah, Rwanda, Samun, Rick.
 
 Two syncs plus one bid met and that NPC **trusts you**: the screen closes
-to a vignette on them, all sound drops out, a crack, then a short story
-beat of them letting you in (different per NPC and per class). Then the
-reward: **their story**, a five-beat cutscene in their own words, bust up,
+closes slowly to a vignette on them while two tones pull together under
+the ducked music (yours wears your class: Guns a ratchet and a chamber
+click, Bible an organ with a fifth resolving, Crystals two bowls beating
+into one ring), then a gold flash on the lock, their face arrives and
+breathes, and a short story beat of them letting you in (different per
+NPC and per class). A breath
+with only their face, then the
+reward: **their story**, a five-beat cutscene in their own words, bust up, a dip
+of silence between beats, bracketed stage directions on their own first, a
+held look at the end before IT and SO,
 of the wound that led them here (Deborah: the two calls she let ring the
 night Caleb drove into the lake; Rwanda: the portrait of her mother she
 softened to win; Samun: cleaning up his father at nine so his brother

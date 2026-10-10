@@ -574,6 +574,19 @@ export function mount(stageEl, scene, { run, onComplete }) {
       tapHint.hidden = true;
       content.appendChild(tapHint);
 
+      // The tutorial's meter pages (one meter each, then all four) turn
+      // themselves after a beat; a tap still skips ahead. Not the last page.
+      let inMeterRun = false;
+      const autoAdvance = ({ index, last, marks }) => {
+        if (!npc.reveal) return;
+        if (marks.some((m) => METERS.includes(m))) inMeterRun = true;
+        if (marks.includes('allmeters')) inMeterRun = false;
+        if (!inMeterRun || last) return;
+        const tw = typewriter;
+        later(() => {
+          if (!unmounted && typewriter === tw && tw.pageIndex() === index) tw.finish();
+        }, loadSettings().textSize === 'large' ? 3600 : 2500);
+      };
       typewriter = createTypewriter(
         reaction,
         reactionTextFor(pendingEdge)
@@ -582,11 +595,21 @@ export function mount(stageEl, scene, { run, onComplete }) {
           onChar: audio.playTypewriterTick,
           narration: 'reaction',
           onDone: () => { tapHint.hidden = false; },
+          onPageDone: autoAdvance,
           onMark: (name) => {
             if (name === 'lake') cueLake(screen, reaction);
             if (name === 'caught') landCaught(screen);
-            // {cue:stability|trust|lucidity|integrity}: flash that icon.
+            // {mark:stability|trust|lucidity|integrity}: that icon appears and
+            // flashes, lit alone while he explains it; {mark:allmeters}: the
+            // whole bar again, all four together.
             fireCue(name);
+            if (METERS.includes(name) || name === 'allmeters') {
+              const target = name === 'allmeters' ? statusBar?.el : statusBar?.el.querySelector(`[data-meter="${name}"]`);
+              if (target) {
+                spotlight?.destroy();
+                spotlight = createSpotlight(screen, [target, reaction]);
+              }
+            }
           },
         },
       );
@@ -1083,7 +1106,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // "try this" line stays by the thing until you've tried it (coach.task).
   // He shows what to watch, never which answer is right: what the player
   // does with it is theirs.
-  // Settings > GUIDE HIGHLIGHTS: off, his calls still talk but nothing lights up.
+  // Settings > TIPS: off, his calls still talk but nothing lights up.
   const guideOn = () => loadSettings().guideHighlights !== false;
 
   function startCoach(key, guide) {
@@ -1276,6 +1299,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // phone. Runs once the question's words
   // are up and the wheel is showing.
   let coachCheckedFor = null;
+  // His words in the player's terms: a line per class, the plain one for no class.
+  const inClass = (plain, byClass) => byClass[run.get().loadout] ?? plain;
+
   function nodeCoach() {
     if (coachCheckedFor === currentNodeId) return;
     coachCheckedFor = currentNodeId;
@@ -1286,10 +1312,21 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (isRevealed('instruments') && !(run.get().coachSeen ?? []).includes('scope')) {
       startCoach('scope', {
         steps: [
-          { say: "It's me. Quick one, now that it's for real." },
-          { say: `That line across the picture is ${facing}. The one under it is you.`, target: 'trace', label: `${facing.toUpperCase()} · YOU` },
-          { say: 'Same as with me. Try feelings and watch the little screen.', target: 'scope', label: 'LITTLE SCREEN' },
-          { say: "And the needle: moving together, or pulling apart. It's not grading you. It's just showing you. Okay. Bye.", target: 'needle', label: 'NEEDLE' },
+          { say: inClass("It's me. Quick one, now that it's for real.", { Guns: "It's me. Radio check. Quick one, now that it's for real.", Bible: "It's me. A quick word, now that it's for real." }) },
+          { say: inClass(`That line across the picture is ${facing}. The one under it is you.`, {
+            Guns: `That line across the picture is ${facing}, your target. The one under it is you.`,
+            Bible: `That line across the picture is ${facing}. The one under it is you. Two voices, one frame.`,
+            Crystals: `That line across the picture is ${facing}'s. The one under it is yours. Two strings on a harp.`,
+          }), target: 'trace', label: `${facing.toUpperCase()} · YOU` },
+          { say: inClass('Same as with me. Try feelings and watch the little screen.', {
+            Guns: 'Same as with me. Try feelings and watch your group tighten or spread on the little screen.',
+            Bible: 'Same as with me. Try feelings and watch the little screen. It shows whether you are singing the same hymn.',
+            Crystals: 'Same as with me. Try feelings and watch the little screen. It shows whether you are ringing at the same pitch.',
+          }), target: 'scope', label: 'LITTLE SCREEN' },
+          { say: inClass("And the needle: moving together, or pulling apart. It's not grading you. It's just showing you. Okay. Bye.", {
+            Guns: "And the needle: lined up, or off target. It's not grading you. It's just showing you. Okay. Bye.",
+            Bible: "And the needle: moving together, or pulling apart. Not a judgment. Just a reading. Okay. Bye.",
+          }), target: 'needle', label: 'NEEDLE' },
         ],
         task: { text: 'Try a feeling. Watch the little screen.', target: 'wheel', glow: 'scope', until: ['pick', 'swipe'] },
       });
@@ -1300,7 +1337,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
         steps: [
           { say: "It's me. I'm between clients, this'll be quick. Something new." },
           { say: "See their line across the picture? Look close. It's showing two colors.", target: 'trace', label: 'THEIR LINE' },
-          { say: "One is what they're showing you. The one that flickers underneath is what's going on inside.", target: 'trace', label: 'THE FLICKER' },
+          { say: inClass("One is what they're showing you. The one that flickers underneath is what's going on inside.", {
+            Guns: "One is the front they're holding. The one that flickers underneath is what's behind it, like a target behind cover.",
+            Bible: "One is the face they bring to church. The one that flickers underneath is what's going on inside.",
+            Crystals: "One is the surface. The one that flickers underneath is the inclusion, the thing inside the stone.",
+          }), target: 'trace', label: 'THE FLICKER' },
           { say: 'Try a few feelings on your wheel.', target: 'wheel', label: 'YOUR WHEEL' },
           { say: 'And watch the little screen while you do. What you make of it is up to you. Okay. Bye.', target: 'scope', label: 'LITTLE SCREEN' },
         ],
@@ -1315,7 +1356,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
       startCoach(`friend:${who}`, {
         steps: [
           { say: `It's me. FEELZ tells me ${name}'s in your phone now.`, target: `who:${who}`, label: name.toUpperCase() },
-          { say: `Tap them anytime for their read on ${facing}. Their own way. Doesn't mean they're right. Okay. Bye.`, target: `who:${who}`, label: name.toUpperCase() },
+          { say: inClass(`Tap them anytime for their read on ${facing}. Their own way. Doesn't mean they're right. Okay. Bye.`, {
+            Guns: `Tap them anytime for their read on ${facing}. Think of them as a spotter. Doesn't mean they're right. Okay. Bye.`,
+            Bible: `Tap them anytime for their read on ${facing}. Think of a second opinion from the pew. Doesn't mean they're right. Okay. Bye.`,
+            Crystals: `Tap them anytime for their read on ${facing}. A second pair of eyes. Doesn't mean they're right. Okay. Bye.`,
+          }), target: `who:${who}`, label: name.toUpperCase() },
         ],
         task: { text: `${name} is here when you want a read.`, target: `who:${who}`, pulseWho: who, until: ['call', 'swipe'] },
       });
@@ -1604,61 +1649,112 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }, ringMs);
   }
 
-  // The connection moment: this person just let you in. The world closes
-  // to a vignette on them, all sound drops out, then a crack and warmth,
-  // then a story beat written for this NPC and the player's class.
+  // The connection moment: this person just let you in. A breath, then the
+  // pull (two tones closing while the music ducks and the dark closes in),
+  // the lock (each class has its own sound), and their face arrives. Their
+  // connection line; a breath with only the portrait; then the story they
+  // tell you, a beat at a time with a dip of silence between, a held look at
+  // the end, and only then IT and SO. A tap finishes the line being typed
+  // and moves to the next beat; it never skips a breath. Bracketed stage
+  // directions stand alone first and turn themselves.
   function showConnection(onDone) {
-    const text = npc.connect[run.get().loadout] ?? Object.values(npc.connect)[0];
+    const loadout = run.get().loadout;
+    const text = npc.connect[loadout] ?? Object.values(npc.connect)[0];
+    const story = npc.story ?? [];
+    const beats = [{ text }];
+    for (const raw of story) {
+      const m = raw.match(/^(\[[^\]]*\])\s*([\s\S]*)$/);
+      if (m && m[2]) beats.push({ text: m[1], action: true }, { text: m[2] });
+      else beats.push({ text: raw });
+    }
+
     const overlay = document.createElement('div');
-    overlay.className = 'dx-connect';
+    overlay.className = 'dx-connect is-story';
     stageEl.appendChild(overlay);
-    requestAnimationFrame(() => overlay.classList.add('is-closing'));
-    const silence = audio.silenceThenCrack(1600);
-    setTimeout(() => {
-      overlay.classList.add('is-open');
-      const box = document.createElement('div');
-      box.className = 'dx-connect__beat';
-      const p = document.createElement('p');
-      p.className = 'dx-text';
-      box.appendChild(p);
-      overlay.appendChild(box);
-      let tw = createTypewriter(p, text, { onChar: audio.playTypewriterTick });
-      // Then the story they tell you (manuscript STORY lines). The music falls
-      // away so it can be heard — their words still type out with their sound,
-      // and IT and SO still sound — with their bust close and centered, the way
-      // they ask for your number; each tap is the next beat, and the music
-      // fades back only when they are done.
-      const story = npc.story ?? [];
-      let beat = -1;
-      let told = false;
-      overlay.addEventListener('click', () => {
-        if (told) return;
-        if (!tw.isDone()) { tw.finish(); return; }
-        tw.destroy();
-        beat += 1;
-        if (beat === 0 && story.length) {
-          audio.duckMusic(true);
-          encounterMusic.duck(true);
+    let box = null;
+    let p = null;
+    let tw = null;
+    let beat = 0;
+    let busy = true; // a breath is happening: taps wait
+    let over = false;
+    const wait = (ms, fn) => setTimeout(() => { if (!unmounted && !over) fn(); }, ms);
+
+    function show(i) {
+      if (!box) {
+        box = document.createElement('div');
+        box.className = 'dx-connect__beat';
+        p = document.createElement('p');
+        p.className = 'dx-text';
+        box.appendChild(p);
+        overlay.appendChild(box);
+      }
+      box.classList.remove('is-dipping');
+      const b = beats[i];
+      p.classList.toggle('is-action', !!b.action);
+      tw?.destroy();
+      busy = false;
+      tw = createTypewriter(p, b.text, {
+        onChar: audio.playTypewriterTick,
+        onDone: () => {
+          if (b.action) { busy = true; wait(900, advance); } // held, then the words
+        },
+      });
+    }
+
+    function finish() {
+      over = true;
+      audio.duckMusic(false, 3);
+      encounterMusic.duck(false, 3);
+      overlay.remove();
+      onDone();
+    }
+
+    // The next beat, after a dip of silence; after the last, a held look.
+    function advance() {
+      busy = true;
+      box?.classList.add('is-dipping');
+      if (beat + 1 < beats.length) {
+        const next = beats[beat + 1];
+        const breath = beat === 0 ? 1500 : next.action ? 800 : 650;
+        wait(breath, () => { beat += 1; show(beat); });
+        return;
+      }
+      wait(1800, () => {
+        if (story.length && npc.storyIt && npc.storySo) { over = true; showStoryThoughts(() => { audio.duckMusic(false, 3); encounterMusic.duck(false, 3); overlay.remove(); onDone(); }); }
+        else finish();
+      });
+    }
+
+    overlay.addEventListener('click', () => {
+      if (busy || over) return;
+      if (tw && !tw.isDone()) { tw.finish(); return; }
+      advance();
+    });
+
+    // 1. A breath on the answer, then the pull.
+    wait(500, () => {
+      overlay.classList.add('is-closing');
+      audio.duckMusic(true, 0.8);
+      encounterMusic.duck(true, 0.8);
+      const pullMs = audio.playConnectionPull(loadout, 2600);
+      // 2. The lock: a flash of gold, and their face arrives.
+      wait(pullMs, () => {
+        overlay.classList.add('is-open', 'is-locking');
+        fx.flash('weak', '#ffc94d');
+        wait(500, () => {
           overlay.classList.add('is-asking');
           const bust = createNpcPortrait(npc.npc, npc.accentColor, npc.portrait);
           bust.el.classList.add('dx-connect__bust');
           const name = document.createElement('p');
           name.className = 'dx-connect__name';
           name.textContent = npc.npc;
-          overlay.insertBefore(name, box);
-          overlay.insertBefore(bust.el, name);
-          run.set({ storiesHeard: [...(run.get().storiesHeard ?? []), npc.npc] });
-        }
-        if (beat < story.length) {
-          tw = createTypewriter(p, story[beat], { onChar: audio.playTypewriterTick });
-          return;
-        }
-        told = true;
-        const finish = () => { audio.duckMusic(false, 3); encounterMusic.duck(false, 3); overlay.remove(); onDone(); };
-        if (story.length && npc.storyIt && npc.storySo) showStoryThoughts(finish);
-        else finish();
+          overlay.append(bust.el, name);
+          if (story.length) run.set({ storiesHeard: [...(run.get().storiesHeard ?? []), npc.npc] });
+          // 3. Let the face be there a moment before the first words.
+          wait(1500, () => show(0));
+        });
       });
-    }, silence + 500);
+    });
   }
 
   // After their story, with the music still down: IT weighs how true it rings,
@@ -1789,7 +1885,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   function varyReaction(edge) {
     const before = edge.byPick?.[reactionEmotion];
     const after = reactionGift === undefined ? null : edge.byGift?.[reactionGift ?? 'none'];
-    return [before, edge.npcReaction, after].filter(Boolean).join(' ');
+    // A class's own version of the reaction (manuscript REACT [Guns]:), else the plain one.
+    const main = edge.reactByClass?.[run.get().loadout] ?? edge.npcReaction;
+    return [before, main, after].filter(Boolean).join(' ');
   }
 
   function continueAfterReaction() {
@@ -2047,6 +2145,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const state = run.get();
     if (beat.watch && beat.watch !== watchFor(state)) return false;
     if (beat.when?.class && beat.when.class !== state.loadout) return false;
+    if (beat.when?.noClass && ['Guns', 'Bible', 'Crystals'].includes(state.loadout)) return false;
     const choice = beat.when?.choice;
     if (choice && state.choices?.[choice.node] !== choice.side) return false;
     return true;

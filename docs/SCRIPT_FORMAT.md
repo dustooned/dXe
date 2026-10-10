@@ -116,6 +116,10 @@ Every node needs exactly two: `-- TRUTH` and `-- LIE`.
   its own beat right after the swipe (right-aligned, labeled `YOU`),
   before `REACT:` draws in.
 - `REACT:` — how the NPC responds, the beat right after `SAY:`.
+- `REACT [Guns|Bible|Crystals]:` — that class's own version of the same
+  reaction (the plain `REACT:` is the fallback when there is no class).
+  The Therapist uses these to explain the meters and the lake in each
+  class's terms.
 - All three of `PROMPT:`/`SAY:`/`REACT:` accept `\n` (a literal backslash
   then `n`) anywhere you want a forced line break — the manuscript format
   is one physical line per field, so this is the escape for a break the
@@ -168,8 +172,8 @@ Every node needs exactly two: `-- TRUTH` and `-- LIE`.
 ### File-level extras
 
 - `CONNECT [Guns|Bible|Crystals]: text` — the connection moment: the
-  story beat played when this NPC first trusts the player (vignette,
-  silence, a crack, then this text). One per class. Put these in the
+  story beat played when this NPC first trusts the player (the dark closes
+  while two tones pull together, the lock, then this text). One per class. Put these in the
   file header, before the first node.
 - `OPENER [Guns|Bible|Crystals]: text` — how this NPC sizes up the player's
   class: said before the first prompt of the encounter, whichever node
@@ -316,7 +320,7 @@ PUSHAWAY [Guns]: [She turns back to the window.] "You never put it down. Not onc
 
 ## WATCH (outro)
 
-`WATCH [stability|trust|lucidity|integrity|lake|steady]: "line"` inside `=== OUTRO`: a parting watch-out. Write one per key; only one plays, picked by how the readings ended: `lake` if Truth Debt is 3 or more, else the lowest meter if it's 4 or below, else `steady`. Used by the therapist just before HANGUP.
+`WATCH [stability|trust|lucidity|integrity|lake|steady]: "line"` inside `=== OUTRO`: a parting watch-out. Add a class after the key (`WATCH [stability, Guns]:`) for a class's own version, and `[stability, Default]` for the no-class fallback. Write one per key; only one plays, picked by how the readings ended: `lake` if Truth Debt is 3 or more, else the lowest meter if it's 4 or below, else `steady`. Used by the therapist just before HANGUP.
 
 ## TRYNEAR / TRYFAR (outro)
 
@@ -329,3 +333,7 @@ PUSHAWAY [Guns]: [She turns back to the window.] "You never put it down. Not onc
 ## The intake read
 
 A prompt containing `{intake}` (the therapist's first) shows the wheel asleep while he reads the player's evaluation: each feeling-colored word in the read lights its slice in turn, and the read closes on the class's evaluation sound. Nothing to author beyond `{intake}` itself.
+
+## [Default] (outro condition)
+
+`[Default]` in an outro condition (`LINE [Default]:`, `WATCH [lake, Default]:`) plays only when the player has no class (debug, a bare start). Use it as the fallback beside a trio of `[Guns]` / `[Bible]` / `[Crystals]` versions. `test:engine` checks that every class, and no class, gets exactly one of each Therapist mechanic step.

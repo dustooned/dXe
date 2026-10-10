@@ -1140,61 +1140,135 @@ export function playGrind() {
 
 // ─── Connection moment (dialogScene.js showConnection) ────────────────────────
 
-// Everything drops out (the whole mix, music included) for `silenceMs`, then
-// one crack — a dry snap like ice giving way — and a warm major chord rings
-// up out of it as the sound comes back. Returns the total ms until it rings.
-export function silenceThenCrack(silenceMs = 1500) {
+// The connection, as a pull and a lock (dialogScene.js showConnection). Two
+// tones start a little apart and slide together while the music ducks under
+// them, like two magnets closing, then lock into one. The player's tone wears
+// their class: Guns a gritty ratchet and a chamber click, Bible an organ pad
+// with a fifth resolving, Crystals two bowls beating into one ring. No class:
+// the plain crack and warm chord. Returns the ms until it has locked.
+export function playConnectionPull(cls = '', pullMs = 2600) {
   const audioCtx = ensureContext();
-  const now = audioCtx.currentTime;
-  const back = now + silenceMs / 1000;
-  masterGain.gain.cancelScheduledValues(now);
-  masterGain.gain.setValueAtTime(masterGain.gain.value, now);
-  masterGain.gain.linearRampToValueAtTime(0.0001, now + 0.35);
-  masterGain.gain.setValueAtTime(0.0001, back);
-  masterGain.gain.linearRampToValueAtTime(masterVolume, back + 0.02);
+  const t0 = audioCtx.currentTime + 0.03;
+  const pull = pullMs / 1000;
+  const lock = t0 + pull;
+  const base = { Guns: 110, Bible: 196, Crystals: 220 }[cls] ?? 164.81;
+  const out = audioCtx.createGain();
+  out.gain.value = 1;
+  out.connect(masterGain);
 
-  // The crack: a very short burst of bright noise over a low thud.
-  const len = Math.floor(audioCtx.sampleRate * 0.09);
-  const buffer = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
-  const data = buffer.getChannelData(0);
-  for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
-  const noise = audioCtx.createBufferSource();
-  noise.buffer = buffer;
-  const hp = audioCtx.createBiquadFilter();
-  hp.type = 'highpass';
-  hp.frequency.value = 1400;
-  const ng = audioCtx.createGain();
-  ng.gain.value = 0.5;
-  noise.connect(hp).connect(ng).connect(masterGain);
-  noise.start(back + 0.02);
-
-  const thud = audioCtx.createOscillator();
-  thud.type = 'sine';
-  thud.frequency.setValueAtTime(90, back + 0.02);
-  thud.frequency.exponentialRampToValueAtTime(40, back + 0.25);
-  const tg = audioCtx.createGain();
-  tg.gain.setValueAtTime(0.4, back + 0.02);
-  tg.gain.exponentialRampToValueAtTime(0.0001, back + 0.3);
-  thud.connect(tg).connect(masterGain);
-  thud.start(back + 0.02);
-  thud.stop(back + 0.32);
-
-  // The warmth after it: a soft major chord swelling up and ringing out.
-  [261.63, 329.63, 392.0, 523.25].forEach((frequency, i) => {
-    const at = back + 0.18 + i * 0.05;
+  // One voice of the pull: starts at `from`, ends at `to` on the lock,
+  // swelling as it closes and ringing out `tail` seconds after.
+  const voice = (type, from, to, peak, tail, dest = out) => {
+    const osc = audioCtx.createOscillator();
+    osc.type = type;
+    osc.frequency.setValueAtTime(from, t0);
+    osc.frequency.exponentialRampToValueAtTime(to, lock);
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(peak, lock - 0.05);
+    g.gain.exponentialRampToValueAtTime(0.0001, lock + tail);
+    osc.connect(g).connect(dest);
+    osc.start(t0);
+    osc.stop(lock + tail + 0.05);
+    osc.onended = () => g.disconnect();
+  };
+  const noiseHit = (at, hz, dur, gain) => {
+    const len = Math.max(1, Math.floor(audioCtx.sampleRate * dur));
+    const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf;
+    const bp = audioCtx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = hz;
+    bp.Q.value = 1.4;
+    const g = audioCtx.createGain();
+    g.gain.value = gain;
+    src.connect(bp).connect(g).connect(out);
+    src.start(at);
+  };
+  const thud = (at, f1, f2, gain) => {
+    const osc = audioCtx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(f1, at);
+    osc.frequency.exponentialRampToValueAtTime(f2, at + 0.25);
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(gain, at);
+    g.gain.exponentialRampToValueAtTime(0.0001, at + 0.3);
+    osc.connect(g).connect(out);
+    osc.start(at);
+    osc.stop(at + 0.32);
+  };
+  const pad = (freqs, at, attack, ring, peak) => freqs.forEach((f, i) => {
     const osc = audioCtx.createOscillator();
     osc.type = 'triangle';
-    osc.frequency.value = frequency;
-    const gain = audioCtx.createGain();
-    gain.gain.setValueAtTime(0, at);
-    gain.gain.linearRampToValueAtTime(0.07, at + 0.4);
-    gain.gain.exponentialRampToValueAtTime(0.0001, at + 3.2);
-    osc.connect(gain).connect(masterGain);
-    osc.start(at);
-    osc.stop(at + 3.3);
-    osc.onended = () => gain.disconnect();
+    osc.frequency.value = f;
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0.0001, at + i * 0.04);
+    g.gain.linearRampToValueAtTime(peak, at + attack);
+    g.gain.exponentialRampToValueAtTime(0.0001, at + ring);
+    osc.connect(g).connect(out);
+    osc.start(at + i * 0.04);
+    osc.stop(at + ring + 0.05);
+    osc.onended = () => g.disconnect();
   });
-  return silenceMs;
+
+  if (cls === 'Guns') {
+    const lp = audioCtx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 520;
+    lp.connect(out);
+    voice('sawtooth', base, base, 0.1, 1.2, lp);
+    voice('sawtooth', base * 1.19, base, 0.08, 1.2, lp);
+    // A ratchet that speeds up as they close: clicks every 330ms down to 60ms.
+    let at = t0 + 0.2;
+    let gap = 0.33;
+    while (at < lock - 0.08) {
+      noiseHit(at, 2600, 0.03, 0.16);
+      at += gap;
+      gap = Math.max(0.06, gap * 0.8);
+    }
+    // The chamber: click, clack, and the low thud settling.
+    noiseHit(lock, 2200, 0.05, 0.5);
+    noiseHit(lock + 0.09, 1500, 0.07, 0.4);
+    thud(lock + 0.04, 90, 40, 0.5);
+    pad([base * 2, base * 3], lock + 0.1, 0.25, 1.6, 0.06);
+  } else if (cls === 'Bible') {
+    // An organ: three drawbars of sine, one voice sliding onto the other.
+    for (const [mult, peak] of [[1, 0.1], [2, 0.05], [3, 0.03]]) {
+      voice('sine', base * mult, base * mult, peak, 1.8);
+      voice('sine', base * mult * 1.12, base * mult, peak * 0.9, 1.8);
+    }
+    pad([base * 2, base * 3, base * 4], lock + 0.05, 0.5, 2.6, 0.06); // the fifth, resolving
+  } else if (cls === 'Crystals') {
+    const bus = echoBus(0.45, 0.4, out);
+    // Two bowls, a hair apart and beating, closing to one ring.
+    [[1, 0.07], [2.71, 0.035], [5.15, 0.018]].forEach(([mult, peak]) => {
+      voice('sine', base * mult * 1.035, base * mult, peak, 3.4, bus);
+      voice('sine', base * mult, base * mult, peak, 3.4, bus);
+    });
+    // The strike on the lock.
+    [[1, 0.14], [2.71, 0.07], [5.15, 0.035]].forEach(([mult, peak]) => {
+      const osc = audioCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = base * mult;
+      const g = audioCtx.createGain();
+      g.gain.setValueAtTime(0.0001, lock);
+      g.gain.linearRampToValueAtTime(peak, lock + 0.008);
+      g.gain.exponentialRampToValueAtTime(0.0001, lock + 4 / Math.sqrt(mult));
+      osc.connect(g).connect(bus);
+      osc.start(lock);
+      osc.stop(lock + 4.2);
+    });
+  } else {
+    voice('triangle', base, base, 0.1, 1.2);
+    voice('triangle', base * 1.12, base, 0.08, 1.2);
+    noiseHit(lock, 4000, 0.09, 0.4);
+    thud(lock, 90, 40, 0.4);
+    pad([261.63, 329.63, 392.0, 523.25], lock + 0.15, 0.4, 3.2, 0.07);
+  }
+  return pullMs;
 }
 
 // ─── Phone sounds (status bar + contacts) ──────────────────────────────────────

@@ -12,7 +12,7 @@
       "swipes": {
         "truth": {
           "playerText": "Not great. I woke up on the side of the road.",
-          "npcReaction": "\"Okay. Thank you.\" The keys keep going; he types while you talk, the way you learn to with forty people on your caseload. \"Top of your screen. {cue:stability}Battery. {cue:trust}Bars. {cue:lucidity}Wi-Fi. {cue:integrity}Clock. {cue:allmeters}That's how FEELZ reads you. Watch what moves when you answer.\" A beat. \"Weather, not a verdict.\"",
+          "npcReaction": "\"Okay. Thank you.\" The keys keep going; he types while you talk, the way you learn to with forty people on your caseload. \"Top of your screen. Four little things. I'll take them one at a time.\" {mark:stability}\"Battery. How much you've got left in the tank. Some things cost you. Some things put it back.\" {mark:trust}\"Bars. How connected people feel to you. Low, and some doors stay shut.\" {mark:lucidity}\"Wi-Fi. How clearly you're seeing. When it's low, things come through blurry. Calls too. Mine especially.\" {mark:integrity}\"Clock. It keeps honest time while you do. Lie enough and the minutes start to skip.\" {mark:allmeters}\"That's how FEELZ reads you. Watch what moves when you answer.\" A beat. \"Weather, not a verdict.\"",
           "effects": {
             "trust": 1,
             "lucidity": 1,
@@ -21,11 +21,16 @@
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
-          "nextNodeId": "therapist_intrusive"
+          "nextNodeId": "therapist_intrusive",
+          "reactByClass": {
+            "Guns": "\"Okay. Thank you.\" The keys keep going; he types while you talk, the way you learn to with forty people on your caseload. \"Top of your screen. Four little things. I'll take them one at a time.\" {mark:stability}\"Battery. Think magazine. Rounds left. My dad, Vietnam vet, slept with an AK-47 under his pillow every night. Fully loaded, never rested. Rest is a feature.\" {mark:trust}\"Bars. Range. How close people let you stand before they flinch. Low, and some doors stay shut.\" {mark:lucidity}\"Wi-Fi. Fog on the scope. When it's low, everything blurs. Calls too.\" {mark:integrity}\"Clock. Watch discipline. It keeps honest time while you do. Lie enough and the minutes skip.\" {mark:allmeters}\"That's how FEELZ reads you. Watch what moves when you answer.\" A beat. \"Weather, not a verdict.\"",
+            "Bible": "\"Okay. Thank you.\" The keys keep going; he types while you talk, the way you learn to with forty people on your caseload. \"Top of your screen. Four little things. I'll take them one at a time.\" {mark:stability}\"Battery. Call it grace. How much you've got left to give. Some things draw it down. Some fill it back up.\" {mark:trust}\"Bars. Fellowship. My grandmother prayed on her deathbed. Full bars to the end. Low on yours, and some doors stay shut.\" {mark:lucidity}\"Wi-Fi. Through a glass, darkly. Not mine, I'm quoting. When it's low, things blur. Calls too.\" {mark:integrity}\"Clock. Let your yes be yes. It keeps honest time while you do. Lie enough and the minutes skip.\" {mark:allmeters}\"That's how FEELZ reads you. Watch what moves when you answer.\" A beat. \"Weather, not a verdict.\"",
+            "Crystals": "\"Okay. Thank you.\" The keys keep going; he types while you talk, the way you learn to with forty people on your caseload. \"Top of your screen. Four little things. I'll take them one at a time.\" {mark:stability}\"Battery. Charge. Like a stone left out in the moonlight. My mom did that. Her phone also died constantly. Correlation.\" {mark:trust}\"Bars. Resonance. How well you ring with people. Low, and some doors stay shut.\" {mark:lucidity}\"Wi-Fi. Clear quartz versus cloudy. Mom would say cleanse it. I say turn it off and on again.\" {mark:integrity}\"Clock. Mom blames Mercury in retrograde for everything. This one's just honest time. Lie enough and it skips.\" {mark:allmeters}\"That's how FEELZ reads you. Watch what moves when you answer.\" A beat. \"Weather, not a verdict.\""
+          }
         },
         "lie": {
           "playerText": "Fine. I'm fine.",
-          "npcReaction": "\"Fine.\" The keys don't stop. \"Everyone's fine. My whole caseload is fine.\" A tired almost-laugh. \"Top of your screen. {cue:stability}Battery. {cue:trust}Bars. {cue:lucidity}Wi-Fi. {cue:integrity}Clock. {cue:allmeters}Watch what moves.\" {mark:lake}A pause. \"And that reading at the bottom is the lake. It keeps count.\"",
+          "npcReaction": "\"Fine.\" The keys don't stop. \"Everyone's fine. My whole caseload is fine.\" A tired almost-laugh. \"Top of your screen. Four little things. I'll take them one at a time.\" {mark:stability}\"Battery. How much you've got left in the tank. Some things cost you. Some things put it back.\" {mark:trust}\"Bars. How connected people feel to you. Low, and some doors stay shut.\" {mark:lucidity}\"Wi-Fi. How clearly you're seeing. When it's low, things come through blurry. Calls too. Mine especially.\" {mark:integrity}\"Clock. It keeps honest time while you do. Lie enough and the minutes start to skip.\" {mark:allmeters}\"Watch what moves.\" {mark:lake}A pause. \"And that reading at the bottom is the lake. It keeps count.\"",
           "effects": {
             "stability": 1,
             "trust": -1
@@ -35,7 +40,12 @@
             "Deflection"
           ],
           "ledgerEntry": "You told your therapist you were fine.",
-          "nextNodeId": "therapist_intrusive"
+          "nextNodeId": "therapist_intrusive",
+          "reactByClass": {
+            "Guns": "\"Fine.\" The keys don't stop. \"Everyone's fine. My whole caseload is fine.\" A tired almost-laugh. \"Top of your screen. Four little things. I'll take them one at a time.\" {mark:stability}\"Battery. Think magazine. Rounds left. My dad, Vietnam vet, slept with an AK-47 under his pillow every night. Fully loaded, never rested. Rest is a feature.\" {mark:trust}\"Bars. Range. How close people let you stand before they flinch. Low, and some doors stay shut.\" {mark:lucidity}\"Wi-Fi. Fog on the scope. When it's low, everything blurs. Calls too.\" {mark:integrity}\"Clock. Watch discipline. It keeps honest time while you do. Lie enough and the minutes skip.\" {mark:allmeters}\"Watch what moves.\" {mark:lake}A pause. \"And that reading at the bottom is the lake. It keeps count.\"",
+            "Bible": "\"Fine.\" The keys don't stop. \"Everyone's fine. My whole caseload is fine.\" A tired almost-laugh. \"Top of your screen. Four little things. I'll take them one at a time.\" {mark:stability}\"Battery. Call it grace. How much you've got left to give. Some things draw it down. Some fill it back up.\" {mark:trust}\"Bars. Fellowship. My grandmother prayed on her deathbed. Full bars to the end. Low on yours, and some doors stay shut.\" {mark:lucidity}\"Wi-Fi. Through a glass, darkly. Not mine, I'm quoting. When it's low, things blur. Calls too.\" {mark:integrity}\"Clock. Let your yes be yes. It keeps honest time while you do. Lie enough and the minutes skip.\" {mark:allmeters}\"Watch what moves.\" {mark:lake}A pause. \"And that reading at the bottom is the lake. It keeps count.\"",
+            "Crystals": "\"Fine.\" The keys don't stop. \"Everyone's fine. My whole caseload is fine.\" A tired almost-laugh. \"Top of your screen. Four little things. I'll take them one at a time.\" {mark:stability}\"Battery. Charge. Like a stone left out in the moonlight. My mom did that. Her phone also died constantly. Correlation.\" {mark:trust}\"Bars. Resonance. How well you ring with people. Low, and some doors stay shut.\" {mark:lucidity}\"Wi-Fi. Clear quartz versus cloudy. Mom would say cleanse it. I say turn it off and on again.\" {mark:integrity}\"Clock. Mom blames Mercury in retrograde for everything. This one's just honest time. Lie enough and it skips.\" {mark:allmeters}\"Watch what moves.\" {mark:lake}A pause. \"And that reading at the bottom is the lake. It keeps count.\""
+          }
         }
       },
       "spotlight": [
@@ -144,7 +154,12 @@
           "debtDelta": 0,
           "tags": [],
           "ledgerEntry": null,
-          "nextNodeId": null
+          "nextNodeId": null,
+          "reactByClass": {
+            "Guns": "A pause. Then, quieter: \"Thank you. Most people give me the short version.\" A soft click. \"That's the lake, at the bottom. Call it your range log: every shot you take gets written down. It stays clear when you don't have to remember what you told people.\" A breath. \"The fish were the county's idea. Somebody decided data needed a mascot.\"",
+            "Bible": "A pause. Then, quieter: \"Thank you. Most people give me the short version.\" A soft click. \"That's the lake, at the bottom. Call it a ledger the church would recognize. Mine's a sensor. It stays clear when you don't have to remember what you told people.\" A breath. \"The fish were the county's idea. Somebody decided data needed a mascot.\"",
+            "Crystals": "A pause. Then, quieter: \"Thank you. Most people give me the short version.\" A soft click. \"That's the lake, at the bottom. A bowl of water. Mom would say it holds whatever you leave in it. Mostly true, actually. It stays clear when you don't have to remember what you told people.\" A breath. \"The fish were the county's idea. Somebody decided data needed a mascot.\""
+          }
         },
         "lie": {
           "playerText": "Nothing, really. I don't remember.",
@@ -159,7 +174,12 @@
             "Denial"
           ],
           "ledgerEntry": "You told your therapist you didn't remember the dream.",
-          "nextNodeId": null
+          "nextNodeId": null,
+          "reactByClass": {
+            "Guns": "\"Mm-hm.\" A pause just a beat too long. \"I'll write 'client deferred.' I write that a lot.\" A soft click. \"That's the lake, at the bottom. Range log. It keeps count. Watch the fish.\"",
+            "Bible": "\"Mm-hm.\" A pause just a beat too long. \"I'll write 'client deferred.' I write that a lot.\" A soft click. \"That's the lake, at the bottom. The ledger. It keeps count. Watch the fish.\"",
+            "Crystals": "\"Mm-hm.\" A pause just a beat too long. \"I'll write 'client deferred.' I write that a lot.\" A soft click. \"That's the lake, at the bottom. A bowl that holds what you leave in it. It keeps count. Watch the fish.\""
+          }
         }
       },
       "byClass": {
@@ -284,53 +304,335 @@
     },
     {
       "kind": "line",
-      "text": "\"There. A circle that holds still. My line said fine. The shape doesn't lie. People wear their weather on the outside. Listen for the word that doesn't match the face.\""
+      "text": "\"There. A circle that holds still. My line said fine. The shape doesn't lie. People wear their weather on the outside. Listen for the word that doesn't match the face.\"",
+      "when": {
+        "noClass": true
+      }
     },
     {
       "kind": "line",
-      "text": "\"Practical stuff. Your battery is what you've got left. The truth usually costs some. A lie puts some back. Run it low and FEELZ dims to save power, so the little screen goes dark. And changing your mind on the wheel costs a little too. Second-guessing is tiring. Ask me how I know.\""
+      "text": "\"There. A circle that holds still. That's a tight group on the target. My line said fine. The shape doesn't lie. People wear their weather on the outside. Listen for the word that doesn't match the face.\"",
+      "when": {
+        "class": "Guns"
+      }
     },
     {
       "kind": "line",
-      "text": "\"Also. Tell someone what they want to hear and they relax. Next thing they feel, you'll see it right on your wheel. That's the trade. I'm not telling you which to make. Professionally, I'm not allowed to. Personally, I'd also rather not.\""
+      "text": "\"There. A circle that holds still. Call it a halo; I won't. My line said fine. The shape doesn't lie. People wear their weather on the outside. Listen for the word that doesn't match the face.\"",
+      "when": {
+        "class": "Bible"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"There. A circle that holds still. Quartz holds one frequency; that's why your watch trusts it. My line said fine. The shape doesn't lie. People wear their weather on the outside. Listen for the word that doesn't match the face.\"",
+      "when": {
+        "class": "Crystals"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Practical stuff. Your battery is what you've got left. The truth usually costs some. A lie puts some back. Run it low and FEELZ dims to save power, so the little screen goes dark. And changing your mind on the wheel costs a little too. Second-guessing is tiring. Ask me how I know.\"",
+      "when": {
+        "noClass": true
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Practical stuff. Battery's your magazine. The truth usually spends a round. A lie loads one back. Run it low and FEELZ goes dark to save power, so the little screen goes with it. And changing your mind on the wheel costs a little. Re-aiming takes something out of you. Ask me how I know.\"",
+      "when": {
+        "class": "Guns"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Practical stuff. Battery's your grace, what's left to give. The truth usually costs some. A lie puts some back. Run low and FEELZ dims to save power, so the little screen goes dark. And changing your mind on the wheel costs a little. Second-guessing is tiring. Ask me how I know.\"",
+      "when": {
+        "class": "Bible"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Practical stuff. Battery's your charge. The truth usually drains some. A lie tops it up. Run low and FEELZ dims to save power, so the little screen goes dark. And changing your mind on the wheel costs a little. Restless stones lose charge. Ask me how I know.\"",
+      "when": {
+        "class": "Crystals"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Also. Tell someone what they want to hear and they relax. Next thing they feel, you'll see it right on your wheel. That's the trade. I'm not telling you which to make. Professionally, I'm not allowed to. Personally, I'd also rather not.\"",
+      "when": {
+        "noClass": true
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Also. Tell someone what they want to hear and they lower their guard. Their next feeling shows right on your wheel. That's the trade. I'm not telling you which to make. Professionally, I can't. Personally, I'd also rather not.\"",
+      "when": {
+        "class": "Guns"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Also. Tell someone what they want to hear and they exhale. Some call it a small mercy. FEELZ calls it a trade: their next feeling shows right on your wheel. I'm not telling you which to make. Professionally, I can't. Personally, I'd also rather not.\"",
+      "when": {
+        "class": "Bible"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Also. Tell someone what they want to hear and their energy softens. Mom would say that. I'd say they relax. Their next feeling shows right on your wheel. That's the trade. I'm not telling you which to make. Professionally, I can't. Personally, I'd also rather not.\"",
+      "when": {
+        "class": "Crystals"
+      }
     },
     {
       "kind": "trycall",
-      "text": "\"That's me at the bottom. Tap it.\""
+      "text": "\"That's me at the bottom. Tap it.\"",
+      "when": {
+        "noClass": true
+      }
+    },
+    {
+      "kind": "trycall",
+      "text": "\"That's me at the bottom. Think radio check. Tap it.\"",
+      "when": {
+        "class": "Guns"
+      }
+    },
+    {
+      "kind": "trycall",
+      "text": "\"That's me at the bottom. Think of it as a prayer line, a short one. Tap it.\"",
+      "when": {
+        "class": "Bible"
+      }
+    },
+    {
+      "kind": "trycall",
+      "text": "\"That's me at the bottom. Tap it. Gently, I guess.\"",
+      "when": {
+        "class": "Crystals"
+      }
     },
     {
       "kind": "line",
-      "text": "\"Okay. You're calling me while I'm on the phone with you. Now there's two of me. Nobody needs two of me. Call when you're stuck out there. I'll explain the little screen properly then. I'll have FEELZ send you a reminder, so you can't pretend you forgot.\""
+      "text": "\"Okay. You're calling me while I'm on the phone with you. Now there's two of me. Nobody needs two of me. Call when you're stuck out there. I'll explain the little screen properly then. I'll have FEELZ send you a reminder, so you can't pretend you forgot.\"",
+      "when": {
+        "noClass": true
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Okay. You're calling me while I'm on the phone with you. Now there's two of me. Nobody needs two of me. Radio check, loud and clear. Call when you're stuck out there. I'll explain the little screen properly then. I'll have FEELZ send you a reminder, so you can't pretend you forgot.\"",
+      "when": {
+        "class": "Guns"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Okay. You're calling me while I'm on the phone with you. Now there's two of me. Nobody needs two of me. Call when you're stuck out there. Think of it as a prayer line with worse hold music. I'll explain the little screen properly then. I'll have FEELZ send you a reminder, so you can't pretend you forgot.\"",
+      "when": {
+        "class": "Bible"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Okay. You're calling me while I'm on the phone with you. Now there's two of me. Nobody needs two of me. Mom says I'm always available to the universe. I'm available to you. Slightly different bandwidth. Call when you're stuck out there. I'll explain the little screen properly then. I'll have FEELZ send you a reminder, so you can't pretend you forgot.\"",
+      "when": {
+        "class": "Crystals"
+      }
     },
     {
       "kind": "line",
       "text": "\"Before you go. Your battery's low, and honesty did that. The truth costs charge. Rest between people, or your calls get heavy. That's not a metaphor. Okay, it's a little bit a metaphor.\"",
-      "watch": "stability"
+      "watch": "stability",
+      "when": {
+        "noClass": true
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Your magazine's low, and honesty spent it. The truth costs charge. Rest between people, or your calls get heavy. Cleaning the rifle isn't optional. Neither is this.\"",
+      "watch": "stability",
+      "when": {
+        "class": "Guns"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Your grace is running low, and honesty spent it. The truth costs charge. Rest between people, or your calls get heavy. Even the seventh day was a day off. I'm told.\"",
+      "watch": "stability",
+      "when": {
+        "class": "Bible"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Your charge is low, and honesty drained it. The truth costs charge. Rest between people, or your calls get heavy. Even stones need a night in the moonlight. Mom's words.\"",
+      "watch": "stability",
+      "when": {
+        "class": "Crystals"
+      }
     },
     {
       "kind": "line",
       "text": "\"Before you go. Your bars are low. People aren't sure about you yet, and some doors stay shut below a certain number. Mine too, technically. Turn toward what they offer you.\"",
-      "watch": "trust"
+      "watch": "trust",
+      "when": {
+        "noClass": true
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Your bars are low. Your range is short: people aren't sure about you yet, and some doors stay shut below a certain number. Turn toward what they offer you.\"",
+      "watch": "trust",
+      "when": {
+        "class": "Guns"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Your bars are low. People aren't sure about you yet; fellowship takes time. Some doors stay shut below a certain number. Mine too, technically. Turn toward what they offer you.\"",
+      "watch": "trust",
+      "when": {
+        "class": "Bible"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Your bars are low. You're not ringing with people yet, and some doors stay shut below a certain number. Mine too, technically. Turn toward what they offer you.\"",
+      "watch": "trust",
+      "when": {
+        "class": "Crystals"
+      }
     },
     {
       "kind": "line",
       "text": "\"Before you go. Your Wi-Fi's weak. You're not seeing clearly, and FEELZ goes quiet when you can't. So do I. One true thing clears it a little.\"",
-      "watch": "lucidity"
+      "watch": "lucidity",
+      "when": {
+        "noClass": true
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Your Wi-Fi's weak. Fog on the scope. You're not seeing clearly, and FEELZ goes quiet when you can't. So do I. One true thing clears it a little.\"",
+      "watch": "lucidity",
+      "when": {
+        "class": "Guns"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Your Wi-Fi's weak. A glass, darkly, remember? FEELZ goes quiet when you can't see. So do I. One true thing clears it a little.\"",
+      "watch": "lucidity",
+      "when": {
+        "class": "Bible"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Your Wi-Fi's weak. Cloudy quartz. FEELZ goes quiet when you can't see clearly. So do I. One true thing clears it a little. Mom would say cleanse it. I'd say rest.\"",
+      "watch": "lucidity",
+      "when": {
+        "class": "Crystals"
+      }
     },
     {
       "kind": "line",
       "text": "\"Before you go. Your clock's slipping. When the minutes start skipping, that's you, not the phone. I checked. I check things.\"",
-      "watch": "integrity"
+      "watch": "integrity",
+      "when": {
+        "noClass": true
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Your clock's slipping. Watch discipline: when the minutes skip, that's you, not the phone. I checked. I check things.\"",
+      "watch": "integrity",
+      "when": {
+        "class": "Guns"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Your clock's slipping. Yes be yes, remember. When the minutes skip, that's you, not the phone. I checked. I check things.\"",
+      "watch": "integrity",
+      "when": {
+        "class": "Bible"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Your clock's slipping. Not Mercury this time. When the minutes skip, that's you, not the phone. I checked. I check things.\"",
+      "watch": "integrity",
+      "when": {
+        "class": "Crystals"
+      }
     },
     {
       "kind": "line",
       "text": "\"Before you go. The lake moved while we talked. I'm not grading you, I'm reading a sensor. And I'll be straight with you: out there, lying is going to feel good. Warm. Easy. I won't pretend it doesn't. Sensors don't round down.\"",
-      "watch": "lake"
+      "watch": "lake",
+      "when": {
+        "noClass": true
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. The lake moved while we talked. I'm not grading you, I'm reading a range log. And I'll be straight with you: out there, lying is going to feel good. Warm. Easy. I won't pretend it doesn't. Logs don't round down.\"",
+      "watch": "lake",
+      "when": {
+        "class": "Guns"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. The lake moved while we talked. I'm not grading you; I'm reading a sensor, not a judge. And I'll be straight with you: out there, lying is going to feel good. Warm. Easy. A small mercy, some would say. I won't pretend it doesn't. Sensors don't round down.\"",
+      "watch": "lake",
+      "when": {
+        "class": "Bible"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. The lake moved while we talked. I'm not grading you, I'm reading a sensor. It holds whatever you leave in it. And I'll be straight with you: out there, lying is going to feel good. Warm. Easy. I won't pretend it doesn't. Sensors don't round down.\"",
+      "watch": "lake",
+      "when": {
+        "class": "Crystals"
+      }
     },
     {
       "kind": "line",
       "text": "\"Before you go. Everything's holding. Statistically, that's when people get careless. I would know. I'm people.\"",
-      "watch": "steady"
+      "watch": "steady",
+      "when": {
+        "noClass": true
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Everything's holding. Statistically, that's when people get careless. Stay sharp on a quiet range. I would know. I'm people.\"",
+      "watch": "steady",
+      "when": {
+        "class": "Guns"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Everything's holding. Statistically, that's when people get careless. Watch and pray, as they say. I would know. I'm people.\"",
+      "watch": "steady",
+      "when": {
+        "class": "Bible"
+      }
+    },
+    {
+      "kind": "line",
+      "text": "\"Before you go. Everything's holding. Statistically, that's when people get careless. Mom would say the energy's balanced. I'd say watch it anyway. I'm people.\"",
+      "watch": "steady",
+      "when": {
+        "class": "Crystals"
+      }
     },
     {
       "kind": "hangup",

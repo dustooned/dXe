@@ -1100,7 +1100,7 @@
 
 /* The connection moment (dialogScene.js showConnection). The dark closes in
    from the edges until only the NPC's portrait (top of the screen) is lit;
-   after the crack the story beat rises in a box at the bottom. */
+   after the lock their face arrives and the story beats rise in a box. */
 .dx-connect {
   position: absolute;
   inset: 0;
@@ -2015,9 +2015,13 @@
   position: absolute;
   border: calc(6 * var(--px)) solid transparent;
 }
+/* The tail sits at the right edge, not the middle: the scope's history
+   blocks (one per answer, centered along the bottom of the picture) can
+   reach the middle but never the right edge, so the two never cross. */
 .dx-speech--them::before {
-  top: calc(-14 * var(--px));
-  left: 50%;
+  top: calc(-11 * var(--px));
+  right: calc(26 * var(--px));
+  border-width: calc(5 * var(--px));
   border-bottom-color: var(--speaker, var(--color-white));
 }
 .dx-speech--you::after {
@@ -2045,3 +2049,30 @@
 @media (prefers-reduced-motion: reduce) {
   .dx-portrait.is-speaking, .dx-call__avatar.is-speaking { animation: none; }
 }
+
+/* The connection moment, paced (dialogScene.js showConnection): the dark
+   closes slowly while the tones pull together, a gold flash on the lock, then
+   their face arrives and breathes. Lines dip out between beats. */
+.dx-connect.is-story { transition: opacity 2.3s ease-in, background 1.4s ease-out; }
+.dx-connect.is-story.is-asking { background: var(--color-black); }
+.dx-connect.is-locking::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 40%, rgba(255, 214, 120, 0.55) 0, rgba(255, 201, 77, 0.15) 45%, transparent 75%);
+  animation: dx-connect-lock 0.9s ease-out both;
+}
+@keyframes dx-connect-lock { from { opacity: 1; } to { opacity: 0; } }
+.dx-connect.is-story .dx-portrait.dx-connect__bust {
+  animation: dx-bust-in 1.4s ease-out both, dx-bust-breathe 7s ease-in-out 1.4s infinite alternate;
+}
+@keyframes dx-bust-breathe { from { transform: scale(1); } to { transform: scale(1.045); } }
+.dx-connect__beat { transition: opacity 0.35s ease-out; }
+.dx-connect__beat.is-dipping { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .dx-connect.is-story .dx-portrait.dx-connect__bust { animation: dx-bust-in 1.4s ease-out both; }
+  .dx-connect.is-locking::after { animation: none; opacity: 0; }
+}
+.is-reduced-effects .dx-connect.is-story .dx-portrait.dx-connect__bust { animation: dx-bust-in 1.4s ease-out both; }
+.is-reduced-effects .dx-connect.is-locking::after { animation: none; opacity: 0; }

@@ -6,10 +6,9 @@
 // rebuilt — or even known about — by any scene handler.
 import { navigate } from './router.js';
 import { loadSettings, updateSettings, applyEffectsSetting } from './settings.js';
-import { loadCheckpoint } from './save.js';
 import { applyPerfClass } from './perf.js';
 import { meterGlyph } from '../ui/statusBar.js';
-import { setMasterVolume } from './audio.js';
+import { setMasterVolume, playTypewriterTick } from './audio.js';
 import { jumpTo } from './debug.js';
 
 let hostEl = null;
@@ -175,67 +174,121 @@ const GUIDE = [
   ['THE WHEEL', () => lissajousSvg(1, 1, Math.PI / 2), 'Pick how you feel before you answer. Hold a slice to hear it. New feelings arrive when people share theirs.'],
 ];
 
+// The guide as a drum, like the game's own wheel: entries sit on a cylinder,
+// the lit one in the gold frame, its words below. Drag or flick, scroll,
+// arrow keys, or tap a neighbour; it always settles on one entry with a tick.
 function renderGuidePage() {
   const box = panelEl.querySelector('.dx-hud-panel__box');
+  const n = GUIDE.length;
   box.innerHTML = `
     <h3 class="dx-hud-panel__title">FEELZ GUIDE</h3>
-    <div class="dx-guide">${GUIDE.map(([name, pic, text]) => `
-      <div class="dx-guide__row">
-        <span class="dx-guide__pic">${pic()}</span>
-        <div><p class="dx-guide__name">${name}</p><p class="dx-text dx-guide__text">${text}</p></div>
-      </div>`).join('')}
+    <div class="dx-drum" tabindex="0" role="listbox" aria-label="FEELZ guide. Scroll to browse.">
+      <div class="dx-drum__track">${GUIDE.map(([name, pic], i) => `
+        <div class="dx-drum__item" data-i="${i}" role="option"><span class="dx-guide__pic">${pic()}</span><span class="dx-drum__name">${name}</span></div>`).join('')}
+      </div>
+      <div class="dx-drum__frame"></div>
     </div>
+    <p class="dx-text dx-drum__text" aria-live="polite"></p>
+    <p class="dx-text dx-drum__count"></p>
     <button type="button" class="dx-btn dx-hud-guide__back">BACK</button>
   `;
-  box.querySelector('.dx-hud-guide__back').addEventListener('click', () => { closePanel(); renderSettingsPanel(); });
-}
+  let raf = 0;
+  box.querySelector('.dx-hud-guide__back').addEventListener('click', () => { cancelAnimationFrame(raf); closePanel(); renderSettingsPanel(); });
 
-// Playtest feedback: the player writes a note, and COPY REPORT puts it on the
-// clipboard together with where they are (the autosave checkpoint: chapter,
-// scene, class, readings), their screen and browser, so a report like "it
-// crashed in the hallway" arrives with everything needed to chase it.
-function feedbackReport(note) {
-  const cp = loadCheckpoint();
-  const s = cp?.state ?? {};
-  const lines = [
-    'DREAM XTREME FEEDBACK',
-    `When: ${new Date().toLocaleString()}`,
-    `Note: ${note.trim() || '(none)'}`,
-    `Where: ${cp ? `${cp.chapterId} / ${cp.sceneId}` : location.hash || 'title'}`,
-    cp ? `Class: ${s.loadout}  Battery ${s.stability}  Bars ${s.trust}  Wi-Fi ${s.lucidity}  Clock ${s.integrity}  Lake ${s.truthDebt}` : null,
-    `Screen: ${window.innerWidth}x${window.innerHeight} @${window.devicePixelRatio}x`,
-    `Browser: ${navigator.userAgent}`,
-    `Text speed: ${loadSettings().textSpeed}`,
-  ];
-  return lines.filter(Boolean).join('\n');
-}
+  const drum = box.querySelector('.dx-drum');
+  const items = [...box.querySelectorAll('.dx-drum__item')];
+  const text = box.querySelector('.dx-drum__text');
+  const count = box.querySelector('.dx-drum__count');
+  const calm = () => document.documentElement.classList.contains('is-reduced-effects');
+  let pos = 0;
+  let shown = -1;
 
-function renderFeedbackPage() {
-  const box = panelEl.querySelector('.dx-hud-panel__box');
-  box.innerHTML = `
-    <h3 class="dx-hud-panel__title">FEEDBACK</h3>
-    <p class="dx-text dx-hud-feedback__hint">What happened? What felt off? Then copy the report and send it to the developer.</p>
-    <textarea class="dx-hud-feedback__note" rows="5" maxlength="1200" placeholder="It froze when..."></textarea>
-    <button type="button" class="dx-btn dx-hud-feedback__copy">COPY REPORT</button>
-    <p class="dx-text dx-hud-feedback__status" aria-live="polite"></p>
-    <button type="button" class="dx-btn dx-hud-feedback__back">BACK</button>
-  `;
-  const note = box.querySelector('.dx-hud-feedback__note');
-  const status = box.querySelector('.dx-hud-feedback__status');
-  box.querySelector('.dx-hud-feedback__copy').addEventListener('click', async () => {
-    const report = feedbackReport(note.value);
-    try {
-      await navigator.clipboard.writeText(report);
-      status.textContent = 'Copied. Paste it in a message to the developer.';
-    } catch {
-      // No clipboard access: show the report selected, ready to copy by hand.
-      note.value = report;
-      note.select();
-      status.textContent = 'Select all and copy this report by hand.';
+  function paint() {
+    items.forEach((el, i) => {
+      const d = i - pos;
+      const a = Math.abs(d);
+      if (a > 2.7) { el.style.visibility = 'hidden'; return; }
+      el.style.visibility = 'visible';
+      el.style.transform = `translateY(calc(-50% + ${d * 100}%)) rotateX(${-d * 34}deg) scale(${1 - a * 0.1})`;
+      el.style.opacity = String(Math.max(0, 1 - a * 0.36));
+      el.classList.toggle('is-center', a < 0.5);
+    });
+    const idx = Math.max(0, Math.min(n - 1, Math.round(pos)));
+    if (idx !== shown) {
+      if (shown !== -1) playTypewriterTick();
+      shown = idx;
+      text.textContent = GUIDE[idx][2];
+      text.classList.remove('is-new');
+      void text.offsetWidth;
+      text.classList.add('is-new');
+      count.textContent = `${idx + 1} / ${n}`;
     }
+  }
+
+  function animateTo(target) {
+    cancelAnimationFrame(raf);
+    const to = Math.max(0, Math.min(n - 1, Math.round(target)));
+    const from = pos;
+    if (calm() || from === to) { pos = to; paint(); return; }
+    const t0 = performance.now();
+    const dur = Math.min(520, 160 + Math.abs(to - from) * 70);
+    const step = (now) => {
+      const t = Math.min(1, (now - t0) / dur);
+      pos = from + (to - from) * (1 - Math.pow(1 - t, 3));
+      paint();
+      if (t < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+  }
+
+  // Drag / flick: the drum follows the finger, then settles on the nearest entry.
+  let drag = null;
+  drum.addEventListener('pointerdown', (e) => {
+    cancelAnimationFrame(raf);
+    drag = { y: e.clientY, startY: e.clientY, v: 0, t: performance.now(), moved: false };
+    drum.setPointerCapture(e.pointerId);
   });
-  box.querySelector('.dx-hud-feedback__back').addEventListener('click', () => { closePanel(); renderSettingsPanel(); });
-  note.focus();
+  drum.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    const itemPx = drum.clientHeight / 5;
+    const dy = e.clientY - drag.y;
+    if (Math.abs(e.clientY - drag.startY) > 4) drag.moved = true;
+    const now = performance.now();
+    drag.v = 0.7 * drag.v + 0.3 * (-dy / itemPx / Math.max(1, now - drag.t));
+    drag.t = now;
+    drag.y = e.clientY;
+    pos = Math.max(-0.4, Math.min(n - 0.6, pos - dy / itemPx));
+    paint();
+  });
+  const release = (e) => {
+    if (!drag) return;
+    const { moved, v } = drag;
+    drag = null;
+    if (!moved) {
+      const hit = document.elementFromPoint(e.clientX, e.clientY)?.closest('.dx-drum__item');
+      animateTo(hit ? Number(hit.dataset.i) : pos);
+    } else {
+      animateTo(pos + v * 240);
+    }
+  };
+  drum.addEventListener('pointerup', release);
+  drum.addEventListener('pointercancel', release);
+
+  let acc = 0;
+  drum.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    acc += e.deltaY;
+    if (Math.abs(acc) < 30) return;
+    animateTo(Math.round(pos) + Math.sign(acc));
+    acc = 0;
+  }, { passive: false });
+  drum.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); animateTo(Math.round(pos) + 1); }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); animateTo(Math.round(pos) - 1); }
+  });
+
+  paint();
+  drum.focus({ preventScroll: true });
 }
 
 function renderSettingsPanel() {
@@ -259,7 +312,6 @@ function renderSettingsPanel() {
       <button type="button" class="dx-btn dx-hud-guide">FEELZ GUIDE</button>
       ${chapterActive ? '<button type="button" class="dx-btn dx-hud-restart">RESTART CHAPTER</button>' : ''}
       <button type="button" class="dx-btn dx-hud-chapters">QUIT TO TITLE</button>
-      <button type="button" class="dx-btn dx-hud-feedback">FEEDBACK</button>
       <button type="button" class="dx-btn dx-hud-debug">DEBUG</button>
       <button type="button" class="dx-btn dx-hud-resume">RESUME</button>
     </div>
@@ -286,7 +338,6 @@ function renderSettingsPanel() {
     syncSpeed(updateSettings({ textSpeed: SPEEDS[(SPEEDS.indexOf(cur) + 1) % SPEEDS.length] }));
   });
 
-  panelEl.querySelector('.dx-hud-feedback').addEventListener('click', renderFeedbackPage);
 
   // Text size: NORMAL / LARGE, all body text a step bigger.
   const sizeBtn = panelEl.querySelector('.dx-hud-textsize');
@@ -299,9 +350,9 @@ function renderSettingsPanel() {
   });
   panelEl.querySelector('.dx-hud-guide').addEventListener('click', renderGuidePage);
 
-  // Guide highlights: the spotlight, labels and glows on the Therapist's calls.
+  // Tips: the spotlight, labels and glows on the Therapist's calls.
   const hiliteBtn = panelEl.querySelector('.dx-hud-hilite');
-  const syncHilite = (s) => { hiliteBtn.textContent = `GUIDE HIGHLIGHTS: ${s.guideHighlights ? 'ON' : 'OFF'}`; };
+  const syncHilite = (s) => { hiliteBtn.textContent = `TIPS: ${s.guideHighlights ? 'ON' : 'OFF'}`; };
   syncHilite(settings);
   hiliteBtn.addEventListener('click', () => syncHilite(updateSettings({ guideHighlights: !loadSettings().guideHighlights })));
 

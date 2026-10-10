@@ -1448,22 +1448,6 @@ svg .is-hinted path {
   .dx-hud-save__spin { animation: none; }
 }
 
-/* Playtest feedback page (shell/hud.js renderFeedbackPage). */
-.dx-hud-feedback__hint { font-size: calc(8 * var(--fs)); line-height: 1.5; margin: 0; }
-.dx-hud-feedback__note {
-  width: 100%;
-  box-sizing: border-box;
-  padding: calc(8 * var(--px));
-  background: var(--color-black);
-  color: var(--color-white);
-  border: 2px solid var(--color-white);
-  font-family: inherit;
-  font-size: calc(8 * var(--fs));
-  line-height: 1.5;
-  resize: vertical;
-}
-.dx-hud-feedback__status { font-size: calc(7 * var(--fs)); color: #ffe27a; min-height: 1em; margin: 0; }
-
 /* Reduce effects (settings): the screen holds still. No opponent weather,
    no lie haze, no feeling tints or jolts, no flashes or shakes (fx.js). The
    information (meters, numbers, glows that point at things) stays. */
@@ -1492,21 +1476,83 @@ svg .is-hinted path {
 /* Text size LARGE (settings): all body text a step bigger. */
 .is-large-text .dx-canvas { --fs: calc(var(--px) * 1.55); }
 
-/* The FEELZ guide page (shell/hud.js renderGuidePage). */
-.dx-guide {
-  display: flex;
-  flex-direction: column;
-  gap: calc(10 * var(--px));
-  max-height: calc(560 * var(--px));
-  overflow-y: auto;
-  text-align: left;
-  padding-right: calc(4 * var(--px));
+/* The FEELZ guide (shell/hud.js renderGuidePage): a drum in the game's
+   pixel look. Entries sit on a cylinder (perspective + tilt), the lit one in
+   a gold frame; the words for it sit below. */
+.dx-drum {
+  position: relative;
+  height: calc(170 * var(--px));
+  perspective: calc(420 * var(--px));
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px calc(3 * var(--px))),
+    #05060a;
+  touch-action: none;
+  cursor: grab;
+  outline: none;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 78%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 78%, transparent 100%);
 }
-.dx-guide__row {
-  display: grid;
-  grid-template-columns: calc(40 * var(--px)) 1fr;
+.dx-drum:active { cursor: grabbing; }
+.dx-drum:focus-visible { border-color: #ffe27a; }
+.dx-drum__track { position: absolute; inset: 0; transform-style: preserve-3d; }
+.dx-drum__item {
+  position: absolute;
+  left: calc(8 * var(--px));
+  right: calc(8 * var(--px));
+  top: 50%;
+  height: 20%;
+  display: flex;
+  align-items: center;
   gap: calc(10 * var(--px));
-  align-items: start;
+  padding: 0 calc(6 * var(--px));
+  box-sizing: border-box;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+  user-select: none;
+}
+.dx-drum__name { font-size: calc(8 * var(--fs)); letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.7); }
+.dx-drum__item.is-center .dx-drum__name { color: #ffe27a; }
+.dx-drum__item.is-center .dx-guide__pic { border-color: #ffe27a; box-shadow: 0 0 calc(8 * var(--px)) rgba(255, 226, 122, 0.45); }
+.dx-drum__frame {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 40%;
+  height: 20%;
+  border-top: 2px solid #ffe27a;
+  border-bottom: 2px solid #ffe27a;
+  box-shadow: 0 0 calc(10 * var(--px)) rgba(255, 226, 122, 0.25) inset;
+  pointer-events: none;
+}
+.dx-drum__frame::before,
+.dx-drum__frame::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 0;
+  height: 0;
+  margin-top: calc(-4 * var(--px));
+  border-top: calc(4 * var(--px)) solid transparent;
+  border-bottom: calc(4 * var(--px)) solid transparent;
+}
+.dx-drum__frame::before { left: calc(1 * var(--px)); border-left: calc(5 * var(--px)) solid #ffe27a; }
+.dx-drum__frame::after { right: calc(1 * var(--px)); border-right: calc(5 * var(--px)) solid #ffe27a; }
+.dx-drum__text {
+  margin: 0;
+  min-height: calc(84 * var(--px));
+  max-height: calc(150 * var(--px));
+  overflow-y: auto;
+  font-size: calc(7.5 * var(--fs));
+  line-height: 1.55;
+  text-align: left;
+}
+.dx-drum__text.is-new { animation: dx-drum-in 0.25s ease-out both; }
+@keyframes dx-drum-in { from { opacity: 0; transform: translateY(calc(3 * var(--px))); } }
+.dx-drum__count { margin: 0; font-size: calc(7 * var(--fs)); text-align: center; opacity: 0.6; letter-spacing: 0.12em; }
+@media (prefers-reduced-motion: reduce) {
+  .dx-drum__text.is-new { animation: none; }
 }
 .dx-guide__pic {
   display: flex;
@@ -1517,8 +1563,6 @@ svg .is-hinted path {
 }
 .dx-guide__pic .dx-status__px { height: calc(14 * var(--px)); width: auto; }
 .dx-guide__svg { width: calc(34 * var(--px)); height: calc(22 * var(--px)); }
-.dx-guide__name { margin: 0 0 calc(2 * var(--px)); font-size: calc(8 * var(--fs)); color: #ffe27a; letter-spacing: 0.08em; }
-.dx-guide__text { margin: 0; font-size: calc(7.5 * var(--fs)); line-height: 1.5; }
 .dx-guide__clock { font-size: calc(7 * var(--fs)); }
 .dx-guide__delta b { color: #ffe27a; font-weight: normal; }
 .dx-guide__delta i { color: #ff6b5b; font-style: normal; }

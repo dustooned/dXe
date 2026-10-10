@@ -155,5 +155,21 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
   check('lake stays in range', run(10, D) === 10 && run(0, C) === 0);
 }
 
+// ── The Therapist's tutorial: every mechanic step exists for each class and for no class ──
+{
+  const thr = JSON.parse(fs.readFileSync('src/chapters/lake-ulysses/content/therapist.json', 'utf8'));
+  const applies = (b, cls) => !(b.when?.class && b.when.class !== cls) && !(b.when?.noClass && ['Guns', 'Bible', 'Crystals'].includes(cls));
+  const keyOf = (b) => (b.watch ? 'watch:' + b.watch : b.kind + ':' + (b.text ?? '').slice(0, 12));
+  const mechanic = (b) => ['trycall'].includes(b.kind) || b.watch || (b.kind === 'line' && /Practical stuff|Also\. Tell someone|There\. A circle|calling me while/.test(b.text ?? ''));
+  for (const cls of ['Guns', 'Bible', 'Crystals', undefined]) {
+    const beats = thr.outro.filter((b) => mechanic(b) && applies(b, cls));
+    const watch = beats.filter((b) => b.watch);
+    check('tutorial: one watch-out per key for ' + (cls ?? 'no class'), ['stability', 'trust', 'lucidity', 'integrity', 'lake', 'steady'].every((k) => watch.filter((b) => b.watch === k).length === 1));
+    check('tutorial: one try-call and four mechanic lines for ' + (cls ?? 'no class'), beats.filter((b) => b.kind === 'trycall').length === 1 && beats.filter((b) => b.kind === 'line' && !b.watch).length === 4);
+  }
+  const edges = Object.values(thr.nodes).flatMap((n) => Object.values(n.swipes ?? {})).filter((e) => e.reactByClass);
+  check('tutorial: the meter and lake reactions have all three class versions', edges.length === 4 && edges.every((e) => ['Guns', 'Bible', 'Crystals'].every((c) => e.reactByClass[c])));
+}
+
 console.log(failed ? `\n${failed} failed, ${passed} passed` : `\nall ${passed} passed`);
 process.exit(failed ? 1 : 0);

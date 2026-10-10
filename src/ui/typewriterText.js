@@ -193,7 +193,7 @@ export function paginate(segments) {
 // text immediately — for re-rendering a line that already finished drawing
 // once (e.g. dialogScene rebuilding its screen when the player picks a FEELZ
 // emotion, without replaying the node's prompt from scratch).
-export function createTypewriter(container, text, { onDone, onChar, onMark, narration = 'auto', startRevealed: revealedArg = false } = {}) {
+export function createTypewriter(container, text, { onDone, onChar, onMark, onPageDone, narration = 'auto', startRevealed: revealedArg = false } = {}) {
   const speed = TEXT_SPEED[loadSettings().textSpeed] ?? 1;
   const startRevealed = revealedArg || speed === 0;
   const pages = paginate(markNarration(parseSegments(text), narration));
@@ -229,7 +229,13 @@ export function createTypewriter(container, text, { onDone, onChar, onMark, narr
       // and choices, arrows and wheels wait on that report. A line the caller
       // asked to start revealed (a re-render of a finished line) stays quiet.
       notifyDone: !revealedArg,
-      onDone: () => { if (isLastPage()) onDone?.(); },
+      onDone: () => {
+        // Each page as it finishes drawing: its index, whether it's the last,
+        // and the marks it opened with (dialogScene.js auto-advances some).
+        const index = pageIndex;
+        onPageDone?.({ index, last: isLastPage(), marks: (pages[index] ?? []).filter((s) => s.type === 'mark').map((s) => s.name) });
+        if (isLastPage()) onDone?.();
+      },
     });
   }
 
@@ -244,6 +250,7 @@ export function createTypewriter(container, text, { onDone, onChar, onMark, narr
       showPage();
     },
     isDone: () => isLastPage() && page.isDone(),
+    pageIndex: () => pageIndex,
     // True while characters are still revealing (a tap now cuts the line
     // short), false when a page is fully shown (a tap only turns the page).
     isDrawing: () => !page.isDone(),

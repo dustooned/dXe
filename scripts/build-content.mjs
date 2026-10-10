@@ -31,6 +31,12 @@ function parseCondition(text, fileName, lineNumber) {
       when.class = part;
       continue;
     }
+    // [Default]: plays only when the player has no class (debug, a bare start);
+    // the fallback to a trio of [Guns]/[Bible]/[Crystals] versions.
+    if (part === 'Default') {
+      when.noClass = true;
+      continue;
+    }
     const match = part.match(/^(\S+)=(truth|lie)$/);
     if (!match) {
       throw new Error(`${fileName}:${lineNumber}: bad condition "${part}" (expected a class name or node_id=truth|lie)`);
@@ -188,9 +194,12 @@ function parseManuscript(text, fileName) {
       if (!match) throw new Error(`${fileName}:${lineNumber}: unrecognized OUTRO line "${raw}"`);
       const beat = { kind: match[1].toLowerCase(), text: parseText(match[3]) };
       if (beat.kind === 'watch') {
-        if (!WATCH_KEYS.includes(match[2])) throw new Error(`${fileName}:${lineNumber}: WATCH needs one of [${WATCH_KEYS.join('|')}]`);
+        // WATCH [stability] or WATCH [stability, Guns]: the key, then an optional class.
+        const [key, ...rest] = (match[2] ?? '').split(',').map((s) => s.trim());
+        if (!WATCH_KEYS.includes(key)) throw new Error(`${fileName}:${lineNumber}: WATCH needs one of [${WATCH_KEYS.join('|')}]`);
         beat.kind = 'line';
-        beat.watch = match[2];
+        beat.watch = key;
+        if (rest.length) beat.when = parseCondition(rest.join(','), fileName, lineNumber);
       } else if (match[2]) beat.when = parseCondition(match[2], fileName, lineNumber);
       outro.push(beat);
     } else if (line.startsWith('PICK ')) {
@@ -248,6 +257,12 @@ function parseManuscript(text, fileName) {
       currentEdge.playerText = parseText(line.slice(4));
     } else if (line.startsWith('REACT:')) {
       currentEdge.npcReaction = parseText(line.slice(6));
+    } else if (line.startsWith('REACT [')) {
+      // REACT [Guns|Bible|Crystals]: a class's own version of this reaction;
+      // plain REACT: is the fallback (no class data).
+      const m = line.match(/^REACT \[(Guns|Bible|Crystals)\]:\s*(.*)$/);
+      if (!m) throw new Error(`${fileName}:${lineNumber}: bad REACT line "${raw}" (REACT [Guns|Bible|Crystals]: text)`);
+      currentEdge.reactByClass = { ...currentEdge.reactByClass, [m[1]]: parseText(m[2]) };
     } else if (line.startsWith('EFFECTS:')) {
       currentEdge.effects = parseEffects(line.slice(8), fileName, lineNumber);
     } else if (line.startsWith('DEBT:')) {
