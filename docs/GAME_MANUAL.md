@@ -181,6 +181,8 @@ the four endings, so a status change means the ending they're heading
 toward just changed. Debt tops out at 10 but never ends the chapter
 early: every NPC is still met, and the debt only picks the ending.
 
+**Lies pay off (2026-10-09).** The battery is a resource: the truth often costs charge, a lie puts some back, and switching feelings on a question costs 1. At 3 or less FEELZ dims to save power (the little screen and needle go dark); near empty, your most-used feeling greys out. A lie that warms someone relaxes them, so their next feeling glows on your wheel. Past a full lake, each lie also fogs the Wi-Fi and slips the clock. The Therapist names the trade and refuses to pick for you.
+
 **Lying feels good, on purpose** (2026-10-04). Avoidance pays off now and
 costs later, so the game does too:
 - **Relief:** every lie plays a soft, warm chord (`audio.playRelief`). The

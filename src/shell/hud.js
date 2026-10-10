@@ -160,7 +160,7 @@ function lissajousSvg(a, b, phase) {
   return `<svg viewBox="0 0 24 16" class="dx-guide__svg"><polyline points="${pts.join(' ')}" fill="none" stroke="#ffe27a" stroke-width="1"/></svg>`;
 }
 const GUIDE = [
-  ['BATTERY', () => meterGlyph('stability'), 'How steady you are. The truth often costs charge. It recovers between people, more when they let you in.'],
+  ['BATTERY', () => meterGlyph('stability'), 'How much you have left. The truth often costs charge; a lie puts some back; changing your feeling on a question costs a little. At 3 or less the little screen goes dark to save power; near empty, your most-used feeling greys out. It recovers between people, more when they let you in.'],
   ['BARS', () => meterGlyph('trust'), 'How connected people feel to you. Below 4, some doors stay shut and the Therapist can\'t get through.'],
   ['WI-FI', () => meterGlyph('lucidity'), 'How clearly you see. Every lie fogs it a little. Below 4, calls come in blurry and the Therapist goes to voicemail.'],
   ['CLOCK', () => '<span class="dx-guide__clock">12:00</span>', 'Keeps honest time while you do. Lie enough and the minutes start to skip.'],
@@ -169,6 +169,7 @@ const GUIDE = [
   ['THE LINES', () => '<svg viewBox="0 0 24 16" class="dx-guide__svg"><path d="M0 5 Q4 1 8 5 T16 5 T24 5" stroke="#9b6bff" fill="none"/><path d="M0 11 Q4 7 8 11 T16 11 T24 11" stroke="#4fd6ff" fill="none"/></svg>', 'Across their picture: their line on top, yours under it. The closer they run, the closer you are.'],
   ['LITTLE SCREEN', () => lissajousSvg(4, 5, Math.PI / 4), 'Your feeling against theirs. A busier shape means further apart; a circle that holds still means you found what they feel.'],
   ['NEEDLE', () => '<svg viewBox="0 0 24 16" class="dx-guide__svg"><path d="M3 13 H21 M3 13 V10 M12 13 V10 M21 13 V10" stroke="#fff" stroke-opacity="0.5" fill="none"/><path d="M12 13 L19 4" stroke="#ffe27a" stroke-width="1.6"/></svg>', 'Right: you\'re moving together. Left: pulling apart.'],
+  ['COMFORT', () => '<span class="dx-guide__delta"><b>♥</b></span>', 'Tell someone what they want to hear and they relax: if it warmed them, their next feeling glows on your wheel. The lake keeps count.'],
   ['MASKS', () => '<svg viewBox="0 0 24 16" class="dx-guide__svg"><path d="M0 8 Q4 4 8 8 T16 8 T24 8" stroke="#ffd34d" fill="none" stroke-width="1.4"/><path d="M0 9 Q4 5 8 9 T16 9 T24 9" stroke="#4d8bff" fill="none" stroke-width="1" stroke-dasharray="2 2"/></svg>', 'Some people show one feeling and carry another. The color that flickers under their line is what\'s going on inside.'],
   ['CALLS', () => '<span class="dx-guide__call">T</span>', 'Tap a contact for their read on who you\'re facing, in their own words. One call each per conversation.'],
   ['THE WHEEL', () => lissajousSvg(1, 1, Math.PI / 2), 'Pick how you feel before you answer. Hold a slice to hear it. New feelings arrive when people share theirs.'],
@@ -254,6 +255,7 @@ function renderSettingsPanel() {
       <button type="button" class="dx-btn dx-hud-speed"></button>
       <button type="button" class="dx-btn dx-hud-effects"></button>
       <button type="button" class="dx-btn dx-hud-textsize"></button>
+      <button type="button" class="dx-btn dx-hud-hilite"></button>
       <button type="button" class="dx-btn dx-hud-guide">FEELZ GUIDE</button>
       ${chapterActive ? '<button type="button" class="dx-btn dx-hud-restart">RESTART CHAPTER</button>' : ''}
       <button type="button" class="dx-btn dx-hud-chapters">QUIT TO TITLE</button>
@@ -296,6 +298,12 @@ function renderSettingsPanel() {
     syncSize(next);
   });
   panelEl.querySelector('.dx-hud-guide').addEventListener('click', renderGuidePage);
+
+  // Guide highlights: the spotlight, labels and glows on the Therapist's calls.
+  const hiliteBtn = panelEl.querySelector('.dx-hud-hilite');
+  const syncHilite = (s) => { hiliteBtn.textContent = `GUIDE HIGHLIGHTS: ${s.guideHighlights ? 'ON' : 'OFF'}`; };
+  syncHilite(settings);
+  hiliteBtn.addEventListener('click', () => syncHilite(updateSettings({ guideHighlights: !loadSettings().guideHighlights })));
 
   // Reduce effects: ON stops shakes, flashes, opponent weather, haze and tints.
   const effectsBtn = panelEl.querySelector('.dx-hud-effects');

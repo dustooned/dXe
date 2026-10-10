@@ -87,13 +87,16 @@ function isOverEl(el, x, y) {
 // `dormant`: shown but asleep (dim, not pickable) — the Therapist's intake read
 // lights the class's slices one at a time with light(), echoing the FEELZ
 // profile screen, before the wheel wakes for the first pick.
-export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dropTarget, onSelect, selected, harmonicFunction = 'tonic', dormant = false, lit = [] }) {
+export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dropTarget, onSelect, selected, harmonicFunction = 'tonic', dormant = false, lit = [], exhausted = null }) {
   const activeEmotions = new Set([...(CLASSES[loadout]?.emotions ?? []), ...unlocked]);
   // Same order engine/loadout.js's emotionsForClass() returns (Set preserves
   // insertion order) — has to match dialogScene.js's own ordering exactly,
   // since it's this order that decides which chord voice index each emotion
   // maps to (shell/harmony.js's chordFor).
   const activeEmotionsOrder = [...activeEmotions];
+  // An empty battery greys out one feeling (dialogScene.js): it keeps its
+  // place in the chord, it just can't be picked until you recharge.
+  if (exhausted) activeEmotions.delete(exhausted);
 
   const wrapper = document.createElement('div');
   wrapper.className = dormant ? 'dx-dartboard is-dormant' : 'dx-dartboard';

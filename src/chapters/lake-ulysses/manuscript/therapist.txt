@@ -158,6 +158,11 @@ TRYFAR [Bible]: "Needle's leaning left. We're praying for opposite things. Monks
 TRYNEAR [Crystals]: "Close. Two tuning forks, almost the same pitch. Hear the wobble? That's the knot. Waveforms. Not energies."
 TRYFAR [Crystals]: "Needle's leaning left. Two auras out of phase. My mother would be thrilled I said that. I need to stop talking."
 LINE: "There. A circle that holds still. My line said fine. The shape doesn't lie. People wear their weather on the outside. Listen for the word that doesn't match the face."
+# The trade, plainly: the battery is what you have left (truth costs, lies
+# refill, low battery dims the little screen, second-guessing costs), and a
+# comforting lie relaxes people so their next feeling shows on your wheel.
+LINE: "Practical stuff. Your battery is what you've got left. The truth usually costs some. A lie puts some back. Run it low and FEELZ dims to save power, so the little screen goes dark. And changing your mind on the wheel costs a little too. Second-guessing is tiring. Ask me how I know."
+LINE: "Also. Tell someone what they want to hear and they relax. Next thing they feel, you'll see it right on your wheel. That's the trade. I'm not telling you which to make. Professionally, I'm not allowed to. Personally, I'd also rather not."
 # TRYCALL: his own contact pops into the dock and waits for a tap. Calling
 # him while he's on the line echoes his "Hello?" back twice (dialogScene.js).
 TRYCALL: "That's me at the bottom. Tap it."

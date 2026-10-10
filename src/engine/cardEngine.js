@@ -15,6 +15,16 @@ export const TRUTH_CLEANSE = -1;
 // the tutorial (resolveCard's `fog: false`): his session is a safe place to
 // try lying, and a player shouldn't leave it already cut off.
 export const LIE_FOG = -1;
+// Past a full lake (debt 10) a lie can't add debt, so it costs elsewhere:
+// the fog thickens (Wi-Fi) and the clock slips (Integrity), one more each.
+export const FULL_LAKE_COST = -1;
+// The battery as a resource: at LOW_BATTERY or below FEELZ dims to save power
+// (the little screen and needle go dark); at EMPTY_BATTERY your most-used
+// feeling greys out too. Lies recharge it; the truth often costs charge.
+export const LOW_BATTERY = 3;
+export const EMPTY_BATTERY = 1;
+// Switching to a different feeling on the same question costs this much.
+export const SECOND_GUESS_COST = -1;
 
 // The debt change a swipe actually applies (see TRUTH_CLEANSE).
 export function effectiveDebtDelta(edge, swipeKey) {
@@ -90,7 +100,10 @@ export function restAfter(state, { connected = false } = {}) {
 export function resolveCard(state, node, swipeKey, emotion, { fog = true } = {}) {
   const edge = node.swipes[swipeKey];
   const authored = edge.effects ?? {};
-  const effects = fog && swipeKey === 'lie' && authored.lucidity == null ? { ...authored, lucidity: LIE_FOG } : authored;
+  let effects = fog && swipeKey === 'lie' && authored.lucidity == null ? { ...authored, lucidity: LIE_FOG } : authored;
+  if (fog && swipeKey === 'lie' && (state.truthDebt ?? 0) >= 10) {
+    effects = { ...effects, lucidity: (effects.lucidity ?? 0) + FULL_LAKE_COST, integrity: (effects.integrity ?? 0) + FULL_LAKE_COST };
+  }
   const leaningEffects = applyEmotionalLean(effects, emotion);
   const statPatch = applyStatDelta(state, leaningEffects);
   const truthDebt = clamp(state.truthDebt + effectiveDebtDelta(edge, swipeKey), 0, 10);

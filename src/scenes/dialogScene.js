@@ -3,7 +3,7 @@
 // sequencer. See docs/SCENE_TYPES.md for the full contract.
 //
 // scene shape: { type: 'dialog', id: string, npc: <NPC content JSON> }
-import { resolveCard, resolveGatedNode, restAfter } from '../engine/cardEngine.js';
+import { resolveCard, resolveGatedNode, restAfter, LOW_BATTERY, EMPTY_BATTERY, SECOND_GUESS_COST } from '../engine/cardEngine.js';
 import { later, cancelLater, onPauseChange } from '../shell/pauseBus.js';
 import { composeReaction } from '../engine/reactions.js';
 import { composeSay } from '../engine/sayTone.js';
@@ -185,6 +185,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // The opponent's weather (ui/opponentFx.js); picking their real feeling
   // settles it until this time.
   let opfx = null;
+  // A lie that warmed them: they relax, and their next feeling shows on your wheel.
+  let pendingRelax = false;
   // Set on unmount, so a delayed call can't land in the next scene.
   let unmounted = false;
   let settleUntil = 0;
@@ -290,6 +292,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
     drama.tension = 0;
     drama.mismatch = false;
     hintedEmotion = null;
+    // Relaxed by a comforting lie: what they feel now glows on your wheel,
+    // the way a friend's read does.
+    if (pendingRelax && currentNode()?.mood) hintedEmotion = currentNode().mood;
+    pendingRelax = false;
     // A masked node shows its mask; the real mood flickers under it now and
     // then on the oscilloscope (the tell), and only the real one syncs.
     easeMoodTo(shownMood(currentNode()));
@@ -410,8 +416,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
       // (held, else the last you picked) against the one they're showing.
       // Theirs is the real feeling, not a mask: the line can lie, the shape
       // can't (the same feeling that syncs, so the tutorial's lesson holds).
-      getFeelings: () => ({ mine: activeEmotion ?? encounterPicks.at(-1) ?? null, theirs: (stage === 'outro' && trial ? trial.target : currentNode()?.mood ?? shownMood(currentNode())) ?? null }),
-      getHighlight: () => coach?.highlight ?? trialHighlight(),
+      getFeelings: () => ({ mine: activeEmotion ?? encounterPicks.at(-1) ?? null, theirs: (stage === 'outro' && trial ? trial.target : currentNode()?.mood ?? shownMood(currentNode())) ?? null, dimmed: lowBattery() }),
+      getHighlight: () => (guideOn() ? coach?.highlight ?? trialHighlight() : null),
       getVisibility: npc.reveal ? () => ({ traces: isRevealed('scope'), instruments: isRevealed('instruments') }) : undefined,
     });
 
@@ -650,12 +656,20 @@ export function mount(stageEl, scene, { run, onComplete }) {
         selected: activeEmotion,
         harmonicFunction: harmonicFunction(),
         lit: [...intakeLit], // slices the intake read already lit, if this redraws mid-read
+        exhausted: exhaustedFeeling(),
         // Both tap and drag color the card now — a tap that changes nothing
         // visible reads as broken, not as restraint. (`source` is kept in
         // the callback signature in case a future pass wants to bring back
         // a lighter tap-only treatment; it isn't used for that today.)
         onSelect: (emotion, _source) => {
           freshFeeling = null;
+          // Second-guessing (a different feeling on the same question) costs
+          // charge: checking every slice has a price. Not in the tutorial.
+          if (!npc.reveal && activeEmotion && emotion !== activeEmotion) {
+            // Straight off the top (not the meters' soft edges): enough second-
+            // guessing can run you down to empty, where a feeling greys out.
+            run.set({ stability: Math.max(0, (run.get().stability ?? 5) + SECOND_GUESS_COST) });
+          }
           activeEmotion = emotion;
           activeEmotionColor = emotionColor(emotion);
           justPicked = true;
@@ -909,6 +923,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     audio.nudgeLeitmotifMood(trustDelta + stabilityDelta);
     encounterMusic.react({ delta: trustDelta + stabilityDelta, caught: !!seen, missed: !synced && !turnedToward, closeness: connection(null, false).closeness });
     reactionDelta = seen ? -1 : trustDelta + stabilityDelta;
+    // A lie that warmed them: they relax, and their next feeling shows plainly.
+    pendingRelax = swipeKey === 'lie' && trustDelta > 0 && !npc.reveal;
     coach = null;
 
     // The impact lands on their reaction: how hard is how much their TRU
@@ -1019,6 +1035,19 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
 
+  // ── The battery as a resource ──
+  // Low: FEELZ dims to save power (the little screen and needle go dark).
+  // Empty: your most-used feeling greys out too. Never in the tutorial.
+  function lowBattery() {
+    return !npc.reveal && (run.get().stability ?? 5) <= LOW_BATTERY;
+  }
+  function exhaustedFeeling() {
+    if (npc.reveal || (run.get().stability ?? 5) > EMPTY_BATTERY) return null;
+    const counts = run.get().emotionCounts ?? {};
+    const mine = emotionsForClass(run.get().loadout, run.get().unlocked);
+    return [...mine].sort((a, b) => (counts[b] ?? 0) - (counts[a] ?? 0))[0] ?? null;
+  }
+
   // ── Who's talking ──
   // Their words sit in a bubble on the left with their name on a tag in
   // their color and a tail up toward their picture; yours sit on the right
@@ -1052,6 +1081,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // "try this" line stays by the thing until you've tried it (coach.task).
   // He shows what to watch, never which answer is right: what the player
   // does with it is theirs.
+  // Settings > GUIDE HIGHLIGHTS: off, his calls still talk but nothing lights up.
+  const guideOn = () => loadSettings().guideHighlights !== false;
+
   function startCoach(key, guide) {
     if (unmounted || npc.reveal || coach || itPopup) return;
     const seen = run.get().coachSeen ?? [];
@@ -1112,7 +1144,17 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   // A coach waiting on something the player did: 'pick', 'call' or 'swipe'.
   function coachDid(event) {
-    if (coach?.until.includes(event)) coach = null;
+    if (!coach?.until.includes(event)) return;
+    coach = null;
+    clearCoachVisuals();
+  }
+
+  // The "try this" line, its ghost box and the dock pulse come off right away,
+  // not on the next redraw (a friend's call doesn't redraw).
+  function clearCoachVisuals() {
+    stageEl.querySelector('.dx-guide-task')?.remove();
+    stageEl.querySelector('.dx-guide-ghost')?.remove();
+    stageEl.querySelectorAll('.dx-dock__contact.is-coached').forEach((b) => b.classList.remove('is-coached'));
   }
 
   // His incoming call: rings (on repeat) until tapped, then his lines one
@@ -1171,7 +1213,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       label?.remove();
       label = null;
       const screen = stageEl.querySelector('.dx-game-screen');
-      const target = guideTarget(step.target, screen);
+      const target = guideOn() ? guideTarget(step.target, screen) : null;
       overlay.classList.toggle('is-guiding', !!target);
       if (coach) coach.highlight = ['trace', 'scope', 'needle'].includes(step.target) ? step.target : null;
       if (target && screen) {
@@ -1196,7 +1238,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
           coach.until = coach.task?.until ?? [];
           coach.highlight = coach.task?.glow ?? null;
           coach.pulseWho = coach.task?.pulseWho ?? null;
-          if (!coach.task) coach = null;
+          if (!coach.task || !guideOn()) coach = null;
         }
         render(); // the "try this" line and any glow come up with the redraw
         startStall();

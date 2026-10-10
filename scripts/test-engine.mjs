@@ -45,6 +45,10 @@ check('fog: tutorial exempt', resolveCard(base, node, 'lie', null, { fog: false 
 check('fog: truth untouched', resolveCard(base, node, 'truth', null).patch.lucidity === undefined);
 const authored = { id: 'n', swipes: { lie: { effects: { lucidity: 2 } } } };
 check('fog: authored wins', resolveCard(base, authored, 'lie', null).patch.lucidity === 7);
+const full = { ...base, truthDebt: 10 };
+const pastFull = resolveCard(full, node, 'lie', null).patch;
+check('full lake: a lie still costs Wi-Fi and clock', pastFull.lucidity === 3 && pastFull.integrity === 4, JSON.stringify(pastFull));
+check('full lake: tutorial exempt', resolveCard(full, node, 'lie', null, { fog: false }).patch.integrity === undefined);
 
 // Endings and epilogue direction.
 check('ending tiers', ['CLEAN_CUT', 'FUNCTIONAL_MASK', 'COLLAPSE', 'LIVING_LIE'].join() === [0, 4, 6, 10].map(getEndingKey).join());

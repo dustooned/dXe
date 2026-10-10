@@ -289,7 +289,27 @@ export function createOscilloscope(
     const portraitW = Math.max(0, h - 34); // the band is the portrait plus a margin (dialogScene placeScopeBand)
     const sideW = (w - portraitW) / 2;
     if (sideW < 44) return;
-    const { mine, theirs } = getFeelings() ?? {};
+    const { mine, theirs, dimmed } = getFeelings() ?? {};
+    // Low battery (dialogScene.js): FEELZ dims to save power; the little
+    // screen and the needle go dark until the battery comes back.
+    if (dimmed) {
+      const portraitW2 = Math.max(0, h - 34);
+      const side = (w - portraitW2) / 2;
+      const s2 = Math.min(h * 0.62, side * 0.66);
+      instrumentBox(w - side / 2 - s2 / 2, h / 2 - s2 / 2, s2, s2);
+      boxes.scope = [w - side / 2 - s2 / 2, h / 2 - s2 / 2, s2, s2];
+      const mw2 = Math.min(side * 0.74, s2 * 1.5);
+      const mh2 = Math.max(18, s2 * 0.46);
+      instrumentBox(side / 2 - mw2 / 2, h / 2 - mh2 / 2, mw2, mh2);
+      boxes.needle = [side / 2 - mw2 / 2, h / 2 - mh2 / 2, mw2, mh2];
+      ctx2d.fillStyle = 'rgba(255,107,91,0.85)';
+      ctx2d.font = `${Math.max(5, Math.round(s2 * 0.11))}px ${FONT}`;
+      ctx2d.textAlign = 'center';
+      ctx2d.fillText('LOW', w - side / 2, h / 2 - 2);
+      ctx2d.fillText('BATTERY', w - side / 2, h / 2 + Math.max(6, s2 * 0.14));
+      ctx2d.fillText('LOW BATTERY', side / 2, h / 2 + 3);
+      return;
+    }
     const conn = getConnection?.() ?? {};
     const close = conn.merged ? 1 : clamp(conn.closeness ?? 0, 0, 1);
     const steps = mine && theirs && !conn.shutOut ? wheelSteps(mine, theirs) : null;
