@@ -31,6 +31,7 @@ const GROUPS = [
       ['ARCHITECTURE.md', 'Architecture'],
       ['SCENE_TYPES.md', 'Scene Types'],
       ['ASSET_SIZES.md', 'Asset Sizes (quick reference)'],
+      ['CHARACTER_ART.md', 'Character Art (the standard set)'],
       ['ART_GUIDE.md', 'Art Guide (every asset, size and template)'],
       ['ASSET_GUIDELINES.md', 'Asset Guidelines'],
       ['ASSET_MANIFEST.md', 'Asset Manifest (Chapter 1 checklist)'],

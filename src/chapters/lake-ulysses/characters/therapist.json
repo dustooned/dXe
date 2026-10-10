@@ -1,0 +1,120 @@
+{
+  "npc": "therapist",
+  "size": 192,
+  "art": {
+    "bunny_1": {
+      "frames": 1
+    },
+    "bunny_2": {
+      "frames": 1
+    },
+    "bunny_3": {
+      "frames": 1
+    },
+    "bunny_talk": {
+      "frames": 3,
+      "fps": 10
+    },
+    "derby_1": {
+      "frames": 1
+    },
+    "derby_2": {
+      "frames": 1
+    },
+    "derby_3": {
+      "frames": 1
+    },
+    "derby_talk": {
+      "frames": 3,
+      "fps": 10
+    },
+    "fez_1": {
+      "frames": 1
+    },
+    "fez_3": {
+      "frames": 1
+    },
+    "fez_talk": {
+      "frames": 3,
+      "fps": 10
+    },
+    "jester_1": {
+      "frames": 1
+    },
+    "jester_2": {
+      "frames": 1
+    },
+    "jester_3": {
+      "frames": 1
+    },
+    "jester_talk": {
+      "frames": 3,
+      "fps": 10
+    },
+    "neutral_1": {
+      "frames": 1
+    },
+    "neutral_2": {
+      "frames": 1
+    },
+    "neutral_3": {
+      "frames": 1
+    },
+    "neutral_talk": {
+      "frames": 3,
+      "fps": 10
+    },
+    "old_man_1": {
+      "frames": 1
+    },
+    "old_man_2": {
+      "frames": 1
+    },
+    "old_man_3": {
+      "frames": 1
+    },
+    "old_man_talk": {
+      "frames": 3,
+      "fps": 10
+    },
+    "pork_pie_1": {
+      "frames": 1
+    },
+    "pork_pie_2": {
+      "frames": 1
+    },
+    "pork_pie_3": {
+      "frames": 1
+    },
+    "pork_pie_talk": {
+      "frames": 3,
+      "fps": 10
+    },
+    "sombrero_1": {
+      "frames": 1
+    },
+    "sombrero_2": {
+      "frames": 1
+    },
+    "sombrero_3": {
+      "frames": 1
+    },
+    "sombrero_talk": {
+      "frames": 3,
+      "fps": 10
+    },
+    "top_1": {
+      "frames": 1
+    },
+    "top_2": {
+      "frames": 1
+    },
+    "top_3": {
+      "frames": 1
+    },
+    "top_talk": {
+      "frames": 3,
+      "fps": 10
+    }
+  }
+}

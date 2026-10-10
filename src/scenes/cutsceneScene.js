@@ -75,6 +75,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let currentTextBox = null;
   let itPopup = null;
   let oscilloscope = null;
+  // The speaking character's portrait on this beat (talks while the line draws).
+  let portraitOff = null;
+  let portraitDestroy = null;
 
   // Sprite animators persist frame position across beats for the same anim key
   // so animated backgrounds don't restart from 0 on every tap.
@@ -125,6 +128,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     itPopup = null;
     oscilloscope?.destroy();
     oscilloscope = null;
+    portraitDestroy?.();
+    portraitOff = portraitDestroy = null;
     stageEl.innerHTML = '';
     typewriter = null;
 
@@ -185,8 +190,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // A character with no sprite art (the Therapist's letter avatar on a call):
     // their portrait, the same one the dialog scene uses.
     if (beat.portrait) {
-      const p = createNpcPortrait(beat.portrait.npc, beat.portrait.accent, beat.portrait.url);
+      const p = createNpcPortrait(beat.portrait.npc, beat.portrait.accent, beat.portrait.url, { hat: beat.portrait.hat });
       p.el.classList.add('dx-cutscene-portrait');
+      // He's talking while his line draws (his art plays its talk loop).
+      if (beat.speaker) { p.el.classList.add('is-speaking'); portraitOff = () => p.el.classList.remove('is-speaking'); }
+      portraitDestroy = p.destroy;
       screen.appendChild(p.el);
     }
 
@@ -229,7 +237,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       // A beat with a speaker is that character talking: always in quotes.
       const text = inClass(beat.text);
       const said = beat.speaker ? quoteSpeech(text) : text;
-      typewriter = createTypewriter(textEl, said, { onDone: handleBeatReady, onChar: playTypewriterTick });
+      typewriter = createTypewriter(textEl, said, { onDone: () => { portraitOff?.(); handleBeatReady(); }, onChar: playTypewriterTick });
     } else {
       handleBeatReady();
     }
@@ -394,6 +402,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     typewriter?.destroy();
     itPopup?.destroy();
     oscilloscope?.destroy();
+    portraitDestroy?.();
     if (scene.ambient) stopAmbient();
     stageEl.innerHTML = '';
   };

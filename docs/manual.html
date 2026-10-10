@@ -135,7 +135,7 @@ mark { background: var(--mark); color: var(--fg); }
 <nav class="sidebar" id="sidebar">
   <div class="brand">
     <h1>Dream Xtreme</h1>
-    <p>Project manual · 21 documents</p>
+    <p>Project manual · 22 documents</p>
   </div>
   <button class="menu-toggle" id="menuToggle" aria-expanded="true">Menu</button>
   <div class="search-wrap">
@@ -146,7 +146,7 @@ mark { background: var(--mark); color: var(--fg); }
   <div id="nav"><div class="nav-group">
         <h2>Start here</h2>
         <p class="nav-blurb">The working documentation for what is actually built.</p>
-        <ul><li><a class="nav-doc" href="#doc-game_manual" data-doc="doc-game_manual">Game Manual</a></li><li><a class="nav-doc" href="#doc-handoff" data-doc="doc-handoff">Handoff / Project Status</a></li><li><a class="nav-doc" href="#doc-architecture" data-doc="doc-architecture">Architecture</a></li><li><a class="nav-doc" href="#doc-scene_types" data-doc="doc-scene_types">Scene Types</a></li><li><a class="nav-doc" href="#doc-asset_sizes" data-doc="doc-asset_sizes">Asset Sizes (quick reference)</a></li><li><a class="nav-doc" href="#doc-art_guide" data-doc="doc-art_guide">Art Guide (every asset, size and template)</a></li><li><a class="nav-doc" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines">Asset Guidelines</a></li><li><a class="nav-doc" href="#doc-asset_manifest" data-doc="doc-asset_manifest">Asset Manifest (Chapter 1 checklist)</a></li></ul>
+        <ul><li><a class="nav-doc" href="#doc-game_manual" data-doc="doc-game_manual">Game Manual</a></li><li><a class="nav-doc" href="#doc-handoff" data-doc="doc-handoff">Handoff / Project Status</a></li><li><a class="nav-doc" href="#doc-architecture" data-doc="doc-architecture">Architecture</a></li><li><a class="nav-doc" href="#doc-scene_types" data-doc="doc-scene_types">Scene Types</a></li><li><a class="nav-doc" href="#doc-asset_sizes" data-doc="doc-asset_sizes">Asset Sizes (quick reference)</a></li><li><a class="nav-doc" href="#doc-character_art" data-doc="doc-character_art">Character Art (the standard set)</a></li><li><a class="nav-doc" href="#doc-art_guide" data-doc="doc-art_guide">Art Guide (every asset, size and template)</a></li><li><a class="nav-doc" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines">Asset Guidelines</a></li><li><a class="nav-doc" href="#doc-asset_manifest" data-doc="doc-asset_manifest">Asset Manifest (Chapter 1 checklist)</a></li></ul>
       </div><div class="nav-group">
         <h2>Authoring</h2>
         <p class="nav-blurb">Writing dialog and understanding the numbers behind it.</p>
@@ -1735,6 +1735,7 @@ last page with no opening one.</li>
 <li><strong>Sound effects and secret hints (2026-10-10):</strong> <code>audio.playSfx(name)</code>, 32 retro synth sounds (square + stepped noise, hard attacks), placed with <code>{sfx:name}</code> in any line (typewriterText.js; skipped when tapped through), <code>sound:</code> on room hotspots and quick beats, <code>&quot;sound&quot;:</code> on cutscene beats. Placed: all 12 room objects, the door reveal (clunk) and open, the four quick beats, each confrontation&#39;s first beat (door, street, rag, glass), the prologue (gravel, phone vibrate), the walk home (footsteps, sprinklers, dog), and one example per NPC dialog. The swipe card plays <code>swipeFast</code> for a flick under 260 ms and <code>swipeSlow</code> for a decided drag, with a one-frame look each. Restore hints: once every object is open, your class&#39;s object plays a faint echo of your class sigil (also when fogged) and, TIPS on, IT whispers a class line; a missed restore makes the NPC mention the object in the confrontation and (TIPS on) IT says you walked past it (<code>unrestored</code> / <code>tip</code> beats); the repeat Therapist notes if you restored nothing last run (<code>lastRun.restored</code>).</li>
 <li><strong>Cutscene portraits + asset sizes (2026-10-10):</strong> a cutscene beat can carry <code>portrait: { npc, accent, url }</code> (ui/npcPortrait.js); the repeat-client Therapist uses it, so his &quot;T&quot; avatar shows instead of a black screen. <code>docs/ASSET_SIZES.md</code> is the new one-page size reference (every asset, draw-at size at 2x, format, path), linked from ART_GUIDE and in the manual&#39;s front group.</li>
 <li><strong>Asset reference page (2026-10-10):</strong> <code>docs/ASSET_REFERENCE.html</code>, one self-contained page (also published as an Artifact): every asset drawn to scale with exact sizes, filters, search, per-asset blank PNG templates at the exact pixel size, and CSV and page downloads. The asset list lives in its script (<code>A</code>); update it when sizes change.</li>
+<li><strong>Standard character art (2026-10-10):</strong> <code>engine/characters.js</code> defines the state list every NPC avatar is drawn in (idle, talk loop, 8 feeling faces, 5 reactions, connect, pushaway, 5 trauma beats; 192x192, 1-bit) with fallbacks (state -&gt; idle -&gt; letter avatar). <code>scripts/import-character-gifs.mjs &lt;folder&gt; &lt;npc&gt;</code> turns an artist&#39;s GIFs (<code>Profile_&lt;Npc&gt;_&lt;State&gt;.gif</code>) into palette-PNG stills/frame folders under <code>public/assets/lake-ulysses/characters/&lt;npc&gt;/</code> plus a manifest in <code>src/chapters/lake-ulysses/characters/&lt;npc&gt;.json</code> (auto-registered in the chapter index). <code>createNpcPortrait</code> shows the art and plays the talk loop while the <code>.is-speaking</code> class is on (a MutationObserver, so dialogScene needed no change); <code>setState()</code> is there for feelings and reactions, not wired to gameplay yet. The Therapist is imported (35 pieces from the artist&#39;s Drive folder; originals in <code>art-import/therapist/</code>): bare-headed in the tutorial, a random hat on his repeat-client call (<code>hatFor</code>). Spec and artist checklist: <code>docs/CHARACTER_ART.md</code>; also a Character sets group in ASSET_REFERENCE.html. Open: wiring <code>setState</code> to MOOD / reactions / trauma story beats once the art exists; what the Therapist&#39;s <code>_1/_2/_3</code> poses mean (named generically); <code>Fez_Hat02</code> missing; Deborah and Samun Drive folders were empty.</li>
 <li><strong>Repeat client (2026-10-10):</strong> the ending saves <code>save.lastRun</code> (class, ending, debt, baptism confessed/doubled from <code>run.reckoningChoices</code>). With a lastRun, <code>therapistReturn.js</code> (a cutscene) takes the &#39;therapist&#39; slot and the original tutorial follows as &#39;therapist-tutorial&#39;: he reads the file back (how wet you came out, the ppm, the baptism, same or new class), says you&#39;re doing it again, then asks two things: check in on you? (sets TIPS) and run the exercise again? (yes: the tutorial plays; no: <code>jumpTo</code> walk-home, after the class homework). <strong>TIPS</strong> (Settings, <code>guideHighlights</code>) now controls all of his tip calls in battles plus the lesson highlights; calls you make yourself are unaffected. Verified both paths in the browser.</li>
 <li><strong>Therapist is early-game only</strong> (<code>dialogScene.js</code> nodeCoach): the new-friend call is one call per run (key <code>friend</code>, was <code>friend:&lt;who&gt;</code>; old keys still count) and only in the first three encounters, so he never calls during Rick. A first friend who arrives later pulses quietly in the dock for that card instead. His other calls are the first battle (scope) and the first mask (Samun). Verified: Rick with a fresh contact gets no call; Rwanda with Deborah in the phone does.</li>
 <li><strong>Rooms</strong> (<code>minigames/*.js</code> via <code>engine/walkSequencer.js</code> <code>mountNpcWalk</code>; <code>ui/walkRoom.js</code>): each object names an opener; it glows in that opener&#39;s first feeling for your class, its close-up is washed in it with the NPC&#39;s class glyph in the corner, and each class&#39;s caption is its own perception with that feeling&#39;s word colored (tests check the color matches). One object per class can be restored: once all three are opened, yours calls in your class color; open it again for a hint in your class&#39;s voice, tap the picture to do it (class sigil sound, done line, stamp). That writes <code>run.secrets[npc]</code>.</li>
@@ -3106,6 +3107,126 @@ close-up (<strong>780 × 1440</strong>, see Full screen).</p>
 
       <nav class="pager">
         <a href="#doc-scene_types" data-doc="doc-scene_types"><span>Previous</span>Scene Types</a>
+        <a class="next" href="#doc-character_art" data-doc="doc-character_art"><span>Next</span>Character Art (the standard set)</a>
+      </nav>
+    </article>
+<article class="doc" id="doc-character_art" data-title="Character Art (the standard set)" data-file="CHARACTER_ART.md" hidden>
+      <p class="doc-source">Start here · <code>docs/CHARACTER_ART.md</code></p>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-character_art--the-standard-per-npc">The standard (per NPC)</a></li><li><a href="#doc-character_art--the-therapist-done">The Therapist (done)</a></li><li><a href="#doc-character_art--sending-art">Sending art</a></li></ul></nav>
+      <h1 id="doc-character_art--character-art-the-standard-set"><a class="anchor" href="#doc-character_art--character-art-the-standard-set" aria-label="Link to this section">#</a>Character Art — the standard set</h1>
+<p>How every NPC avatar is drawn, named and played. One standard, so a new
+character is just a new set of files. The game side is
+<code>src/engine/characters.js</code>; the converter is <code>scripts/import-character-gifs.mjs</code>.</p>
+<h2 id="doc-character_art--the-standard-per-npc"><a class="anchor" href="#doc-character_art--the-standard-per-npc" aria-label="Link to this section">#</a>The standard (per NPC)</h2>
+<p>All <strong>192 × 192</strong>, 1-bit look (white and black pixel art), transparent
+background, GIF or PNG. A state is a <strong>still</strong> (1 frame) or a <strong>loop</strong>
+(several frames, 10 fps = 100 ms a frame). Anything not drawn yet falls back
+to <em>idle</em>, so a character with only idle and talk already works everywhere.</p>
+<table>
+<thead>
+<tr>
+<th align="left">State</th>
+<th align="left">What it is</th>
+<th align="left">Frames</th>
+<th align="left">Per NPC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>idle</code></td>
+<td align="left">neutral, listening</td>
+<td align="left">1</td>
+<td align="left">1</td>
+</tr>
+<tr>
+<td align="left"><code>talk</code></td>
+<td align="left">mouth moving, plays while they speak</td>
+<td align="left">3 loop</td>
+<td align="left">1</td>
+</tr>
+<tr>
+<td align="left"><code>feel_happy</code> <code>feel_trust</code> <code>feel_fear</code> <code>feel_surprise</code> <code>feel_sadness</code> <code>feel_disgust</code> <code>feel_anger</code> <code>feel_anxiety</code></td>
+<td align="left">how they feel right now (their MOOD): the face the oscilloscope color goes with</td>
+<td align="left">1 each</td>
+<td align="left">8</td>
+</tr>
+<tr>
+<td align="left"><code>react_truth</code></td>
+<td align="left">a true answer lands</td>
+<td align="left">1</td>
+<td align="left">1</td>
+</tr>
+<tr>
+<td align="left"><code>react_lie</code></td>
+<td align="left">a comforting lie lands</td>
+<td align="left">1</td>
+<td align="left">1</td>
+</tr>
+<tr>
+<td align="left"><code>react_hit</code></td>
+<td align="left">a big swing (strong hit)</td>
+<td align="left">1</td>
+<td align="left">1</td>
+</tr>
+<tr>
+<td align="left"><code>react_warm</code></td>
+<td align="left">they turn toward you (a bid)</td>
+<td align="left">1</td>
+<td align="left">1</td>
+</tr>
+<tr>
+<td align="left"><code>react_cold</code></td>
+<td align="left">they close up</td>
+<td align="left">1</td>
+<td align="left">1</td>
+</tr>
+<tr>
+<td align="left"><code>connect</code></td>
+<td align="left">the stay-in-touch moment</td>
+<td align="left">1</td>
+<td align="left">1</td>
+</tr>
+<tr>
+<td align="left"><code>pushaway</code></td>
+<td align="left">pushed away at the end</td>
+<td align="left">1</td>
+<td align="left">1</td>
+</tr>
+<tr>
+<td align="left"><code>trauma_1</code> … <code>trauma_5</code></td>
+<td align="left">the confession: one image per story beat, shown in silence</td>
+<td align="left">1 each</td>
+<td align="left">5</td>
+</tr>
+</tbody></table>
+<p>That is <strong>24 images per NPC</strong>, ×4 NPCs (Deborah, Rwanda, Samun, Rick) = 96.
+The Therapist is a voice first, so his set is optional beyond idle and talk
+(he has a lot already, below).</p>
+<p><strong>Trauma / confession images (proposed size):</strong> 240 × 240, true pixels (the
+game scales it up crisp, like the chapter plates). They are the bigger,
+quieter picture under each story line. Say if you&#39;d rather they match 192.</p>
+<h2 id="doc-character_art--the-therapist-done"><a class="anchor" href="#doc-character_art--the-therapist-done" aria-label="Link to this section">#</a>The Therapist (done)</h2>
+<p>He wears a different hat on each call. Per hat: three stills (<code>_1</code>, <code>_2</code>,
+<code>_3</code>) and a talk loop. Hats: bunny, derby, fez, jester, old man, pork pie,
+sombrero, top hat, plus bare-headed <code>neutral</code>. In the game: bare-headed in
+the tutorial; a random hat on his &quot;you again&quot; call on a repeat playthrough.</p>
+<p>Still to fix: <code>Fez_Hat02</code> is missing, and <code>Neutral_Hat03</code> is named like a hat
+(it&#39;s read as <code>neutral_3</code>). <code>_1</code>, <code>_2</code>, <code>_3</code> are three poses; tell me what
+each is and I&#39;ll name them (e.g. <code>_2</code> = eyes closed).</p>
+<h2 id="doc-character_art--sending-art"><a class="anchor" href="#doc-character_art--sending-art" aria-label="Link to this section">#</a>Sending art</h2>
+<ol>
+<li>Name each GIF <code>Profile_&lt;Npc&gt;_&lt;State&gt;.gif</code>, e.g. <code>Profile_Deborah_Feel_Anger.gif</code>,
+<code>Profile_Deborah_React_Lie.gif</code>, <code>Profile_Deborah_Trauma_3.gif</code>. The talk loop is
+<code>Profile_Deborah_Talk.gif</code> (or <code>Profile_Deborah_Ani.gif</code>).</li>
+<li>Put them in a folder, then run:
+<code>node scripts/import-character-gifs.mjs &lt;folder&gt; &lt;npc&gt;</code></li>
+<li>It writes the frames to <code>public/assets/lake-ulysses/characters/&lt;npc&gt;/</code>,
+a manifest to <code>src/chapters/lake-ulysses/characters/&lt;npc&gt;.json</code>, and warns
+about any file that isn&#39;t 192 × 192. The game picks them up automatically.</li>
+</ol>
+<p>Palette PNG frames (not WebP): smaller for 1-bit art and pixel-exact.</p>
+
+      <nav class="pager">
+        <a href="#doc-asset_sizes" data-doc="doc-asset_sizes"><span>Previous</span>Asset Sizes (quick reference)</a>
         <a class="next" href="#doc-art_guide" data-doc="doc-art_guide"><span>Next</span>Art Guide (every asset, size and template)</a>
       </nav>
     </article>
@@ -3602,7 +3723,7 @@ format details.</p>
 </ol>
 
       <nav class="pager">
-        <a href="#doc-asset_sizes" data-doc="doc-asset_sizes"><span>Previous</span>Asset Sizes (quick reference)</a>
+        <a href="#doc-character_art" data-doc="doc-character_art"><span>Previous</span>Character Art (the standard set)</a>
         <a class="next" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><span>Next</span>Asset Guidelines</a>
       </nav>
     </article>
@@ -6428,6 +6549,7 @@ atmosphere, not a score.</p>
 <p>Newest first; details in HANDOFF.md.</p>
 <ol>
 <li><strong>Listen and look (2026-10-10):</strong> every new sound has only been tested muted: swipes (slow vs fast), room objects, door, quick beats, chapter-page loading bleeps and room ambience, confrontation openers, prologue and walk home. Tune by ear in <code>src/shell/audio.js</code> (SFX, playClassBleep, startOpenerAmbience, playOpenerTheme).</li>
+<li><strong>Character art (2026-10-10):</strong> the Therapist&#39;s set is in. Next: Deborah, Rwanda, Samun, Rick sets per <code>docs/CHARACTER_ART.md</code> (idle, talk loop, 8 feeling faces, 5 reactions, connect, pushaway, 5 trauma images each), then wire <code>portrait.setState()</code> to MOOD, reactions and the story beats. Run <code>node scripts/import-character-gifs.mjs &lt;folder&gt; &lt;npc&gt;</code> for each batch.</li>
 <li><strong>Art drop-ins:</strong> chapter plates (<code>plates/plate_&lt;npc&gt;.png</code>, 240x150 1-bit) and everything in <code>docs/ASSET_SIZES.md</code>.</li>
 <li><strong>Opening confrontations: built for all four (2026-10-09).</strong> Look at them on screen as each class (art is still placeholder); the restore hints and secret lines are first drafts for the writer pass.</li>
 <li><strong>Later: interactive way in before each marker page</strong> (skippable; the moment is highlighted and says exactly what to do; the page turns in only after it). Arcade &quot;READY? START!&quot; energy, but literary.<ul>
@@ -9536,7 +9658,7 @@ change to shell/chapter responsibilities and deserves its own decision.</p>
 
 <script>
 (function () {
-  var ORDER = ["doc-game_manual","doc-handoff","doc-architecture","doc-scene_types","doc-asset_sizes","doc-art_guide","doc-asset_guidelines","doc-asset_manifest","doc-script_key","doc-script_format","doc-content_schema","doc-stat_math","doc-music_pipeline","doc-jobs","doc-it_design","doc-gm_build","doc-dx-bible","doc-dx_demo_build_spec","doc-dx-mechanics","doc-dreamxtreme-game-development-demo-doc","doc-attic"];
+  var ORDER = ["doc-game_manual","doc-handoff","doc-architecture","doc-scene_types","doc-asset_sizes","doc-character_art","doc-art_guide","doc-asset_guidelines","doc-asset_manifest","doc-script_key","doc-script_format","doc-content_schema","doc-stat_math","doc-music_pipeline","doc-jobs","doc-it_design","doc-gm_build","doc-dx-bible","doc-dx_demo_build_spec","doc-dx-mechanics","doc-dreamxtreme-game-development-demo-doc","doc-attic"];
   var docs = ORDER.map(function (id) { return document.getElementById(id); }).filter(Boolean);
   var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-doc'));
   var search = document.getElementById('search');

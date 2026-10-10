@@ -3,6 +3,7 @@ import { takeDebugOverrides } from '../../shell/debug.js';
 import { createSceneSequencer } from '../../engine/sceneSequencer.js';
 import { recordEnding, saveCheckpoint, clearCheckpoint, loadSave } from '../../shell/save.js';
 import { therapistReturnScene } from './therapistReturn.js';
+import { registerCharacterArt } from '../../engine/characters.js';
 import * as hud from '../../shell/hud.js';
 import * as audio from '../../shell/audio.js';
 import * as encounterMusic from '../../shell/encounterMusic.js';
@@ -34,6 +35,9 @@ import confrontRwanda from './content/confront_rwanda.json';
 import confrontSamun from './content/confront_samun.json';
 import confrontRick from './content/confront_rick.json';
 import endings from './content/endings.json';
+
+// Every character's drawn states (scripts/import-character-gifs.mjs writes these).
+registerCharacterArt(import.meta.glob('./characters/*.json', { eager: true }));
 
 export const id = 'lake-ulysses';
 export const title = 'Truth Debt: Lake Ulysses';

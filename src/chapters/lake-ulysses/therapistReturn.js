@@ -13,6 +13,7 @@
 // it (chapters/lake-ulysses/index.js). PLACEHOLDER lines for the writer pass.
 import therapist from './content/therapist.json';
 import { ppmFor } from '../../engine/lake.js';
+import { hatFor } from '../../engine/characters.js';
 
 const WET = {
   CLEAN_CUT: 'Your file says you came out of the lake dry. Statistically that\'s rude to everyone else.',
@@ -40,8 +41,8 @@ function homeworkFor(cls) {
 }
 
 // His avatar on every line, the way he shows on a call (ui/npcPortrait.js).
-const PORTRAIT = { npc: therapist.npc, accent: therapist.accentColor, url: therapist.portrait };
-const say = (text) => ({ speaker: 'THERAPIST', portrait: PORTRAIT, text });
+// He's wearing a different hat since last time (engine/characters.js hatFor).
+const say = (text, hat) => ({ speaker: 'THERAPIST', portrait: { npc: therapist.npc, accent: therapist.accentColor, url: therapist.portrait, hat }, text });
 
 export function therapistReturnScene(lastRun) {
   const ppm = ppmFor(lastRun.truthDebt ?? 0);
@@ -73,5 +74,7 @@ export function therapistReturnScene(lastRun) {
       ] },
     },
   ].filter(Boolean);
-  return { type: 'cutscene', id: 'therapist', beats };
+  // A different hat than last time, the same one all call.
+  const hat = hatFor(Math.floor(Math.random() * 1000));
+  return { type: 'cutscene', id: 'therapist', beats: beats.map((b) => ({ ...b, portrait: { ...b.portrait, hat } })) };
 }
