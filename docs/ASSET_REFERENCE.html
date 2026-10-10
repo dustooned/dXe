@@ -1,0 +1,284 @@
+<title>Dream Xtreme Asset Reference</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap">
+<style>
+/* Layout concept: a phone-shaped spec sheet. Black ground, off-white ink, like the game. Each asset is a to-scale outline with its exact pixel numbers. */
+:root {
+  --bg: #08080a;
+  --panel: #111114;
+  --ink: #ecebe4;
+  --dim: #9a998f;
+  --line: #2b2b30;
+  --accent: #ffd34d;
+  --ok: #7ed67e;
+  --todo: #ff8a5b;
+  --box: #ecebe4;
+  --box-fill: #17171b;
+  --font-display: 'Press Start 2P', 'Courier New', monospace;
+  --font-body: 'VT323', 'Courier New', monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f3f1ea; --panel: #fffdf7; --ink: #15151a; --dim: #5d5c54; --line: #cfcbbd;
+    --accent: #8a5a00; --ok: #1d6b2a; --todo: #b2441c; --box: #15151a; --box-fill: #ece8da;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #f3f1ea; --panel: #fffdf7; --ink: #15151a; --dim: #5d5c54; --line: #cfcbbd;
+  --accent: #8a5a00; --ok: #1d6b2a; --todo: #b2441c; --box: #15151a; --box-fill: #ece8da;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 20px; line-height: 1.25; padding-inline: 16px; padding-block: 24px 64px; }
+.wrap { max-width: 1100px; margin: 0 auto; }
+h1 { font-family: var(--font-display); font-size: 20px; line-height: 1.5; margin: 0 0 8px; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-size: 13px; line-height: 1.5; margin: 40px 0 6px; letter-spacing: 1px; text-wrap: balance; }
+p { margin: 0 0 8px; }
+.sub { color: var(--dim); max-width: 62ch; }
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 16px 0; }
+button, input { font: inherit; font-size: 18px; color: var(--ink); background: var(--panel); border: 1px solid var(--line); padding: 6px 12px; min-height: 36px; cursor: pointer; }
+button:hover { border-color: var(--ink); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+input { cursor: text; flex: 1 1 200px; min-width: 0; }
+.stats { display: flex; flex-wrap: wrap; gap: 8px 24px; padding: 12px 0; border-block: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.stats b { font-family: var(--font-display); font-size: 14px; font-weight: 400; color: var(--accent); display: block; }
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 16px 0; }
+.rules div { border: 1px solid var(--line); background: var(--panel); padding: 10px 12px; }
+.rules strong { font-family: var(--font-display); font-weight: 400; font-size: 11px; display: block; margin-bottom: 4px; color: var(--accent); }
+.hero { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 24px; align-items: start; margin: 16px 0; }
+@media (max-width: 720px) { .hero { grid-template-columns: minmax(0, 1fr); } }
+.legend { display: grid; gap: 6px; }
+.legend div { display: flex; gap: 10px; align-items: baseline; }
+.legend i { flex: none; width: 14px; height: 14px; display: inline-block; border: 2px solid; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-top: 12px; }
+.card { border: 1px solid var(--line); background: var(--panel); padding: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.card header { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; }
+.card h3 { margin: 0; font-size: 21px; font-weight: 400; overflow-wrap: anywhere; }
+.tag { flex: none; font-size: 15px; padding: 1px 8px; border: 1px solid; text-transform: uppercase; letter-spacing: 1px; }
+.tag.todo { color: var(--todo); } .tag.ok { color: var(--ok); } .tag.code { color: var(--dim); }
+.stage { display: flex; justify-content: center; align-items: center; min-height: 150px; padding: 8px; background: repeating-conic-gradient(var(--line) 0 25%, transparent 0 50%) 0 0 / 12px 12px; border: 1px solid var(--line); }
+.dim { display: grid; grid-template-columns: auto 1fr; gap: 0 10px; font-variant-numeric: tabular-nums; }
+.dim dt { color: var(--dim); } .dim dd { margin: 0; overflow-wrap: anywhere; }
+.num { color: var(--accent); }
+.path { font-size: 17px; color: var(--dim); overflow-wrap: anywhere; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; }
+.row button { font-size: 16px; min-height: 30px; padding: 3px 10px; }
+.note { color: var(--dim); font-size: 18px; }
+.empty { color: var(--dim); padding: 16px 0; }
+.toast { position: fixed; left: 16px; right: 16px; bottom: 16px; max-width: 420px; margin-inline: auto; background: var(--ink); color: var(--bg); padding: 10px 14px; text-align: center; }
+.toast[hidden] { display: none; }
+svg text { font-family: var(--font-body); }
+@media (prefers-reduced-motion: no-preference) { .toast { animation: pop .15s steps(3, end); } @keyframes pop { from { transform: translateY(8px); opacity: 0; } } }
+</style>
+
+<div class="wrap">
+  <h1>Dream Xtreme Asset Reference</h1>
+  <p class="sub">Every image the game needs, drawn to scale with its exact pixel size. Draw at the <span class="num">draw at</span> size. The game scales it down and keeps the pixels sharp. White ink on black, 1-bit pixel art, hard edges. Color tints and the retro effects are added in code, so draw flat.</p>
+
+  <div class="bar" role="toolbar" aria-label="Downloads">
+    <button id="dl-csv" type="button">Download checklist (CSV)</button>
+    <button id="dl-page" type="button">Save this page (HTML)</button>
+    <span class="note" id="dl-note"></span>
+  </div>
+
+  <div class="rules">
+    <div><strong>1. THE SCREEN</strong>390 × 844 px, a portrait phone. Draw at 2×: <span class="num">780 × 1688</span> for a full screen.</div>
+    <div><strong>2. THE LOOK</strong>White on black. 1-bit and dither. No gray gradients, no glows, no antialiasing on pixel art.</div>
+    <div><strong>3. DROP IN</strong>Put the file at the listed path. It replaces the placeholder automatically. Never rename.</div>
+    <div><strong>4. FRAMES</strong>Animated art is numbered frames, all the same size: <span class="num">name_0000.webp</span>, <span class="num">name_0001.webp</span>…</div>
+  </div>
+
+  <h2>THE FRAME, TO SCALE</h2>
+  <p class="sub">Deborah's hallway as an example. Every room object sits at a fixed position on this 390 × 844 frame. The top 48 px stays clear because the skip and settings buttons live there.</p>
+  <div class="hero">
+    <svg id="frame" viewBox="-30 -26 450 906" role="img" aria-label="Phone frame 390 by 844 with the hallway's objects placed on it"></svg>
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <div class="stats" id="stats"></div>
+  <div class="bar" role="group" aria-label="Filters">
+    <button type="button" data-f="all" class="on">All</button>
+    <button type="button" data-f="todo">Still to make</button>
+    <button type="button" data-f="ok">Done</button>
+    <input id="q" type="search" placeholder="Search: hallway, bust, 780…" aria-label="Search assets">
+  </div>
+
+  <div id="out"></div>
+</div>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script>
+// kind: how many files of this kind the game needs. fs: full-screen art (top 96 px at 2x stays clear).
+const ROOMS = ['hallway', 'alley', 'garage', 'barlot'];
+const P = 'public/assets/lake-ulysses/';
+const A = [];
+const add = (o) => A.push(Object.assign({ frames: 1, kind: 1, fmt: 'WebP', st: 'todo', note: '' }, o));
+
+// Full screen
+ROOMS.forEach((r) => add({ g: 'Full screen', n: `Room background: ${r}`, p: `${P}sprites/spr_${r}_bg/spr_${r}_bg_0000 … 0005`, w: 780, h: 1688, frames: 6, fs: true, note: 'Looping, stop-motion feel: low frame count, hard cuts.' }));
+add({ g: 'Full screen', n: 'Cutscene background: prologue lake', p: `${P}backgrounds/prologue-lake`, w: 780, h: 1688, fs: true });
+add({ g: 'Full screen', n: 'Cutscene background: Bob Baiter lake', p: `${P}sprites/spr_lake_bg_001/`, w: 780, h: 1688, frames: 46, fs: true, st: 'ok' });
+add({ g: 'Full screen', n: 'Cutscene background: opening quote', p: `${P}sprites/spr_QuoteBG/`, w: 780, h: 1688, frames: 5, fs: true, st: 'ok' });
+const OBJ = {
+  hallway: [['diploma', 148, 192], ['doormat', 216, 88], ['lightbulb', 104, 124]],
+  alley: [['neon', 192, 116], ['payphone', 108, 236], ['mural', 176, 264]],
+  garage: [['drum', 156, 224], ['calendar', 132, 176], ['radio', 136, 92]],
+  barlot: [['bike', 232, 192], ['ashtray', 112, 80], ['flyer', 116, 156]],
+};
+ROOMS.forEach((r) => OBJ[r].forEach(([o]) => add({ g: 'Full screen', n: `Close-up: ${r} ${o}`, p: `${P}sprites/${r}_${o}_closeup`, w: 780, h: 1440, fs: true, note: 'Caption sits over the bottom quarter.' })));
+
+// Characters
+['deborah', 'rwanda', 'samun', 'rick'].forEach((c) => add({ g: 'Characters', n: `Dialog portrait: ${c}`, p: `${P}sprites/portrait_${c}`, w: 192, h: 192, fmt: 'WebP, transparent', note: 'Shown 96 × 96 in a 3 px border. Also the call avatar and the story bust.' }));
+['deborah', 'rwanda', 'samun', 'rick'].forEach((c) => add({ g: 'Characters', n: `Confrontation bust: ${c}`, p: `${P}sprites/npc_${c}`, w: 600, h: 1200, fmt: 'WebP, transparent', note: 'Bottom-anchored: bleed off the sides, never the bottom.' }));
+add({ g: 'Characters', n: 'Pastor Gabriel bust', p: `${P}sprites/bust_pastor`, w: 480, h: 384, fmt: 'WebP or PNG', st: 'code', note: 'Drawn in code today (ui/pastorBust.js).' });
+add({ g: 'Characters', n: 'Bob Baiter (speaker)', p: `${P}sprites/spr_bb/`, w: 600, h: 600, frames: 10, st: 'ok' });
+
+// Chapter pages
+['deborah', 'rwanda', 'samun', 'rick'].forEach((c) => add({ g: 'Chapter pages', n: `Chapter plate: ${c}`, p: `${P}plates/plate_${c}.png`, w: 240, h: 150, fmt: 'PNG, pure black and white only', st: 'code', px: true, note: 'True pixels. The game scales it up crisp. Code placeholder until a file exists.' }));
+
+// Room objects
+ROOMS.forEach((r) => OBJ[r].forEach(([o, w, h]) => add({ g: 'Room objects', n: `${r} ${o}`, p: `${P}sprites/${r}_${o}`, w, h, fmt: 'WebP, white-line art, transparent', note: 'Tinted in code with the feeling color: do not bake color in.' })));
+[['hallway_door', 200, 560], ['alley_gate', 192, 600], ['garage_bay', 200, 600], ['barlot_door', 192, 592]].forEach(([n, w, h]) => add({ g: 'Room objects', n: `${n} (the way on)`, p: `${P}sprites/${n}`, w, h, fmt: 'WebP, white-line art, transparent', note: 'Hidden until every object in the room has been opened.' }));
+
+// Title, menus, ending
+add({ g: 'Title, menus and ending', n: 'Title logo', p: 'public/assets/shared/title/spr_game_title.png', w: 1260, h: 551, frames: 13, fmt: 'Palette PNG sheet', st: 'ok' });
+add({ g: 'Title, menus and ending', n: 'Title / chapter banner panorama', p: 'public/assets/shared/title/spr_title_bg.png', w: 1280, h: 576, frames: 7, fmt: 'Palette PNG vertical sheet', st: 'ok', note: 'Right 22% dissolves into the left edge so it loops seamlessly.' });
+add({ g: 'Title, menus and ending', n: 'Ending slides (one per ending line)', p: `${P}endings/`, w: 800, h: 600, kind: 21, note: 'Clean Cut 5, Functional Mask 5, Collapse 5, Living Lie 6. Then list each in endings.json.' });
+add({ g: 'Title, menus and ending', n: 'Epilogue slides (optional)', p: `${P}endings/`, w: 800, h: 600, kind: 4, note: 'One per broken stat: integrity, trust, stability, lucidity.' });
+add({ g: 'Title, menus and ending', n: 'Announcement symbols (biohazard, exposure, fish, pet, bait shop)', p: `${P}sprites/spr_<symbol>/`, w: 384, h: 384, frames: 19, kind: 5, st: 'ok', note: '19 to 32 frames each.' });
+
+const GROUPS = ['Full screen', 'Characters', 'Chapter pages', 'Room objects', 'Title, menus and ending'];
+const LABEL = { todo: 'to make', ok: 'done', code: 'in code' };
+const $ = (s, el = document) => el.querySelector(s);
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+let filter = 'all', query = '';
+
+// ---- the frame diagram
+function drawFrame() {
+  const rects = [
+    ['Room background (780 × 1688, all of it)', 0, 0, 390, 844, 'var(--dim)', 'none', true],
+    ['Keep clear: top 48 px (96 at 2×)', 0, 0, 390, 48, 'var(--todo)', 'var(--todo)', false],
+    ['diploma 148 × 192 → 74 × 96', 78, 250, 74, 96, 'var(--accent)', 'none', false],
+    ['lightbulb 104 × 124 → 52 × 62', 262, 214, 52, 62, 'var(--accent)', 'none', false],
+    ['doormat 216 × 88 → 108 × 44', 150, 596, 108, 44, 'var(--accent)', 'none', false],
+    ['door, the way on 200 × 560 → 100 × 280', 148, 300, 100, 280, 'var(--ok)', 'none', false],
+  ];
+  let s = '';
+  rects.forEach(([, x, y, w, h, stroke, fill, dash], i) => {
+    s += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="0" fill="${fill}" fill-opacity="${i === 1 ? 0.18 : 0}" stroke="${stroke}" stroke-width="2" ${dash ? 'stroke-dasharray="6 4"' : ''}/>`;
+  });
+  s += `<line x1="0" y1="-12" x2="390" y2="-12" stroke="var(--ink)"/><line x1="0" y1="-18" x2="0" y2="-6" stroke="var(--ink)"/><line x1="390" y1="-18" x2="390" y2="-6" stroke="var(--ink)"/>`;
+  s += `<text x="195" y="-16" text-anchor="middle" font-size="16" fill="var(--ink)">390 px</text>`;
+  s += `<line x1="-12" y1="0" x2="-12" y2="844" stroke="var(--ink)"/><line x1="-18" y1="0" x2="-6" y2="0" stroke="var(--ink)"/><line x1="-18" y1="844" x2="-6" y2="844" stroke="var(--ink)"/>`;
+  s += `<text transform="translate(-16 422) rotate(-90)" text-anchor="middle" font-size="16" fill="var(--ink)">844 px</text>`;
+  s += `<text x="195" y="30" text-anchor="middle" font-size="15" fill="var(--todo)">keep clear</text>`;
+  $('#frame').innerHTML = s;
+  $('#legend').innerHTML = rects.map(([t, , , , , stroke, , dash]) => `<div><i style="border-color:${stroke};${dash ? 'border-style:dashed' : ''}"></i><span>${t}</span></div>`).join('')
+    + '<p class="note" style="margin-top:8px">Sizes show draw-at (2×) first, then the 390-wide size on screen.</p>';
+}
+
+// ---- one asset, drawn to scale (own scale per card, exact numbers beside it)
+function diagram(a) {
+  const max = 130, k = Math.min(max / a.w, max / a.h);
+  const w = Math.max(10, Math.round(a.w * k)), h = Math.max(10, Math.round(a.h * k));
+  const pad = 26, W = w + pad * 2 + 18, H = h + pad * 2;
+  const band = a.fs ? Math.round(96 * k) : 0;
+  const hatch = band ? `<rect x="${pad}" y="${pad}" width="${w}" height="${band}" fill="var(--todo)" fill-opacity="0.22"/>` : '';
+  const dots = a.px ? `<g fill="var(--box)" opacity="0.5">${Array.from({ length: 24 }, (_, i) => `<rect x="${pad + (i % 6) * (w / 6) + 4}" y="${pad + Math.floor(i / 6) * (h / 4) + 4}" width="2" height="2"/>`).join('')}</g>` : '';
+  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${a.w} by ${a.h} pixels">
+    <rect x="${pad}" y="${pad}" width="${w}" height="${h}" fill="var(--box-fill)" stroke="var(--box)" stroke-width="2"/>
+    ${hatch}${dots}
+    <line x1="${pad}" y1="${pad - 10}" x2="${pad + w}" y2="${pad - 10}" stroke="var(--dim)"/>
+    <text x="${pad + w / 2}" y="${pad - 14}" text-anchor="middle" font-size="16" fill="var(--accent)">${a.w}</text>
+    <line x1="${pad + w + 10}" y1="${pad}" x2="${pad + w + 10}" y2="${pad + h}" stroke="var(--dim)"/>
+    <text transform="translate(${pad + w + 24} ${pad + h / 2}) rotate(90)" text-anchor="middle" font-size="16" fill="var(--accent)">${a.h}</text>
+  </svg>`;
+}
+
+function card(a) {
+  const half = a.px ? `${a.w} × ${a.h}` : `${Math.round(a.w / 2)} × ${Math.round(a.h / 2)}`;
+  const files = a.frames > 1 ? `${a.frames} frames` : '1 file';
+  const total = a.kind > 1 ? ` × ${a.kind}` : '';
+  return `<article class="card" data-id="${A.indexOf(a)}">
+    <header><h3>${a.n}</h3><span class="tag ${a.st}">${LABEL[a.st]}</span></header>
+    <div class="stage">${diagram(a)}</div>
+    <dl class="dim">
+      <dt>draw at</dt><dd class="num">${a.w} × ${a.h} px</dd>
+      <dt>on screen</dt><dd>${a.px ? 'scaled up, crisp' : half + ' px (390 wide)'}</dd>
+      <dt>files</dt><dd>${files}${total}</dd>
+      <dt>format</dt><dd>${a.fmt}</dd>
+    </dl>
+    <div class="path">${a.p}</div>
+    ${a.note ? `<div class="note">${a.note}</div>` : ''}
+    <div class="row"><button type="button" data-act="tpl">Blank template (PNG)</button><button type="button" data-act="copy">Copy path</button></div>
+  </article>`;
+}
+
+function render() {
+  const q = query.trim().toLowerCase();
+  const rows = A.filter((a) => (filter === 'all' || (filter === 'todo' ? a.st !== 'ok' : a.st === 'ok'))
+    && (!q || `${a.n} ${a.p} ${a.w}x${a.h} ${a.w} ${a.h} ${a.g}`.toLowerCase().includes(q)));
+  $('#out').innerHTML = GROUPS.map((g) => {
+    const items = rows.filter((a) => a.g === g);
+    if (!items.length) return '';
+    return `<h2>${g.toUpperCase()}</h2><div class="grid">${items.map(card).join('')}</div>`;
+  }).join('') || '<p class="empty">Nothing matches. Clear the search or pick All.</p>';
+}
+
+function stats() {
+  const files = (a) => a.frames * a.kind;
+  const todo = A.filter((a) => a.st !== 'ok');
+  $('#stats').innerHTML = `
+    <div><b>${A.reduce((n, a) => n + files(a), 0)}</b>image files in all</div>
+    <div><b>${todo.reduce((n, a) => n + files(a), 0)}</b>still to make</div>
+    <div><b>${A.length}</b>kinds of asset</div>
+    <div><b>${A.filter((a) => a.st === 'ok').length}</b>kinds done</div>`;
+}
+
+// ---- downloads: through the viewer's capability when it exists, else a plain link (so the file also works offline)
+let dl = null;
+function toast(t) { const el = $('#toast'); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => { el.hidden = true; }, 2600); }
+async function save(filename, blob) {
+  try {
+    if (dl) { await dl.save({ filename, data: blob }); toast(`Saved ${filename}`); return; }
+    const url = URL.createObjectURL(blob);
+    const a = Object.assign(document.createElement('a'), { href: url, download: filename });
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  } catch (e) { if (e && e.code !== 'declined') toast('Could not save that file here.'); }
+}
+function template(a) {
+  const c = document.createElement('canvas'); c.width = a.w; c.height = a.h;
+  const x = c.getContext('2d'); const u = Math.max(1, Math.round(a.w / 240));
+  x.fillStyle = '#000'; x.fillRect(0, 0, a.w, a.h);
+  x.strokeStyle = '#ecebe4'; x.lineWidth = 2 * u; x.strokeRect(u, u, a.w - 2 * u, a.h - 2 * u);
+  x.strokeStyle = '#33333a'; x.lineWidth = u; x.beginPath(); x.moveTo(0, 0); x.lineTo(a.w, a.h); x.moveTo(a.w, 0); x.lineTo(0, a.h); x.stroke();
+  if (a.fs) { x.fillStyle = 'rgba(255,138,91,0.25)'; x.fillRect(0, 0, a.w, 96); x.fillStyle = '#ff8a5b'; x.font = `${14 * u}px monospace`; x.textAlign = 'center'; x.fillText('KEEP CLEAR (skip and settings buttons)', a.w / 2, 60 * u / 2 + 8); }
+  x.fillStyle = '#ecebe4'; x.textAlign = 'center'; x.font = `${Math.max(12, 12 * u)}px monospace`;
+  x.fillText(a.n.slice(0, 60), a.w / 2, a.h / 2 - 8 * u); x.fillText(`${a.w} × ${a.h} px`, a.w / 2, a.h / 2 + 12 * u);
+  return new Promise((res) => c.toBlob(res, 'image/png'));
+}
+const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+
+document.addEventListener('click', async (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.f) { filter = b.dataset.f; document.querySelectorAll('[data-f]').forEach((x) => x.classList.toggle('on', x === b)); render(); return; }
+  if (b.id === 'dl-csv') {
+    const head = ['group', 'asset', 'status', 'draw_w', 'draw_h', 'frames', 'count', 'format', 'path'];
+    const esc = (v) => `"${String(v).replace(/"/g, '""')}"`;
+    const csv = [head.join(',')].concat(A.map((a) => [a.g, a.n, a.st, a.w, a.h, a.frames, a.kind, a.fmt, a.p].map(esc).join(','))).join('\n');
+    save('dream-xtreme-assets.csv', new Blob([csv], { type: 'text/csv' })); return;
+  }
+  if (b.id === 'dl-page') { save('dream-xtreme-asset-reference.html', new Blob(['<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' + document.querySelector('title').outerHTML + document.querySelector('link').outerHTML + document.querySelector('style').outerHTML + document.querySelector('.wrap').outerHTML + '<div class="toast" id="toast" hidden></div><script>' + document.querySelector('script').textContent + '<\/script>'], { type: 'text/html' })); return; }
+  const card = b.closest('.card'); if (!card) return;
+  const a = A[Number(card.dataset.id)];
+  if (b.dataset.act === 'tpl') save(`template_${slug(a.n)}_${a.w}x${a.h}.png`, await template(a));
+  if (b.dataset.act === 'copy') { try { await navigator.clipboard.writeText(a.p); toast('Path copied'); } catch { toast(a.p); } }
+});
+$('#q').addEventListener('input', (e) => { query = e.target.value; render(); });
+
+drawFrame(); stats(); render();
+(async () => { try { dl = await window.claude?.use?.('downloads'); } catch { dl = null; } $('#dl-note').textContent = dl ? '' : 'Saves straight to your downloads folder.'; })();
+</script>

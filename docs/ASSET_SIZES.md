@@ -1,6 +1,8 @@
 # Asset Sizes — quick reference
 
 Every image the game takes, with the size to draw it at and where it goes.
+**Visual version:** open [`ASSET_REFERENCE.html`](ASSET_REFERENCE.html) in a browser for every asset drawn to scale, with blank PNG templates at the exact size and a CSV checklist (no zip needed).
+
 For templates, status and the reasons behind each size, see
 [`ART_GUIDE.md`](ART_GUIDE.md).
 
