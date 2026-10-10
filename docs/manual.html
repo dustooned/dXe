@@ -146,7 +146,7 @@ mark { background: var(--mark); color: var(--fg); }
   <div id="nav"><div class="nav-group">
         <h2>Start here</h2>
         <p class="nav-blurb">The working documentation for what is actually built.</p>
-        <ul><li><a class="nav-doc" href="#doc-game_manual" data-doc="doc-game_manual">Game Manual</a></li><li><a class="nav-doc" href="#doc-handoff" data-doc="doc-handoff">Handoff / Project Status</a></li><li><a class="nav-doc" href="#doc-architecture" data-doc="doc-architecture">Architecture</a></li><li><a class="nav-doc" href="#doc-scene_types" data-doc="doc-scene_types">Scene Types</a></li><li><a class="nav-doc" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines">Asset Guidelines</a></li><li><a class="nav-doc" href="#doc-asset_manifest" data-doc="doc-asset_manifest">Asset Manifest (Chapter 1 checklist)</a></li></ul>
+        <ul><li><a class="nav-doc" href="#doc-game_manual" data-doc="doc-game_manual">Game Manual</a></li><li><a class="nav-doc" href="#doc-handoff" data-doc="doc-handoff">Handoff / Project Status</a></li><li><a class="nav-doc" href="#doc-architecture" data-doc="doc-architecture">Architecture</a></li><li><a class="nav-doc" href="#doc-scene_types" data-doc="doc-scene_types">Scene Types</a></li><li><a class="nav-doc" href="#doc-art_guide" data-doc="doc-art_guide">Art Guide (every asset, size and template)</a></li><li><a class="nav-doc" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines">Asset Guidelines</a></li><li><a class="nav-doc" href="#doc-asset_manifest" data-doc="doc-asset_manifest">Asset Manifest (Chapter 1 checklist)</a></li></ul>
       </div><div class="nav-group">
         <h2>Authoring</h2>
         <p class="nav-blurb">Writing dialog and understanding the numbers behind it.</p>
@@ -163,10 +163,6 @@ mark { background: var(--mark); color: var(--fg); }
         <h2>Reference</h2>
         <p class="nav-blurb">Code removed from the build, kept in case a decision needs reversing.</p>
         <ul><li><a class="nav-doc" href="#doc-attic" data-doc="doc-attic">Attic</a></li></ul>
-      </div><div class="nav-group">
-        <h2>Unsorted</h2>
-        <p class="nav-blurb">Not yet placed in a group in scripts/build-manual.mjs.</p>
-        <ul><li><a class="nav-doc" href="#doc-art_guide" data-doc="doc-art_guide">ART_GUIDE</a></li></ul>
       </div></div>
 </nav>
 <main id="main"><article class="doc" id="doc-game_manual" data-title="Game Manual" data-file="GAME_MANUAL.md" hidden>
@@ -437,9 +433,12 @@ his name. A tap skips the entrance. The lake gauge doesn&#39;t appear until he
 asks for your first confession. During the confessions he answers in his
 voice: &quot;Amen.&quot; on a confession, &quot;Shame.&quot; on a double-down, and &quot;Samael.&quot;
 when his real name comes out. He puts up to three of their most recent logged lies to
-them. Each one: <strong>Confess</strong> (that lie&#39;s debt comes back off, and the
-lake clears live on screen) or <strong>Double Down</strong> (a flat +3, every time,
-regardless of the lie&#39;s size). Confession is never quite enough for him.
+them. Each one: <strong>Confess</strong> (clears about half of what that lie added, 1 to 3,
+live on screen) or <strong>Double Down</strong> (adds 1, or 2 for the bigger lies).
+Confession is never quite enough for him: it can&#39;t take the lake below a
+third of where it stood when the altar call began, so a full lake tops out
+at a functional mask, while a shallow one can still go clean. Three taps shift
+the ending a tier or so; they don&#39;t decide it (<code>engine/reckoning.js</code>).
 Then IT and SO, as his hellhound gatekeepers, walk the player into the
 water, and he holds them under at the lake&#39;s final level: the screen
 sinks into clear blue or swamp green. Even a player with nothing to
@@ -1204,8 +1203,9 @@ data: the lake&#39;s live status, the FEELZ check-in answers (he knows them,
 and &quot;You never told him that&quot;), and how many lies were told. Confessing is
 never quite enough (&quot;…Is that all of it?&quot;). That&#39;s scrupulosity, religious
 OCD in which confession becomes a compulsion, and it&#39;s where IT and SO&#39;s
-doubt ends up. Confessing clears the water live on his screen, while
-doubling down fouls it. Even players with nothing to confess still go
+doubt ends up. Confessing clears some of the water live on his screen (about half of
+what the lie added, never below a third of the starting lake), while doubling
+down fouls it a little (+1, or +2 for big lies). Even players with nothing to confess still go
 under: &quot;Even the clean ones go under.&quot;</p>
 <h3 id="doc-handoff--the-therapist-tutorial"><a class="anchor" href="#doc-handoff--the-therapist-tutorial" aria-label="Link to this section">#</a>The Therapist tutorial</h3>
 <p>Rebuilt 2026-09-24 after playtest feedback: the tester liked the wheel
@@ -2752,6 +2752,466 @@ new scene type.</p>
 
       <nav class="pager">
         <a href="#doc-architecture" data-doc="doc-architecture"><span>Previous</span>Architecture</a>
+        <a class="next" href="#doc-art_guide" data-doc="doc-art_guide"><span>Next</span>Art Guide (every asset, size and template)</a>
+      </nav>
+    </article>
+<article class="doc" id="doc-art_guide" data-title="Art Guide (every asset, size and template)" data-file="ART_GUIDE.md" hidden>
+      <p class="doc-source">Start here · <code>docs/ART_GUIDE.md</code></p>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-art_guide--the-rules-read-these-first">The rules (read these first)</a></li><li><a href="#doc-art_guide--title-and-menus">Title and menus</a></li><li><a href="#doc-art_guide--characters">Characters</a></li><li><a href="#doc-art_guide--walk-rooms-one-per-npc-hallway-alley-garage-bar-lot">Walk rooms (one per NPC: hallway, alley, garage, bar lot)</a></li><li><a href="#doc-art_guide--cutscenes">Cutscenes</a></li><li><a href="#doc-art_guide--ending">Ending</a></li><li><a href="#doc-art_guide--interface-art-drawn-in-code-optional-to-replace">Interface art drawn in code (🎨, optional to replace)</a></li><li><a href="#doc-art_guide--templates-art-templates">Templates (art-templates/)</a></li><li><a href="#doc-art_guide--audio-for-reference">Audio (for reference)</a></li><li><a href="#doc-art_guide--handing-art-over">Handing art over</a></li></ul></nav>
+      <h1 id="doc-art_guide--art-guide-every-asset-its-size-and-its-template"><a class="anchor" href="#doc-art_guide--art-guide-every-asset-its-size-and-its-template" aria-label="Link to this section">#</a>Art Guide — every asset, its size, and its template</h1>
+<p>The one page for artists (and for us): every image the game uses or still
+needs, the size to draw it at, how it&#39;s shown, the file format, and which
+template to start from. Templates live in <a href="../art-templates/"><code>art-templates/</code></a>
+(regenerate with <code>node scripts/make-art-templates.mjs</code>).</p>
+<p><strong>To send to artists:</strong> <code>node scripts/make-artist-kit.mjs</code> builds
+<code>deliverables/DreamXtreme_ArtistKit/</code> (an HTML guide with search, collapsible
+asset rows, previews, template downloads and the palette, plus the templates
+and reference images) and zips it to <code>deliverables/DreamXtreme_ArtistKit.zip</code>.
+The deliverables folder is git-ignored; rebuild it whenever the guide changes.</p>
+<p>Deeper detail lives in <a href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><a class="doc-ref" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><code>ASSET_GUIDELINES.md</code></a></a> (naming,
+budgets, animation registration, video and audio gotchas) and
+<a href="#doc-asset_manifest" data-doc="doc-asset_manifest"><a class="doc-ref" href="#doc-asset_manifest" data-doc="doc-asset_manifest"><code>ASSET_MANIFEST.md</code></a></a> (per-object room sizes).</p>
+<hr>
+<h2 id="doc-art_guide--the-rules-read-these-first"><a class="anchor" href="#doc-art_guide--the-rules-read-these-first" aria-label="Link to this section">#</a>The rules (read these first)</h2>
+<ol>
+<li><strong>The frame is 390×844</strong> (portrait phone). It scales to fit every screen
+but keeps that shape, so art never distorts. <strong>Draw at 2×</strong> (780×1688 for
+a full screen) unless a row below says otherwise.</li>
+<li><strong>The look is lo-fi pixel / 1-bit dither.</strong> Black, white, and a few
+accent colors. Hard edges, no soft gradients. The game scales art with
+nearest-neighbor, so crisp pixels stay crisp.</li>
+<li><strong>Formats:</strong><ul>
+<li>Color art → <strong>WebP</strong> (quality ~70).</li>
+<li>Pure 1-bit dither (black, white, clear) → <strong>PNG with a small palette</strong>:
+far smaller than WebP of noise (the title art is done this way).</li>
+<li>Placeholders are SVG; real art replaces them at the same path.</li>
+</ul>
+</li>
+<li><strong>Animated art = numbered frames</strong>, all the same size:
+<code>name_0000.webp</code>, <code>name_0001.webp</code>, … in a folder named after the sprite.</li>
+<li><strong>Bottom-anchored figures</strong> (busts, speakers) may bleed off the left and
+right, <strong>never off the bottom</strong>.</li>
+<li><strong>Keep the top 48px (96px at 2×) clear</strong> on full-screen art: the skip and
+settings buttons live there.</li>
+<li>Hand over <strong>layered source + the export</strong>. Using a template: draw on a
+layer above it, hide the template layer, export.</li>
+</ol>
+<p>Status key: ✅ final · 🔲 placeholder in place (drop real art at the same
+path) · ⬜ nothing yet · 🎨 drawn in code (replace only if you want to).</p>
+<hr>
+<h2 id="doc-art_guide--title-and-menus"><a class="anchor" href="#doc-art_guide--title-and-menus" aria-label="Link to this section">#</a>Title and menus</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Asset</th>
+<th align="left">Path</th>
+<th align="left">Draw at</th>
+<th align="left">Shown at</th>
+<th align="left">Format</th>
+<th align="left">Frames</th>
+<th align="left">Status</th>
+<th align="left">Template</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Title logo (splits in half, slides in, slams)</td>
+<td align="left"><code>public/assets/shared/title/spr_game_title.png</code></td>
+<td align="left">1260×551 per frame (source)</td>
+<td align="left">canvas width</td>
+<td align="left">palette PNG sheet, transparent</td>
+<td align="left">13 (from 73)</td>
+<td align="left">✅ GameMaker beta</td>
+<td align="left"><code>title_logo_1280x560.png</code></td>
+</tr>
+<tr>
+<td align="left">Title background (pans forever)</td>
+<td align="left"><code>public/assets/shared/title/spr_title_bg.png</code></td>
+<td align="left">1073×483 per frame (source)</td>
+<td align="left">full height, panning</td>
+<td align="left">palette PNG vertical sheet</td>
+<td align="left">7</td>
+<td align="left">✅ GameMaker beta</td>
+<td align="left"><code>panorama_frame_1280x576.png</code></td>
+</tr>
+<tr>
+<td align="left">Chapter banner, per chapter (card + hover backdrop)</td>
+<td align="left">set in <code>src/main.js</code> <code>CHAPTERS[id].banner</code></td>
+<td align="left">1280×576 per frame</td>
+<td align="left">card 118px tall; full screen on hover (B&amp;W)</td>
+<td align="left">palette PNG vertical sheet</td>
+<td align="left">any (7 is good)</td>
+<td align="left">🔲 Lake Ulysses uses the title lake, tinted</td>
+<td align="left"><code>panorama_frame_1280x576.png</code></td>
+</tr>
+<tr>
+<td align="left">Studio logo video</td>
+<td align="left"><code>public/assets/shared/sprites/spr_inkflo_logo.mp4</code> / <code>.webm</code></td>
+<td align="left">390×844</td>
+<td align="left">boot</td>
+<td align="left">MP4 + WebM</td>
+<td align="left">~10 s</td>
+<td align="left">✅</td>
+<td align="left">—</td>
+</tr>
+</tbody></table>
+<p><strong>Panoramas (title + chapter banners):</strong> draw a wide landscape. Each frame&#39;s
+<strong>right 22% dissolves into its left edge</strong> (the import makes the loop
+seamless), so keep that strip continuous with the picture&#39;s left edge.
+Import: put the frames in the GameMaker project or a folder and run
+<code>node scripts/import-gm-title.mjs</code> (edit the source path for a new one).</p>
+<hr>
+<h2 id="doc-art_guide--characters"><a class="anchor" href="#doc-art_guide--characters" aria-label="Link to this section">#</a>Characters</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Asset</th>
+<th align="left">Path</th>
+<th align="left">Draw at</th>
+<th align="left">Shown at</th>
+<th align="left">Format</th>
+<th align="left">Frames</th>
+<th align="left">Status</th>
+<th align="left">Template</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Dialog portrait × Deborah, Rwanda, Samun, Rick</td>
+<td align="left"><code>public/assets/lake-ulysses/sprites/portrait_&lt;name&gt;.webp</code></td>
+<td align="left">192×192</td>
+<td align="left">96×96 in a 3px border (also the call avatar, the stay-in-touch bust, the story bust)</td>
+<td align="left">WebP, transparent</td>
+<td align="left">1</td>
+<td align="left">⬜ (colored letter today)</td>
+<td align="left"><code>portrait_192.png</code></td>
+</tr>
+<tr>
+<td align="left">Therapist portrait</td>
+<td align="left"><code>portrait_therapist.webp</code></td>
+<td align="left">192×192</td>
+<td align="left">96×96</td>
+<td align="left">WebP</td>
+<td align="left">1</td>
+<td align="left">💬 voice-only by design; ask first</td>
+<td align="left"><code>portrait_192.png</code></td>
+</tr>
+<tr>
+<td align="left">Confrontation bust × 4</td>
+<td align="left"><code>public/assets/lake-ulysses/sprites/npc_&lt;name&gt;.svg</code> → <code>.webp</code></td>
+<td align="left">600×1200</td>
+<td align="left">72% of canvas height, bottom-anchored</td>
+<td align="left">WebP, transparent</td>
+<td align="left">1 (frames optional)</td>
+<td align="left">🔲</td>
+<td align="left"><code>confront_bust_600x1200.png</code></td>
+</tr>
+<tr>
+<td align="left">Pastor Gabriel bust (Reckoning)</td>
+<td align="left">(new) <code>public/assets/lake-ulysses/sprites/bust_pastor.webp</code></td>
+<td align="left">480×384</td>
+<td align="left">~120px wide, fades in on the death-clock bells</td>
+<td align="left">WebP or palette PNG</td>
+<td align="left">1</td>
+<td align="left">🎨 code pixel art (<code>ui/pastorBust.js</code>)</td>
+<td align="left"><code>pastor_bust_480x384.png</code></td>
+</tr>
+<tr>
+<td align="left">Bob Baiter (speaker)</td>
+<td align="left"><code>public/assets/lake-ulysses/sprites/spr_bb/</code></td>
+<td align="left">600×600</td>
+<td align="left">bottom-anchored</td>
+<td align="left">WebP</td>
+<td align="left">10</td>
+<td align="left">✅</td>
+<td align="left"><code>speaker_sprite_600x600.png</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="doc-art_guide--walk-rooms-one-per-npc-hallway-alley-garage-bar-lot"><a class="anchor" href="#doc-art_guide--walk-rooms-one-per-npc-hallway-alley-garage-bar-lot" aria-label="Link to this section">#</a>Walk rooms (one per NPC: hallway, alley, garage, bar lot)</h2>
+<p>Per room: 1 background sequence + 3 objects + 3 close-ups + 1 door. Exact
+object sizes per room are in <a href="#doc-asset_manifest" data-doc="doc-asset_manifest"><a class="doc-ref" href="#doc-asset_manifest" data-doc="doc-asset_manifest"><code>ASSET_MANIFEST.md</code></a></a>.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Asset</th>
+<th align="left">Path</th>
+<th align="left">Draw at</th>
+<th align="left">Shown at</th>
+<th align="left">Format</th>
+<th align="left">Frames</th>
+<th align="left">Status</th>
+<th align="left">Template</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Room background</td>
+<td align="left"><code>public/assets/lake-ulysses/sprites/spr_&lt;room&gt;_bg/spr_&lt;room&gt;_bg_000N</code></td>
+<td align="left">780×1688 (2× of 390×844)</td>
+<td align="left">full screen</td>
+<td align="left">WebP</td>
+<td align="left">6</td>
+<td align="left">🔲</td>
+<td align="left"><code>room_bg_780x1688.png</code></td>
+</tr>
+<tr>
+<td align="left">Room object</td>
+<td align="left"><code>&lt;room&gt;_&lt;object&gt;.webp</code></td>
+<td align="left">2× of the manifest size</td>
+<td align="left">at its design-space position</td>
+<td align="left">WebP, transparent</td>
+<td align="left">1</td>
+<td align="left">🔲</td>
+<td align="left">—</td>
+</tr>
+<tr>
+<td align="left">Object close-up</td>
+<td align="left"><code>&lt;room&gt;_&lt;object&gt;_closeup.webp</code></td>
+<td align="left">780×1440 (2× of 390×720)</td>
+<td align="left">full width, caption over the bottom quarter</td>
+<td align="left">WebP</td>
+<td align="left">1</td>
+<td align="left">🔲</td>
+<td align="left"><code>closeup_780x1440.png</code></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>Planned: Deborah&#39;s garden, Rwanda&#39;s mural (with a client), Samun&#39;s
+crosswalk will replace some rooms; same sizes.</p>
+</blockquote>
+<hr>
+<h2 id="doc-art_guide--cutscenes"><a class="anchor" href="#doc-art_guide--cutscenes" aria-label="Link to this section">#</a>Cutscenes</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Asset</th>
+<th align="left">Path</th>
+<th align="left">Draw at</th>
+<th align="left">Shown at</th>
+<th align="left">Format</th>
+<th align="left">Frames</th>
+<th align="left">Status</th>
+<th align="left">Template</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Lake background (Bob Baiter scene)</td>
+<td align="left"><code>spr_lake_bg_001/</code></td>
+<td align="left">390×844 (2× welcome)</td>
+<td align="left">full screen</td>
+<td align="left">WebP</td>
+<td align="left">46</td>
+<td align="left">✅</td>
+<td align="left"><code>room_bg_780x1688.png</code></td>
+</tr>
+<tr>
+<td align="left">Opening-quote background</td>
+<td align="left"><code>spr_QuoteBG/</code></td>
+<td align="left">390×844</td>
+<td align="left">full screen</td>
+<td align="left">WebP</td>
+<td align="left">5</td>
+<td align="left">✅</td>
+<td align="left"><code>room_bg_780x1688.png</code></td>
+</tr>
+<tr>
+<td align="left">Prologue lake</td>
+<td align="left"><code>backgrounds/prologue-lake.svg</code></td>
+<td align="left">780×1688</td>
+<td align="left">full screen</td>
+<td align="left">WebP</td>
+<td align="left">1</td>
+<td align="left">🔲</td>
+<td align="left"><code>room_bg_780x1688.png</code></td>
+</tr>
+<tr>
+<td align="left">Announcement symbols (biohazard, exposure, fish, pet, bait shop)</td>
+<td align="left"><code>spr_biohazard/</code> etc.</td>
+<td align="left">384 wide (square-ish)</td>
+<td align="left">centered over Bob&#39;s head</td>
+<td align="left">WebP</td>
+<td align="left">19–32</td>
+<td align="left">✅</td>
+<td align="left"><code>symbol_384x384.png</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="doc-art_guide--ending"><a class="anchor" href="#doc-art_guide--ending" aria-label="Link to this section">#</a>Ending</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Asset</th>
+<th align="left">Path</th>
+<th align="left">Draw at</th>
+<th align="left">Shown at</th>
+<th align="left">Format</th>
+<th align="left">Count</th>
+<th align="left">Status</th>
+<th align="left">Template</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Story slide, one per ending line</td>
+<td align="left">listed in <code>endings.json</code> as <code>images: [...]</code> per ending</td>
+<td align="left">800×600 (4:3)</td>
+<td align="left">full width, 2px frame</td>
+<td align="left">WebP</td>
+<td align="left">Clean Cut 5 · Functional Mask 5 · Collapse 5 · Living Lie 6</td>
+<td align="left">⬜ placeholder frames (&quot;ENDING · n&quot;)</td>
+<td align="left"><code>ending_slide_800x600.png</code></td>
+</tr>
+<tr>
+<td align="left">Epilogue slide (optional)</td>
+<td align="left">same, after the lines</td>
+<td align="left">800×600</td>
+<td align="left">full width</td>
+<td align="left">WebP</td>
+<td align="left">1 per broken stat (integrity, trust, stability, lucidity)</td>
+<td align="left">⬜</td>
+<td align="left"><code>ending_slide_800x600.png</code></td>
+</tr>
+</tbody></table>
+<p>To wire a slide in: add <code>&quot;images&quot;: [&quot;/assets/lake-ulysses/endings/clean_cut_1.webp&quot;, …]</code>
+to that ending in <code>src/chapters/lake-ulysses/content/endings.json</code>, one per
+text line, in order.</p>
+<hr>
+<h2 id="doc-art_guide--interface-art-drawn-in-code-optional-to-replace"><a class="anchor" href="#doc-art_guide--interface-art-drawn-in-code-optional-to-replace" aria-label="Link to this section">#</a>Interface art drawn in code (🎨, optional to replace)</h2>
+<p>These are generated in code as pixel grids today. If you redraw one, keep
+the exact grid size.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Asset</th>
+<th align="left">Where</th>
+<th align="left">Grid</th>
+<th align="left">Notes</th>
+<th align="left">Template</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Feeling icons × 8 (flame, wide eye, raindrop, sun, knot, ugh-face, spark, open hand)</td>
+<td align="left"><code>src/ui/feelingIcons.js</code></td>
+<td align="left">9×9</td>
+<td align="left">one color (the feeling&#39;s)</td>
+<td align="left"><code>feeling_icon_9x9_at16x.png</code></td>
+</tr>
+<tr>
+<td align="left">IT / SO icon</td>
+<td align="left"><code>public/assets/shared/sprites/spr_it_icon.webp</code></td>
+<td align="left">32×32</td>
+<td align="left">✅ pixel art; SO is the same icon inverted</td>
+<td align="left"><code>it_icon_32x32_at16x.png</code></td>
+</tr>
+<tr>
+<td align="left">Status bar (signal, Wi-Fi, battery)</td>
+<td align="left"><code>src/ui/statusBar.js</code></td>
+<td align="left">11×8 / 15×8</td>
+<td align="left">lit + dim cells</td>
+<td align="left">—</td>
+</tr>
+<tr>
+<td align="left">Gear and skip buttons</td>
+<td align="left"><code>src/shell/hud.js</code></td>
+<td align="left">13×13</td>
+<td align="left">—</td>
+<td align="left">—</td>
+</tr>
+<tr>
+<td align="left">Fax printer</td>
+<td align="left"><code>src/ui/feelzRecord.js</code></td>
+<td align="left">46×7</td>
+<td align="left">body, slot, status light</td>
+<td align="left">—</td>
+</tr>
+<tr>
+<td align="left">FEELZ wheel (boot logo, profile)</td>
+<td align="left"><code>src/ui/feelzSilhouette.js</code></td>
+<td align="left">48×48</td>
+<td align="left">slice order: happy, trust, fear, surprise, sadness, disgust, anger, anxiety (clockwise from top)</td>
+<td align="left">—</td>
+</tr>
+</tbody></table>
+<p><strong>Colors</strong> (CSS variables in <code>src/style.css</code>): Anger <code>#ff3b1f</code> · Fear <code>#7b5cff</code>
+· Anxiety <code>#ff9800</code> · Trust <code>#00d9c0</code> · Disgust <code>#5fd35f</code> · Happy <code>#ffe135</code>
+· Sadness <code>#1e90ff</code> · Surprise <code>#ff5fd2</code> · Therapist <code>#9aa0a6</code>.</p>
+<hr>
+<h2 id="doc-art_guide--templates-art-templates"><a class="anchor" href="#doc-art_guide--templates-art-templates" aria-label="Link to this section">#</a>Templates (art-templates/)</h2>
+<table>
+<thead>
+<tr>
+<th align="left">File</th>
+<th align="left">For</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>room_bg_780x1688.png</code></td>
+<td align="left">any full-screen background: HUD strip + safe area marked</td>
+</tr>
+<tr>
+<td align="left"><code>closeup_780x1440.png</code></td>
+<td align="left">object close-ups: caption zone marked</td>
+</tr>
+<tr>
+<td align="left"><code>confront_bust_600x1200.png</code></td>
+<td align="left">confrontation busts: head zone, bottom line, bleed sides</td>
+</tr>
+<tr>
+<td align="left"><code>portrait_192.png</code></td>
+<td align="left">dialog portraits: face circle, border inset</td>
+</tr>
+<tr>
+<td align="left"><code>pastor_bust_480x384.png</code></td>
+<td align="left">Pastor Gabriel: head, halo, wings</td>
+</tr>
+<tr>
+<td align="left"><code>speaker_sprite_600x600.png</code></td>
+<td align="left">cutscene speakers (Bob Baiter style)</td>
+</tr>
+<tr>
+<td align="left"><code>symbol_384x384.png</code></td>
+<td align="left">cutscene symbols over a speaker</td>
+</tr>
+<tr>
+<td align="left"><code>ending_slide_800x600.png</code></td>
+<td align="left">ending story slides: tag corner marked</td>
+</tr>
+<tr>
+<td align="left"><code>panorama_frame_1280x576.png</code></td>
+<td align="left">title / chapter banner frames: blend zone + left edge marked</td>
+</tr>
+<tr>
+<td align="left"><code>title_logo_1280x560.png</code></td>
+<td align="left">a title logo: the split line marked</td>
+</tr>
+<tr>
+<td align="left"><code>feeling_icon_9x9_at16x.png</code></td>
+<td align="left">feeling icons, one 16px square per pixel</td>
+</tr>
+<tr>
+<td align="left"><code>it_icon_32x32_at16x.png</code></td>
+<td align="left">32×32 icons, one 16px square per pixel</td>
+</tr>
+</tbody></table>
+<p>Guide colors: <strong>pink</strong> = edges and no-go lines · <strong>blue</strong> = safe areas ·
+<strong>yellow</strong> = notes.</p>
+<hr>
+<h2 id="doc-art_guide--audio-for-reference"><a class="anchor" href="#doc-art_guide--audio-for-reference" aria-label="Link to this section">#</a>Audio (for reference)</h2>
+<p>MP3, played through Web Audio. Existing: title music and start jingle
+(<code>shared/audio/title/</code>), lake ambience <code>lk_01.mp3</code>, Bob&#39;s announcement
+<code>ann_01.mp3</code>, the therapist&#39;s room tone <code>heavens_waiting_room.mp3</code>, IT&#39;s
+sting, the typewriter tick, the studio logo sting. Almost every other sound
+(bells, barks via SAM, phone, fax, howls) is synthesized in code
+(<code>src/shell/audio.js</code>, <code>src/shell/voices.js</code>). See ASSET_GUIDELINES for
+format details.</p>
+<hr>
+<h2 id="doc-art_guide--handing-art-over"><a class="anchor" href="#doc-art_guide--handing-art-over" aria-label="Link to this section">#</a>Handing art over</h2>
+<ol>
+<li>Export at the size in the table, named exactly as the Path column.</li>
+<li>Frames: same size, numbered from <code>_0000</code>.</li>
+<li>Drop into the path (or send to the developer with the layered source).</li>
+<li>Tell us the frame rate for anything animated (the default is 12 fps).</li>
+</ol>
+
+      <nav class="pager">
+        <a href="#doc-scene_types" data-doc="doc-scene_types"><span>Previous</span>Scene Types</a>
         <a class="next" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><span>Next</span>Asset Guidelines</a>
       </nav>
     </article>
@@ -3308,7 +3768,7 @@ was larger?</li>
 </ol>
 
       <nav class="pager">
-        <a href="#doc-scene_types" data-doc="doc-scene_types"><span>Previous</span>Scene Types</a>
+        <a href="#doc-art_guide" data-doc="doc-art_guide"><span>Previous</span>Art Guide (every asset, size and template)</a>
         <a class="next" href="#doc-asset_manifest" data-doc="doc-asset_manifest"><span>Next</span>Asset Manifest (Chapter 1 checklist)</a>
       </nav>
     </article>
@@ -8625,473 +9085,13 @@ change to shell/chapter responsibilities and deserves its own decision.</p>
 
       <nav class="pager">
         <a href="#doc-dreamxtreme-game-development-demo-doc" data-doc="doc-dreamxtreme-game-development-demo-doc"><span>Previous</span>Game Development Demo Doc</a>
-        <a class="next" href="#doc-art_guide" data-doc="doc-art_guide"><span>Next</span>ART_GUIDE</a>
-      </nav>
-    </article>
-<article class="doc" id="doc-art_guide" data-title="ART_GUIDE" data-file="ART_GUIDE.md" hidden>
-      <p class="doc-source">Unsorted · <code>docs/ART_GUIDE.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-art_guide--the-rules-read-these-first">The rules (read these first)</a></li><li><a href="#doc-art_guide--title-and-menus">Title and menus</a></li><li><a href="#doc-art_guide--characters">Characters</a></li><li><a href="#doc-art_guide--walk-rooms-one-per-npc-hallway-alley-garage-bar-lot">Walk rooms (one per NPC: hallway, alley, garage, bar lot)</a></li><li><a href="#doc-art_guide--cutscenes">Cutscenes</a></li><li><a href="#doc-art_guide--ending">Ending</a></li><li><a href="#doc-art_guide--interface-art-drawn-in-code-optional-to-replace">Interface art drawn in code (🎨, optional to replace)</a></li><li><a href="#doc-art_guide--templates-art-templates">Templates (art-templates/)</a></li><li><a href="#doc-art_guide--audio-for-reference">Audio (for reference)</a></li><li><a href="#doc-art_guide--handing-art-over">Handing art over</a></li></ul></nav>
-      <h1 id="doc-art_guide--art-guide-every-asset-its-size-and-its-template"><a class="anchor" href="#doc-art_guide--art-guide-every-asset-its-size-and-its-template" aria-label="Link to this section">#</a>Art Guide — every asset, its size, and its template</h1>
-<p>The one page for artists (and for us): every image the game uses or still
-needs, the size to draw it at, how it&#39;s shown, the file format, and which
-template to start from. Templates live in <a href="../art-templates/"><code>art-templates/</code></a>
-(regenerate with <code>node scripts/make-art-templates.mjs</code>).</p>
-<p><strong>To send to artists:</strong> <code>node scripts/make-artist-kit.mjs</code> builds
-<code>deliverables/DreamXtreme_ArtistKit/</code> (an HTML guide with search, collapsible
-asset rows, previews, template downloads and the palette, plus the templates
-and reference images) and zips it to <code>deliverables/DreamXtreme_ArtistKit.zip</code>.
-The deliverables folder is git-ignored; rebuild it whenever the guide changes.</p>
-<p>Deeper detail lives in <a href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><a class="doc-ref" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><code>ASSET_GUIDELINES.md</code></a></a> (naming,
-budgets, animation registration, video and audio gotchas) and
-<a href="#doc-asset_manifest" data-doc="doc-asset_manifest"><a class="doc-ref" href="#doc-asset_manifest" data-doc="doc-asset_manifest"><code>ASSET_MANIFEST.md</code></a></a> (per-object room sizes).</p>
-<hr>
-<h2 id="doc-art_guide--the-rules-read-these-first"><a class="anchor" href="#doc-art_guide--the-rules-read-these-first" aria-label="Link to this section">#</a>The rules (read these first)</h2>
-<ol>
-<li><strong>The frame is 390×844</strong> (portrait phone). It scales to fit every screen
-but keeps that shape, so art never distorts. <strong>Draw at 2×</strong> (780×1688 for
-a full screen) unless a row below says otherwise.</li>
-<li><strong>The look is lo-fi pixel / 1-bit dither.</strong> Black, white, and a few
-accent colors. Hard edges, no soft gradients. The game scales art with
-nearest-neighbor, so crisp pixels stay crisp.</li>
-<li><strong>Formats:</strong><ul>
-<li>Color art → <strong>WebP</strong> (quality ~70).</li>
-<li>Pure 1-bit dither (black, white, clear) → <strong>PNG with a small palette</strong>:
-far smaller than WebP of noise (the title art is done this way).</li>
-<li>Placeholders are SVG; real art replaces them at the same path.</li>
-</ul>
-</li>
-<li><strong>Animated art = numbered frames</strong>, all the same size:
-<code>name_0000.webp</code>, <code>name_0001.webp</code>, … in a folder named after the sprite.</li>
-<li><strong>Bottom-anchored figures</strong> (busts, speakers) may bleed off the left and
-right, <strong>never off the bottom</strong>.</li>
-<li><strong>Keep the top 48px (96px at 2×) clear</strong> on full-screen art: the skip and
-settings buttons live there.</li>
-<li>Hand over <strong>layered source + the export</strong>. Using a template: draw on a
-layer above it, hide the template layer, export.</li>
-</ol>
-<p>Status key: ✅ final · 🔲 placeholder in place (drop real art at the same
-path) · ⬜ nothing yet · 🎨 drawn in code (replace only if you want to).</p>
-<hr>
-<h2 id="doc-art_guide--title-and-menus"><a class="anchor" href="#doc-art_guide--title-and-menus" aria-label="Link to this section">#</a>Title and menus</h2>
-<table>
-<thead>
-<tr>
-<th align="left">Asset</th>
-<th align="left">Path</th>
-<th align="left">Draw at</th>
-<th align="left">Shown at</th>
-<th align="left">Format</th>
-<th align="left">Frames</th>
-<th align="left">Status</th>
-<th align="left">Template</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Title logo (splits in half, slides in, slams)</td>
-<td align="left"><code>public/assets/shared/title/spr_game_title.png</code></td>
-<td align="left">1260×551 per frame (source)</td>
-<td align="left">canvas width</td>
-<td align="left">palette PNG sheet, transparent</td>
-<td align="left">13 (from 73)</td>
-<td align="left">✅ GameMaker beta</td>
-<td align="left"><code>title_logo_1280x560.png</code></td>
-</tr>
-<tr>
-<td align="left">Title background (pans forever)</td>
-<td align="left"><code>public/assets/shared/title/spr_title_bg.png</code></td>
-<td align="left">1073×483 per frame (source)</td>
-<td align="left">full height, panning</td>
-<td align="left">palette PNG vertical sheet</td>
-<td align="left">7</td>
-<td align="left">✅ GameMaker beta</td>
-<td align="left"><code>panorama_frame_1280x576.png</code></td>
-</tr>
-<tr>
-<td align="left">Chapter banner, per chapter (card + hover backdrop)</td>
-<td align="left">set in <code>src/main.js</code> <code>CHAPTERS[id].banner</code></td>
-<td align="left">1280×576 per frame</td>
-<td align="left">card 118px tall; full screen on hover (B&amp;W)</td>
-<td align="left">palette PNG vertical sheet</td>
-<td align="left">any (7 is good)</td>
-<td align="left">🔲 Lake Ulysses uses the title lake, tinted</td>
-<td align="left"><code>panorama_frame_1280x576.png</code></td>
-</tr>
-<tr>
-<td align="left">Studio logo video</td>
-<td align="left"><code>public/assets/shared/sprites/spr_inkflo_logo.mp4</code> / <code>.webm</code></td>
-<td align="left">390×844</td>
-<td align="left">boot</td>
-<td align="left">MP4 + WebM</td>
-<td align="left">~10 s</td>
-<td align="left">✅</td>
-<td align="left">—</td>
-</tr>
-</tbody></table>
-<p><strong>Panoramas (title + chapter banners):</strong> draw a wide landscape. Each frame&#39;s
-<strong>right 22% dissolves into its left edge</strong> (the import makes the loop
-seamless), so keep that strip continuous with the picture&#39;s left edge.
-Import: put the frames in the GameMaker project or a folder and run
-<code>node scripts/import-gm-title.mjs</code> (edit the source path for a new one).</p>
-<hr>
-<h2 id="doc-art_guide--characters"><a class="anchor" href="#doc-art_guide--characters" aria-label="Link to this section">#</a>Characters</h2>
-<table>
-<thead>
-<tr>
-<th align="left">Asset</th>
-<th align="left">Path</th>
-<th align="left">Draw at</th>
-<th align="left">Shown at</th>
-<th align="left">Format</th>
-<th align="left">Frames</th>
-<th align="left">Status</th>
-<th align="left">Template</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Dialog portrait × Deborah, Rwanda, Samun, Rick</td>
-<td align="left"><code>public/assets/lake-ulysses/sprites/portrait_&lt;name&gt;.webp</code></td>
-<td align="left">192×192</td>
-<td align="left">96×96 in a 3px border (also the call avatar, the stay-in-touch bust, the story bust)</td>
-<td align="left">WebP, transparent</td>
-<td align="left">1</td>
-<td align="left">⬜ (colored letter today)</td>
-<td align="left"><code>portrait_192.png</code></td>
-</tr>
-<tr>
-<td align="left">Therapist portrait</td>
-<td align="left"><code>portrait_therapist.webp</code></td>
-<td align="left">192×192</td>
-<td align="left">96×96</td>
-<td align="left">WebP</td>
-<td align="left">1</td>
-<td align="left">💬 voice-only by design; ask first</td>
-<td align="left"><code>portrait_192.png</code></td>
-</tr>
-<tr>
-<td align="left">Confrontation bust × 4</td>
-<td align="left"><code>public/assets/lake-ulysses/sprites/npc_&lt;name&gt;.svg</code> → <code>.webp</code></td>
-<td align="left">600×1200</td>
-<td align="left">72% of canvas height, bottom-anchored</td>
-<td align="left">WebP, transparent</td>
-<td align="left">1 (frames optional)</td>
-<td align="left">🔲</td>
-<td align="left"><code>confront_bust_600x1200.png</code></td>
-</tr>
-<tr>
-<td align="left">Pastor Gabriel bust (Reckoning)</td>
-<td align="left">(new) <code>public/assets/lake-ulysses/sprites/bust_pastor.webp</code></td>
-<td align="left">480×384</td>
-<td align="left">~120px wide, fades in on the death-clock bells</td>
-<td align="left">WebP or palette PNG</td>
-<td align="left">1</td>
-<td align="left">🎨 code pixel art (<code>ui/pastorBust.js</code>)</td>
-<td align="left"><code>pastor_bust_480x384.png</code></td>
-</tr>
-<tr>
-<td align="left">Bob Baiter (speaker)</td>
-<td align="left"><code>public/assets/lake-ulysses/sprites/spr_bb/</code></td>
-<td align="left">600×600</td>
-<td align="left">bottom-anchored</td>
-<td align="left">WebP</td>
-<td align="left">10</td>
-<td align="left">✅</td>
-<td align="left"><code>speaker_sprite_600x600.png</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h2 id="doc-art_guide--walk-rooms-one-per-npc-hallway-alley-garage-bar-lot"><a class="anchor" href="#doc-art_guide--walk-rooms-one-per-npc-hallway-alley-garage-bar-lot" aria-label="Link to this section">#</a>Walk rooms (one per NPC: hallway, alley, garage, bar lot)</h2>
-<p>Per room: 1 background sequence + 3 objects + 3 close-ups + 1 door. Exact
-object sizes per room are in <a href="#doc-asset_manifest" data-doc="doc-asset_manifest"><a class="doc-ref" href="#doc-asset_manifest" data-doc="doc-asset_manifest"><code>ASSET_MANIFEST.md</code></a></a>.</p>
-<table>
-<thead>
-<tr>
-<th align="left">Asset</th>
-<th align="left">Path</th>
-<th align="left">Draw at</th>
-<th align="left">Shown at</th>
-<th align="left">Format</th>
-<th align="left">Frames</th>
-<th align="left">Status</th>
-<th align="left">Template</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Room background</td>
-<td align="left"><code>public/assets/lake-ulysses/sprites/spr_&lt;room&gt;_bg/spr_&lt;room&gt;_bg_000N</code></td>
-<td align="left">780×1688 (2× of 390×844)</td>
-<td align="left">full screen</td>
-<td align="left">WebP</td>
-<td align="left">6</td>
-<td align="left">🔲</td>
-<td align="left"><code>room_bg_780x1688.png</code></td>
-</tr>
-<tr>
-<td align="left">Room object</td>
-<td align="left"><code>&lt;room&gt;_&lt;object&gt;.webp</code></td>
-<td align="left">2× of the manifest size</td>
-<td align="left">at its design-space position</td>
-<td align="left">WebP, transparent</td>
-<td align="left">1</td>
-<td align="left">🔲</td>
-<td align="left">—</td>
-</tr>
-<tr>
-<td align="left">Object close-up</td>
-<td align="left"><code>&lt;room&gt;_&lt;object&gt;_closeup.webp</code></td>
-<td align="left">780×1440 (2× of 390×720)</td>
-<td align="left">full width, caption over the bottom quarter</td>
-<td align="left">WebP</td>
-<td align="left">1</td>
-<td align="left">🔲</td>
-<td align="left"><code>closeup_780x1440.png</code></td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>Planned: Deborah&#39;s garden, Rwanda&#39;s mural (with a client), Samun&#39;s
-crosswalk will replace some rooms; same sizes.</p>
-</blockquote>
-<hr>
-<h2 id="doc-art_guide--cutscenes"><a class="anchor" href="#doc-art_guide--cutscenes" aria-label="Link to this section">#</a>Cutscenes</h2>
-<table>
-<thead>
-<tr>
-<th align="left">Asset</th>
-<th align="left">Path</th>
-<th align="left">Draw at</th>
-<th align="left">Shown at</th>
-<th align="left">Format</th>
-<th align="left">Frames</th>
-<th align="left">Status</th>
-<th align="left">Template</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Lake background (Bob Baiter scene)</td>
-<td align="left"><code>spr_lake_bg_001/</code></td>
-<td align="left">390×844 (2× welcome)</td>
-<td align="left">full screen</td>
-<td align="left">WebP</td>
-<td align="left">46</td>
-<td align="left">✅</td>
-<td align="left"><code>room_bg_780x1688.png</code></td>
-</tr>
-<tr>
-<td align="left">Opening-quote background</td>
-<td align="left"><code>spr_QuoteBG/</code></td>
-<td align="left">390×844</td>
-<td align="left">full screen</td>
-<td align="left">WebP</td>
-<td align="left">5</td>
-<td align="left">✅</td>
-<td align="left"><code>room_bg_780x1688.png</code></td>
-</tr>
-<tr>
-<td align="left">Prologue lake</td>
-<td align="left"><code>backgrounds/prologue-lake.svg</code></td>
-<td align="left">780×1688</td>
-<td align="left">full screen</td>
-<td align="left">WebP</td>
-<td align="left">1</td>
-<td align="left">🔲</td>
-<td align="left"><code>room_bg_780x1688.png</code></td>
-</tr>
-<tr>
-<td align="left">Announcement symbols (biohazard, exposure, fish, pet, bait shop)</td>
-<td align="left"><code>spr_biohazard/</code> etc.</td>
-<td align="left">384 wide (square-ish)</td>
-<td align="left">centered over Bob&#39;s head</td>
-<td align="left">WebP</td>
-<td align="left">19–32</td>
-<td align="left">✅</td>
-<td align="left"><code>symbol_384x384.png</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h2 id="doc-art_guide--ending"><a class="anchor" href="#doc-art_guide--ending" aria-label="Link to this section">#</a>Ending</h2>
-<table>
-<thead>
-<tr>
-<th align="left">Asset</th>
-<th align="left">Path</th>
-<th align="left">Draw at</th>
-<th align="left">Shown at</th>
-<th align="left">Format</th>
-<th align="left">Count</th>
-<th align="left">Status</th>
-<th align="left">Template</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Story slide, one per ending line</td>
-<td align="left">listed in <code>endings.json</code> as <code>images: [...]</code> per ending</td>
-<td align="left">800×600 (4:3)</td>
-<td align="left">full width, 2px frame</td>
-<td align="left">WebP</td>
-<td align="left">Clean Cut 5 · Functional Mask 5 · Collapse 5 · Living Lie 6</td>
-<td align="left">⬜ placeholder frames (&quot;ENDING · n&quot;)</td>
-<td align="left"><code>ending_slide_800x600.png</code></td>
-</tr>
-<tr>
-<td align="left">Epilogue slide (optional)</td>
-<td align="left">same, after the lines</td>
-<td align="left">800×600</td>
-<td align="left">full width</td>
-<td align="left">WebP</td>
-<td align="left">1 per broken stat (integrity, trust, stability, lucidity)</td>
-<td align="left">⬜</td>
-<td align="left"><code>ending_slide_800x600.png</code></td>
-</tr>
-</tbody></table>
-<p>To wire a slide in: add <code>&quot;images&quot;: [&quot;/assets/lake-ulysses/endings/clean_cut_1.webp&quot;, …]</code>
-to that ending in <code>src/chapters/lake-ulysses/content/endings.json</code>, one per
-text line, in order.</p>
-<hr>
-<h2 id="doc-art_guide--interface-art-drawn-in-code-optional-to-replace"><a class="anchor" href="#doc-art_guide--interface-art-drawn-in-code-optional-to-replace" aria-label="Link to this section">#</a>Interface art drawn in code (🎨, optional to replace)</h2>
-<p>These are generated in code as pixel grids today. If you redraw one, keep
-the exact grid size.</p>
-<table>
-<thead>
-<tr>
-<th align="left">Asset</th>
-<th align="left">Where</th>
-<th align="left">Grid</th>
-<th align="left">Notes</th>
-<th align="left">Template</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Feeling icons × 8 (flame, wide eye, raindrop, sun, knot, ugh-face, spark, open hand)</td>
-<td align="left"><code>src/ui/feelingIcons.js</code></td>
-<td align="left">9×9</td>
-<td align="left">one color (the feeling&#39;s)</td>
-<td align="left"><code>feeling_icon_9x9_at16x.png</code></td>
-</tr>
-<tr>
-<td align="left">IT / SO icon</td>
-<td align="left"><code>public/assets/shared/sprites/spr_it_icon.webp</code></td>
-<td align="left">32×32</td>
-<td align="left">✅ pixel art; SO is the same icon inverted</td>
-<td align="left"><code>it_icon_32x32_at16x.png</code></td>
-</tr>
-<tr>
-<td align="left">Status bar (signal, Wi-Fi, battery)</td>
-<td align="left"><code>src/ui/statusBar.js</code></td>
-<td align="left">11×8 / 15×8</td>
-<td align="left">lit + dim cells</td>
-<td align="left">—</td>
-</tr>
-<tr>
-<td align="left">Gear and skip buttons</td>
-<td align="left"><code>src/shell/hud.js</code></td>
-<td align="left">13×13</td>
-<td align="left">—</td>
-<td align="left">—</td>
-</tr>
-<tr>
-<td align="left">Fax printer</td>
-<td align="left"><code>src/ui/feelzRecord.js</code></td>
-<td align="left">46×7</td>
-<td align="left">body, slot, status light</td>
-<td align="left">—</td>
-</tr>
-<tr>
-<td align="left">FEELZ wheel (boot logo, profile)</td>
-<td align="left"><code>src/ui/feelzSilhouette.js</code></td>
-<td align="left">48×48</td>
-<td align="left">slice order: happy, trust, fear, surprise, sadness, disgust, anger, anxiety (clockwise from top)</td>
-<td align="left">—</td>
-</tr>
-</tbody></table>
-<p><strong>Colors</strong> (CSS variables in <code>src/style.css</code>): Anger <code>#ff3b1f</code> · Fear <code>#7b5cff</code>
-· Anxiety <code>#ff9800</code> · Trust <code>#00d9c0</code> · Disgust <code>#5fd35f</code> · Happy <code>#ffe135</code>
-· Sadness <code>#1e90ff</code> · Surprise <code>#ff5fd2</code> · Therapist <code>#9aa0a6</code>.</p>
-<hr>
-<h2 id="doc-art_guide--templates-art-templates"><a class="anchor" href="#doc-art_guide--templates-art-templates" aria-label="Link to this section">#</a>Templates (art-templates/)</h2>
-<table>
-<thead>
-<tr>
-<th align="left">File</th>
-<th align="left">For</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left"><code>room_bg_780x1688.png</code></td>
-<td align="left">any full-screen background: HUD strip + safe area marked</td>
-</tr>
-<tr>
-<td align="left"><code>closeup_780x1440.png</code></td>
-<td align="left">object close-ups: caption zone marked</td>
-</tr>
-<tr>
-<td align="left"><code>confront_bust_600x1200.png</code></td>
-<td align="left">confrontation busts: head zone, bottom line, bleed sides</td>
-</tr>
-<tr>
-<td align="left"><code>portrait_192.png</code></td>
-<td align="left">dialog portraits: face circle, border inset</td>
-</tr>
-<tr>
-<td align="left"><code>pastor_bust_480x384.png</code></td>
-<td align="left">Pastor Gabriel: head, halo, wings</td>
-</tr>
-<tr>
-<td align="left"><code>speaker_sprite_600x600.png</code></td>
-<td align="left">cutscene speakers (Bob Baiter style)</td>
-</tr>
-<tr>
-<td align="left"><code>symbol_384x384.png</code></td>
-<td align="left">cutscene symbols over a speaker</td>
-</tr>
-<tr>
-<td align="left"><code>ending_slide_800x600.png</code></td>
-<td align="left">ending story slides: tag corner marked</td>
-</tr>
-<tr>
-<td align="left"><code>panorama_frame_1280x576.png</code></td>
-<td align="left">title / chapter banner frames: blend zone + left edge marked</td>
-</tr>
-<tr>
-<td align="left"><code>title_logo_1280x560.png</code></td>
-<td align="left">a title logo: the split line marked</td>
-</tr>
-<tr>
-<td align="left"><code>feeling_icon_9x9_at16x.png</code></td>
-<td align="left">feeling icons, one 16px square per pixel</td>
-</tr>
-<tr>
-<td align="left"><code>it_icon_32x32_at16x.png</code></td>
-<td align="left">32×32 icons, one 16px square per pixel</td>
-</tr>
-</tbody></table>
-<p>Guide colors: <strong>pink</strong> = edges and no-go lines · <strong>blue</strong> = safe areas ·
-<strong>yellow</strong> = notes.</p>
-<hr>
-<h2 id="doc-art_guide--audio-for-reference"><a class="anchor" href="#doc-art_guide--audio-for-reference" aria-label="Link to this section">#</a>Audio (for reference)</h2>
-<p>MP3, played through Web Audio. Existing: title music and start jingle
-(<code>shared/audio/title/</code>), lake ambience <code>lk_01.mp3</code>, Bob&#39;s announcement
-<code>ann_01.mp3</code>, the therapist&#39;s room tone <code>heavens_waiting_room.mp3</code>, IT&#39;s
-sting, the typewriter tick, the studio logo sting. Almost every other sound
-(bells, barks via SAM, phone, fax, howls) is synthesized in code
-(<code>src/shell/audio.js</code>, <code>src/shell/voices.js</code>). See ASSET_GUIDELINES for
-format details.</p>
-<hr>
-<h2 id="doc-art_guide--handing-art-over"><a class="anchor" href="#doc-art_guide--handing-art-over" aria-label="Link to this section">#</a>Handing art over</h2>
-<ol>
-<li>Export at the size in the table, named exactly as the Path column.</li>
-<li>Frames: same size, numbered from <code>_0000</code>.</li>
-<li>Drop into the path (or send to the developer with the layered source).</li>
-<li>Tell us the frame rate for anything animated (the default is 12 fps).</li>
-</ol>
-
-      <nav class="pager">
-        <a href="#doc-attic" data-doc="doc-attic"><span>Previous</span>Attic</a>
         <span></span>
       </nav>
     </article></main>
 
 <script>
 (function () {
-  var ORDER = ["doc-game_manual","doc-handoff","doc-architecture","doc-scene_types","doc-asset_guidelines","doc-asset_manifest","doc-script_key","doc-script_format","doc-content_schema","doc-stat_math","doc-music_pipeline","doc-jobs","doc-it_design","doc-gm_build","doc-dx-bible","doc-dx_demo_build_spec","doc-dx-mechanics","doc-dreamxtreme-game-development-demo-doc","doc-attic","doc-art_guide"];
+  var ORDER = ["doc-game_manual","doc-handoff","doc-architecture","doc-scene_types","doc-art_guide","doc-asset_guidelines","doc-asset_manifest","doc-script_key","doc-script_format","doc-content_schema","doc-stat_math","doc-music_pipeline","doc-jobs","doc-it_design","doc-gm_build","doc-dx-bible","doc-dx_demo_build_spec","doc-dx-mechanics","doc-dreamxtreme-game-development-demo-doc","doc-attic"];
   var docs = ORDER.map(function (id) { return document.getElementById(id); }).filter(Boolean);
   var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-doc'));
   var search = document.getElementById('search');

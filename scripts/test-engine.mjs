@@ -8,6 +8,7 @@ import { resolveCard, resolveGatedNode, softStep, restAfter, LIE_FOG } from '../
 import { getEndingKey, getEpilogueLine } from '../src/engine/endingEngine.js';
 import { CONTACTS, callFor, voicemailFor, therapistReachable, FOG_WIFI } from '../src/engine/contacts.js';
 import { hazeFor } from '../src/engine/lake.js';
+import { buildReckoningDeck, resolveReckoningCard } from '../src/engine/reckoning.js';
 
 // A stand-in localStorage for the save checks below.
 const mem = new Map();
@@ -132,6 +133,27 @@ for (let r = 0; r < 5000; r++) {
 }
 check('random runs stay in range and resolve', bad === 0, `${bad} problems`);
 check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
+
+// ── The Reckoning: partial confession, gentle double-down ──
+{
+  const ledger = [4, 6, 17].map((d, i) => ({ npc: 'X', ledgerText: 't' + i, tags: [], debtDelta: d }));
+  const run = (start, choices) => {
+    const deck = buildReckoningDeck(ledger, 3, start);
+    let st = { truthDebt: start };
+    deck.forEach((c, i) => { st = { ...st, ...resolveReckoningCard(st, c, choices[i]).patch }; });
+    return st.truthDebt;
+  };
+  const C = ['confess', 'confess', 'confess'];
+  const D = ['doubleDown', 'doubleDown', 'doubleDown'];
+  check('a full lake cannot be confessed clean', run(10, C) >= 4, 'got ' + run(10, C));
+  check('a shallow lake can still go clean', run(3, C) <= 2, 'got ' + run(3, C));
+  check('confessing never adds, doubling never clears', run(6, C) <= 6 && run(6, D) >= 6);
+  check('three double-downs add a little, not everything', run(2, D) <= 8, 'got ' + run(2, D));
+  check('one confession clears at most 3', buildReckoningDeck(ledger, 3, 10).every((c) => c.clears >= 1 && c.clears <= 3));
+  check('double-down adds 1 or 2', buildReckoningDeck(ledger, 3, 10).every((c) => c.adds === 1 || c.adds === 2));
+  check('mixed choices land between the extremes', run(6, ['confess', 'doubleDown', 'confess']) > run(6, C) && run(6, ['confess', 'doubleDown', 'confess']) < run(6, D));
+  check('lake stays in range', run(10, D) === 10 && run(0, C) === 0);
+}
 
 console.log(failed ? `\n${failed} failed, ${passed} passed` : `\nall ${passed} passed`);
 process.exit(failed ? 1 : 0);

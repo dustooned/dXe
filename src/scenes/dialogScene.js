@@ -323,6 +323,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (METERS.includes(name)) {
       if (first) statusBar?.reveal?.(name); else statusBar?.flash?.(name);
     }
+    // {cue:allmeters}: after the four are named one at a time, all of them together.
+    if (name === 'allmeters') statusBar?.flashAll?.();
     // {cue:tone_fifth} etc.: the interval he's describing, played (the science lesson).
     if (name.startsWith('tone_')) audio.playIntervalDemo(name.slice(5));
   }

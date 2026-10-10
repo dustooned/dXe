@@ -246,5 +246,29 @@ export function createStatusBar(stats, { typing = false, airplane = false, quiet
     flash(meter);
   }
 
-  return { el, setTyping, flash, reveal, destroy: () => clearInterval(timer) };
+  // After he's named them one at a time: all four together, one chord, so
+  // they read as a set. The words under the bar show them as one line.
+  function flashAll() {
+    const names = ['stability', 'trust', 'lucidity', 'integrity'];
+    for (const m of names) {
+      const icon = el.querySelector(`[data-meter="${m}"]`);
+      if (!icon || icon.classList.contains('is-concealed')) continue;
+      icon.classList.remove('is-up', 'is-down');
+      void icon.offsetWidth;
+      icon.classList.add('is-up');
+    }
+    el.querySelector('.dx-status__words')?.remove();
+    const words = document.createElement('span');
+    words.className = 'dx-status__words';
+    for (const m of names) {
+      const w = document.createElement('span');
+      w.className = 'is-up';
+      w.textContent = WORDS[m];
+      words.appendChild(w);
+    }
+    el.appendChild(words);
+    playMeterChange(names.map((meter) => ({ meter, up: true })));
+  }
+
+  return { el, setTyping, flash, flashAll, reveal, destroy: () => clearInterval(timer) };
 }

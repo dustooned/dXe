@@ -84,8 +84,9 @@ data: the lake's live status, the FEELZ check-in answers (he knows them,
 and "You never told him that"), and how many lies were told. Confessing is
 never quite enough ("…Is that all of it?"). That's scrupulosity, religious
 OCD in which confession becomes a compulsion, and it's where IT and SO's
-doubt ends up. Confessing clears the water live on his screen, while
-doubling down fouls it. Even players with nothing to confess still go
+doubt ends up. Confessing clears some of the water live on his screen (about half of
+what the lie added, never below a third of the starting lake), while doubling
+down fouls it a little (+1, or +2 for big lies). Even players with nothing to confess still go
 under: "Even the clean ones go under."
 
 ### The Therapist tutorial

@@ -1,8 +1,8 @@
 // Scene type: 'reckoning'. The Reckoning as a baptism: Pastor Gabriel (born
 // Samael) stands in Lake Ulysses and runs an altar call. The confess /
 // double-down deck from the run's ledger is still the mechanic (confessing
-// clears the water, doubling down fouls it), but he's the one asking, and
-// it's never quite enough. That's scrupulosity (religious OCD: confession
+// clears some of the water, doubling down fouls it a little; engine/
+// reckoning.js), but he's the one asking, and it's never quite enough. That's scrupulosity (religious OCD: confession
 // as a compulsion no reassurance satisfies), the natural end point of IT
 // and SO's doubt. Then IT and SO, as his gatekeeper hellhounds, walk the
 // player into the water, and he holds them under at the lake's final level
@@ -46,7 +46,7 @@ const ALTAR_AT = GREET_AT + 1500;
 
 export function mount(stageEl, scene, { run, onComplete }) {
   const script = scene.pastor;
-  const deck = buildReckoningDeck(run.get().ledger);
+  const deck = buildReckoningDeck(run.get().ledger, 3, run.get().truthDebt);
   let typewriter = null;
   let itPopup = null;
   let queue = [];
