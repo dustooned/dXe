@@ -344,6 +344,15 @@ and the dialog scene opens on that node instead of its first one.
 }
 ```
 
+Confrontation scenes also take `npc` (their content, for the colored option
+stripes) and may include `"secret": true` beats and options. These only
+exist once `run.secrets[opensDialog]` is set (the room restore): a secret beat
+plays (the NPC notices what you restored, text per class) and a secret option
+appears (per-class label, class glyph and outline) whose `opener` is the NPC's
+`<npc>_01_secret` node, authored with `GLOW: yes` so it opens with their
+first feeling lit on the wheel. Every option also shows a stripe in the first
+feeling its opener meets for the player's class.
+
 That is the whole pre-battle confrontation mechanic — **there is no
 `confrontation` scene type and there shouldn't be one.** A confrontation is
 a cutscene that happens to shape what follows: sprite, speaker nameplate,
@@ -434,6 +443,29 @@ dominant-emotion read — see the `dialog` section above for both), and
 Every trigger `IT_DESIGN.md` originally scoped is now built; what's left
 there is content (real prose in place of the placeholder lines) and the
 separate, still-unscoped hint-system merge.
+
+### `marker` (`src/scenes/markerScene.js`)
+
+The page of the novel that opens an NPC's part of the chapter. White ink on
+black, all pixel type, loaded like an 80s computer: while `.is-loading` the
+border runs tape stripes and scanlines with a faint roll bar pass over the
+page (nothing moves or shakes; it has to stay readable); each line prints in
+with a bleep from a tune in the NPC's class (`audio.playClassBleep`), the
+plate a band at a time with tape hiss, then their world's sound
+(`audio.playOpenerTheme`, which returns `{ ms, stop }`), the drop cap, and the
+prose typed on one page (`createTypewriter` `onePage`). Their room is audible
+the whole time (`audio.startOpenerAmbience`). Tap finishes loading; tap again
+and the ink fades in steps into the next scene.
+
+```js
+{ type: 'marker', id: 'deborah-marker', numeral: 'I', npc: deborah,
+  folio: 23, plate: 'PLATE I. THE THIRD FLOOR.', prose: 'The bulb over her door…' }
+```
+
+The plate is a placeholder 1-bit SVG from `src/ui/plates.js` (`plateSvg(npcKey)`),
+to be replaced by real art. The numeral takes the NPC's class color
+(`npc.npcClass`, manuscript `CLASS:`); there are deliberately no other class or
+feeling symbols on the page, because the page must not give the answer away.
 
 ### `minigame` (`src/scenes/minigameScene.js`)
 
@@ -537,6 +569,30 @@ which is impossible if it's baked into a flat background frame.
   advance: { x: 281, y: 464, w: 55, h: 253, sprite: '...', to: 'next-room-id' },
 }
 ```
+
+**Room color code and restores (2026-10-10).** A room module no longer
+mounts its own sequencer: it calls `mountNpcWalk(stageEl, scene, context,
+{ steps, secretKey })` from `engine/walkSequencer.js`, and the scene entry
+carries `npc` (the NPC the room leads to). Each hotspot adds:
+
+```js
+{ ..., opener: 'deborah_01_soft',          // the opener this object reads
+  restore: { by: 'Crystals',               // the class that can restore it
+             hint: '…', done: '…' } }       // text per class or plain
+```
+
+- `opener` resolves, for the player's class, to that opener's first feeling
+  (`moodFor`); the sprite and its close-up get a flat color layer of it
+  (`.dx-room__tint`: a mask cut to the sprite's shape, multiplied over it,
+  never a glow), and the close-up shows a corner glyph of the NPC's class.
+- Exactly one hotspot per class has `restore.by`. Once every object has been
+  opened, that one blinks between its feeling color and the class color; the
+  close-up then appends `restore.hint`, tapping its picture restores it (class
+  sound, `restore.done`, a stamp in the class's words), and `onRestore` writes
+  `run.secrets[<secretKey>]`.
+- Captions carry one word in the feeling color (`{color:Fear}afraid{/color}`)
+  that must match the feeling that opener meets for that class
+  (`npm run test:engine` checks it).
 
 - **Room intro** (`intro`, optional): a descriptive line drawn over the room
   the instant it mounts — where you just arrived, before anything is

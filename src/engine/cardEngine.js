@@ -1,5 +1,5 @@
 import { clamp } from './util.js';
-import { emotionAmplifies } from './loadout.js';
+import { emotionAmplifies, effortCost } from './loadout.js';
 
 const STAT_KEYS = ['integrity', 'stability', 'lucidity', 'trust'];
 const AMPLIFY_MULTIPLIER = 1.5;
@@ -22,13 +22,10 @@ export const FULL_LAKE_COST = -1;
 // (the little screen and needle go dark); at EMPTY_BATTERY your most-used
 // feeling greys out too. Lies recharge it; the truth often costs charge.
 // 2, not 3: at 3 an honest player (the truth costs charge) spent a third of
-// the chapter with the little screen dark, and most of it with second-guessing
-// (scripts/balance-sim.mjs). At 2 it is the end of a hard stretch, not the norm.
+// the chapter with the little screen dark (scripts/balance-sim.mjs). At 2 it
+// is the end of a hard stretch, not the norm.
 export const LOW_BATTERY = 2;
 export const EMPTY_BATTERY = 1;
-// Switching to a different feeling on the same question costs this much, from
-// the second switch on (the first change of mind is free).
-export const SECOND_GUESS_COST = -1;
 
 // The debt change a swipe actually applies (see TRUTH_CLEANSE).
 export function effectiveDebtDelta(edge, swipeKey) {
@@ -110,6 +107,10 @@ export function resolveCard(state, node, swipeKey, emotion, { fog = true } = {})
   }
   const leaningEffects = applyEmotionalLean(effects, emotion);
   const statPatch = applyStatDelta(state, leaningEffects);
+  // Effort: a feeling your class isn't used to costs battery when you commit
+  // to it (loadout.js effortCost), straight off the top. Not in the tutorial.
+  const effort = fog ? effortCost(emotion, state.loadout, state.emotionCounts) : 0;
+  if (effort) statPatch.stability = Math.max(0, (statPatch.stability ?? state.stability ?? 5) - effort);
   const truthDebt = clamp(state.truthDebt + effectiveDebtDelta(edge, swipeKey), 0, 10);
 
   const ledger = edge.ledgerEntry

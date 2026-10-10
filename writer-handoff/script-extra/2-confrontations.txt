@@ -31,6 +31,8 @@ She has been standing on the other side of it for a while.
 [confront_deborah / beat 4 / choice B] "You look like you haven't slept."
 [confront_deborah / beat 4 / choice C] "I heard about your son."
 [confront_deborah / beat 4 / choice D] [object Object]
+[confront_deborah / beat 4 / choice E] [object Object]
+[confront_deborah / beat 4 / choice F] "I'm from the church."
 
 # --- RWANDA ---
 
@@ -52,6 +54,8 @@ She knew you came in. She hasn't decided yet whether to make that your problem.
 [confront_rwanda / beat 4 / choice B] "What are you looking at out there?"
 [confront_rwanda / beat 4 / choice C] "People have been telling me about you."
 [confront_rwanda / beat 4 / choice D] [object Object]
+[confront_rwanda / beat 4 / choice E] [object Object]
+[confront_rwanda / beat 4 / choice F] "I'm from the gallery."
 
 # --- SAMUN ---
 
@@ -73,6 +77,8 @@ He keeps doing it after they're dry.
 [confront_samun / beat 4 / choice B] "How's business been?"
 [confront_samun / beat 4 / choice C] Look at his hands until he stops.
 [confront_samun / beat 4 / choice D] [object Object]
+[confront_samun / beat 4 / choice E] [object Object]
+[confront_samun / beat 4 / choice F] "County inspector. Routine."
 
 # --- RICK ---
 
@@ -94,4 +100,6 @@ There's blood on his knuckles that isn't his.
 [confront_rick / beat 4 / choice B] Buy him a drink first.
 [confront_rick / beat 4 / choice C] "What happened to the guy outside?"
 [confront_rick / beat 4 / choice D] [object Object]
+[confront_rick / beat 4 / choice E] [object Object]
+[confront_rick / beat 4 / choice F] "Dutch sent me."
 

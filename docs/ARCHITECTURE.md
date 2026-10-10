@@ -135,8 +135,9 @@ no idea Truth Debt exists.
 ## Scene types (`src/scenes/`)
 
 The reusable scene handlers: `cutsceneScene.js`, `questionnaireScene.js`,
-`dialogScene.js`, `minigameScene.js`, `reckoningScene.js` (Pastor
-Gabriel's baptism), `endingScene.js`. Each implements
+`dialogScene.js`, `minigameScene.js`, `markerScene.js` (the novel page that
+opens each NPC), `reckoningScene.js` (Pastor Gabriel's baptism),
+`endingScene.js`. Each implements
 `mount(stageEl, scene, context) -> unmount`. Full contract in
 `SCENE_TYPES.md`.
 

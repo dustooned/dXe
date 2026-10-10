@@ -48,6 +48,37 @@
               "Crystals": "\"I emptied your ashtray.\""
             },
             "opener": "rick_01_secret"
+          },
+          {
+            "fake": true,
+            "label": {
+              "Guns": "\"Your chain was thrown.\"",
+              "Bible": "\"Your friend's flyer was hanging crooked.\"",
+              "Crystals": "\"I emptied your ashtray.\""
+            },
+            "opener": "rick_01_fake",
+            "lie": {
+              "debtDelta": 1,
+              "ledgerEntry": "You claimed you'd fixed something for Rick that you hadn't.",
+              "tags": [
+                "Loyalty"
+              ]
+            }
+          },
+          {
+            "whenFogged": true,
+            "label": "\"Dutch sent me.\"",
+            "opener": "rick_01_lie",
+            "lie": {
+              "effects": {
+                "trust": 2
+              },
+              "debtDelta": 2,
+              "ledgerEntry": "You told Rick a dead man sent you.",
+              "tags": [
+                "Loyalty"
+              ]
+            }
           }
         ]
       }

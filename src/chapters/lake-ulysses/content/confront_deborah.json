@@ -48,6 +48,37 @@
               "Crystals": "\"You never replaced the lightbulb.\""
             },
             "opener": "deborah_01_secret"
+          },
+          {
+            "fake": true,
+            "label": {
+              "Guns": "\"Somebody let that frame hang crooked.\"",
+              "Bible": "\"Your welcome mat was face down.\"",
+              "Crystals": "\"You never replaced the lightbulb.\""
+            },
+            "opener": "deborah_01_fake",
+            "lie": {
+              "debtDelta": 1,
+              "ledgerEntry": "You claimed you'd fixed something for Deborah that you hadn't.",
+              "tags": [
+                "Faith"
+              ]
+            }
+          },
+          {
+            "whenFogged": true,
+            "label": "\"I'm from the church.\"",
+            "opener": "deborah_01_lie",
+            "lie": {
+              "effects": {
+                "trust": 2
+              },
+              "debtDelta": 2,
+              "ledgerEntry": "You told Deborah you were from the church.",
+              "tags": [
+                "Faith"
+              ]
+            }
           }
         ]
       }

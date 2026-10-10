@@ -238,7 +238,7 @@ reuse it:</p>
   Prologue  →  FEELZ boot + check-in  →  Questionnaire (intake)  →  Therapist (tutorial)
 
 Then, once per NPC (Deborah → Rwanda → Samun → Rick):
-  Explore (mini-game walk)  →  Confront (pick your opener)  →  Encounter (dialog)
+  Chapter page  →  Explore (mini-game walk)  →  Confront (pick your opener)  →  Encounter (dialog)
 
 Then:
   Reckoning: Pastor Gabriel&#39;s baptism (confess or double down, then under the water)
@@ -250,6 +250,21 @@ matches the player with a provider. The Questionnaire is that provider&#39;s
 intake, and its last beat hands off to the Therapist picking up. Splitting or reordering these
 breaks a line that already answers a line — see
 <a href="#doc-handoff" data-doc="doc-handoff"><a class="doc-ref" href="#doc-handoff" data-doc="doc-handoff"><code>HANDOFF.md</code></a></a> if you&#39;re ever tempted to move one.</p>
+<p><strong>The chapter page.</strong> Each NPC opens on a page of the novel: white ink on
+black, all pixel type, loading like an 80s computer (tape stripes in the
+border, scanlines, a bleep for every line in a tune that sounds like the
+NPC&#39;s class). It shows a Roman numeral, their name, a dithered plate of their
+world and a few lines of prose, with their room already audible underneath
+(Deborah&#39;s dying bulb, Rwanda&#39;s neon, Samun&#39;s static radio, Rick&#39;s bass through
+the wall). Its only hint is the numeral&#39;s color, which is the NPC&#39;s own class.</p>
+<p><strong>Reading the room.</strong> In each room the objects are tinted in a flat color: the
+first feeling that opener will meet, as <em>your</em> class meets them (an NPC can
+feel differently toward their kin or their foe). The captions are your class&#39;s
+perception of them, never a verdict. Open every object, and the one your class
+can restore starts blinking; open it again for a hint in your class&#39;s voice and
+tap the picture to see to it (Guns square it away, Bible make it right, Crystals
+attune to it). Restore something and a fifth, secret option appears in the
+confrontation, opening on their first feeling already glowing on your wheel.</p>
 <p><strong>Why every NPC is explore → confront → encounter.</strong> The walk builds
 atmosphere and place before a face ever appears; the confrontation is
 where the player picks <em>how</em> they&#39;re arriving (guarded, warm, or already
@@ -334,7 +349,7 @@ play. The player sees it as the lake gauge (§2): its five statuses
 the four endings, so a status change means the ending they&#39;re heading
 toward just changed. Debt tops out at 10 but never ends the chapter
 early: every NPC is still met, and the debt only picks the ending.</p>
-<p><strong>Lies pay off (2026-10-09).</strong> The battery is a resource: the truth often costs charge, a lie puts some back, and switching feelings on a question costs 1 from the second switch on (the first change of mind is free). At 2 or less FEELZ dims to save power (the little screen and needle go dark); near empty, your most-used feeling greys out. A lie that warms someone relaxes them, so their next feeling glows on your wheel. Past a full lake, each lie also fogs the Wi-Fi and slips the clock. The Therapist names the trade and refuses to pick for you.</p>
+<p><strong>Lies pay off (2026-10-09).</strong> The battery is a resource: the truth often costs charge, a lie puts some back, and trying feelings on the wheel is always free. <strong>Effort (2026-10-10):</strong> the first time you answer (swipe) with a gifted feeling that is the opposite of one of your class&#39;s three (across the wheel: Happy/Sadness, Trust/Disgust, Fear/Anger, Surprise/Anxiety), it costs 1 battery; after that you&#39;re used to it. Your own three, Trust, and other gifts are free. The Therapist says this in his &quot;Practical stuff&quot; line. At 2 or less FEELZ dims to save power (the little screen and needle go dark); near empty, your most-used feeling greys out. A lie that warms someone relaxes them, so their next feeling glows on your wheel. Past a full lake, each lie also fogs the Wi-Fi and slips the clock. The Therapist names the trade and refuses to pick for you.</p>
 <p><strong>Lying feels good, on purpose</strong> (2026-10-04). Avoidance pays off now and
 costs later, so the game does too:</p>
 <ul>
@@ -508,7 +523,7 @@ scales with how far their TRU and STB moved.</p>
 <li><strong>Vectorscope (right):</strong> your signal plotted against theirs, a Lissajous figure. The shape is the ratio between your feeling and the one they&#39;re really in (not a mask: the line can lie, the shape can&#39;t), on Plutchik&#39;s wheel (the FEELZ wheel&#39;s own order): the same feeling is a circle (1:1), a neighbor a knot (2:3), two apart a weave (8:9), three apart a denser loop (4:5), opposites a tangle that never settles (7:5, the tritone). How still it holds is closeness: drifting when far apart, locked when close, a still glowing circle at full trust. No feeling held, or shut out: a flat line.</li>
 </ul>
 <p><strong>Masks</strong> show one color on their line and flicker the real one underneath (about every two seconds); only the real one syncs, and the vectorscope answers to it.</p>
-<p><strong>How it&#39;s taught (2026-10-09: by doing).</strong> The Therapist&#39;s find-me exercise reacts to each pick: a hint names what it drew and he comments in his class voice, until the shape closes. In battles, short gold coach lines (never popups) appear the first time something matters (a mask, a new friend, the first busy shape or needle-left) and wait for the action; gold lines under the first reactions say what each answer moved. The science comes on your first call to him. FEELZ tip popups are off for now. (Earlier, 2026-10-04:) The Therapist&#39;s last exercise has two parts. First he asks you to pick any feeling but his (his line wears a &quot;fine&quot; mask) and names what apart looks like: a busier shape, the needle leaning left. Then his real color starts to flicker under his line and you find it: a still circle. &quot;My line said fine. The shape doesn&#39;t lie.&quot; In real encounters, a <strong>FEELZ tip</strong> (<code>ui/feelzTip.js</code>) slides up above the lake the first time each piece does something (a mask, a busy shape, the needle left, a clean circle, the pick blocks), once a run, with a tiny picture of the thing, while the scope frames that piece in a pulsing gold box (<code>getHighlight</code>). It never blocks and stays up until you tap it closed (✕). Tips only show while your Wi-Fi is 4 or more (two arcs); every lie fogs the Wi-Fi by 1 (not in the tutorial), so a liar loses them (and the Therapist&#39;s call) until the truth clears things up.</p>
+<p><strong>How it&#39;s taught (2026-10-09: by doing).</strong> The Therapist&#39;s find-me exercise reacts to each pick: a hint names what it drew and he comments in his class voice, until the shape closes. In battles, short gold coach lines (never popups) appear the first time something matters (a mask, a new friend, the first busy shape or needle-left) and wait for the action; gold lines under the first reactions say what each answer moved. The science comes on your first call to him. He is an early-game coach only: his new-friend call happens once, in the first three encounters (never on Rick), and a first friend who arrives later just pulses quietly in the dock. FEELZ tip popups are off for now. (Earlier, 2026-10-04:) The Therapist&#39;s last exercise has two parts. First he asks you to pick any feeling but his (his line wears a &quot;fine&quot; mask) and names what apart looks like: a busier shape, the needle leaning left. Then his real color starts to flicker under his line and you find it: a still circle. &quot;My line said fine. The shape doesn&#39;t lie.&quot; In real encounters, a <strong>FEELZ tip</strong> (<code>ui/feelzTip.js</code>) slides up above the lake the first time each piece does something (a mask, a busy shape, the needle left, a clean circle, the pick blocks), once a run, with a tiny picture of the thing, while the scope frames that piece in a pulsing gold box (<code>getHighlight</code>). It never blocks and stays up until you tap it closed (✕). Tips only show while your Wi-Fi is 4 or more (two arcs); every lie fogs the Wi-Fi by 1 (not in the tutorial), so a liar loses them (and the Therapist&#39;s call) until the truth clears things up.</p>
 <p><strong>Meters push back at the edges (2026-10-04).</strong> Inside 3 to 7 every point moves a meter a full step; past that, moving further out costs two points per step, so meters rarely pin at 0 or 10. After each encounter a short beat shows the battery charging back: +3 if they let you in, otherwise up to +2 toward 5 (never down). Calling the Therapist when he can&#39;t be reached rings out to his voicemail, which says whether your bars or your Wi-Fi is too low. </p>
 <p><strong>Meters you can see move (2026-10-04).</strong> When a status-bar meter rises, its new cells charge in one by one with a gold flash and pixel sparks float off the icon; when it drops, the icon glitches (shake, red/blue split) and the lost cells flicker red and go dark. The small words under the bar stay, but you don&#39;t need them.</p>
 <h3 id="doc-game_manual--the-opponent39s-weather"><a class="anchor" href="#doc-game_manual--the-opponent39s-weather" aria-label="Link to this section">#</a>The opponent&#39;s weather</h3>
@@ -1714,6 +1729,9 @@ last page with no opening one.</li>
 <li><strong>Marker page</strong> (<code>scenes/markerScene.js</code>, type <code>marker</code>, before each room): a page of the novel, white ink on black, all pixel type (VT323 body, Press Start chapter / name / drop cap), loaded like an 80s home computer. Running head (TRUTH DEBT / LAKE ULYSSES), CHAPTER + Roman numeral (the numeral in the NPC&#39;s class color is the page&#39;s only hint; no glyph, no feeling pips, the user found those gave it away), their name, a 1-bit dithered plate of their environment (<code>ui/plates.js</code>, PLACEHOLDER geometry) with a caption, a paragraph of environment prose with a drop cap (scene <code>plate</code> / <code>prose</code> / <code>folio</code> in index.js; typewriter <code>onePage</code>), and the folio. Sound is the point: their room is audible under the page from the start (<code>audio.startOpenerAmbience</code>: Deborah&#39;s dying bulb buzz, Rwanda&#39;s neon hum and far traffic, Samun&#39;s static radio, Rick&#39;s bass through the wall). While <code>.is-loading</code>: tape stripes race in the border, scanlines and a faint roll bar over the page, nothing shakes (readability); each line prints in (a dim frame, then full ink) with a bleep from a little tune in the NPC&#39;s class (<code>audio.playClassBleep</code>: Guns square march on the root, Bible triangle hymn up a major chord, Crystals high sine pentatonic twinkles), the plate in 12 bands with tape data hiss; when the plate is in, their theme sound plays (<code>playOpenerTheme</code>: page turn, spray can, crosswalk, motorcycle), then the drop cap prints and the prose types. Tap finishes loading; tap again and the ink fades in steps into the room. Reduced Effects: no stripes, roll or print frames.</li>
 <li><strong>Room tints are retro sprite tints, not glows</strong> (<code>ui/walkRoom.js</code> <code>.dx-room__tint</code>): a flat layer of the feeling&#39;s color, masked to the sprite&#39;s own shape and multiplied over it (works on white-line art); your class&#39;s object palette-swaps feeling / class color in hard steps; restored, it holds your class color; restoring flashes two inverted frames.</li>
 <li><strong>Review fixes (2026-10-10):</strong> the connection story&#39;s breaths (pull, lock, face, dips, held look) now cut short on a tap (<code>HURRY_FLOOR_MS</code> 180 ms), so fast tapping draws the trauma reveal at the player&#39;s pace (about 6 s tapped vs 15 s+ of fixed waits); opener ambience doesn&#39;t schedule while the audio is paused (no stacked kicks on resume); <code>playOpenerTheme</code> returns <code>{ ms, stop }</code> and the page cuts it when left; the secret openers carry an authored <code>GLOW: yes</code> (no more <code>_secret</code> name check); <code>forClass</code> in engine/loadout.js is the one per-class text picker (rooms, cutscenes); Reduce Effects holds your class color on your restorable object instead of the blink; balance-check&#39;s matchable count leaves the secret nodes out; the marker&#39;s load sequence is explicit <code>[step, delay]</code> pairs.</li>
+<li><strong>Liar&#39;s lens (2026-10-10):</strong> while fogged (<code>isFogged</code>: Wi-Fi under 4, engine/contacts.js), room objects and confrontation stripes show comfort instead of feeling (<code>--color-comfort</code> where the opener&#39;s node has <code>BID: lie</code>, <code>--color-fog</code> grey elsewhere; Rwanda has none, she isn&#39;t comforted by lies), captions lose their colored word, the restore blink and hint go (the restore still works if you remember it). The fogged confrontation adds a white-lie option (<code>whenFogged</code>, e.g. Deborah &quot;I&#39;m from the church.&quot;: +2 Bars, debt 2, ledger, priced through <code>resolveCard</code> as a lie) opening <code>&lt;npc&gt;_01_lie</code>, and, if you restored nothing, a bluffed secret (<code>fake</code>, same words as the secret) opening <code>&lt;npc&gt;_01_fake</code>, where nothing changed. Both nodes <code>GLOW: yes</code>, every class holds their first feeling. The fogged chapter page is warm (lamplight ink, muffled ambience with a low hum). Tests: 115.</li>
+<li><strong>Effort replaces the change-of-mind cost (2026-10-10):</strong> switching on the wheel is free again (SECOND_GUESS_COST removed, sim&#39;s <code>hesitate</code> gone). <code>loadout.js effortCost(emotion, loadout, counts)</code>, charged in <code>resolveCard</code> on the swipe (not in the tutorial): a gift that clashes with one of your class&#39;s own (the wheel opposite) costs <code>CLASH_COST</code> 1 until you&#39;ve answered with it <code>USED_TO</code> 1 time; own feelings, Trust and other gifts are free. The user first approved gift 1 / clash 2, but the sim ran honest players empty in 80-100% of runs; this setting lands at Guns 30% / Bible 9% / Crystals 47% empty (old: 41/14/29). The Therapist&#39;s &quot;Practical stuff&quot; line says it per class. Tests: 118.</li>
+<li><strong>Repeat client (2026-10-10):</strong> the ending saves <code>save.lastRun</code> (class, ending, debt, baptism confessed/doubled from <code>run.reckoningChoices</code>). With a lastRun, the chapter swaps the Therapist tutorial for <code>therapistReturn.js</code> (a cutscene under the same id): he reads the file back (how wet you came out, the ppm, the baptism, same or new class), says you&#39;re doing it again, gives the class homework and hangs up. <code>run.repeat</code> silences every coach call and dock pulse for the run, and the science is counted as explained.</li>
 <li><strong>Therapist is early-game only</strong> (<code>dialogScene.js</code> nodeCoach): the new-friend call is one call per run (key <code>friend</code>, was <code>friend:&lt;who&gt;</code>; old keys still count) and only in the first three encounters, so he never calls during Rick. A first friend who arrives later pulses quietly in the dock for that card instead. His other calls are the first battle (scope) and the first mask (Samun). Verified: Rick with a fresh contact gets no call; Rwanda with Deborah in the phone does.</li>
 <li><strong>Rooms</strong> (<code>minigames/*.js</code> via <code>engine/walkSequencer.js</code> <code>mountNpcWalk</code>; <code>ui/walkRoom.js</code>): each object names an opener; it glows in that opener&#39;s first feeling for your class, its close-up is washed in it with the NPC&#39;s class glyph in the corner, and each class&#39;s caption is its own perception with that feeling&#39;s word colored (tests check the color matches). One object per class can be restored: once all three are opened, yours calls in your class color; open it again for a hint in your class&#39;s voice, tap the picture to do it (class sigil sound, done line, stamp). That writes <code>run.secrets[npc]</code>.</li>
 <li><strong>Confrontations</strong> (<code>cutsceneScene.js</code>, scenes get <code>npc</code>): each option has a stripe in its first feeling (same color as its room object). With <code>run.secrets[npc]</code>, a <code>secret: true</code> beat plays (they notice what you restored, per class) and a fifth <code>secret: true</code> option appears (your class glyph, class-colored outline, per-class label) opening <code>&lt;npc&gt;_01_secret</code>: BID truth, their first feeling already glowing on your wheel (<code>/_secret$/</code> -&gt; pendingRelax). Truth leads where the plain opener&#39;s truth does (Deborah: straight to <code>deborah_03</code>).</li>
@@ -2178,8 +2196,9 @@ them — nothing forces it into this shape. <code>sceneSequencer.js</code> itsel
 no idea Truth Debt exists.</p>
 <h2 id="doc-architecture--scene-types-srcscenes"><a class="anchor" href="#doc-architecture--scene-types-srcscenes" aria-label="Link to this section">#</a>Scene types (<code>src/scenes/</code>)</h2>
 <p>The reusable scene handlers: <code>cutsceneScene.js</code>, <code>questionnaireScene.js</code>,
-<code>dialogScene.js</code>, <code>minigameScene.js</code>, <code>reckoningScene.js</code> (Pastor
-Gabriel&#39;s baptism), <code>endingScene.js</code>. Each implements
+<code>dialogScene.js</code>, <code>minigameScene.js</code>, <code>markerScene.js</code> (the novel page that
+opens each NPC), <code>reckoningScene.js</code> (Pastor Gabriel&#39;s baptism),
+<code>endingScene.js</code>. Each implements
 <code>mount(stageEl, scene, context) -&gt; unmount</code>. Full contract in
 <a class="doc-ref" href="#doc-scene_types" data-doc="doc-scene_types"><code>SCENE_TYPES.md</code></a>.</p>
 <h2 id="doc-architecture--ui-components-srcui"><a class="anchor" href="#doc-architecture--ui-components-srcui" aria-label="Link to this section">#</a>UI components (<code>src/ui/</code>)</h2>
@@ -2509,6 +2528,14 @@ and the dialog scene opens on that node instead of its first one.</p>
   ]
 }
 </code></pre>
+<p>Confrontation scenes also take <code>npc</code> (their content, for the colored option
+stripes) and may include <code>&quot;secret&quot;: true</code> beats and options. These only
+exist once <code>run.secrets[opensDialog]</code> is set (the room restore): a secret beat
+plays (the NPC notices what you restored, text per class) and a secret option
+appears (per-class label, class glyph and outline) whose <code>opener</code> is the NPC&#39;s
+<code>&lt;npc&gt;_01_secret</code> node, authored with <code>GLOW: yes</code> so it opens with their
+first feeling lit on the wheel. Every option also shows a stripe in the first
+feeling its opener meets for the player&#39;s class.</p>
 <p>That is the whole pre-battle confrontation mechanic — <strong>there is no
 <code>confrontation</code> scene type and there shouldn&#39;t be one.</strong> A confrontation is
 a cutscene that happens to shape what follows: sprite, speaker nameplate,
@@ -2587,6 +2614,24 @@ dominant-emotion read — see the <code>dialog</code> section above for both), a
 Every trigger <a class="doc-ref" href="#doc-it_design" data-doc="doc-it_design"><code>IT_DESIGN.md</code></a> originally scoped is now built; what&#39;s left
 there is content (real prose in place of the placeholder lines) and the
 separate, still-unscoped hint-system merge.</p>
+<h3 id="doc-scene_types--marker-srcscenesmarkerscenejs"><a class="anchor" href="#doc-scene_types--marker-srcscenesmarkerscenejs" aria-label="Link to this section">#</a><code>marker</code> (<code>src/scenes/markerScene.js</code>)</h3>
+<p>The page of the novel that opens an NPC&#39;s part of the chapter. White ink on
+black, all pixel type, loaded like an 80s computer: while <code>.is-loading</code> the
+border runs tape stripes and scanlines with a faint roll bar pass over the
+page (nothing moves or shakes; it has to stay readable); each line prints in
+with a bleep from a tune in the NPC&#39;s class (<code>audio.playClassBleep</code>), the
+plate a band at a time with tape hiss, then their world&#39;s sound
+(<code>audio.playOpenerTheme</code>, which returns <code>{ ms, stop }</code>), the drop cap, and the
+prose typed on one page (<code>createTypewriter</code> <code>onePage</code>). Their room is audible
+the whole time (<code>audio.startOpenerAmbience</code>). Tap finishes loading; tap again
+and the ink fades in steps into the next scene.</p>
+<pre><code class="language-js">{ type: &#39;marker&#39;, id: &#39;deborah-marker&#39;, numeral: &#39;I&#39;, npc: deborah,
+  folio: 23, plate: &#39;PLATE I. THE THIRD FLOOR.&#39;, prose: &#39;The bulb over her door…&#39; }
+</code></pre>
+<p>The plate is a placeholder 1-bit SVG from <code>src/ui/plates.js</code> (<code>plateSvg(npcKey)</code>),
+to be replaced by real art. The numeral takes the NPC&#39;s class color
+(<code>npc.npcClass</code>, manuscript <code>CLASS:</code>); there are deliberately no other class or
+feeling symbols on the page, because the page must not give the answer away.</p>
 <h3 id="doc-scene_types--minigame-srcscenesminigamescenejs"><a class="anchor" href="#doc-scene_types--minigame-srcscenesminigamescenejs" aria-label="Link to this section">#</a><code>minigame</code> (<code>src/scenes/minigameScene.js</code>)</h3>
 <p>A chapter shouldn&#39;t have to know how a mini-game works internally, only
 that it eventually finishes:</p>
@@ -2673,40 +2718,68 @@ which is impossible if it&#39;s baked into a flat background frame.</p>
   advance: { x: 281, y: 464, w: 55, h: 253, sprite: &#39;...&#39;, to: &#39;next-room-id&#39; },
 }
 </code></pre>
+<p><strong>Room color code and restores (2026-10-10).</strong> A room module no longer
+mounts its own sequencer: it calls <code>mountNpcWalk(stageEl, scene, context, { steps, secretKey })</code> from <code>engine/walkSequencer.js</code>, and the scene entry
+carries <code>npc</code> (the NPC the room leads to). Each hotspot adds:</p>
+<pre><code class="language-js">{ ..., opener: &#39;deborah_01_soft&#39;,          // the opener this object reads
+  restore: { by: &#39;Crystals&#39;,               // the class that can restore it
+             hint: &#39;…&#39;, done: &#39;…&#39; } }       // text per class or plain
+</code></pre>
 <ul>
-<li><strong>Room intro</strong> (<code>intro</code>, optional): a descriptive line drawn over the room
+<li><p><code>opener</code> resolves, for the player&#39;s class, to that opener&#39;s first feeling
+(<code>moodFor</code>); the sprite and its close-up get a flat color layer of it
+(<code>.dx-room__tint</code>: a mask cut to the sprite&#39;s shape, multiplied over it,
+never a glow), and the close-up shows a corner glyph of the NPC&#39;s class.</p>
+</li>
+<li><p>Exactly one hotspot per class has <code>restore.by</code>. Once every object has been
+opened, that one blinks between its feeling color and the class color; the
+close-up then appends <code>restore.hint</code>, tapping its picture restores it (class
+sound, <code>restore.done</code>, a stamp in the class&#39;s words), and <code>onRestore</code> writes
+<code>run.secrets[&lt;secretKey&gt;]</code>.</p>
+</li>
+<li><p>Captions carry one word in the feeling color (<code>{color:Fear}afraid{/color}</code>)
+that must match the feeling that opener meets for that class
+(<code>npm run test:engine</code> checks it).</p>
+</li>
+<li><p><strong>Room intro</strong> (<code>intro</code>, optional): a descriptive line drawn over the room
 the instant it mounts — where you just arrived, before anything is
 tappable. It scrims the room rather than replacing it, so the bg is
 already animating behind the text instead of the player landing on a dead
 screen, and it covers the hotspots while up so the beat can&#39;t be tapped
 through by accident. Same two-tap gesture as a close-up: finish the draw,
-then dismiss. Varies by class exactly like hotspot captions.</li>
-<li><strong>Inspect hotspots</strong>: tap -&gt; quick scale-up pop (snappy, un-eased, to match
+then dismiss. Varies by class exactly like hotspot captions.</p>
+</li>
+<li><p><strong>Inspect hotspots</strong>: tap -&gt; quick scale-up pop (snappy, un-eased, to match
 the stop-motion register) -&gt; close-up image + inner-thought caption,
 typewriter-drawn via <code>ui/typewriterText.js</code>. Tap dismisses back to the
-room. Permanently re-tappable; no lockout, no &quot;already seen&quot; state.</li>
-<li><strong>Caption text varies by class.</strong> <code>text</code> is an object keyed by
+room. Permanently re-tappable; no lockout, no &quot;already seen&quot; state.</p>
+</li>
+<li><p><strong>Caption text varies by class.</strong> <code>text</code> is an object keyed by
 <code>run.loadout</code> (Guns / Bible / Crystals) — the same trick
 <code>questionnaireScene.js</code>&#39;s <code>DIAGNOSES</code> already uses, and it needs no new
 run state since <code>loadout</code> is set before any mini-game runs. Three variants
 per hotspot. Gimmick prompts deliberately do <em>not</em> vary — they&#39;re short
-and functional; the interpretive weight lives in the captions.</li>
-<li><strong>The advance hotspot is a reserved 4th slot</strong>, authored into every room
+and functional; the interpretive weight lives in the captions.</p>
+</li>
+<li><p><strong>The advance hotspot is a reserved 4th slot</strong>, authored into every room
 from the start but invisible and inert until every inspect hotspot in that
 room has been tapped at least once. Then it reveals itself as a hint that
 you can move on. Tapping it loads the next room, or ends the <code>walk</code> step
 if it was the last. Progression is therefore gated on <em>curiosity</em>, not
-skill — you can&#39;t get stuck and you can&#39;t fail, you just have to look.</li>
-<li>Positions are authored as <strong>design-space pixels</strong> against the 390×844
+skill — you can&#39;t get stuck and you can&#39;t fail, you just have to look.</p>
+</li>
+<li><p>Positions are authored as <strong>design-space pixels</strong> against the 390×844
 frame and converted to percentages by the renderer. This is the one place
 pixel numbers are correct, because they&#39;re input data rather than
 something reaching CSS — the canvas still scales to the viewport as
 always. Art hand-off spec (what to produce per room, and the requirement
 that interactive objects be their own sprite files rather than painted
-into the bg) is in <a class="doc-ref" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><code>ASSET_GUIDELINES.md</code></a>.</li>
-<li>Per-room visited-tracking lives in the renderer&#39;s own closure, not in
+into the bg) is in <a class="doc-ref" href="#doc-asset_guidelines" data-doc="doc-asset_guidelines"><code>ASSET_GUIDELINES.md</code></a>.</p>
+</li>
+<li><p>Per-room visited-tracking lives in the renderer&#39;s own closure, not in
 <code>run</code> — same convention <code>dialogScene</code>/<code>cutsceneScene</code> use for scene-local
-state.</li>
+state.</p>
+</li>
 </ul>
 <p><strong><code>gimmick</code> — the &quot;Quick Beat&quot; template.</strong> One reusable, data-only shape,
 <em>not</em> a catalog of bespoke micro-games and not its own lazy-loaded module:
@@ -2779,7 +2852,7 @@ new scene type.</p>
     </article>
 <article class="doc" id="doc-art_guide" data-title="Art Guide (every asset, size and template)" data-file="ART_GUIDE.md" hidden>
       <p class="doc-source">Start here · <code>docs/ART_GUIDE.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-art_guide--the-rules-read-these-first">The rules (read these first)</a></li><li><a href="#doc-art_guide--title-and-menus">Title and menus</a></li><li><a href="#doc-art_guide--characters">Characters</a></li><li><a href="#doc-art_guide--walk-rooms-one-per-npc-hallway-alley-garage-bar-lot">Walk rooms (one per NPC: hallway, alley, garage, bar lot)</a></li><li><a href="#doc-art_guide--cutscenes">Cutscenes</a></li><li><a href="#doc-art_guide--ending">Ending</a></li><li><a href="#doc-art_guide--interface-art-drawn-in-code-optional-to-replace">Interface art drawn in code (🎨, optional to replace)</a></li><li><a href="#doc-art_guide--templates-art-templates">Templates (art-templates/)</a></li><li><a href="#doc-art_guide--audio-for-reference">Audio (for reference)</a></li><li><a href="#doc-art_guide--handing-art-over">Handing art over</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-art_guide--the-rules-read-these-first">The rules (read these first)</a></li><li><a href="#doc-art_guide--title-and-menus">Title and menus</a></li><li><a href="#doc-art_guide--characters">Characters</a></li><li><a href="#doc-art_guide--walk-rooms-one-per-npc-hallway-alley-garage-bar-lot">Walk rooms (one per NPC: hallway, alley, garage, bar lot)</a></li><li><a href="#doc-art_guide--chapter-pages-one-per-npc">Chapter pages (one per NPC)</a></li><li><a href="#doc-art_guide--cutscenes">Cutscenes</a></li><li><a href="#doc-art_guide--ending">Ending</a></li><li><a href="#doc-art_guide--interface-art-drawn-in-code-optional-to-replace">Interface art drawn in code (🎨, optional to replace)</a></li><li><a href="#doc-art_guide--templates-art-templates">Templates (art-templates/)</a></li><li><a href="#doc-art_guide--audio-for-reference">Audio (for reference)</a></li><li><a href="#doc-art_guide--handing-art-over">Handing art over</a></li></ul></nav>
       <h1 id="doc-art_guide--art-guide-every-asset-its-size-and-its-template"><a class="anchor" href="#doc-art_guide--art-guide-every-asset-its-size-and-its-template" aria-label="Link to this section">#</a>Art Guide — every asset, its size, and its template</h1>
 <p>The one page for artists (and for us): every image the game uses or still
 needs, the size to draw it at, how it&#39;s shown, the file format, and which
@@ -2995,10 +3068,43 @@ object sizes per room are in <a href="#doc-asset_manifest" data-doc="doc-asset_m
 <td align="left"><code>closeup_780x1440.png</code></td>
 </tr>
 </tbody></table>
+<p>Room objects are tinted in code with a flat color layer masked to the sprite&#39;s
+own shape (<code>.dx-room__tint</code>), so draw them as <strong>clean white-line art</strong> with a
+transparent background: the tint shows through the opaque pixels. Do not bake
+glows or colors into the sprite.</p>
 <blockquote>
 <p>Planned: Deborah&#39;s garden, Rwanda&#39;s mural (with a client), Samun&#39;s
 crosswalk will replace some rooms; same sizes.</p>
 </blockquote>
+<hr>
+<h2 id="doc-art_guide--chapter-pages-one-per-npc"><a class="anchor" href="#doc-art_guide--chapter-pages-one-per-npc" aria-label="Link to this section">#</a>Chapter pages (one per NPC)</h2>
+<p>The page of the novel before each room (<code>markerScene.js</code>). The plate is a
+placeholder drawn in code (<code>src/ui/plates.js</code>): 240×150, 1-bit, dithered, white
+on black. Replace with real plates in the same style.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Asset</th>
+<th align="left">Path</th>
+<th align="left">Draw at</th>
+<th align="left">Shown at</th>
+<th align="left">Format</th>
+<th align="left">Frames</th>
+<th align="left">Status</th>
+<th align="left">Template</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Chapter plate × 4 (hallway, alley, garage, bar lot)</td>
+<td align="left"><code>src/ui/plates.js</code> → image</td>
+<td align="left">480×300 (2×)</td>
+<td align="left">width of the page, under the name</td>
+<td align="left">1-bit PNG / WebP, pixelated</td>
+<td align="left">1</td>
+<td align="left">🎨</td>
+<td align="left">—</td>
+</tr>
+</tbody></table>
 <hr>
 <h2 id="doc-art_guide--cutscenes"><a class="anchor" href="#doc-art_guide--cutscenes" aria-label="Link to this section">#</a>Cutscenes</h2>
 <table>
@@ -3488,7 +3594,9 @@ character would notice walking in; the objects are where detail belongs.</p>
     { x: 58, y: 170, w: 78, h: 210,      // design-space px, top-left origin
       sprite:  &#39;/assets/lake-ulysses/sprites/hallway_diploma.webp&#39;,
       closeup: &#39;/assets/lake-ulysses/sprites/hallway_diploma_closeup.webp&#39;,
-      text: { Guns: &#39;…&#39;, Bible: &#39;…&#39;, Crystals: &#39;…&#39; } },
+      text: { Guns: &#39;…&#39;, Bible: &#39;…&#39;, Crystals: &#39;…&#39; },
+      opener: &#39;deborah_01_soft&#39;,   // the opener it reads (tints it)
+      restore: { by: &#39;Crystals&#39;, hint: &#39;…&#39;, done: &#39;…&#39; } },   // see SCENE_TYPES.md
   ],
   advance: { x: 281, y: 464, w: 55, h: 253,
              sprite: &#39;/assets/lake-ulysses/sprites/hallway_door.webp&#39;,
@@ -3499,6 +3607,9 @@ character would notice walking in; the objects are where detail belongs.</p>
 until every hotspot in the room has been tapped once — so it still needs
 real art and a real position from the start, even though the player won&#39;t
 see it immediately.</p>
+<p>Objects and close-ups are tinted in code (a flat color layer cut to the
+sprite&#39;s shape), so supply them as clean white-line art with a transparent
+background and no baked color or glow.</p>
 <h4 id="doc-asset_guidelines--room-budgets"><a class="anchor" href="#doc-asset_guidelines--room-budgets" aria-label="Link to this section">#</a>Room budgets</h4>
 <p>Rooms multiply in a way single animations don&#39;t — a bg plus 3 objects plus
 3 close-ups is 7 assets for one screen. Targets:</p>
@@ -4240,9 +4351,16 @@ done:</p>
 <code>_hard</code> openers are not different scenes</strong> — they&#39;re the same
 conversation started from a different footing, and they converge on the
 same two middles.</p>
+<p>Each NPC also has a <strong>secret opener</strong>, <code>&lt;npc&gt;_01_secret</code> (<code>GLOW: yes</code>), shown
+only to a player whose class restored something in their room. It is authored
+like any opener, with a per-class mood (<code>MOOD [Class]:</code>) so every class meets
+it, and the confrontation scene lists it as a <code>&quot;secret&quot;: true</code> option.
+<code>MOOD [Class]:</code> lines make an NPC feel differently toward their kin or foe,
+and <code>CLASS:</code> in the header names the class they read as; see
+<a class="doc-ref" href="#doc-script_format" data-doc="doc-script_format"><code>SCRIPT_FORMAT.md</code></a>.</p>
 <h3 id="doc-script_key--the-chapter39s-rhythm-around-all-this"><a class="anchor" href="#doc-script_key--the-chapter39s-rhythm-around-all-this" aria-label="Link to this section">#</a>The chapter&#39;s rhythm around all this</h3>
 <pre><code>Prologue → FEELZ check-in → Questionnaire → Therapist   ← one continuous &quot;opening call&quot;
-[ walk → confrontation → NPC dialog ] × 4               ← Deborah, Rwanda, Samun, Rick
+[ chapter page → walk → confrontation → NPC dialog ] × 4   ← Deborah, Rwanda, Samun, Rick
 Reckoning (Pastor Gabriel&#39;s baptism) → Ending
 </code></pre>
 <p>Full detail on each beat is in <a href="#doc-game_manual" data-doc="doc-game_manual"><a class="doc-ref" href="#doc-game_manual" data-doc="doc-game_manual"><code>GAME_MANUAL.md</code></a></a> §4.</p>

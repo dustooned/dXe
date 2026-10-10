@@ -5,7 +5,7 @@
 // battery all interact the way they do in the game.
 //   node scripts/balance-sim.mjs [runs]
 import fs from 'node:fs';
-import { resolveCard, resolveGatedNode, restAfter, SECOND_GUESS_COST, EMPTY_BATTERY } from '../src/engine/cardEngine.js';
+import { resolveCard, resolveGatedNode, restAfter, EMPTY_BATTERY } from '../src/engine/cardEngine.js';
 import { recordTrust, isTrusted } from '../src/engine/trust.js';
 import { giftFor } from '../src/engine/unlocks.js';
 import { emotionsForClass, withClassMoods } from '../src/engine/loadout.js';
@@ -22,7 +22,7 @@ const initial = (loadout) => ({
   loadout, unlocked: [], giftedBy: {}, bonds: {}, emotionCounts: {}, choices: {},
 });
 
-// One conversation. `p` = { lie, attune, hesitate, exhaustion }.
+// One conversation. `p` = { lie, attune, exhaustion }.
 function play(state, npcKey, p, stats) {
   // Moods as this class meets them (MOOD [Class] lines: kin / foe).
   const npc = withClassMoods(NPCS[npcKey], state.loadout);
@@ -49,9 +49,8 @@ function play(state, npcKey, p, stats) {
     stats.nodes += 1;
     if (npcKey !== 'THERAPIST') for (const t of [1, 2, 3]) if (s.stability <= t) stats['dim' + t] += 1;
     if (wants) stats.moods += 1;
-    // Second-guessing: a wrong first tap, then the right one, costs a point of battery.
-    // The first change of mind is free; a second one costs a point.
-    if (npcKey !== 'THERAPIST' && Math.random() < p.hesitate && Math.random() < 0.3) s = { ...s, stability: Math.max(0, s.stability + SECOND_GUESS_COST) };
+    // Effort (a gifted feeling your class isn't used to) is charged inside
+    // resolveCard when the pick is committed; switching on the wheel is free.
     const synced = !!wants && pick === wants;
     const turned = !!node.bid?.includes(side);
     if (synced || turned) s = { ...s, bonds: recordTrust(s.bonds, npcKey, { synced, turnedToward: turned }) };
@@ -81,9 +80,9 @@ function chapter(loadout, p, stats) {
 }
 
 const SCENARIOS = [
-  ['ideal player, battery ignored', { attune: 1, hesitate: 0, exhaustion: false }],
-  ['ideal player, empty battery on', { attune: 1, hesitate: 0, exhaustion: true }],
-  ['human (80% attuned, changes mind 25% of the time)', { attune: 0.8, hesitate: 0.25, exhaustion: true }],
+  ['ideal player, battery ignored', { attune: 1, exhaustion: false }],
+  ['ideal player, empty battery on', { attune: 1, exhaustion: true }],
+  ['human (80% attuned)', { attune: 0.8, exhaustion: true }],
 ];
 const LIE = [['all honest', 0], ['half and half', 0.5], ['all lies', 1]];
 const pct = (n) => String(Math.round((n / RUNS) * 100)).padStart(3) + '%';

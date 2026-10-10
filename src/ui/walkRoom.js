@@ -65,6 +65,17 @@ export function createWalkRoom(room, { loadout, onAdvance, restored = false, onR
   let isRestored = restored;
   const buttons = [];
   el.style.setProperty('--cls', classColor(loadout));
+  // Fogged (Wi-Fi under 4): the liar's lens. Each object shows whether it
+  // would comfort them (warm) or not (grey) instead of what they feel, the
+  // captions lose their colored word, and your class's object stops calling
+  // (it can still be restored, if you remember which one it is).
+  const fogged = !!room.fogged;
+  if (fogged) el.classList.add('is-fogged');
+  const tintOf = (spot) => (fogged ? (spot.comfort ? 'var(--color-comfort)' : 'var(--color-fog)') : emotionColor(spot.mood));
+  const textOf = (text) => {
+    const t = forClass(text, loadout);
+    return fogged ? t.replace(/\{color:\w+\}|\{\/color\}/g, '') : t;
+  };
   const allSeen = () => seen.size >= room.hotspots.length;
 
   const advanceEl = document.createElement('button');
@@ -119,7 +130,7 @@ export function createWalkRoom(room, { loadout, onAdvance, restored = false, onR
       tint.className = 'dx-room__tint';
       tint.style.setProperty('--sprite', `url("${spot.closeup}")`);
       art.appendChild(tint);
-      art.style.setProperty('--mood', emotionColor(spot.mood));
+      art.style.setProperty('--mood', tintOf(spot));
     }
     closeupEl.appendChild(art);
 
@@ -152,8 +163,8 @@ export function createWalkRoom(room, { loadout, onAdvance, restored = false, onR
     closeupEl.appendChild(box);
 
     el.appendChild(closeupEl);
-    const caption = forClass(spot.text, loadout);
-    const hint = restorable ? forClass(spot.restore.hint, loadout) : '';
+    const caption = textOf(spot.text);
+    const hint = restorable && !fogged ? forClass(spot.restore.hint, loadout) : '';
     typewriter = createTypewriter(p, hint ? `${caption} {pause:300}${hint}` : caption, {
       onChar: playTypewriterTick,
     });
@@ -196,7 +207,7 @@ export function createWalkRoom(room, { loadout, onAdvance, restored = false, onR
       tint.style.setProperty('--sprite', `url("${spot.sprite}")`);
       btn.appendChild(tint);
       btn.classList.add('has-mood');
-      btn.style.setProperty('--mood', emotionColor(spot.mood));
+      btn.style.setProperty('--mood', tintOf(spot));
     }
     if (i === mine && isRestored) btn.classList.add('is-restored');
     buttons.push(btn);

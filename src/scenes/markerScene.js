@@ -25,6 +25,7 @@ import { later, cancelLater } from '../shell/pauseBus.js';
 import { playClassBleep, playOpenerTheme, startOpenerAmbience, playTypewriterTick, preloadTypewriterTick } from '../shell/audio.js';
 import { CLASSES, classColor } from '../engine/loadout.js';
 import { createTypewriter } from '../ui/typewriterText.js';
+import { isFogged } from '../engine/contacts.js';
 import { plateSvg } from '../ui/plates.js';
 
 const LINE_MS = 140;
@@ -79,7 +80,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
   lines.forEach((el) => el.classList.add('is-unprinted'));
 
   stageEl.appendChild(screen);
-  const stopAmbience = startOpenerAmbience(npc.npc);
+  // Fogged: the page comes up warm, the room muffled and cozy.
+  const fogged = isFogged(run.get());
+  if (fogged) screen.classList.add('is-fogged');
+  const stopAmbience = startOpenerAmbience(npc.npc, { fogged });
 
   // The load: one step at a time, each with its bleep.
   let step = 0;

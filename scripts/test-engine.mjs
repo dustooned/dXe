@@ -8,7 +8,7 @@ import { resolveCard, resolveGatedNode, softStep, restAfter, LIE_FOG } from '../
 import { getEndingKey, getEpilogueLine } from '../src/engine/endingEngine.js';
 import { CONTACTS, callFor, voicemailFor, therapistReachable, FOG_WIFI } from '../src/engine/contacts.js';
 import { hazeFor } from '../src/engine/lake.js';
-import { moodFor, withClassMoods } from '../src/engine/loadout.js';
+import { moodFor, withClassMoods, effortCost } from '../src/engine/loadout.js';
 import { buildReckoningDeck, resolveReckoningCard } from '../src/engine/reckoning.js';
 
 // A stand-in localStorage for the save checks below.
@@ -193,6 +193,13 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
     const opts = conf.beats.flatMap((b) => b.interactive?.options ?? []);
     const so = opts.find((o) => o.secret);
     check(`${key}: the confrontation offers the secret, labelled for each class, after a secret beat`, so?.opener === key + '_01_secret' && CLS.every((c) => so.label[c]) && conf.beats.some((b) => b.secret && CLS.every((c) => b.text[c])));
+    for (const kind of ['lie', 'fake']) {
+      const n = npc.nodes[`${key}_01_${kind}`];
+      check(`${key}: ${kind} opener glows and every class holds its first feeling`, n?.glow === true && CLS.every((c) => HELD[c].includes(moodFor(n, c))));
+    }
+    const white = opts.find((o) => o.whenFogged);
+    const fake = opts.find((o) => o.fake);
+    check(`${key}: fogged confrontation offers a priced white lie and a bluffed restore`, white?.opener === key + '_01_lie' && white.lie?.effects?.trust === 2 && white.lie.debtDelta > 0 && !!white.lie.ledgerEntry && fake?.opener === key + '_01_fake' && fake.lie?.debtDelta > 0 && JSON.stringify(fake.label) === JSON.stringify(so.label));
     check(`${key}: every opener the confrontation names exists`, opts.every((o) => npc.nodes[o.opener]));
     // The room module (read as text: it lazy-loads in the browser): each
     // object names an opener, one class restores it, and each class's
@@ -207,6 +214,15 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
     const off = spots.flatMap((x) => CLS.filter((c) => x.color[c] !== moodFor(npc.nodes[x.opener], c)).map((c) => `${x.opener}/${c}: ${x.color[c]} vs ${moodFor(npc.nodes[x.opener], c)}`));
     check(`${key}: each caption's colored word is the feeling its opener meets for that class` + (off.length ? ` (${off.join('; ')})` : ''), !off.length);
   }
+}
+
+// ── Effort: committing to a feeling your class isn't used to costs battery ──
+{
+  check('effort: own feelings and Trust are free', effortCost('Anger', 'Guns') === 0 && effortCost('Trust', 'Bible') === 0);
+  check('effort: only a gift that clashes with one of yours costs, and only until you are used to it', effortCost('Surprise', 'Guns') === 0 && effortCost('Happy', 'Guns') === 1 && effortCost('Sadness', 'Crystals') === 1 && effortCost('Anger', 'Bible') === 1 && effortCost('Fear', 'Crystals') === 0 && effortCost('Happy', 'Guns', { Happy: 1 }) === 0);
+  const node = { id: 'x', swipes: { truth: { effects: {}, debtDelta: 0, nextNodeId: null } } };
+  const st = { integrity: 5, trust: 5, stability: 5, lucidity: 5, truthDebt: 0, ledger: [], loadout: 'Guns' };
+  check('effort: charged on the swipe, not in the tutorial', resolveCard(st, node, 'truth', 'Happy').patch.stability === 4 && resolveCard(st, node, 'truth', 'Anger').patch.stability === undefined && resolveCard(st, node, 'truth', 'Happy', { fog: false }).patch.stability === undefined);
 }
 
 console.log(failed ? `\n${failed} failed, ${passed} passed` : `\nall ${passed} passed`);

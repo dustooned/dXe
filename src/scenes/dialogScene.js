@@ -3,7 +3,7 @@
 // sequencer. See docs/SCENE_TYPES.md for the full contract.
 //
 // scene shape: { type: 'dialog', id: string, npc: <NPC content JSON> }
-import { resolveCard, resolveGatedNode, restAfter, LOW_BATTERY, EMPTY_BATTERY, SECOND_GUESS_COST } from '../engine/cardEngine.js';
+import { resolveCard, resolveGatedNode, restAfter, LOW_BATTERY, EMPTY_BATTERY } from '../engine/cardEngine.js';
 import { later, cancelLater, onPauseChange } from '../shell/pauseBus.js';
 import { composeReaction } from '../engine/reactions.js';
 import { composeSay } from '../engine/sayTone.js';
@@ -92,8 +92,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // harmonicFunction(). Starts at -1 so the first enterNode() lands on 0.
   let beatIndex = -1;
   let activeEmotion = null;
-  // How many times the feeling changed on this question (the first is free).
-  let switchesHere = 0;
   let activeEmotionColor = null;
   // 'prompt' (NPC's opening line, FEELZ + swipe card) -> 'say' (the player's
   // own SAY: line, drawn once a swipe resolves) -> 'reaction' (NPC's REACT:).
@@ -299,7 +297,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
     beatIndex++;
     activeEmotion = null;
     quietPulse = null;
-    switchesHere = 0;
     activeEmotionColor = null;
     stage = 'prompt';
     promptRevealed = false;
@@ -702,14 +699,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
         // a lighter tap-only treatment; it isn't used for that today.)
         onSelect: (emotion, _source) => {
           freshFeeling = null;
-          // Second-guessing costs charge: the first change of mind on a question
-          // is free, the second and on cost a point (checking every slice has a
-          // price). Not in the tutorial.
-          if (!npc.reveal && activeEmotion && emotion !== activeEmotion && ++switchesHere >= 2) {
-            // Straight off the top (not the meters' soft edges): enough second-
-            // guessing can run you down to empty, where a feeling greys out.
-            run.set({ stability: Math.max(0, (run.get().stability ?? 5) + SECOND_GUESS_COST) });
-          }
+          // Touching and switching on the wheel are free. A feeling your class
+          // isn't used to costs battery only when you commit to it (the swipe:
+          // cardEngine.js resolveCard, loadout.js effortCost).
           activeEmotion = emotion;
           activeEmotionColor = emotionColor(emotion);
           justPicked = true;
@@ -1125,7 +1117,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
   const guideOn = () => loadSettings().guideHighlights !== false;
 
   function startCoach(key, guide) {
-    if (unmounted || npc.reveal || coach || itPopup) return;
+    // A repeat player isn't coached: they've had the tutorial.
+    if (unmounted || npc.reveal || coach || itPopup || run.get().repeat) return;
     const seen = run.get().coachSeen ?? [];
     if (seen.includes(key)) return;
     run.set({ coachSeen: [...seen, key] });
@@ -1318,7 +1311,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
   const inClass = (plain, byClass) => byClass[run.get().loadout] ?? plain;
 
   function nodeCoach() {
-    if (coachCheckedFor === currentNodeId) return;
+    // Repeat players get no calls and no dock pulse: they've done this.
+    if (coachCheckedFor === currentNodeId || run.get().repeat) return;
     coachCheckedFor = currentNodeId;
     const node = currentNode();
     const facing = npc.npc.charAt(0) + npc.npc.slice(1).toLowerCase();

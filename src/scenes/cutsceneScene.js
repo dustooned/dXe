@@ -44,6 +44,8 @@
 // beat's `text` or an option's `label` may be a { Guns, Bible, Crystals }
 // object there too.
 import { createTypewriter } from '../ui/typewriterText.js';
+import { isFogged } from '../engine/contacts.js';
+import { resolveCard } from '../engine/cardEngine.js';
 import { CLASSES, classColor, emotionColor, forClass, moodFor } from '../engine/loadout.js';
 import { later, cancelLater } from '../shell/pauseBus.js';
 import { quoteSpeech } from '../ui/speech.js';
@@ -83,7 +85,16 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   const loadout = () => run.get().loadout;
   const secretOpen = () => !!(scene.opensDialog && run.get().secrets?.[scene.opensDialog]);
-  const shown = (item) => !item.secret || secretOpen();
+  // Fogged (Wi-Fi under 4, engine/contacts.js): the liar's lens. Feeling
+  // colors go grey and what would comfort them shows warm instead; the white
+  // lie is offered, and a player who restored nothing can bluff the secret.
+  const fogged = () => !!scene.opensDialog && isFogged(run.get());
+  const shown = (item) => {
+    if (item.secret) return secretOpen();
+    if (item.fake) return fogged() && !secretOpen();
+    if (item.whenFogged) return fogged();
+    return true;
+  };
   const inClass = (text) => forClass(text, loadout());
 
   function destroyAnimators() {
@@ -253,12 +264,17 @@ export function mount(stageEl, scene, { run, onComplete }) {
       btn.className = 'dx-btn';
       btn.textContent = inClass(option.label);
       // The first feeling this opener meets, for your class: the chip.
-      const mood = option.opener && moodFor(scene.npc?.nodes?.[option.opener], loadout());
-      if (mood) {
+      const node = option.opener && scene.npc?.nodes?.[option.opener];
+      const mood = node && moodFor(node, loadout());
+      if (mood && fogged()) {
+        // The liar's lens: warm where it would comfort them, grey elsewhere.
+        btn.classList.add('has-mood');
+        btn.style.setProperty('--mood', node.bid?.includes('lie') ? 'var(--color-comfort)' : 'var(--color-fog)');
+      } else if (mood) {
         btn.classList.add('has-mood');
         btn.style.setProperty('--mood', emotionColor(mood));
       }
-      if (option.secret) {
+      if (option.secret || option.fake) {
         btn.classList.add('is-secret');
         btn.style.setProperty('--cls', classColor(loadout()));
         btn.dataset.glyph = CLASSES[loadout()]?.glyph ?? '';
@@ -281,7 +297,17 @@ export function mount(stageEl, scene, { run, onComplete }) {
     run.set({ openers: { ...run.get().openers, [scene.opensDialog]: option.opener } });
   }
 
+  // An option that is itself a lie (the white lie, the bluffed restore) is
+  // priced like a lie card: its effects, the lake, the ledger, the Wi-Fi fog.
+  function applyLie(option) {
+    if (!option.lie) return;
+    const node = { id: `${option.opener}_told`, npc: scene.npc?.npc, location: scene.npc?.location, swipes: { lie: option.lie } };
+    const { patch } = resolveCard(run.get(), node, 'lie', null);
+    run.set({ ...patch, lieStreak: (run.get().lieStreak ?? 0) + 1 });
+  }
+
   function resolveChoice(option) {
+    applyLie(option);
     applyOpener(option);
     if (option.record) {
       run.set({ checkIn: { ...run.get().checkIn, [option.record]: inClass(option.label) } });

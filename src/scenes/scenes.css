@@ -417,6 +417,13 @@
   100% { opacity: 1; transform: translate(-50%, -50%) rotate(-8deg) scale(1); }
 }
 
+/* Fogged: no calling blink, no restorable blink (the restore still works). */
+.dx-room.is-fogged .dx-room__object.is-calling .dx-room__tint,
+.dx-room.is-fogged .dx-room__closeup-art.is-restorable .dx-room__tint {
+  animation: none;
+  background: var(--mood);
+}
+
 /* Confrontation options: a chip in the first feeling each opener meets,
    the same color its room object glowed. The secret one wears your class. */
 .dx-cutscene-choices .dx-btn.has-mood {
@@ -2368,3 +2375,7 @@
 .is-reduced-effects .dx-marker .is-printed { animation: none; }
 .is-reduced-effects .dx-marker.is-loading { background: var(--color-black); }
 .is-reduced-effects .dx-marker.is-fading .dx-marker__page > * { animation: none; opacity: 0; }
+
+/* Fogged (Wi-Fi under 4): the page in lamplight. Warm ink, softer lines. */
+.dx-marker.is-fogged { color: var(--color-comfort); }
+.dx-marker.is-fogged::after { opacity: 0.5; }

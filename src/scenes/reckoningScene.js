@@ -182,7 +182,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   function handleChoice(i, choice) {
     const { patch } = resolveReckoningCard(run.get(), deck[i], choice);
-    run.set(patch);
+    run.set({ ...patch, reckoningChoices: [...(run.get().reckoningChoices ?? []), choice] });
     audio.playLakeSplash(run.get().truthDebt);
     voices.say('PASTOR', choice === 'confess' ? 'up' : 'down', { delayMs: 200 });
     const slots = script[choice];

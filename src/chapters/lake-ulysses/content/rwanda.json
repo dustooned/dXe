@@ -266,6 +266,92 @@
       ],
       "glow": true
     },
+    "rwanda_01_lie": {
+      "id": "rwanda_01_lie",
+      "npc": "RWANDA",
+      "location": 3,
+      "prompt": "(She turns halfway.) \"Gallery doesn't send people at night. So which is it, are you {color:Fear}lying{/color} or lost?\"",
+      "swipes": {
+        "truth": {
+          "playerText": "Lying. I wanted you to turn around.",
+          "npcReaction": "She turns all the way. \"Okay. That, I respect.\"",
+          "effects": {
+            "integrity": 2,
+            "lucidity": 1,
+            "trust": 1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": "rwanda_02_open"
+        },
+        "lie": {
+          "playerText": "Night shift. We scout late.",
+          "npcReaction": "\"Sure you do.\" Her back comes up like a wall.",
+          "effects": {
+            "stability": 1,
+            "trust": -1
+          },
+          "debtDelta": 3,
+          "tags": [
+            "Identity"
+          ],
+          "ledgerEntry": "You told Rwanda you were from a gallery.",
+          "nextNodeId": "rwanda_02_closed"
+        }
+      },
+      "mood": "Fear",
+      "moodByClass": {
+        "Crystals": "Anxiety"
+      },
+      "bid": [
+        "truth"
+      ],
+      "glow": true
+    },
+    "rwanda_01_fake": {
+      "id": "rwanda_01_fake",
+      "npc": "RWANDA",
+      "location": 3,
+      "prompt": "(She looks down at the alley. Same as always.) \"Nothing's {color:Fear}different{/color} down there. Why would you say that?\"",
+      "swipes": {
+        "truth": {
+          "playerText": "It isn't. I wanted you to look.",
+          "npcReaction": "She does look. Then at you, longer.",
+          "effects": {
+            "integrity": 2,
+            "lucidity": 1,
+            "trust": 1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": "rwanda_02_open"
+        },
+        "lie": {
+          "playerText": "Look closer.",
+          "npcReaction": "\"I have been looking at it for nine years.\" She turns back to the window.",
+          "effects": {
+            "stability": 1,
+            "trust": -1
+          },
+          "debtDelta": 2,
+          "tags": [
+            "Identity"
+          ],
+          "ledgerEntry": "You told Rwanda you'd fixed something in her alley that you hadn't.",
+          "nextNodeId": "rwanda_02_closed"
+        }
+      },
+      "mood": "Fear",
+      "moodByClass": {
+        "Crystals": "Anxiety"
+      },
+      "bid": [
+        "truth"
+      ],
+      "glow": true
+    },
     "rwanda_03": {
       "id": "rwanda_03",
       "npc": "RWANDA",

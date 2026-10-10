@@ -84,8 +84,25 @@ object sizes per room are in [`ASSET_MANIFEST.md`](ASSET_MANIFEST.md).
 | Room object | `<room>_<object>.webp` | 2× of the manifest size | at its design-space position | WebP, transparent | 1 | 🔲 | — |
 | Object close-up | `<room>_<object>_closeup.webp` | 780×1440 (2× of 390×720) | full width, caption over the bottom quarter | WebP | 1 | 🔲 | `closeup_780x1440.png` |
 
+Room objects are tinted in code with a flat color layer masked to the sprite's
+own shape (`.dx-room__tint`), so draw them as **clean white-line art** with a
+transparent background: the tint shows through the opaque pixels. Do not bake
+glows or colors into the sprite.
+
 > Planned: Deborah's garden, Rwanda's mural (with a client), Samun's
 > crosswalk will replace some rooms; same sizes.
+
+---
+
+## Chapter pages (one per NPC)
+
+The page of the novel before each room (`markerScene.js`). The plate is a
+placeholder drawn in code (`src/ui/plates.js`): 240×150, 1-bit, dithered, white
+on black. Replace with real plates in the same style.
+
+| Asset | Path | Draw at | Shown at | Format | Frames | Status | Template |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| Chapter plate × 4 (hallway, alley, garage, bar lot) | `src/ui/plates.js` → image | 480×300 (2×) | width of the page, under the name | 1-bit PNG / WebP, pixelated | 1 | 🎨 | — |
 
 ---
 

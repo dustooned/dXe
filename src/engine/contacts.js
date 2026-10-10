@@ -72,6 +72,13 @@ const MOODS = ['Happy', 'Trust', 'Fear', 'Surprise', 'Sadness', 'Disgust', 'Ange
 // the Therapist won't pick up and FEELZ tips go quiet at the same line).
 export const FOG_WIFI = 4;
 
+// Fogged: Wi-Fi under FOG_WIFI. The same line greys the room's and the
+// confrontation's feeling colors, shows the liar's lens instead, and offers
+// the white-lie and faked-restore openers (cutsceneScene.js, walkRoom.js).
+export function isFogged(state) {
+  return (state?.lucidity ?? 5) < FOG_WIFI;
+}
+
 // bias: chance they tell you to lie. sight: how reliably they read a mood
 // before your bond adds to it. dominant: the feeling they live in — their
 // color in the dock and on calls, and what they see in people when they
@@ -326,7 +333,7 @@ export function callFor(contact, { state, currentName, currentKey, mood }) {
   // The image is colored the feeling it describes, matching the slice that
   // glows on the wheel; their history with this person frames it if they have
   // one. In deep water it comes through uncolored and the wheel stays dark.
-  const fogged = (state.lucidity ?? 5) < FOG_WIFI;
+  const fogged = isFogged(state);
   const words = c.moods[read];
   const image = fogged ? words : `{color:${read}}${words}{/color}`;
   const knows = c.knows?.[currentKey];

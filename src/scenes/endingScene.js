@@ -5,6 +5,7 @@
 //
 // scene shape: { type: 'ending', id: string, endings: <endings.json> }
 import { getEndingKey, getEpilogueLine } from '../engine/endingEngine.js';
+import { updateSave } from '../shell/save.js';
 import { later, cancelLater } from '../shell/pauseBus.js';
 import { drawEmotionPattern } from '../ui/emotionPattern.js';
 import { createTypewriter } from '../ui/typewriterText.js';
@@ -30,6 +31,16 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
   const endingKey = getEndingKey(run.get().truthDebt);
   const ending = scene.endings[endingKey];
   recordEnding?.(chapterId, endingKey);
+  // The repeat client's file: what the Therapist reads back next time
+  // (chapters/lake-ulysses/therapistReturn.js).
+  const rc = run.get().reckoningChoices ?? [];
+  const confessed = rc.filter((c) => c === 'confess').length;
+  updateSave({ lastRun: {
+    loadout: run.get().loadout,
+    endingKey,
+    truthDebt: run.get().truthDebt,
+    baptism: rc.length ? (confessed * 2 >= rc.length ? 'confessed' : 'doubled') : null,
+  } });
 
   const finalDebt = run.get().truthDebt;
   const epilogueLine = getEpilogueLine(run.get(), scene.endings.epilogues);

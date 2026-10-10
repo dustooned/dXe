@@ -48,6 +48,37 @@
               "Crystals": "\"Your radio found a song.\""
             },
             "opener": "samun_01_secret"
+          },
+          {
+            "fake": true,
+            "label": {
+              "Guns": "\"Somebody had to take that drum out.\"",
+              "Bible": "\"Your calendar was two years behind.\"",
+              "Crystals": "\"Your radio found a song.\""
+            },
+            "opener": "samun_01_fake",
+            "lie": {
+              "debtDelta": 1,
+              "ledgerEntry": "You claimed you'd fixed something for Samun that you hadn't.",
+              "tags": [
+                "Denial"
+              ]
+            }
+          },
+          {
+            "whenFogged": true,
+            "label": "\"County inspector. Routine.\"",
+            "opener": "samun_01_lie",
+            "lie": {
+              "effects": {
+                "trust": 2
+              },
+              "debtDelta": 2,
+              "ledgerEntry": "You told Samun you were a county inspector.",
+              "tags": [
+                "Denial"
+              ]
+            }
           }
         ]
       }

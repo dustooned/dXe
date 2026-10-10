@@ -113,3 +113,24 @@ export function forClass(text, loadout) {
   if (text == null || typeof text === 'string') return text ?? '';
   return text[loadout] ?? Object.values(text)[0] ?? '';
 }
+
+// Effort (2026-10-10): committing to a feeling your class isn't used to takes
+// battery, paid when you swipe (never for touching or switching on the wheel).
+//   your class's own three, Trust (the reward), other gifts   free
+//   a gift that clashes with one of yours, the opposite across the wheel
+//   (Happy/Sadness, Trust/Disgust, Fear/Anger, Surprise/Anxiety)   CLASH_COST
+// and only until you're used to it: after USED_TO answers with it
+// (run.emotionCounts) it's free. Tuned with scripts/balance-sim.mjs: charging
+// every gift 1 and a clash 2 ran honest players empty in 80-100% of runs;
+// this lands near the old change-of-mind cost (Guns 29%, Bible 11%, Crystals
+// 48% vs 41/14/29).
+export const CLASH_COST = 1;
+export const USED_TO = 1;
+export function effortCost(emotion, loadout, counts = {}) {
+  const own = CLASSES[loadout]?.emotions;
+  if (!emotion || !own || own.includes(emotion) || emotion === 'Trust') return 0;
+  if ((counts[emotion] ?? 0) >= USED_TO) return 0;
+  const i = EMOTION_ORDER.indexOf(emotion);
+  const opposite = EMOTION_ORDER[(i + 4) % EMOTION_ORDER.length];
+  return own.includes(opposite) ? CLASH_COST : 0;
+}

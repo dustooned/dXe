@@ -87,7 +87,7 @@ Opening call (one continuous scene, order is load-bearing)
   Prologue  →  FEELZ boot + check-in  →  Questionnaire (intake)  →  Therapist (tutorial)
 
 Then, once per NPC (Deborah → Rwanda → Samun → Rick):
-  Explore (mini-game walk)  →  Confront (pick your opener)  →  Encounter (dialog)
+  Chapter page  →  Explore (mini-game walk)  →  Confront (pick your opener)  →  Encounter (dialog)
 
 Then:
   Reckoning: Pastor Gabriel's baptism (confess or double down, then under the water)
@@ -100,6 +100,23 @@ matches the player with a provider. The Questionnaire is that provider's
 intake, and its last beat hands off to the Therapist picking up. Splitting or reordering these
 breaks a line that already answers a line — see
 [`HANDOFF.md`](HANDOFF.md) if you're ever tempted to move one.
+
+**The chapter page.** Each NPC opens on a page of the novel: white ink on
+black, all pixel type, loading like an 80s computer (tape stripes in the
+border, scanlines, a bleep for every line in a tune that sounds like the
+NPC's class). It shows a Roman numeral, their name, a dithered plate of their
+world and a few lines of prose, with their room already audible underneath
+(Deborah's dying bulb, Rwanda's neon, Samun's static radio, Rick's bass through
+the wall). Its only hint is the numeral's color, which is the NPC's own class.
+
+**Reading the room.** In each room the objects are tinted in a flat color: the
+first feeling that opener will meet, as *your* class meets them (an NPC can
+feel differently toward their kin or their foe). The captions are your class's
+perception of them, never a verdict. Open every object, and the one your class
+can restore starts blinking; open it again for a hint in your class's voice and
+tap the picture to see to it (Guns square it away, Bible make it right, Crystals
+attune to it). Restore something and a fifth, secret option appears in the
+confrontation, opening on their first feeling already glowing on your wheel.
 
 **Why every NPC is explore → confront → encounter.** The walk builds
 atmosphere and place before a face ever appears; the confrontation is
@@ -181,7 +198,7 @@ the four endings, so a status change means the ending they're heading
 toward just changed. Debt tops out at 10 but never ends the chapter
 early: every NPC is still met, and the debt only picks the ending.
 
-**Lies pay off (2026-10-09).** The battery is a resource: the truth often costs charge, a lie puts some back, and switching feelings on a question costs 1 from the second switch on (the first change of mind is free). At 2 or less FEELZ dims to save power (the little screen and needle go dark); near empty, your most-used feeling greys out. A lie that warms someone relaxes them, so their next feeling glows on your wheel. Past a full lake, each lie also fogs the Wi-Fi and slips the clock. The Therapist names the trade and refuses to pick for you.
+**Lies pay off (2026-10-09).** The battery is a resource: the truth often costs charge, a lie puts some back, and trying feelings on the wheel is always free. **Effort (2026-10-10):** the first time you answer (swipe) with a gifted feeling that is the opposite of one of your class's three (across the wheel: Happy/Sadness, Trust/Disgust, Fear/Anger, Surprise/Anxiety), it costs 1 battery; after that you're used to it. Your own three, Trust, and other gifts are free. The Therapist says this in his "Practical stuff" line. At 2 or less FEELZ dims to save power (the little screen and needle go dark); near empty, your most-used feeling greys out. A lie that warms someone relaxes them, so their next feeling glows on your wheel. Past a full lake, each lie also fogs the Wi-Fi and slips the clock. The Therapist names the trade and refuses to pick for you.
 
 **Lying feels good, on purpose** (2026-10-04). Avoidance pays off now and
 costs later, so the game does too:
@@ -355,7 +372,7 @@ A heart-monitor band runs across the portrait. Their line sits on top, yours und
 
 **Masks** show one color on their line and flicker the real one underneath (about every two seconds); only the real one syncs, and the vectorscope answers to it.
 
-**How it's taught (2026-10-09: by doing).** The Therapist's find-me exercise reacts to each pick: a hint names what it drew and he comments in his class voice, until the shape closes. In battles, short gold coach lines (never popups) appear the first time something matters (a mask, a new friend, the first busy shape or needle-left) and wait for the action; gold lines under the first reactions say what each answer moved. The science comes on your first call to him. FEELZ tip popups are off for now. (Earlier, 2026-10-04:) The Therapist's last exercise has two parts. First he asks you to pick any feeling but his (his line wears a "fine" mask) and names what apart looks like: a busier shape, the needle leaning left. Then his real color starts to flicker under his line and you find it: a still circle. "My line said fine. The shape doesn't lie." In real encounters, a **FEELZ tip** (`ui/feelzTip.js`) slides up above the lake the first time each piece does something (a mask, a busy shape, the needle left, a clean circle, the pick blocks), once a run, with a tiny picture of the thing, while the scope frames that piece in a pulsing gold box (`getHighlight`). It never blocks and stays up until you tap it closed (✕). Tips only show while your Wi-Fi is 4 or more (two arcs); every lie fogs the Wi-Fi by 1 (not in the tutorial), so a liar loses them (and the Therapist's call) until the truth clears things up.
+**How it's taught (2026-10-09: by doing).** The Therapist's find-me exercise reacts to each pick: a hint names what it drew and he comments in his class voice, until the shape closes. In battles, short gold coach lines (never popups) appear the first time something matters (a mask, a new friend, the first busy shape or needle-left) and wait for the action; gold lines under the first reactions say what each answer moved. The science comes on your first call to him. He is an early-game coach only: his new-friend call happens once, in the first three encounters (never on Rick), and a first friend who arrives later just pulses quietly in the dock. FEELZ tip popups are off for now. (Earlier, 2026-10-04:) The Therapist's last exercise has two parts. First he asks you to pick any feeling but his (his line wears a "fine" mask) and names what apart looks like: a busier shape, the needle leaning left. Then his real color starts to flicker under his line and you find it: a still circle. "My line said fine. The shape doesn't lie." In real encounters, a **FEELZ tip** (`ui/feelzTip.js`) slides up above the lake the first time each piece does something (a mask, a busy shape, the needle left, a clean circle, the pick blocks), once a run, with a tiny picture of the thing, while the scope frames that piece in a pulsing gold box (`getHighlight`). It never blocks and stays up until you tap it closed (✕). Tips only show while your Wi-Fi is 4 or more (two arcs); every lie fogs the Wi-Fi by 1 (not in the tutorial), so a liar loses them (and the Therapist's call) until the truth clears things up.
 
 **Meters push back at the edges (2026-10-04).** Inside 3 to 7 every point moves a meter a full step; past that, moving further out costs two points per step, so meters rarely pin at 0 or 10. After each encounter a short beat shows the battery charging back: +3 if they let you in, otherwise up to +2 toward 5 (never down). Calling the Therapist when he can't be reached rings out to his voicemail, which says whether your bars or your Wi-Fi is too low. 
 

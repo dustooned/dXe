@@ -1773,13 +1773,22 @@ export function playClassBleep(cls, step = 0, { data = false } = {}) {
 //   RWANDA   the neon: a hum with its harmonics, and traffic far off
 //   SAMUN    the radio tuned to nothing: band-limited static
 //   RICK     bass through the bar wall: a muffled kick, and the room's rumble
-export function startOpenerAmbience(npcKey) {
+// `fogged` (Wi-Fi under 4): the room comes through warm and muffled, like
+// the deep water, with a low lamp-hum under it. Cozy, not a penalty.
+export function startOpenerAmbience(npcKey, { fogged = false } = {}) {
   const audioCtx = ensureContext();
   const out = audioCtx.createGain();
   const t = audioCtx.currentTime;
   out.gain.setValueAtTime(0.0001, t);
   out.gain.linearRampToValueAtTime(1, t + 1.2);
-  out.connect(masterGain);
+  if (fogged) {
+    const warm = audioCtx.createBiquadFilter();
+    warm.type = 'lowpass';
+    warm.frequency.value = 700;
+    out.connect(warm).connect(masterGain);
+  } else {
+    out.connect(masterGain);
+  }
   const sources = [];
   let timer = null;
   const tone = (type, freq, gain) => {
@@ -1804,6 +1813,12 @@ export function startOpenerAmbience(npcKey) {
     sources.push(src);
     return src;
   };
+
+  if (fogged) {
+    // The lamp-hum: a soft fifth, very low, under whatever the room is.
+    tone('sine', 98, 0.025).connect(out);
+    tone('sine', 147, 0.015).connect(out);
+  }
 
   if (npcKey === 'DEBORAH') {
     const flicker = audioCtx.createGain();

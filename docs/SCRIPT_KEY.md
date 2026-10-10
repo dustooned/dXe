@@ -135,11 +135,19 @@ Same character, same wound, three angles of approach. **The `_soft` and
 conversation started from a different footing, and they converge on the
 same two middles.
 
+Each NPC also has a **secret opener**, `<npc>_01_secret` (`GLOW: yes`), shown
+only to a player whose class restored something in their room. It is authored
+like any opener, with a per-class mood (`MOOD [Class]:`) so every class meets
+it, and the confrontation scene lists it as a `"secret": true` option.
+`MOOD [Class]:` lines make an NPC feel differently toward their kin or foe,
+and `CLASS:` in the header names the class they read as; see
+`SCRIPT_FORMAT.md`.
+
 ### The chapter's rhythm around all this
 
 ```
 Prologue → FEELZ check-in → Questionnaire → Therapist   ← one continuous "opening call"
-[ walk → confrontation → NPC dialog ] × 4               ← Deborah, Rwanda, Samun, Rick
+[ chapter page → walk → confrontation → NPC dialog ] × 4   ← Deborah, Rwanda, Samun, Rick
 Reckoning (Pastor Gabriel's baptism) → Ending
 ```
 

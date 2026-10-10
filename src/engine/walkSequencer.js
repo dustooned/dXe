@@ -16,6 +16,7 @@
 import { createWalkRoom } from '../ui/walkRoom.js';
 import { createQuickBeat } from '../ui/quickBeat.js';
 import { moodFor } from './loadout.js';
+import { isFogged } from './contacts.js';
 
 // isRestored/onRestore: whether this player's class has already restored
 // something in these rooms, and what to do when they do (walkRoom.js).
@@ -89,7 +90,13 @@ export function mountNpcWalk(stageEl, scene, { run, onComplete }, { steps, secre
   const withMoods = (room) => ({
     ...room,
     npcClass: room.npcClass ?? scene.npc?.npcClass,
-    hotspots: room.hotspots.map((spot) => ({ ...spot, mood: spot.opener ? moodFor(nodes[spot.opener], loadout) : null })),
+    // Fogged: the liar's lens (walkRoom.js): comfort, not feelings.
+    fogged: isFogged(run.get()),
+    hotspots: room.hotspots.map((spot) => ({
+      ...spot,
+      mood: spot.opener ? moodFor(nodes[spot.opener], loadout) : null,
+      comfort: !!nodes[spot.opener]?.bid?.includes('lie'),
+    })),
   });
   const resolved = steps.map((step) => (step.type === 'walk'
     ? { ...step, roomsById: Object.fromEntries(Object.entries(step.roomsById).map(([k, r]) => [k, withMoods(r)])) }

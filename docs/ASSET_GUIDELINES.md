@@ -220,7 +220,9 @@ Which lands as room data shaped like this — pixels in, no math done by you:
     { x: 58, y: 170, w: 78, h: 210,      // design-space px, top-left origin
       sprite:  '/assets/lake-ulysses/sprites/hallway_diploma.webp',
       closeup: '/assets/lake-ulysses/sprites/hallway_diploma_closeup.webp',
-      text: { Guns: '…', Bible: '…', Crystals: '…' } },
+      text: { Guns: '…', Bible: '…', Crystals: '…' },
+      opener: 'deborah_01_soft',   // the opener it reads (tints it)
+      restore: { by: 'Crystals', hint: '…', done: '…' } },   // see SCENE_TYPES.md
   ],
   advance: { x: 281, y: 464, w: 55, h: 253,
              sprite: '/assets/lake-ulysses/sprites/hallway_door.webp',
@@ -232,6 +234,10 @@ The `advance` object is authored exactly like the others but stays hidden
 until every hotspot in the room has been tapped once — so it still needs
 real art and a real position from the start, even though the player won't
 see it immediately.
+
+Objects and close-ups are tinted in code (a flat color layer cut to the
+sprite's shape), so supply them as clean white-line art with a transparent
+background and no baked color or glow.
 
 #### Room budgets
 

@@ -173,6 +173,56 @@ TAGS: Identity
 LEDGER: You told Rwanda somebody else fixed her alley.
 NEXT: rwanda_02_closed
 
+=== rwanda_01_lie
+# The white-lie opener: only offered while your Wi-Fi is fogged (under 4).
+# The lie itself already paid +2 Bars and went on the lake (confront_*.json).
+PROMPT: (She turns halfway.) "Gallery doesn't send people at night. So which is it, are you {color:Fear}lying{/color} or lost?"
+MOOD: Fear
+MOOD [Crystals]: Anxiety
+BID: truth
+GLOW: yes
+
+-- TRUTH
+SAY: Lying. I wanted you to turn around.
+REACT: She turns all the way. "Okay. That, I respect."
+EFFECTS: integrity+2 lucidity+1 trust+1
+DEBT: 0
+NEXT: rwanda_02_open
+
+-- LIE
+SAY: Night shift. We scout late.
+REACT: "Sure you do." Her back comes up like a wall.
+EFFECTS: stability+1 trust-1
+DEBT: +3
+TAGS: Identity
+LEDGER: You told Rwanda you were from a gallery.
+NEXT: rwanda_02_closed
+
+=== rwanda_01_fake
+# The faked restore: offered while fogged to a player who restored nothing,
+# under the same words as the secret opener. Nothing out there changed.
+PROMPT: (She looks down at the alley. Same as always.) "Nothing's {color:Fear}different{/color} down there. Why would you say that?"
+MOOD: Fear
+MOOD [Crystals]: Anxiety
+BID: truth
+GLOW: yes
+
+-- TRUTH
+SAY: It isn't. I wanted you to look.
+REACT: She does look. Then at you, longer.
+EFFECTS: integrity+2 lucidity+1 trust+1
+DEBT: 0
+NEXT: rwanda_02_open
+
+-- LIE
+SAY: Look closer.
+REACT: "I have been looking at it for nine years." She turns back to the window.
+EFFECTS: stability+1 trust-1
+DEBT: +2
+TAGS: Identity
+LEDGER: You told Rwanda you'd fixed something in her alley that you hadn't.
+NEXT: rwanda_02_closed
+
 === rwanda_03
 PROMPT: (She lights a cigarette she doesn't smoke, just holds.) "You want to know the actual tiring part? It's not them. It's {color:Fear}flinching{/color} before they even say anything."
 MOOD: Anxiety

@@ -48,6 +48,37 @@
               "Crystals": "\"There was a painting under the gray.\""
             },
             "opener": "rwanda_01_secret"
+          },
+          {
+            "fake": true,
+            "label": {
+              "Guns": "\"Your payphone works again.\"",
+              "Bible": "\"Somebody should keep that sign lit.\"",
+              "Crystals": "\"There was a painting under the gray.\""
+            },
+            "opener": "rwanda_01_fake",
+            "lie": {
+              "debtDelta": 1,
+              "ledgerEntry": "You claimed you'd fixed something for Rwanda that you hadn't.",
+              "tags": [
+                "Identity"
+              ]
+            }
+          },
+          {
+            "whenFogged": true,
+            "label": "\"I'm from the gallery.\"",
+            "opener": "rwanda_01_lie",
+            "lie": {
+              "effects": {
+                "trust": 2
+              },
+              "debtDelta": 2,
+              "ledgerEntry": "You told Rwanda you were from a gallery.",
+              "tags": [
+                "Identity"
+              ]
+            }
           }
         ]
       }

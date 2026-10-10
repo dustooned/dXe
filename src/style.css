@@ -23,6 +23,10 @@
   --color-class-guns: #a9b6c2;
   --color-class-bible: #f3e2b3;
   --color-class-crystals: #d2a8ff;
+  /* Fogged (the liar's lens): what would comfort them shows warm, the rest
+     goes grey. Lamplight and ash, off every feeling hue. */
+  --color-comfort: #fff0c8;
+  --color-fog: #55555a;
 
   --font-pixel: 'Press Start 2P', 'Courier New', monospace;
   /* IT's voice only — a rough CRT-terminal font, not the game's clean

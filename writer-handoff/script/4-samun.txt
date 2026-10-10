@@ -183,6 +183,58 @@ TAGS: Denial
 LEDGER: You told Samun his garage cleaned itself.
 NEXT: samun_02_enabled
 
+=== samun_01_lie
+# The white-lie opener: only offered while your Wi-Fi is fogged (under 4).
+# The lie itself already paid +2 Bars and went on the lake (confront_*.json).
+PROMPT: (He laughs too loud.) "Inspector! Great, great. Everything's up to {color:Fear}code{/color}, man, look around."
+MASK: Happy
+MOOD: Fear
+MOOD [Crystals]: Anxiety
+BID: lie
+GLOW: yes
+
+-- TRUTH
+SAY: I'm not an inspector. I'm here about you.
+REACT: The rag stops. "...Huh."
+EFFECTS: integrity+2 lucidity+1 trust-1
+DEBT: 0
+NEXT: samun_02_confronted
+
+-- LIE
+SAY: Looks fine. I'll sign off.
+REACT: "See? Nothing to see." He's grinning. His hands haven't stopped.
+EFFECTS: stability+2 trust+1
+DEBT: +3
+TAGS: Denial
+LEDGER: You told Samun you were inspecting his garage.
+NEXT: samun_02_enabled
+
+=== samun_01_fake
+# The faked restore: offered while fogged to a player who restored nothing,
+# under the same words as the secret opener. Nothing out there changed.
+PROMPT: (He glances around the bay. Everything's where it was.) "You touched my stuff? Doesn't look {color:Fear}touched{/color}."
+MASK: Happy
+MOOD: Fear
+MOOD [Crystals]: Anxiety
+BID: lie
+GLOW: yes
+
+-- TRUTH
+SAY: I didn't. I wanted to see what you'd say.
+REACT: He points the rag at you. "Okay. Sneaky. I like sneaky."
+EFFECTS: integrity+2 lucidity+1 trust-1
+DEBT: 0
+NEXT: samun_02_confronted
+
+-- LIE
+SAY: Must be hard to tell, in here.
+REACT: "Ha! Yeah. Yeah, it is." He laughs, and keeps wiping.
+EFFECTS: stability+1 trust+1
+DEBT: +2
+TAGS: Denial
+LEDGER: You told Samun you'd fixed something in his garage that you hadn't.
+NEXT: samun_02_enabled
+
 === samun_03
 PROMPT: (He sets two bottles on the counter, unopened, just to have something to look at instead of you.) "Tried quitting once. Four days. Everybody around me got {color:Disgust}worse{/color}, not me."
 MOOD: Sadness

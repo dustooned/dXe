@@ -169,6 +169,56 @@ TAGS: Faith
 LEDGER: You told Deborah someone else fixed what her son used to fix.
 NEXT: deborah_02_denial
 
+=== deborah_01_lie
+# The white-lie opener: only offered while your Wi-Fi is fogged (under 4).
+# The lie itself already paid +2 Bars and went on the lake (confront_*.json).
+PROMPT: (Her hand goes to the door frame.) "The church sent someone? After all this {color:Fear}time{/color}?"
+MOOD: Fear
+MOOD [Crystals]: Anxiety
+BID: lie
+GLOW: yes
+
+-- TRUTH
+SAY: I'm not from the church. I came about your son.
+REACT: "You're not the church." She says it flat, like a door closing. Then, slowly, it opens again.
+EFFECTS: integrity+2 lucidity+1 trust-1
+DEBT: 0
+NEXT: deborah_02_confronted
+
+-- LIE
+SAY: Pastor sent me. We've all been worried.
+REACT: Her whole face softens. She wants it to be true so badly she doesn't check.
+EFFECTS: stability+2 trust+1
+DEBT: +3
+TAGS: Faith
+LEDGER: You told Deborah the church sent you.
+NEXT: deborah_02_denial
+
+=== deborah_01_fake
+# The faked restore: offered while fogged to a player who restored nothing,
+# under the same words as the secret opener. Nothing out there changed.
+PROMPT: (She looks where you're looking. Nothing out there has changed.) "You fixed it? I didn't {color:Fear}notice{/color}."
+MOOD: Fear
+MOOD [Crystals]: Anxiety
+BID: lie
+GLOW: yes
+
+-- TRUTH
+SAY: I didn't. I just wanted a way in.
+REACT: She almost laughs. "Honest, at least."
+EFFECTS: integrity+2 lucidity+1 trust-1
+DEBT: 0
+NEXT: deborah_02_confronted
+
+-- LIE
+SAY: You must not have looked.
+REACT: She looks again, and lets herself see it. It costs her something to.
+EFFECTS: stability+1 trust+1
+DEBT: +2
+TAGS: Faith
+LEDGER: You told Deborah you'd fixed something you hadn't.
+NEXT: deborah_02_denial
+
 === deborah_03
 PROMPT: (She sits down at the kitchen table, like her legs finally admit it.) "His name was {color:Sadness}Caleb{/color}. Nobody at this church says his name anymore."
 MOOD: Sadness

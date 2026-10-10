@@ -1,7 +1,8 @@
 import { createStore } from '../../shell/state.js';
 import { takeDebugOverrides } from '../../shell/debug.js';
 import { createSceneSequencer } from '../../engine/sceneSequencer.js';
-import { recordEnding, saveCheckpoint, clearCheckpoint } from '../../shell/save.js';
+import { recordEnding, saveCheckpoint, clearCheckpoint, loadSave } from '../../shell/save.js';
+import { therapistReturnScene } from './therapistReturn.js';
 import * as hud from '../../shell/hud.js';
 import * as audio from '../../shell/audio.js';
 import * as encounterMusic from '../../shell/encounterMusic.js';
@@ -182,6 +183,12 @@ const initialRunState = {
   intakeRead: null,
   // NPCs whose story (their STORY cutscene) the player has heard.
   storiesHeard: [],
+  // Each baptism card's answer, in order ('confess' | 'down'), for the
+  // repeat client's file (endingScene.js saves it as save.lastRun).
+  reckoningChoices: [],
+  // A player who has finished this chapter before: no tutorial (the
+  // Therapist reads last run's file instead) and no coach calls or tips.
+  repeat: false,
 };
 
 // For the settings panel's DEBUG page: every scene, in order.
@@ -189,9 +196,16 @@ export const DEBUG_SCENES = SCENES.map(({ id, type }) => ({ id, type }));
 
 export function mount(stageEl, { exit, restart, startSceneId }) {
   forgetMeters(); // a new run: no meter "changes" carried over from the last one
-  const run = createStore({ ...initialRunState, ...takeDebugOverrides() });
+  // Played it before: the Therapist recognizes you instead of teaching you
+  // (therapistReturn.js), and stays quiet for the rest of the run.
+  const lastRun = loadSave().lastRun;
+  const repeatState = lastRun ? { repeat: true, scopeExplained: true } : {};
+  const run = createStore({ ...initialRunState, ...repeatState, ...takeDebugOverrides() });
+  const scenes = run.get().repeat && lastRun
+    ? SCENES.map((s) => (s.id === 'therapist' ? therapistReturnScene(lastRun) : s))
+    : SCENES;
   const sequencer = createSceneSequencer({
-    scenes: SCENES,
+    scenes,
     handlers: HANDLERS,
     context: { run, exit, recordEnding, chapterId: id },
     transitionFn: playStaticTransition,
