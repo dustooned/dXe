@@ -30,7 +30,7 @@ const ref = (name) => join(KIT, 'reference', name);
 const px = (w) => ({ width: w, kernel: 'nearest' });
 await sharp(`${A}/shared/title/spr_game_title.png`).extract({ left: 0, top: 0, width: 640, height: 280 }).png().toFile(ref('title_logo_frame.png'));
 await sharp(`${A}/shared/title/spr_title_bg.png`).extract({ left: 0, top: 0, width: 500, height: 288 }).png().toFile(ref('title_lake_tile.png'));
-await sharp(`${A}/shared/sprites/spr_it_icon.webp`).resize(px(256)).png().toFile(ref('it_icon_x8.png'));
+await sharp(`${A}/shared/sprites/spr_it_icon.png`).resize(px(256)).png().toFile(ref('it_icon_x8.png'));
 await sharp(`${A}/lake-ulysses/sprites/spr_bb/spr_bb_0000.webp`).png().toFile(ref('bob_baiter_frame.png'));
 await sharp(`${A}/lake-ulysses/sprites/spr_lake_bg_001/spr_lake_bg_001_0000.webp`).png().toFile(ref('lake_cutscene_bg.png'));
 await sharp(`${A}/lake-ulysses/sprites/spr_QuoteBG/spr_QuoteBG_0000.webp`).png().toFile(ref('quote_bg.png'));
@@ -104,7 +104,7 @@ const SECTIONS = [
     id: 'code', title: 'Interface art drawn in code', blurb: 'Generated in code as pixel grids. Redraw any of them if you like; keep the exact grid size.',
     assets: [
       { name: 'Feeling icons ×8', path: 'src/ui/feelingIcons.js', draw: '9×9 grid', shown: 'on the wheel slices, the drag bubble, the report', format: 'pixel grid (one color: the feeling\'s)', frames: '1 each', status: 'code', template: 'feeling_icon_9x9_at16x.png', preview: 'feeling_anger.png', gallery: Object.keys(ICONS).map((n) => `feeling_${n.toLowerCase()}.png`), notes: Object.entries(ICON_NAME).map(([k, v]) => `${k}: ${v}`).join(' · ') },
-      { name: 'IT / SO icon', path: 'public/assets/shared/sprites/spr_it_icon.webp', draw: '32×32', shown: 'in the IT/SO popups (SO = inverted)', format: 'WebP', frames: '1', status: 'final', template: 'it_icon_32x32_at16x.png', preview: 'it_icon_x8.png' },
+      { name: 'IT / SO icon', path: 'public/assets/shared/sprites/spr_it_icon.png, spr_so_icon.png', draw: '32×32', shown: 'in the IT/SO popups (SO = inverted)', format: 'WebP', frames: '1', status: 'final', template: 'it_icon_32x32_at16x.png', preview: 'it_icon_x8.png' },
       { name: 'Status bar icons (signal, Wi-Fi, battery)', path: 'src/ui/statusBar.js', draw: '11×8 / 15×8 grids', shown: 'top of every dialog screen', format: 'pixel grid', frames: '—', status: 'code' },
       { name: 'Gear & skip buttons', path: 'src/shell/hud.js', draw: '13×13 grids', shown: 'top corners', format: 'pixel grid', frames: '—', status: 'code' },
       { name: 'Fax printer', path: 'src/ui/feelzRecord.js', draw: '46×7 grid', shown: 'the ending record', format: 'pixel grid', frames: '—', status: 'code' },

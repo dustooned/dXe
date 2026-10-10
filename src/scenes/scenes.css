@@ -733,7 +733,7 @@
 
 /* IT's mark — sized and positioned like the character portrait in an RPG
    textbox (ui/npcPortrait.js's placeholder box uses the same slot idea).
-   White background matches the box itself; the art (spr_it_icon.webp) is
+   White background matches the box itself; the art (spr_it_icon.png) is
    dark-on-transparent, so it needs a light backing to read. Source art is
    a native 32x32 pixel-art icon — pixelated upscaling to the 56px slot on
    purpose, same treatment as the Bob Baiter sprites, not a blurry smooth
@@ -826,7 +826,6 @@
 .dx-it-box--so .dx-it-icon {
   background: var(--color-black);
   border-color: var(--color-white);
-  filter: invert(1);
 }
 
 .dx-it-box--so .dx-it-close {

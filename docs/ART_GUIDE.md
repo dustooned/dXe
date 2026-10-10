@@ -143,7 +143,7 @@ the exact grid size.
 | Asset | Where | Grid | Notes | Template |
 | :-- | :-- | :-- | :-- | :-- |
 | Feeling icons × 8 (flame, wide eye, raindrop, sun, knot, ugh-face, spark, open hand) | `src/ui/feelingIcons.js` | 9×9 | one color (the feeling's) | `feeling_icon_9x9_at16x.png` |
-| IT / SO icon | `public/assets/shared/sprites/spr_it_icon.webp` | 32×32 | ✅ pixel art; SO is the same icon inverted | `it_icon_32x32_at16x.png` |
+| IT / SO icon | `public/assets/shared/sprites/spr_it_icon.png`, `spr_so_icon.png` | 32×32 | ✅ pixel art; each voice has its own (SO's is a white triangle with question marks) | `it_icon_32x32_at16x.png` |
 | Status bar (signal, Wi-Fi, battery) | `src/ui/statusBar.js` | 11×8 / 15×8 | lit + dim cells | — |
 | Gear and skip buttons | `src/shell/hud.js` | 13×13 | — | — |
 | Fax printer | `src/ui/feelzRecord.js` | 46×7 | body, slot, status light | — |

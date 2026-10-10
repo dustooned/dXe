@@ -1534,7 +1534,7 @@ without touching resolution. Used in <code>bob_baiter</code> scene.</li>
 </ul>
 <p><strong>Shared sprites</strong> (<code>public/assets/shared/sprites/</code>):</p>
 <ul>
-<li><code>spr_it_icon.webp</code> (160B) — IT&#39;s mark, the portrait-slot art in every IT
+<li><code>spr_it_icon.png</code> and <code>spr_so_icon.png</code> (both ~230B, from the artist&#39;s GIFs 2026-10-10; the old webp is gone) — IT&#39;s mark, the portrait-slot art in every IT
 popup (<code>ui/itPopup.js</code>, <code>.dx-it-icon</code> in <code>scenes.css</code>). Native 32×32
 pixel-art source, lossless WebP, displayed with <code>image-rendering: pixelated</code> for a crisp upscale to the 56px slot rather than a blurry
 smooth scale — same treatment as the Bob Baiter sprites.</li>
@@ -1736,6 +1736,7 @@ last page with no opening one.</li>
 <li><strong>Cutscene portraits + asset sizes (2026-10-10):</strong> a cutscene beat can carry <code>portrait: { npc, accent, url }</code> (ui/npcPortrait.js); the repeat-client Therapist uses it, so his &quot;T&quot; avatar shows instead of a black screen. <code>docs/ASSET_SIZES.md</code> is the new one-page size reference (every asset, draw-at size at 2x, format, path), linked from ART_GUIDE and in the manual&#39;s front group.</li>
 <li><strong>Asset reference page (2026-10-10):</strong> <code>docs/ASSET_REFERENCE.html</code>, one self-contained page (also published as an Artifact): every asset drawn to scale with exact sizes, filters, search, per-asset blank PNG templates at the exact pixel size, and CSV and page downloads. The asset list lives in its script (<code>A</code>); update it when sizes change.</li>
 <li><strong>Standard character art (2026-10-10):</strong> <code>engine/characters.js</code> defines the state list every NPC avatar is drawn in (idle, talk loop, 8 feeling faces, 5 reactions, connect, pushaway, 5 trauma beats; 192x192, 1-bit) with fallbacks (state -&gt; idle -&gt; letter avatar). <code>scripts/import-character-gifs.mjs &lt;folder&gt; &lt;npc&gt;</code> turns an artist&#39;s GIFs (<code>Profile_&lt;Npc&gt;_&lt;State&gt;.gif</code>) into palette-PNG stills/frame folders under <code>public/assets/lake-ulysses/characters/&lt;npc&gt;/</code> plus a manifest in <code>src/chapters/lake-ulysses/characters/&lt;npc&gt;.json</code> (auto-registered in the chapter index). <code>createNpcPortrait</code> shows the art and plays the talk loop while the <code>.is-speaking</code> class is on (a MutationObserver, so dialogScene needed no change); <code>setState()</code> is there for feelings and reactions, not wired to gameplay yet. The Therapist is imported (35 pieces from the artist&#39;s Drive folder; originals in <code>art-import/therapist/</code>): bare-headed in the tutorial, a random hat on his repeat-client call (<code>hatFor</code>). Spec and artist checklist: <code>docs/CHARACTER_ART.md</code>; also a Character sets group in ASSET_REFERENCE.html. Open: wiring <code>setState</code> to MOOD / reactions / trauma story beats once the art exists; what the Therapist&#39;s <code>_1/_2/_3</code> poses mean (named generically); <code>Fez_Hat02</code> missing; Deborah and Samun Drive folders were empty.</li>
+<li><strong>IT and SO icons (2026-10-10):</strong> the artist&#39;s <code>DX_IT_Icon.gif</code> and <code>DX_SO_Icon.gif</code> (32x32, in <code>art-import/it-so/</code>) are now <code>spr_it_icon.png</code> and <code>spr_so_icon.png</code>; <code>itPopup.js</code> picks by voice, and the CSS invert for SO is gone because the new SO art is already the inverse. The Drive also has a <code>Chapter Images</code> folder (<code>Deobrah_Chapter_Open.gif</code> 93 KB, <code>Samun_ChapterOpen.gif</code> 159 KB), not imported yet.</li>
 <li><strong>Repeat client (2026-10-10):</strong> the ending saves <code>save.lastRun</code> (class, ending, debt, baptism confessed/doubled from <code>run.reckoningChoices</code>). With a lastRun, <code>therapistReturn.js</code> (a cutscene) takes the &#39;therapist&#39; slot and the original tutorial follows as &#39;therapist-tutorial&#39;: he reads the file back (how wet you came out, the ppm, the baptism, same or new class), says you&#39;re doing it again, then asks two things: check in on you? (sets TIPS) and run the exercise again? (yes: the tutorial plays; no: <code>jumpTo</code> walk-home, after the class homework). <strong>TIPS</strong> (Settings, <code>guideHighlights</code>) now controls all of his tip calls in battles plus the lesson highlights; calls you make yourself are unaffected. Verified both paths in the browser.</li>
 <li><strong>Therapist is early-game only</strong> (<code>dialogScene.js</code> nodeCoach): the new-friend call is one call per run (key <code>friend</code>, was <code>friend:&lt;who&gt;</code>; old keys still count) and only in the first three encounters, so he never calls during Rick. A first friend who arrives later pulses quietly in the dock for that card instead. His other calls are the first battle (scope) and the first mask (Samun). Verified: Rick with a fresh contact gets no call; Rwanda with Deborah in the phone does.</li>
 <li><strong>Rooms</strong> (<code>minigames/*.js</code> via <code>engine/walkSequencer.js</code> <code>mountNpcWalk</code>; <code>ui/walkRoom.js</code>): each object names an opener; it glows in that opener&#39;s first feeling for your class, its close-up is washed in it with the NPC&#39;s class glyph in the corner, and each class&#39;s caption is its own perception with that feeling&#39;s word colored (tests check the color matches). One object per class can be restored: once all three are opened, yours calls in your class color; open it again for a hint in your class&#39;s voice, tap the picture to do it (class sigil sound, done line, stamp). That writes <code>run.secrets[npc]</code>.</li>
@@ -3607,9 +3608,9 @@ the exact grid size.</p>
 </tr>
 <tr>
 <td align="left">IT / SO icon</td>
-<td align="left"><code>public/assets/shared/sprites/spr_it_icon.webp</code></td>
+<td align="left"><code>public/assets/shared/sprites/spr_it_icon.png</code>, <code>spr_so_icon.png</code></td>
 <td align="left">32×32</td>
-<td align="left">✅ pixel art; SO is the same icon inverted</td>
+<td align="left">✅ pixel art; each voice has its own (SO&#39;s is a white triangle with question marks)</td>
 <td align="left"><code>it_icon_32x32_at16x.png</code></td>
 </tr>
 <tr>
@@ -7085,7 +7086,7 @@ a subtle pulse).</p>
 distinct font (<code>fnt_it</code>) for IT — separate from the PLAYER dialog box.
 The web equivalent should be its own CSS class with its own visual
 language.</p>
-<p><strong>IT has a real mark now</strong> (<code>public/assets/shared/sprites/spr_it_icon.webp</code>
+<p><strong>IT has a real mark now</strong> (<code>public/assets/shared/sprites/spr_it_icon.png</code>, and SO has its own, <code>spr_so_icon.png</code>: a white triangle with question marks, redrawn by the artist 2026-10-10; the CSS no longer inverts IT&#39;s for SO
 — an eye-in-a-triangle, dark-on-transparent) in place of the empty
 placeholder box in <code>.dx-it-icon</code> (<code>scenes.css</code>). Wired in <code>ui/itPopup.js</code>.
 Native 32×32 pixel-art source; <code>image-rendering: pixelated</code> on the icon

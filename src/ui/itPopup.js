@@ -76,7 +76,8 @@ export function createItPopup(stageEl, { text, loadout, flashClose = false, onCl
 
   const icon = document.createElement('img');
   icon.className = 'dx-it-icon';
-  icon.src = '/assets/shared/sprites/spr_it_icon.webp';
+  // Each voice has its own mark (SO's is IT's inverted, redrawn by the artist).
+  icon.src = voice === 'so' ? '/assets/shared/sprites/spr_so_icon.png' : '/assets/shared/sprites/spr_it_icon.png';
   icon.alt = '';
   face.appendChild(icon);
 

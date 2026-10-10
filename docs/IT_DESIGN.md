@@ -328,7 +328,7 @@ distinct font (`fnt_it`) for IT — separate from the PLAYER dialog box.
 The web equivalent should be its own CSS class with its own visual
 language.
 
-**IT has a real mark now** (`public/assets/shared/sprites/spr_it_icon.webp`
+**IT has a real mark now** (`public/assets/shared/sprites/spr_it_icon.png`, and SO has its own, `spr_so_icon.png`: a white triangle with question marks, redrawn by the artist 2026-10-10; the CSS no longer inverts IT's for SO
 — an eye-in-a-triangle, dark-on-transparent) in place of the empty
 placeholder box in `.dx-it-icon` (`scenes.css`). Wired in `ui/itPopup.js`.
 Native 32×32 pixel-art source; `image-rendering: pixelated` on the icon
