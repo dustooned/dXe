@@ -44,6 +44,7 @@
 // beat's `text` or an option's `label` may be a { Guns, Bible, Crystals }
 // object there too.
 import { createTypewriter } from '../ui/typewriterText.js';
+import { createNpcPortrait } from '../ui/npcPortrait.js';
 import { isFogged } from '../engine/contacts.js';
 import { updateSettings, loadSettings } from '../shell/settings.js';
 import { resolveCard } from '../engine/cardEngine.js';
@@ -179,6 +180,14 @@ export function mount(stageEl, scene, { run, onComplete }) {
       spr.src = beat.sprite;
       spr.alt = '';
       screen.appendChild(spr);
+    }
+
+    // A character with no sprite art (the Therapist's letter avatar on a call):
+    // their portrait, the same one the dialog scene uses.
+    if (beat.portrait) {
+      const p = createNpcPortrait(beat.portrait.npc, beat.portrait.accent, beat.portrait.url);
+      p.el.classList.add('dx-cutscene-portrait');
+      screen.appendChild(p.el);
     }
 
     if (beat.symbolAnim) {

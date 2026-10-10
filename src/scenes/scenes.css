@@ -628,6 +628,20 @@
   animation: dx-new-page 0.3s steps(4, end);
 }
 
+.dx-portrait.dx-cutscene-portrait {
+  position: absolute;
+  z-index: 1;
+  top: 22%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40%;
+  height: auto;
+  aspect-ratio: 1;
+  margin: 0;
+  font-size: calc(64 * var(--px));
+  pointer-events: none;
+}
+
 .dx-cutscene-sprite {
   position: absolute;
   z-index: 1;

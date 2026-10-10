@@ -39,7 +39,9 @@ function homeworkFor(cls) {
   return beat?.text.replace(/^"?I give everyone homework\. Almost nobody does it\. Here's yours anyway\.\s*/, '').replace(/^"|"$/g, '') ?? 'Ask one person about their day. Then wait for the answer.';
 }
 
-const say = (text) => ({ speaker: 'THERAPIST', text });
+// His avatar on every line, the way he shows on a call (ui/npcPortrait.js).
+const PORTRAIT = { npc: therapist.npc, accent: therapist.accentColor, url: therapist.portrait };
+const say = (text) => ({ speaker: 'THERAPIST', portrait: PORTRAIT, text });
 
 export function therapistReturnScene(lastRun) {
   const ppm = ppmFor(lastRun.truthDebt ?? 0);
