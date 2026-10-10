@@ -159,7 +159,7 @@ function lissajousSvg(a, b, phase) {
   return `<svg viewBox="0 0 24 16" class="dx-guide__svg"><polyline points="${pts.join(' ')}" fill="none" stroke="#ffe27a" stroke-width="1"/></svg>`;
 }
 const GUIDE = [
-  ['BATTERY', () => meterGlyph('stability'), 'How much you have left. The truth often costs charge; a lie puts some back; changing your feeling on a question costs a little. At 3 or less the little screen goes dark to save power; near empty, your most-used feeling greys out. It recovers between people, more when they let you in.'],
+  ['BATTERY', () => meterGlyph('stability'), 'How much you have left. The truth often costs charge; a lie puts some back; changing your feeling more than once on a question costs a little. At 2 or less the little screen goes dark to save power; near empty, your most-used feeling greys out. It recovers between people, more when they let you in.'],
   ['BARS', () => meterGlyph('trust'), 'How connected people feel to you. Below 4, some doors stay shut and the Therapist can\'t get through.'],
   ['WI-FI', () => meterGlyph('lucidity'), 'How clearly you see. Every lie fogs it a little. Below 4, calls come in blurry and the Therapist goes to voicemail.'],
   ['CLOCK', () => '<span class="dx-guide__clock">12:00</span>', 'Keeps honest time while you do. Lie enough and the minutes start to skip.'],

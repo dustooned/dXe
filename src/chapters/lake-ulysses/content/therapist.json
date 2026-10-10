@@ -332,28 +332,28 @@
     },
     {
       "kind": "line",
-      "text": "\"Practical stuff. Your battery is what you've got left. The truth usually costs some. A lie puts some back. Run it low and FEELZ dims to save power, so the little screen goes dark. And changing your mind on the wheel costs a little too. Second-guessing is tiring. Ask me how I know.\"",
+      "text": "\"Practical stuff. Your battery is what you've got left. The truth usually costs some. A lie puts some back. Run it low and FEELZ dims to save power, so the little screen goes dark. And changing your mind on the wheel more than once costs a little too. Second-guessing is tiring. Ask me how I know.\"",
       "when": {
         "noClass": true
       }
     },
     {
       "kind": "line",
-      "text": "\"Practical stuff. Battery's your magazine. The truth usually spends a round. A lie loads one back. Run it low and FEELZ goes dark to save power, so the little screen goes with it. And changing your mind on the wheel costs a little. Re-aiming takes something out of you. Ask me how I know.\"",
+      "text": "\"Practical stuff. Battery's your magazine. The truth usually spends a round. A lie loads one back. Run it low and FEELZ goes dark to save power, so the little screen goes with it. And changing your mind on the wheel more than once costs a little. Re-aiming takes something out of you. Ask me how I know.\"",
       "when": {
         "class": "Guns"
       }
     },
     {
       "kind": "line",
-      "text": "\"Practical stuff. Battery's your grace, what's left to give. The truth usually costs some. A lie puts some back. Run low and FEELZ dims to save power, so the little screen goes dark. And changing your mind on the wheel costs a little. Second-guessing is tiring. Ask me how I know.\"",
+      "text": "\"Practical stuff. Battery's your grace, what's left to give. The truth usually costs some. A lie puts some back. Run low and FEELZ dims to save power, so the little screen goes dark. And changing your mind on the wheel more than once costs a little. Second-guessing is tiring. Ask me how I know.\"",
       "when": {
         "class": "Bible"
       }
     },
     {
       "kind": "line",
-      "text": "\"Practical stuff. Battery's your charge. The truth usually drains some. A lie tops it up. Run low and FEELZ dims to save power, so the little screen goes dark. And changing your mind on the wheel costs a little. Restless stones lose charge. Ask me how I know.\"",
+      "text": "\"Practical stuff. Battery's your charge. The truth usually drains some. A lie tops it up. Run low and FEELZ dims to save power, so the little screen goes dark. And changing your mind on the wheel more than once costs a little. Restless stones lose charge. Ask me how I know.\"",
       "when": {
         "class": "Crystals"
       }

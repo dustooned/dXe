@@ -21,9 +21,13 @@ export const FULL_LAKE_COST = -1;
 // The battery as a resource: at LOW_BATTERY or below FEELZ dims to save power
 // (the little screen and needle go dark); at EMPTY_BATTERY your most-used
 // feeling greys out too. Lies recharge it; the truth often costs charge.
-export const LOW_BATTERY = 3;
+// 2, not 3: at 3 an honest player (the truth costs charge) spent a third of
+// the chapter with the little screen dark, and most of it with second-guessing
+// (scripts/balance-sim.mjs). At 2 it is the end of a hard stretch, not the norm.
+export const LOW_BATTERY = 2;
 export const EMPTY_BATTERY = 1;
-// Switching to a different feeling on the same question costs this much.
+// Switching to a different feeling on the same question costs this much, from
+// the second switch on (the first change of mind is free).
 export const SECOND_GUESS_COST = -1;
 
 // The debt change a swipe actually applies (see TRUTH_CLEANSE).

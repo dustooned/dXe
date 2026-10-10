@@ -87,6 +87,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // harmonicFunction(). Starts at -1 so the first enterNode() lands on 0.
   let beatIndex = -1;
   let activeEmotion = null;
+  // How many times the feeling changed on this question (the first is free).
+  let switchesHere = 0;
   let activeEmotionColor = null;
   // 'prompt' (NPC's opening line, FEELZ + swipe card) -> 'say' (the player's
   // own SAY: line, drawn once a swipe resolves) -> 'reaction' (NPC's REACT:).
@@ -286,6 +288,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   function enterNode() {
     beatIndex++;
     activeEmotion = null;
+    switchesHere = 0;
     activeEmotionColor = null;
     stage = 'prompt';
     promptRevealed = false;
@@ -688,9 +691,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
         // a lighter tap-only treatment; it isn't used for that today.)
         onSelect: (emotion, _source) => {
           freshFeeling = null;
-          // Second-guessing (a different feeling on the same question) costs
-          // charge: checking every slice has a price. Not in the tutorial.
-          if (!npc.reveal && activeEmotion && emotion !== activeEmotion) {
+          // Second-guessing costs charge: the first change of mind on a question
+          // is free, the second and on cost a point (checking every slice has a
+          // price). Not in the tutorial.
+          if (!npc.reveal && activeEmotion && emotion !== activeEmotion && ++switchesHere >= 2) {
             // Straight off the top (not the meters' soft edges): enough second-
             // guessing can run you down to empty, where a feeling greys out.
             run.set({ stability: Math.max(0, (run.get().stability ?? 5) + SECOND_GUESS_COST) });

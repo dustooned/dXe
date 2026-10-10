@@ -78,7 +78,7 @@ NEXT: deborah_03
 
 === deborah_02_confronted
 PROMPT: "You don't know what it's like to {color:Sadness}lose{/color} a child."
-MOOD: Anger
+MOOD: Anxiety
 
 -- TRUTH
 SAY: No. But you do. And you're still here.
