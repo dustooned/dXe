@@ -13,16 +13,16 @@ Newest first; details in HANDOFF.md.
 
 1. **Listen and look (2026-10-10):** every new sound has only been tested muted: swipes (slow vs fast), room objects, door, quick beats, chapter-page loading bleeps and room ambience, confrontation openers, prologue and walk home. Tune by ear in `src/shell/audio.js` (SFX, playClassBleep, startOpenerAmbience, playOpenerTheme).
 2. **Art drop-ins:** chapter plates (`plates/plate_<npc>.png`, 240x150 1-bit) and everything in `docs/ASSET_SIZES.md`.
-0. **Opening confrontations: built for all four (2026-10-09).** Look at them on screen as each class (art is still placeholder); the restore hints and secret lines are first drafts for the writer pass.
-2. **Later: interactive way in before each marker page** (skippable; the moment is highlighted and says exactly what to do; the page turns in only after it). Arcade "READY? START!" energy, but literary.
+3. **Opening confrontations: built for all four (2026-10-09).** Look at them on screen as each class (art is still placeholder); the restore hints and secret lines are first drafts for the writer pass.
+4. **Later: interactive way in before each marker page** (skippable; the moment is highlighted and says exactly what to do; the page turns in only after it). Arcade "READY? START!" energy, but literary.
    - **Deborah:** turn a bible page (or twist the hall lightbulb in).
    - **Rwanda:** brush a spray-paint mask across a wall to reveal it, spray SFX.
    - **Samun:** a crosswalk button. Hit it 3 times, impatient: "wait", "wait", "WAIT". The 4th: the chirp, WALK lights ON.
    - **Rick:** rev a loud motorcycle several times until the engine catches (the player presses twice).
-3. **Look at it on screen, muted, in a background tab:** the class-based tutorial, paced connections and class sounds, the guide drum, TIPS, lie-incentive visuals, the Reckoning rebalance, LARGE text.
-4. **Music:** Rwanda's FL stems arrive, then the stem player (`MUSIC_PIPELINE.md`).
-5. **Tester's crash:** need device and browser.
-6. **Later:** art pass (`ART_GUIDE.md`, `npm` artist kit via `node scripts/make-artist-kit.mjs`), writer pass (`writer-handoff/`), Therapist-gated features.
+5. **Look at it on screen, muted, in a background tab:** the class-based tutorial, paced connections and class sounds, the guide drum, TIPS, lie-incentive visuals, the Reckoning rebalance, LARGE text.
+6. **Music:** Rwanda's FL stems arrive, then the stem player (`MUSIC_PIPELINE.md`).
+7. **Tester's crash:** need device and browser.
+8. **Later:** art pass (`ART_GUIDE.md`, `npm` artist kit via `node scripts/make-artist-kit.mjs`), writer pass (`writer-handoff/`), Therapist-gated features.
 
 ## Ready to Build Now
 
