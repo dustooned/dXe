@@ -2,7 +2,7 @@
 // — the art is generated vectors (scripts/make-placeholder-room.mjs) and the
 // captions exercise the class-variation path rather than being final prose.
 // See docs/SCENE_TYPES.md for the step contract.
-import { createWalkSequencer } from '../../../engine/walkSequencer.js';
+import { mountNpcWalk } from '../../../engine/walkSequencer.js';
 
 const SPR = '/assets/lake-ulysses/sprites/';
 
@@ -10,6 +10,12 @@ const SPR = '/assets/lake-ulysses/sprites/';
 // art gets handed over in. See docs/ASSET_GUIDELINES.md "Mini-game rooms".
 const BG = { base: `${SPR}spr_barlot_bg/spr_barlot_bg_`, frames: 6, fps: 8, ext: 'svg' };
 
+// Each object reads one of his openers: its glow (and its close-up's wash)
+// is the first feeling that opener meets, as YOUR class meets him (kin or
+// foe, engine/loadout.js moodFor), the same color as that option's stripe in
+// the confrontation. The captions are each class's own read of him,
+// colored word and all; none is the right one. One object per class can be
+// restored (ui/walkRoom.js), which unlocks his secret opener (rick_01_secret).
 const ROOMS = {
   'barlot-01': {
     bg: BG,
@@ -20,33 +26,51 @@ const ROOMS = {
     },
     hotspots: [
       {
-        x: 60, y: 470, w: 116, h: 96,
-        sprite: `${SPR}barlot_bike.svg`,
-        closeup: `${SPR}barlot_bike_closeup.svg`,
-        text: {
-          Guns:     'Parked across two spaces. That is the whole message, and it is meant for you.',
-          Bible:    'Kept better than the man keeps himself. Everything on it has been touched lately.',
-          Crystals: 'The chrome holds the door light and bends it into something almost soft.',
-        },
-      },
-      {
         x: 268, y: 520, w: 56, h: 40,
         sprite: `${SPR}barlot_ashtray.svg`,
         closeup: `${SPR}barlot_ashtray_closeup.svg`,
+        opener: 'rick_01',
         text: {
-          Guns:     'One brand, all of them. Same man, same spot, every night, waiting on something.',
-          Bible:    'Somebody stands out here alone a lot. Long enough to fill this twice.',
-          Crystals: 'Every one of them stubbed out the same careful way. Like a count of something.',
+          Guns:     'One brand, all of them. Same man, same spot, every night, waiting on something he\'s {color:Fear}scared{/color} will come.',
+          Bible:    'Somebody stands out here alone a lot. Long enough to fill this twice, {color:Fear}afraid{/color} to go home.',
+          Crystals: 'Every one of them stubbed out the same careful way. Like a count of something {color:Anxiety}restless{/color}.',
+        },
+        restore: {
+          by: 'Crystals',
+          hint: 'Every butt is a minute somebody stood out here alone. The weight of it hums. Let it go.',
+          done: 'You tip the ash into the wind. The tray comes up clean and the hum goes quiet.',
         },
       },
       {
         x: 264, y: 232, w: 58, h: 78,
         sprite: `${SPR}barlot_flyer.svg`,
         closeup: `${SPR}barlot_flyer_closeup.svg`,
+        opener: 'rick_01_soft',
         text: {
-          Guns:     'A benefit ride. For a guy nobody in there will say the name of anymore.',
-          Bible:    'A benefit ride, taped up crooked. They raised the money. That happened.',
-          Crystals: 'The date on it already passed. Nobody took it down. Nobody is going to.',
+          Guns:     'A benefit ride. For a guy nobody in there will say the name of anymore. Saying it makes them {color:Anxiety}twitchy{/color}.',
+          Bible:    'A benefit ride, taped up crooked. They raised the money and then let it hang like something {color:Disgust}shameful{/color}.',
+          Crystals: 'The date on it already passed. Nobody took it down. Nobody is going to. It {color:Anxiety}trembles{/color} when the door opens.',
+        },
+        restore: {
+          by: 'Bible',
+          hint: 'Taped up crooked, for a man nobody names. He deserves to hang straight.',
+          done: 'You peel the tape and set it level. You read his name out loud, once, to nobody.',
+        },
+      },
+      {
+        x: 60, y: 470, w: 116, h: 96,
+        sprite: `${SPR}barlot_bike.svg`,
+        closeup: `${SPR}barlot_bike_closeup.svg`,
+        opener: 'rick_01_hard',
+        text: {
+          Guns:     'Parked across two spaces. That is the whole message, and it\'s {color:Anger}spoiling{/color} for you to answer it.',
+          Bible:    'Kept better than the man keeps himself. Everything on it has been touched lately, by hands that were {color:Anger}angry{/color}.',
+          Crystals: 'The chrome holds the door light and bends it into something almost soft, over something {color:Anger}hot{/color}.',
+        },
+        restore: {
+          by: 'Guns',
+          hint: 'The chain\'s thrown. You\'ve set a chain before. You could do it blind.',
+          done: 'You walk the chain back onto the sprocket, tooth by tooth. Grease to the wrist. It will run.',
         },
       },
     ],
@@ -63,16 +87,6 @@ const STEPS = [
   { type: 'gimmick', prompt: { text: 'SOMEONE SHOULDERS PAST' }, response: 'swipe-right' },
 ];
 
-export function mount(stageEl, scene, { run, onComplete }) {
-  const sequencer = createWalkSequencer({
-    steps: STEPS,
-    stageEl,
-    loadout: run.get().loadout,
-    onComplete,
-  });
-  sequencer.start();
-
-  return function unmount() {
-    sequencer.destroy();
-  };
+export function mount(stageEl, scene, context) {
+  return mountNpcWalk(stageEl, scene, context, { steps: STEPS, secretKey: 'rick' });
 }

@@ -13,6 +13,15 @@
       }
     },
     {
+      "secret": true,
+      "sprite": "/assets/lake-ulysses/sprites/npc_deborah.svg",
+      "text": {
+        "Guns": "Behind you, the diploma hangs level.\n\nShe sees it before she sees you.",
+        "Bible": "She looks down. The mat says WELCOME now.\n\nShe reads it twice.",
+        "Crystals": "Over your head the hall light holds steady.\n\nShe looks up at it like it said her name."
+      }
+    },
+    {
       "speaker": "DEBORAH",
       "sprite": "/assets/lake-ulysses/sprites/npc_deborah.svg",
       "text": "\"{slow}Well.{/slow}{pause:400} You're not the church.\"",
@@ -30,6 +39,15 @@
           {
             "label": "\"I heard about your son.\"",
             "opener": "deborah_01_hard"
+          },
+          {
+            "secret": true,
+            "label": {
+              "Guns": "\"Somebody let that frame hang crooked.\"",
+              "Bible": "\"Your welcome mat was face down.\"",
+              "Crystals": "\"You never replaced the lightbulb.\""
+            },
+            "opener": "deborah_01_secret"
           }
         ]
       }

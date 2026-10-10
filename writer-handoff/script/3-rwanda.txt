@@ -1,6 +1,8 @@
 NPC: RWANDA
 LOCATION: 3
 ACCENT: var(--color-rwanda)
+# The class she reads as (their own lens): tints the room and the confrontation.
+CLASS: Crystals
 
 # The connection moment: played when this NPC first trusts you.
 CONNECT [Guns]: She finally turns all the way around. "I clocked you as trouble the second you walked up." She sets the cigarette down. "Guess I flinch at the wrong people too."
@@ -35,6 +37,8 @@ OPENER [Crystals]: (She almost relaxes.) "You don't look like you're here to tel
 === rwanda_01
 PROMPT: "Why do I gotta sand myself down just to be {color:Disgust}digestible{/color}?"
 MOOD: Anger
+# Kin: someone who just waits with her, and doesn't tell her to smile, catches her off guard.
+MOOD [Crystals]: Surprise
 
 -- TRUTH
 SAY: Because people are scared of you being fully real.
@@ -56,6 +60,8 @@ NEXT: rwanda_02_closed
 === rwanda_02_closed
 PROMPT: "Right. Sure. I'm doing {color:Sadness}fine{/color}." (She turns back to the window.)
 MOOD: Disgust
+# Foe: from a guy who looks like he wants to start something, "fine" is a door slammed.
+MOOD [Guns]: Anger
 
 -- TRUTH
 SAY: I was wrong. You don't have to minimize this for me.
@@ -76,6 +82,8 @@ NEXT: rwanda_03
 === rwanda_02_open
 PROMPT: "You actually mean that? Most people just want me to {color:Disgust}perform{/color}."
 MOOD: Surprise
+# Foe: from someone she clocked as trouble, being met is scarier than being fought.
+MOOD [Guns]: Fear
 
 -- TRUTH
 SAY: I know. And it's exhausting to watch, let alone live.
@@ -117,6 +125,8 @@ NEXT: rwanda_02_closed
 === rwanda_01_hard
 PROMPT: "Word travels. You've been at three doors tonight already. What is it you're {color:Anxiety}collecting{/color}?"
 MOOD: Fear
+# Kin: word travelled, and it reached the one person she hoped it wouldn't.
+MOOD [Crystals]: Anxiety
 
 -- TRUTH
 SAY: I don't know yet. That's the honest answer.
@@ -132,6 +142,34 @@ EFFECTS: integrity-2 stability+1 trust-2
 DEBT: +3
 TAGS: Identity, Community
 LEDGER: You lied to Rwanda about why you were at her door at all.
+NEXT: rwanda_02_closed
+
+=== rwanda_01_secret
+# The secret opener: you opened everything in her alley and restored what
+# your class restores (minigames/rwanda-alley.js). Her first feeling glows.
+CLASS [Guns]: (Down in the alley, the payphone cord hangs whole again, knotted.)
+CLASS [Bible]: (Out the window, the sign has every letter lit for the first time in years.)
+CLASS [Crystals]: (Down in the alley, a painted face shows through where you brushed the gray away.)
+PROMPT: "Somebody's been messing with my alley." (She doesn't turn around, but her voice does.) "Nobody {color:Surprise}touches{/color} anything out there. That was the point of it."
+MOOD: Surprise
+MOOD [Guns]: Fear
+MOOD [Bible]: Anxiety
+BID: truth
+
+-- TRUTH
+SAY: It was me. It looked like it was waiting for somebody to bother.
+REACT: She turns around. All the way, first try.
+EFFECTS: integrity+2 lucidity+1 trust+1
+DEBT: 0
+NEXT: rwanda_02_open
+
+-- LIE
+SAY: Wasn't me. Kids, probably.
+REACT: "Kids." She turns back to the window. "Sure."
+EFFECTS: integrity-1 stability+1
+DEBT: +2
+TAGS: Identity
+LEDGER: You told Rwanda somebody else fixed her alley.
 NEXT: rwanda_02_closed
 
 === rwanda_03

@@ -13,6 +13,15 @@
       }
     },
     {
+      "secret": true,
+      "sprite": "/assets/lake-ulysses/sprites/npc_rick.svg",
+      "text": {
+        "Guns": "Out the window, his bike sits with its chain back on.\n\nHe noticed. He noticed before you sat.",
+        "Bible": "By the door, the benefit flyer hangs straight now.\n\nHe's reading the name on it again.",
+        "Crystals": "Out on the sill, the ashtray sits empty.\n\nHe taps his pack and doesn't take one out."
+      }
+    },
+    {
       "speaker": "RICK",
       "sprite": "/assets/lake-ulysses/sprites/npc_rick.svg",
       "text": "\"{slow}You're new.{/slow}{pause:400} Sit if you're sitting.\"",
@@ -30,6 +39,15 @@
           {
             "label": "\"What happened to the guy outside?\"",
             "opener": "rick_01_hard"
+          },
+          {
+            "secret": true,
+            "label": {
+              "Guns": "\"Your chain was thrown.\"",
+              "Bible": "\"Your friend's flyer was hanging crooked.\"",
+              "Crystals": "\"I emptied your ashtray.\""
+            },
+            "opener": "rick_01_secret"
           }
         ]
       }

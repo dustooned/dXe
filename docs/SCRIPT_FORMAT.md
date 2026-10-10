@@ -60,6 +60,10 @@ NEXT: deborah_02_denial
 - `ACCENT:` — a CSS color for this NPC's visual accent. Use
   `var(--color-<name>)` and add the matching variable to `src/style.css`
   if this is a brand new NPC (ask if unsure).
+- `CLASS:` (optional) — `Guns`, `Bible` or `Crystals`: the class this NPC
+  reads as, their own lens. Their Roman numeral page and room close-ups
+  wear that class's color and glyph, and their room hides one restore per
+  class (see `minigames/*.js`).
 - `PORTRAIT:` (optional) — a path to this NPC's portrait image (e.g.
   `/assets/lake-ulysses/sprites/portrait_deborah.webp` — see
   `ASSET_MANIFEST.md`'s "Dialog portraits"), served straight from
@@ -107,6 +111,10 @@ gone, and the build rejects one if it turns up in a file.
   it counts toward trust, and it's when the NPC gives the player a
   feeling (engine/unlocks.js). Use `both` when a kind lie still meets
   them.
+- `MOOD [Guns|Bible|Crystals]: Emotion` — how they feel toward one class in
+  particular (kin or foe): replaces `MOOD` for a player of that class. The
+  balance check's first-card table shows which openers each class can
+  meet; keep at least one per class per NPC (`npm run test:engine` checks).
 
 ### A swipe (what happens for Truth vs. Lie)
 

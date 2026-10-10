@@ -18,6 +18,11 @@
   --color-feelz-happy: #ffe135;
   --color-feelz-sadness: #1e90ff;
   --color-feelz-surprise: #ff5fd2;
+  /* Class colors: kept off the feeling hues so a class tint never reads
+     as a feeling. Steel, candle-ivory, lilac. */
+  --color-class-guns: #a9b6c2;
+  --color-class-bible: #f3e2b3;
+  --color-class-crystals: #d2a8ff;
 
   --font-pixel: 'Press Start 2P', 'Courier New', monospace;
   /* IT's voice only — a rough CRT-terminal font, not the game's clean

@@ -36,7 +36,15 @@
 // An interactive option can carry `record: 'key'` — the chosen label is
 // saved to run.checkIn[key] (the FEELZ check-in answers, read back at the
 // ending; see endingScene.js).
+//
+// Confrontations (opensDialog + npc): each option shows its first feeling's
+// color as this player's class meets the NPC (the same color its room object
+// glowed). A beat or option marked `secret: true` only appears once your
+// class restored something in their room (run.secrets[opensDialog]); a
+// beat's `text` or an option's `label` may be a { Guns, Bible, Crystals }
+// object there too.
 import { createTypewriter } from '../ui/typewriterText.js';
+import { CLASSES, classColor, emotionColor, moodFor } from '../engine/loadout.js';
 import { later, cancelLater } from '../shell/pauseBus.js';
 import { quoteSpeech } from '../ui/speech.js';
 import * as encounterMusic from '../shell/encounterMusic.js';
@@ -73,6 +81,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
     return scene.beats[beatIndex];
   }
 
+  const loadout = () => run.get().loadout;
+  const secretOpen = () => !!(scene.opensDialog && run.get().secrets?.[scene.opensDialog]);
+  const shown = (item) => !item.secret || secretOpen();
+  const inClass = (text) => (text && typeof text === 'object' ? text[loadout()] ?? Object.values(text)[0] : text);
+
   function destroyAnimators() {
     for (const { key, animator } of activeAnimators) {
       animFrames[key] = animator.currentFrame;
@@ -98,6 +111,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
     stageEl.innerHTML = '';
     typewriter = null;
 
+    // A secret beat you haven't unlocked isn't there at all.
+    while (currentBeat() && !shown(currentBeat())) beatIndex += 1;
+    if (!currentBeat()) { onComplete(); return; }
     const beat = currentBeat();
 
     if (beat.it) {
@@ -179,13 +195,17 @@ export function mount(stageEl, scene, { run, onComplete }) {
     screen.appendChild(textBox);
     stageEl.appendChild(screen);
 
+    if (beat.secret) screen.classList.add('is-secret');
+    screen.style.setProperty('--cls', classColor(loadout()));
+
     if (beat.text) {
       const textEl = document.createElement('p');
       textEl.className = 'dx-text dx-cutscene-text';
       textBox.appendChild(textEl);
       // A beat with a speaker is that character talking: always in quotes.
-      const shown = beat.speaker ? quoteSpeech(beat.text) : beat.text;
-      typewriter = createTypewriter(textEl, shown, { onDone: handleBeatReady, onChar: playTypewriterTick });
+      const text = inClass(beat.text);
+      const said = beat.speaker ? quoteSpeech(text) : text;
+      typewriter = createTypewriter(textEl, said, { onDone: handleBeatReady, onChar: playTypewriterTick });
     } else {
       handleBeatReady();
     }
@@ -228,10 +248,21 @@ export function mount(stageEl, scene, { run, onComplete }) {
   function showChoices(textBox, interactive) {
     const choices = document.createElement('div');
     choices.className = 'dx-cutscene-choices';
-    interactive.options.forEach((option) => {
+    interactive.options.filter(shown).forEach((option) => {
       const btn = document.createElement('button');
       btn.className = 'dx-btn';
-      btn.textContent = option.label;
+      btn.textContent = inClass(option.label);
+      // The first feeling this opener meets, for your class: the chip.
+      const mood = option.opener && moodFor(scene.npc?.nodes?.[option.opener], loadout());
+      if (mood) {
+        btn.classList.add('has-mood');
+        btn.style.setProperty('--mood', emotionColor(mood));
+      }
+      if (option.secret) {
+        btn.classList.add('is-secret');
+        btn.style.setProperty('--cls', classColor(loadout()));
+        btn.dataset.glyph = CLASSES[loadout()]?.glyph ?? '';
+      }
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         resolveChoice(option);
@@ -253,7 +284,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   function resolveChoice(option) {
     applyOpener(option);
     if (option.record) {
-      run.set({ checkIn: { ...run.get().checkIn, [option.record]: option.label } });
+      run.set({ checkIn: { ...run.get().checkIn, [option.record]: inClass(option.label) } });
     }
     if (option.jumpTo) {
       onComplete({ jumpTo: option.jumpTo });

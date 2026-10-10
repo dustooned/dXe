@@ -1,6 +1,8 @@
 NPC: SAMUN
 LOCATION: 4
 ACCENT: var(--color-samun)
+# The class he reads as (their own lens): tints the room and the confrontation.
+CLASS: Bible
 
 # MASK: on the first two questions this one shows a feeling (the screen's
 # color) that isn't the real one (MOOD). The colored word in the line hints at
@@ -39,6 +41,8 @@ OPENER [Crystals]: "Ooh, good vibes. Sit, sit."
 === samun_01
 PROMPT: "Man, everyone's {color:Fear}hooked{/color} on something. Mine's just more honest."
 MOOD: Fear
+# Kin: good vibes make him nervous, not scared. He has to keep the room light for them.
+MOOD [Crystals]: Anxiety
 MASK: Happy
 # A comforting lie: what they want to hear. It turns toward them now; the lake pays later.
 BID: lie
@@ -106,6 +110,8 @@ NEXT: samun_03
 === samun_01_soft
 PROMPT: "Business? Business is {color:Disgust}great{/color}, man. Look around. Everybody's real busy."
 MOOD: Disgust
+# Kin: business is "great" in the jittery way a vibes person can hear.
+MOOD [Crystals]: Anxiety
 MASK: Happy
 # A comforting lie: what they want to hear. It turns toward them now; the lake pays later.
 BID: lie
@@ -129,6 +135,8 @@ NEXT: samun_02_enabled
 === samun_01_hard
 PROMPT: (He puts the rag down.) "Ask it, then. Everybody who comes in here asks it {color:Anxiety}eventually{/color}."
 MOOD: Fear
+# Foe: a soldier staring at his hands is a fight he can feel coming.
+MOOD [Guns]: Anger
 
 -- TRUTH
 SAY: What are you on, Samun?
@@ -144,6 +152,34 @@ EFFECTS: integrity-2 stability+1 trust-1
 DEBT: +2
 TAGS: Denial
 LEDGER: You backed off the question Samun had already braced himself to answer.
+NEXT: samun_02_enabled
+
+=== samun_01_secret
+# The secret opener: you opened everything in his garage and restored what
+# your class restores (minigames/samun-garage.js). His first feeling glows.
+CLASS [Guns]: (He glances at the bay door. The drum's gone, hauled out to the curb.)
+CLASS [Bible]: (He glances at the wall. The calendar's on this month.)
+CLASS [Crystals]: (The radio's found a station. Something old, with a horn in it.)
+PROMPT: "You touched my stuff." (He laughs, but he isn't wiping his hands anymore.) "Nobody does that. Everybody's too {color:Fear}polite{/color} to touch the mess."
+MASK: Happy
+MOOD: Fear
+MOOD [Crystals]: Anxiety
+BID: truth
+
+-- TRUTH
+SAY: It looked like you'd been meaning to.
+REACT: He puts the rag in his back pocket, like it's done for the night.
+EFFECTS: integrity+2 lucidity+1 trust+1
+DEBT: 0
+NEXT: samun_02_confronted
+
+-- LIE
+SAY: Didn't touch anything. It was like that.
+REACT: "Huh. Ghosts." He laughs. The rag comes back out.
+EFFECTS: integrity-1 stability+1
+DEBT: +2
+TAGS: Denial
+LEDGER: You told Samun his garage cleaned itself.
 NEXT: samun_02_enabled
 
 === samun_03

@@ -1,11 +1,26 @@
 # Jobs Backlog
 
-Last updated: 2026-07-18. Ranked roughly by how ready each is to start —
+Last updated: 2026-10-09 (the "Next up" section only; the rest below is older). Ranked roughly by how ready each is to start —
 "ready" means no design decisions or external tools needed, just execution.
 
 Source assets live at `E:\2025\Games\BackUp\1_28_2025\` unless noted.
 
 ---
+
+## Next up (2026-10-09, night)
+
+Newest first; details in HANDOFF.md.
+
+1. **Opening confrontations: built for all four (2026-10-09).** Look at them on screen as each class (art is still placeholder); the restore hints and secret lines are first drafts for the writer pass.
+2. **Later: interactive way in before each marker page** (skippable; the moment is highlighted and says exactly what to do; the page turns in only after it). Arcade "READY? START!" energy, but literary.
+   - **Deborah:** turn a bible page (or twist the hall lightbulb in).
+   - **Rwanda:** brush a spray-paint mask across a wall to reveal it, spray SFX.
+   - **Samun:** a crosswalk button. Hit it 3 times, impatient: "wait", "wait", "WAIT". The 4th: the chirp, WALK lights ON.
+   - **Rick:** rev a loud motorcycle several times until the engine catches (the player presses twice).
+3. **Look at it on screen, muted, in a background tab:** the class-based tutorial, paced connections and class sounds, the guide drum, TIPS, lie-incentive visuals, the Reckoning rebalance, LARGE text.
+4. **Music:** Rwanda's FL stems arrive, then the stem player (`MUSIC_PIPELINE.md`).
+5. **Tester's crash:** need device and browser.
+6. **Later:** art pass (`ART_GUIDE.md`, `npm` artist kit via `node scripts/make-artist-kit.mjs`), writer pass (`writer-handoff/`), Therapist-gated features.
 
 ## Ready to Build Now
 

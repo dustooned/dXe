@@ -24,7 +24,7 @@ import { createStatusBar } from '../ui/statusBar.js';
 import { CONTACTS, contactsFor, therapistReachable, voicemailFor, callFor } from '../engine/contacts.js';
 import { createNpcPortrait } from '../ui/npcPortrait.js';
 import { createFeelzDartboard } from '../ui/feelzDartboard.js';
-import { EMOTIONS, emotionColor, emotionsForClass, getDominantEmotion } from '../engine/loadout.js';
+import { EMOTIONS, emotionColor, emotionsForClass, getDominantEmotion, withClassMoods } from '../engine/loadout.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
 import { createOscilloscope, wheelSteps } from '../ui/oscilloscope.js';
@@ -81,7 +81,9 @@ const CAUGHT_FALLBACK = {
 const FREEZE_MS = 150;
 
 export function mount(stageEl, scene, { run, onComplete }) {
-  const { npc } = scene;
+  // Moods resolved for this player's class (an NPC can feel differently
+  // toward their kin or foe; engine/loadout.js withClassMoods).
+  const npc = withClassMoods(scene.npc, run.get().loadout);
   let currentNodeId = resolveGatedNode(openingNodeId(scene, npc, run.get()), npc, run.get());
   // Which beat of the encounter we're on — drives the cadence, see
   // harmonicFunction(). Starts at -1 so the first enterNode() lands on 0.
@@ -188,7 +190,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // settles it until this time.
   let opfx = null;
   // A lie that warmed them: they relax, and their next feeling shows on your wheel.
-  let pendingRelax = false;
+  // The secret opener (you restored something in their room) starts with
+  // their first feeling glowing on your wheel, the way a relaxing lie does.
+  let pendingRelax = /_secret$/.test(currentNodeId);
   // Set on unmount, so a delayed call can't land in the next scene.
   let unmounted = false;
   let settleUntil = 0;
@@ -1353,11 +1357,14 @@ export function mount(stageEl, scene, { run, onComplete }) {
       });
       return;
     }
+    // He's early-game only: the friend call teaches the dock once, for the
+    // first friend, and never past the third encounter (so never on Rick).
     const friends = contactsFor(run.get(), npc.npc).filter((w) => w !== 'THERAPIST');
     const who = friends.at(-1);
-    if (who && isRevealed('dock')) {
+    const metBefore = new Set(Object.keys(run.get().choices ?? {}).map((id) => id.split('_')[0]).filter((n) => n !== 'therapist' && n !== npc.npc.toLowerCase()));
+    if (who && isRevealed('dock') && metBefore.size < 3) {
       const name = CONTACTS[who].name;
-      startCoach(`friend:${who}`, {
+      startCoach('friend', {
         steps: [
           { say: `It's me. FEELZ tells me ${name}'s in your phone now.`, target: `who:${who}`, label: name.toUpperCase() },
           { say: inClass(`Tap them anytime for their read on ${facing}. Their own way. Doesn't mean they're right. Okay. Bye.`, {

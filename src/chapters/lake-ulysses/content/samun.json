@@ -43,6 +43,9 @@
         }
       },
       "mood": "Fear",
+      "moodByClass": {
+        "Crystals": "Anxiety"
+      },
       "mask": "Happy",
       "bid": [
         "lie"
@@ -164,6 +167,9 @@
         }
       },
       "mood": "Disgust",
+      "moodByClass": {
+        "Crystals": "Anxiety"
+      },
       "mask": "Happy",
       "bid": [
         "lie"
@@ -205,7 +211,58 @@
           "nextNodeId": "samun_02_enabled"
         }
       },
-      "mood": "Fear"
+      "mood": "Fear",
+      "moodByClass": {
+        "Guns": "Anger"
+      }
+    },
+    "samun_01_secret": {
+      "id": "samun_01_secret",
+      "npc": "SAMUN",
+      "location": 4,
+      "prompt": "\"You touched my stuff.\" (He laughs, but he isn't wiping his hands anymore.) \"Nobody does that. Everybody's too {color:Fear}polite{/color} to touch the mess.\"",
+      "swipes": {
+        "truth": {
+          "playerText": "It looked like you'd been meaning to.",
+          "npcReaction": "He puts the rag in his back pocket, like it's done for the night.",
+          "effects": {
+            "integrity": 2,
+            "lucidity": 1,
+            "trust": 1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": "samun_02_confronted"
+        },
+        "lie": {
+          "playerText": "Didn't touch anything. It was like that.",
+          "npcReaction": "\"Huh. Ghosts.\" He laughs. The rag comes back out.",
+          "effects": {
+            "integrity": -1,
+            "stability": 1
+          },
+          "debtDelta": 2,
+          "tags": [
+            "Denial"
+          ],
+          "ledgerEntry": "You told Samun his garage cleaned itself.",
+          "nextNodeId": "samun_02_enabled"
+        }
+      },
+      "byClass": {
+        "Guns": "(He glances at the bay door. The drum's gone, hauled out to the curb.)",
+        "Bible": "(He glances at the wall. The calendar's on this month.)",
+        "Crystals": "(The radio's found a station. Something old, with a horn in it.)"
+      },
+      "mask": "Happy",
+      "mood": "Fear",
+      "moodByClass": {
+        "Crystals": "Anxiety"
+      },
+      "bid": [
+        "truth"
+      ]
     },
     "samun_03": {
       "id": "samun_03",
@@ -313,6 +370,7 @@
       ]
     }
   },
+  "npcClass": "Bible",
   "connect": {
     "Guns": "He stops wiping the counter. \"Army taught me to spot guys like you. Ready to swing.\" He slides you one of the unopened bottles. \"Didn't figure you'd be the one to set it down.\"",
     "Bible": "\"My mother prayed over me every night. Didn't take.\" He turns the bottle in his hands. \"You didn't pray at me. You listened. That's worse.\" A beat. \"That's better.\"",

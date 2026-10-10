@@ -13,6 +13,15 @@
       }
     },
     {
+      "secret": true,
+      "sprite": "/assets/lake-ulysses/sprites/npc_samun.svg",
+      "text": {
+        "Guns": "Out by the curb, the drum you hauled sits where the truck will see it.\n\nHe keeps looking at the empty spot.",
+        "Bible": "The calendar's on this month now.\n\nHe's counting something on it with his eyes.",
+        "Crystals": "The radio plays an actual song now.\n\nHis rag has stopped moving."
+      }
+    },
+    {
       "speaker": "SAMUN",
       "sprite": "/assets/lake-ulysses/sprites/npc_samun.svg",
       "text": "\"Hey. {slow}Hey.{/slow}{pause:350} You need something, or you just walking around tonight?\"",
@@ -30,6 +39,15 @@
           {
             "label": "Look at his hands until he stops.",
             "opener": "samun_01_hard"
+          },
+          {
+            "secret": true,
+            "label": {
+              "Guns": "\"Somebody had to take that drum out.\"",
+              "Bible": "\"Your calendar was two years behind.\"",
+              "Crystals": "\"Your radio found a song.\""
+            },
+            "opener": "samun_01_secret"
           }
         ]
       }

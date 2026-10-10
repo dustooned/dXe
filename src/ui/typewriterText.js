@@ -193,10 +193,13 @@ export function paginate(segments) {
 // text immediately — for re-rendering a line that already finished drawing
 // once (e.g. dialogScene rebuilding its screen when the player picks a FEELZ
 // emotion, without replaying the node's prompt from scratch).
-export function createTypewriter(container, text, { onDone, onChar, onMark, onPageDone, narration = 'auto', startRevealed: revealedArg = false } = {}) {
+// `onePage` keeps the whole text on one page (a page of the novel, where the
+// layout has the room and a paragraph should read as a paragraph).
+export function createTypewriter(container, text, { onDone, onChar, onMark, onPageDone, narration = 'auto', startRevealed: revealedArg = false, onePage = false } = {}) {
   const speed = TEXT_SPEED[loadSettings().textSpeed] ?? 1;
   const startRevealed = revealedArg || speed === 0;
-  const pages = paginate(markNarration(parseSegments(text), narration));
+  const segments = markNarration(parseSegments(text), narration);
+  const pages = onePage ? [segments] : paginate(segments);
   let pageIndex = revealedArg ? pages.length - 1 : 0;
   let page = null;
 

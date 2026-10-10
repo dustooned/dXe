@@ -47,7 +47,10 @@
           "nextNodeId": "rwanda_02_closed"
         }
       },
-      "mood": "Anger"
+      "mood": "Anger",
+      "moodByClass": {
+        "Crystals": "Surprise"
+      }
     },
     "rwanda_02_closed": {
       "id": "rwanda_02_closed",
@@ -84,7 +87,10 @@
           "nextNodeId": "rwanda_03"
         }
       },
-      "mood": "Disgust"
+      "mood": "Disgust",
+      "moodByClass": {
+        "Guns": "Anger"
+      }
     },
     "rwanda_02_open": {
       "id": "rwanda_02_open",
@@ -122,7 +128,10 @@
           "nextNodeId": "rwanda_03"
         }
       },
-      "mood": "Surprise"
+      "mood": "Surprise",
+      "moodByClass": {
+        "Guns": "Fear"
+      }
     },
     "rwanda_01_soft": {
       "id": "rwanda_01_soft",
@@ -203,7 +212,58 @@
           "nextNodeId": "rwanda_02_closed"
         }
       },
-      "mood": "Fear"
+      "mood": "Fear",
+      "moodByClass": {
+        "Crystals": "Anxiety"
+      }
+    },
+    "rwanda_01_secret": {
+      "id": "rwanda_01_secret",
+      "npc": "RWANDA",
+      "location": 3,
+      "prompt": "\"Somebody's been messing with my alley.\" (She doesn't turn around, but her voice does.) \"Nobody {color:Surprise}touches{/color} anything out there. That was the point of it.\"",
+      "swipes": {
+        "truth": {
+          "playerText": "It was me. It looked like it was waiting for somebody to bother.",
+          "npcReaction": "She turns around. All the way, first try.",
+          "effects": {
+            "integrity": 2,
+            "lucidity": 1,
+            "trust": 1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": "rwanda_02_open"
+        },
+        "lie": {
+          "playerText": "Wasn't me. Kids, probably.",
+          "npcReaction": "\"Kids.\" She turns back to the window. \"Sure.\"",
+          "effects": {
+            "integrity": -1,
+            "stability": 1
+          },
+          "debtDelta": 2,
+          "tags": [
+            "Identity"
+          ],
+          "ledgerEntry": "You told Rwanda somebody else fixed her alley.",
+          "nextNodeId": "rwanda_02_closed"
+        }
+      },
+      "byClass": {
+        "Guns": "(Down in the alley, the payphone cord hangs whole again, knotted.)",
+        "Bible": "(Out the window, the sign has every letter lit for the first time in years.)",
+        "Crystals": "(Down in the alley, a painted face shows through where you brushed the gray away.)"
+      },
+      "mood": "Surprise",
+      "moodByClass": {
+        "Guns": "Fear",
+        "Bible": "Anxiety"
+      },
+      "bid": [
+        "truth"
+      ]
     },
     "rwanda_03": {
       "id": "rwanda_03",
@@ -300,6 +360,7 @@
       ]
     }
   },
+  "npcClass": "Crystals",
   "connect": {
     "Guns": "She finally turns all the way around. \"I clocked you as trouble the second you walked up.\" She sets the cigarette down. \"Guess I flinch at the wrong people too.\"",
     "Bible": "\"My grandmother carried a bible like that. Swore by it. Swore at me with it, too.\" A small smile, the first real one. \"You didn't do either. That's new.\"",

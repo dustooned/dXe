@@ -1,6 +1,8 @@
 NPC: DEBORAH
 LOCATION: 2
 ACCENT: var(--color-deborah)
+# The class she reads as (her own lens): tints her room and her confrontation.
+CLASS: Bible
 
 # The connection moment: played when this NPC first trusts you.
 CONNECT [Guns]: She holds out her hand, palm up, the way you'd show a dog you're not a threat. "Caleb used to stand like you. Like he was waiting to get hit." She doesn't pull the hand back.
@@ -35,6 +37,8 @@ OPENER [Crystals]: (Her smile tightens.) "You're not from our congregation, are 
 === deborah_01
 PROMPT: "God took my boy when He needed him. I just have to {color:Trust}trust{/color} that."
 MOOD: Sadness
+# Kin: with a church face in front of her, doubting out loud is the fear.
+MOOD [Bible]: Fear
 # A comforting lie: what they want to hear. It turns toward them now; the lake pays later.
 BID: lie
 
@@ -134,6 +138,34 @@ EFFECTS: integrity-2 stability+2 trust+1
 DEBT: +4
 TAGS: Faith, Health
 LEDGER: You told Deborah her son's death was God's will, standing on her doorstep.
+NEXT: deborah_02_denial
+
+=== deborah_01_secret
+# The secret opener: you opened everything in her hallway and restored what
+# your class restores (minigames/deborah-hallway.js). Her first feeling glows.
+CLASS [Guns]: (She looks past you, at the diploma. Straight now.)
+CLASS [Bible]: (She looks down at the mat. WELCOME side up.)
+CLASS [Crystals]: (She looks up at the hall light. It isn't flickering.)
+PROMPT: "My boy used to do that. Never asked. I'd come home and it was just {color:Sadness}done{/color}."
+MOOD: Sadness
+MOOD [Bible]: Fear
+MOOD [Crystals]: Surprise
+BID: truth
+
+-- TRUTH
+SAY: I didn't know. It just looked like it was waiting for someone.
+REACT: She holds the door open wider than she has for anyone in a year.
+EFFECTS: integrity+2 lucidity+1 trust+1
+DEBT: 0
+NEXT: deborah_03
+
+-- LIE
+SAY: Wasn't me. Must've been the super.
+REACT: "Of course." She smiles like she believes it. She doesn't.
+EFFECTS: integrity-1 stability+1
+DEBT: +2
+TAGS: Faith
+LEDGER: You told Deborah someone else fixed what her son used to fix.
 NEXT: deborah_02_denial
 
 === deborah_03

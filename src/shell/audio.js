@@ -1576,11 +1576,13 @@ function reverbBus(seconds, out) {
   return input;
 }
 
-export function playClassSigil(cls) {
+// gain < 1 plays it from further off: a chapter marker uses it quietly as
+// the NPC's soul, a hint of their class (scenes/markerScene.js).
+export function playClassSigil(cls, { gain = 1 } = {}) {
   const audioCtx = ensureContext();
   const t = audioCtx.currentTime + 0.03;
   const out = audioCtx.createGain();
-  out.gain.value = 1;
+  out.gain.value = gain;
   out.connect(masterGain);
 
   if (cls === 'Guns') {
@@ -1677,6 +1679,343 @@ export function playClassSigil(cls) {
     });
   }
   setTimeout(() => out.disconnect(), 9000);
+}
+
+// A page turning (scenes/markerScene.js): a paper swish (noise through a
+// band that sweeps up as the page lifts and falls as it lands), then the
+// soft pat of it settling.
+export function playPageTurn() {
+  const audioCtx = ensureContext();
+  const t = audioCtx.currentTime + 0.01;
+  const dur = 0.34;
+  const buf = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * dur), audioCtx.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  const src = audioCtx.createBufferSource();
+  src.buffer = buf;
+  const bp = audioCtx.createBiquadFilter();
+  bp.type = 'bandpass';
+  bp.Q.value = 1.2;
+  bp.frequency.setValueAtTime(900, t);
+  bp.frequency.exponentialRampToValueAtTime(3800, t + dur * 0.45);
+  bp.frequency.exponentialRampToValueAtTime(1200, t + dur);
+  const g = audioCtx.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.linearRampToValueAtTime(0.16, t + 0.06);
+  g.gain.linearRampToValueAtTime(0.09, t + dur * 0.6);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  src.connect(bp).connect(g).connect(masterGain);
+  src.start(t);
+  src.stop(t + dur + 0.02);
+  const pat = audioCtx.createOscillator();
+  pat.type = 'sine';
+  pat.frequency.setValueAtTime(160, t + dur - 0.04);
+  pat.frequency.exponentialRampToValueAtTime(70, t + dur + 0.08);
+  const pg = audioCtx.createGain();
+  pg.gain.setValueAtTime(0.0001, t + dur - 0.04);
+  pg.gain.linearRampToValueAtTime(0.12, t + dur - 0.02);
+  pg.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.12);
+  pat.connect(pg).connect(masterGain);
+  pat.start(t + dur - 0.04);
+  pat.stop(t + dur + 0.15);
+}
+
+// An 80s computer loading an NPC's chapter page (scenes/markerScene.js): one
+// bleep per line it prints, in a tune that sounds like their class.
+//   Guns      low square-wave staccato, a march that keeps landing on the root
+//   Bible     a triangle-wave hymn, climbing a major chord and coming home
+//   Crystals  high sine twinkles on a pentatonic, never quite in order
+// `step` walks the tune; `data` adds the hiss of a byte stream under it (the
+// plate's bands).
+const CLASS_BLEEPS = {
+  Guns:     { type: 'square',   dur: 0.045, gain: 0.05, notes: [110, 110, 165, 110, 147, 110, 220, 165] },
+  Bible:    { type: 'triangle', dur: 0.09,  gain: 0.12, notes: [262, 330, 392, 523, 392, 330, 392, 262] },
+  Crystals: { type: 'sine',     dur: 0.06,  gain: 0.09, notes: [1047, 1568, 1175, 1760, 1319, 2093, 1568, 1175] },
+};
+const PLAIN_BLEEP = { type: 'square', dur: 0.05, gain: 0.05, notes: [440, 660] };
+
+export function playClassBleep(cls, step = 0, { data = false } = {}) {
+  const audioCtx = ensureContext();
+  const t = audioCtx.currentTime + 0.005;
+  const b = CLASS_BLEEPS[cls] ?? PLAIN_BLEEP;
+  const o = audioCtx.createOscillator();
+  o.type = b.type;
+  o.frequency.value = b.notes[step % b.notes.length];
+  const g = audioCtx.createGain();
+  g.gain.setValueAtTime(b.gain, t);
+  g.gain.setValueAtTime(b.gain, t + b.dur * 0.8);
+  g.gain.linearRampToValueAtTime(0.0001, t + b.dur);
+  o.connect(g).connect(masterGain);
+  o.start(t);
+  o.stop(t + b.dur + 0.02);
+  if (data) {
+    // A tape's worth of data: a short burst of square noise, stepped.
+    const len = Math.floor(audioCtx.sampleRate * 0.07);
+    const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+    const d = buf.getChannelData(0);
+    let v = 1;
+    for (let i = 0; i < len; i++) { if (i % 24 === 0) v = Math.random() < 0.5 ? -1 : 1; d[i] = v; }
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf;
+    const hp = audioCtx.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 1200;
+    const ng = audioCtx.createGain();
+    ng.gain.value = 0.025;
+    src.connect(hp).connect(ng).connect(masterGain);
+    src.start(t);
+  }
+}
+
+// The room under each NPC's chapter page (scenes/markerScene.js), quiet,
+// for as long as the page is up. Returns stop(fadeSec).
+//   DEBORAH  the dying hall bulb: a mains buzz that drops out and stutters
+//   RWANDA   the neon: a hum with its harmonics, and traffic far off
+//   SAMUN    the radio tuned to nothing: band-limited static
+//   RICK     bass through the bar wall: a muffled kick, and the room's rumble
+export function startOpenerAmbience(npcKey) {
+  const audioCtx = ensureContext();
+  const out = audioCtx.createGain();
+  const t = audioCtx.currentTime;
+  out.gain.setValueAtTime(0.0001, t);
+  out.gain.linearRampToValueAtTime(1, t + 1.2);
+  out.connect(masterGain);
+  const sources = [];
+  let timer = null;
+  const tone = (type, freq, gain) => {
+    const o = audioCtx.createOscillator();
+    o.type = type;
+    o.frequency.value = freq;
+    const g = audioCtx.createGain();
+    g.gain.value = gain;
+    o.connect(g);
+    o.start();
+    sources.push(o);
+    return g;
+  };
+  const noiseLoop = () => {
+    const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf;
+    src.loop = true;
+    src.start();
+    sources.push(src);
+    return src;
+  };
+
+  if (npcKey === 'DEBORAH') {
+    const flicker = audioCtx.createGain();
+    flicker.connect(out);
+    const bp = audioCtx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = 240;
+    bp.Q.value = 3;
+    bp.connect(flicker);
+    tone('sawtooth', 120, 0.05).connect(bp);
+    tone('square', 240, 0.012).connect(bp);
+    // The bulb: mostly on, now and then a stutter or a drop.
+    timer = setInterval(() => {
+      const now = audioCtx.currentTime;
+      if (Math.random() < 0.35) {
+        flicker.gain.setValueAtTime(0.15, now);
+        flicker.gain.setValueAtTime(1, now + 0.04 + Math.random() * 0.08);
+        if (Math.random() < 0.5) { flicker.gain.setValueAtTime(0.1, now + 0.16); flicker.gain.setValueAtTime(1, now + 0.22); }
+      }
+    }, 450);
+  } else if (npcKey === 'RWANDA') {
+    const lp = audioCtx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 900;
+    lp.connect(out);
+    tone('sawtooth', 60, 0.03).connect(lp);
+    tone('sine', 180, 0.02).connect(lp);
+    const traffic = audioCtx.createBiquadFilter();
+    traffic.type = 'lowpass';
+    traffic.frequency.value = 280;
+    const tg = audioCtx.createGain();
+    tg.gain.value = 0.05;
+    noiseLoop().connect(traffic).connect(tg).connect(out);
+  } else if (npcKey === 'SAMUN') {
+    const bp = audioCtx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = 1800;
+    bp.Q.value = 0.7;
+    const g = audioCtx.createGain();
+    g.gain.value = 0.035;
+    noiseLoop().connect(bp).connect(g).connect(out);
+  } else if (npcKey === 'RICK') {
+    const rumble = audioCtx.createBiquadFilter();
+    rumble.type = 'lowpass';
+    rumble.frequency.value = 120;
+    const rg = audioCtx.createGain();
+    rg.gain.value = 0.06;
+    noiseLoop().connect(rumble).connect(rg).connect(out);
+    // The kick through the wall, four to the floor.
+    const kick = () => {
+      const now = audioCtx.currentTime;
+      const o = audioCtx.createOscillator();
+      o.frequency.setValueAtTime(110, now);
+      o.frequency.exponentialRampToValueAtTime(45, now + 0.12);
+      const g = audioCtx.createGain();
+      g.gain.setValueAtTime(0.22, now);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
+      const lp = audioCtx.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.value = 160;
+      o.connect(lp).connect(g).connect(out);
+      o.start(now);
+      o.stop(now + 0.3);
+    };
+    kick();
+    timer = setInterval(kick, 480);
+  }
+
+  return function stop(fadeSec = 0.8) {
+    clearInterval(timer);
+    const now = audioCtx.currentTime;
+    out.gain.cancelScheduledValues(now);
+    out.gain.setValueAtTime(out.gain.value, now);
+    out.gain.linearRampToValueAtTime(0.0001, now + fadeSec);
+    setTimeout(() => { sources.forEach((s) => { try { s.stop(); } catch { /* already stopped */ } }); out.disconnect(); }, fadeSec * 1000 + 100);
+  };
+}
+
+// Each NPC's way in (scenes/markerScene.js), as sound only for now: the page
+// turns in to their world's noise. Returns how long it runs, in ms, so the
+// marker can let their soul (playClassSigil) sound after it.
+//   DEBORAH  a bible page turning
+//   RWANDA   a spray can: the rattle, then the hiss across a wall
+//   SAMUN    a crosswalk button: wait, wait, WAIT, then the walk chirp
+//   RICK     a motorcycle: two revs, then it catches and idles off
+export function playOpenerTheme(npcKey) {
+  const audioCtx = ensureContext();
+  const t = audioCtx.currentTime + 0.02;
+  const noise = (dur) => {
+    const buf = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * dur), audioCtx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf;
+    return src;
+  };
+  const env = (node, at, peak, attack, hold, release) => {
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0.0001, at);
+    g.gain.linearRampToValueAtTime(peak, at + attack);
+    g.gain.setValueAtTime(peak, at + attack + hold);
+    g.gain.exponentialRampToValueAtTime(0.0001, at + attack + hold + release);
+    node.connect(g).connect(masterGain);
+    return g;
+  };
+
+  if (npcKey === 'RWANDA') {
+    // The rattle: the ball knocking inside the can, four times.
+    for (let i = 0; i < 4; i++) {
+      const at = t + i * 0.11;
+      const src = noise(0.05);
+      const bp = audioCtx.createBiquadFilter();
+      bp.type = 'bandpass';
+      bp.frequency.value = 2400 + i * 150;
+      bp.Q.value = 8;
+      src.connect(bp);
+      env(bp, at, 0.35, 0.003, 0.01, 0.04);
+      src.start(at);
+      src.stop(at + 0.06);
+    }
+    // The hiss, swept a little as the arm moves across the wall.
+    const at = t + 0.6;
+    const src = noise(1.1);
+    const hp = audioCtx.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.setValueAtTime(2600, at);
+    hp.frequency.linearRampToValueAtTime(3600, at + 0.5);
+    hp.frequency.linearRampToValueAtTime(2900, at + 1.0);
+    src.connect(hp);
+    env(hp, at, 0.13, 0.05, 0.75, 0.25);
+    src.start(at);
+    src.stop(at + 1.15);
+    return 1800;
+  }
+
+  if (npcKey === 'SAMUN') {
+    // Three presses, each a flat "wait" beep, the last one harder.
+    [0, 0.42, 0.84].forEach((dt, i) => {
+      const at = t + dt;
+      const osc = audioCtx.createOscillator();
+      osc.type = 'square';
+      osc.frequency.value = 660;
+      const lp = audioCtx.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.value = 1800;
+      osc.connect(lp);
+      env(lp, at, i === 2 ? 0.12 : 0.07, 0.005, 0.09, 0.05);
+      osc.start(at);
+      osc.stop(at + 0.2);
+    });
+    // The fourth: the walk signal's chirp, quick falling tweets.
+    for (let i = 0; i < 7; i++) {
+      const at = t + 1.35 + i * 0.085;
+      const osc = audioCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(3200, at);
+      osc.frequency.exponentialRampToValueAtTime(1900, at + 0.06);
+      env(osc, at, 0.1, 0.004, 0.03, 0.04);
+      osc.start(at);
+      osc.stop(at + 0.09);
+    }
+    return 2100;
+  }
+
+  if (npcKey === 'RICK') {
+    // An engine: two detuned saws and a square at the firing rate, through a
+    // lowpass and a little drive. Two revs climb and fall, then it catches
+    // and idles off.
+    const engine = audioCtx.createGain();
+    engine.gain.value = 1;
+    const shaper = audioCtx.createWaveShaper();
+    const curve = new Float32Array(256);
+    for (let i = 0; i < 256; i++) { const x = i / 128 - 1; curve[i] = Math.tanh(x * 3); }
+    shaper.curve = curve;
+    const lp = audioCtx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.Q.value = 2;
+    const out = audioCtx.createGain();
+    engine.connect(shaper).connect(lp).connect(out).connect(masterGain);
+    const end = t + 2.6;
+    const oscs = [['sawtooth', 0], ['sawtooth', 9], ['square', -6]].map(([type, detune]) => {
+      const o = audioCtx.createOscillator();
+      o.type = type;
+      o.detune.value = detune;
+      const g = audioCtx.createGain();
+      g.gain.value = 0.2;
+      o.connect(g).connect(engine);
+      o.start(t);
+      o.stop(end + 0.1);
+      return o;
+    });
+    const rev = (param, scale) => {
+      param.setValueAtTime(38 * scale, t);
+      param.linearRampToValueAtTime(120 * scale, t + 0.35);
+      param.exponentialRampToValueAtTime(45 * scale, t + 0.8);
+      param.linearRampToValueAtTime(140 * scale, t + 1.15);
+      param.exponentialRampToValueAtTime(42 * scale, t + 1.7);
+      param.setValueAtTime(42 * scale, t + 2.0);
+      param.exponentialRampToValueAtTime(30 * scale, end);
+    };
+    oscs.forEach((o) => rev(o.frequency, 1));
+    rev(lp.frequency, 9);
+    out.gain.setValueAtTime(0.0001, t);
+    out.gain.linearRampToValueAtTime(0.16, t + 0.06);
+    out.gain.setValueAtTime(0.16, t + 1.9);
+    out.gain.exponentialRampToValueAtTime(0.0001, end);
+    return 2300;
+  }
+
+  // DEBORAH (and anyone without a theme yet): the page itself.
+  playPageTurn();
+  return 600;
 }
 
 // A fax coming in (ui/feelzRecord.js): the handshake (two tones and a

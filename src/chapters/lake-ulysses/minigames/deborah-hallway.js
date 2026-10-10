@@ -5,7 +5,7 @@
 // This is a normal scene handler, lazy-loaded by scenes/minigameScene.js. It
 // owns nothing except its STEPS list and hands the chapter's own onComplete
 // straight to the walk sequencer.
-import { createWalkSequencer } from '../../../engine/walkSequencer.js';
+import { mountNpcWalk } from '../../../engine/walkSequencer.js';
 
 const SPR = '/assets/lake-ulysses/sprites/';
 
@@ -13,6 +13,12 @@ const SPR = '/assets/lake-ulysses/sprites/';
 // art gets handed over in. See docs/ASSET_GUIDELINES.md "Mini-game rooms".
 const BG = { base: `${SPR}spr_hallway_bg/spr_hallway_bg_`, frames: 6, fps: 8, ext: 'svg' };
 
+// Each object reads one of her openers: its glow (and its close-up's wash) is
+// the first feeling that opener meets, as YOUR class meets her (kin or foe,
+// engine/loadout.js moodFor) — the same color as that option's chip in the
+// confrontation. The captions are each class's own read of her, colored word
+// and all; none is the right one. One object per class can be restored
+// (walkRoom.js), which unlocks her secret opener (deborah_01_secret).
 const ROOMS = {
   'hallway-01': {
     bg: BG,
@@ -26,30 +32,48 @@ const ROOMS = {
         x: 78, y: 250, w: 74, h: 96,
         sprite: `${SPR}hallway_diploma.svg`,
         closeup: `${SPR}hallway_diploma_closeup.svg`,
+        opener: 'deborah_01',
         text: {
-          Guns:     'A diploma. Crooked. Nobody in this building straightened it, including her.',
-          Bible:    "A diploma. Class of '09. She earned that, whatever else is true.",
-          Crystals: 'A diploma, tilted. Something in here gave up a long time before today.',
+          Guns:     "A diploma. Crooked. Nobody straightened it, including her. That isn't lazy. That's {color:Sadness}weight{/color}.",
+          Bible:    "A diploma. Class of '09. Hung where she has to pass it every day, and too {color:Fear}afraid{/color} to take it down.",
+          Crystals: 'A diploma, tilted. The frame has gone {color:Sadness}heavy{/color}, like it is sinking into the wall.',
+        },
+        restore: {
+          by: 'Guns',
+          hint: 'Crooked is fixable. Your hands already know how.',
+          done: 'You square it up. Level. Somebody should have done that a long time ago.',
         },
       },
       {
         x: 150, y: 596, w: 108, h: 44,
         sprite: `${SPR}hallway_doormat.svg`,
         closeup: `${SPR}hallway_doormat_closeup.svg`,
+        opener: 'deborah_01_hard',
         text: {
-          Guns:     "A doormat that says GO AWAY. She means it. That's fine, so do you.",
-          Bible:    'A doormat that says GO AWAY, in a font that is trying to be funny about it.',
-          Crystals: 'A doormat that says GO AWAY. Somebody bought that as a joke and then stopped laughing.',
+          Guns:     "A doormat that says GO AWAY. She means it. There's a {color:Anger}fight{/color} in that, somewhere.",
+          Bible:    "A doormat that says GO AWAY, in a font trying to be funny about it. It isn't funny. It's {color:Anger}furious{/color}.",
+          Crystals: 'A doormat that says GO AWAY. Somebody bought it as a joke and then stopped laughing. It hums {color:Anger}hot{/color}.',
+        },
+        restore: {
+          by: 'Bible',
+          hint: 'There is lettering on the underside. Somebody meant it to be turned.',
+          done: 'You turn it over. WELCOME, in faded letters, like it was waiting to be read.',
         },
       },
       {
         x: 262, y: 214, w: 52, h: 62,
         sprite: `${SPR}hallway_lightbulb.svg`,
         closeup: `${SPR}hallway_lightbulb_closeup.svg`,
+        opener: 'deborah_01_soft',
         text: {
-          Guns:     'Bulb is dying. Nobody replaced it. Nobody will.',
-          Crystals: 'The bulb keeps almost going out. It has been almost going out for months.',
-          Bible:    'A bulb on its way out. Someone should see to that.',
+          Guns:     'Bulb is dying. Nobody replaced it. Somebody keeps {color:Anxiety}checking{/color} it, though. The switch is worn shiny.',
+          Bible:    'A bulb on its way out. Someone should see to that. Someone has been {color:Anxiety}meaning to{/color} for months.',
+          Crystals: 'The bulb keeps almost going out. It has been almost going out for months, {color:Anxiety}jittering{/color} like a nerve.',
+        },
+        restore: {
+          by: 'Crystals',
+          hint: "It's buzzing at a pitch you can feel in your palms. Hold it.",
+          done: 'You hold it. The flicker slows down to your breathing, and then it stays.',
         },
       },
     ],
@@ -66,16 +90,6 @@ const STEPS = [
   { type: 'gimmick', prompt: { text: 'THE SMELL — GET PAST IT' }, response: 'swipe-left' },
 ];
 
-export function mount(stageEl, scene, { run, onComplete }) {
-  const sequencer = createWalkSequencer({
-    steps: STEPS,
-    stageEl,
-    loadout: run.get().loadout,
-    onComplete,
-  });
-  sequencer.start();
-
-  return function unmount() {
-    sequencer.destroy();
-  };
+export function mount(stageEl, scene, context) {
+  return mountNpcWalk(stageEl, scene, context, { steps: STEPS, secretKey: 'deborah' });
 }

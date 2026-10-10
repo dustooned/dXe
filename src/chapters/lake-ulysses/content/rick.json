@@ -54,6 +54,9 @@
         "elseNodeId": "rick_shut_down"
       },
       "mood": "Fear",
+      "moodByClass": {
+        "Crystals": "Anxiety"
+      },
       "mask": "Anger",
       "bid": [
         "lie"
@@ -215,7 +218,10 @@
         "value": 4,
         "elseNodeId": "rick_shut_down"
       },
-      "mood": "Anxiety"
+      "mood": "Anxiety",
+      "moodByClass": {
+        "Bible": "Disgust"
+      }
     },
     "rick_01_hard": {
       "id": "rick_01_hard",
@@ -263,6 +269,54 @@
       "mood": "Anger",
       "bid": [
         "lie"
+      ]
+    },
+    "rick_01_secret": {
+      "id": "rick_01_secret",
+      "npc": "RICK",
+      "location": 5,
+      "prompt": "\"Somebody touched my stuff out there.\" (He doesn't stand up.) \"Last guy who did that, I knew what he {color:Fear}wanted{/color}. I don't know what you want.\"",
+      "swipes": {
+        "truth": {
+          "playerText": "Nothing. It just needed doing.",
+          "npcReaction": "He looks at you a long time. Then he pushes the other stool out with his boot.",
+          "effects": {
+            "integrity": 2,
+            "lucidity": 1,
+            "trust": 1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": "rick_02_confronted"
+        },
+        "lie": {
+          "playerText": "Wasn't me. I just got here.",
+          "npcReaction": "\"Right.\" He goes back to his glass. \"Course not.\"",
+          "effects": {
+            "integrity": -1,
+            "stability": 1
+          },
+          "debtDelta": 2,
+          "tags": [
+            "Masculinity"
+          ],
+          "ledgerEntry": "You told Rick you hadn't touched what you fixed.",
+          "nextNodeId": "rick_02_enabled"
+        }
+      },
+      "byClass": {
+        "Guns": "(He saw you through the window. Out in the lot, his chain's back on.)",
+        "Bible": "(The flyer by the door hangs straight now. He's looking at it, not you.)",
+        "Crystals": "(Out the window, the ashtray sits empty on the sill.)"
+      },
+      "mask": "Anger",
+      "mood": "Fear",
+      "moodByClass": {
+        "Crystals": "Anxiety"
+      },
+      "bid": [
+        "truth"
       ]
     },
     "rick_03": {
@@ -375,6 +429,7 @@
       ]
     }
   },
+  "npcClass": "Guns",
   "connect": {
     "Guns": "He squares up, then doesn't. \"Takes one to know one, huh.\" He rolls his sleeve down over the patch. \"Nobody's ever seen me back down. Keep it that way.\"",
     "Bible": "\"My old man quoted Leviticus at me till the day I left.\" His jaw works. \"You're the first churchy type who didn't make me feel like the verse.\"",

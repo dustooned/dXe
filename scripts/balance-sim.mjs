@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import { resolveCard, resolveGatedNode, restAfter, SECOND_GUESS_COST, EMPTY_BATTERY } from '../src/engine/cardEngine.js';
 import { recordTrust, isTrusted } from '../src/engine/trust.js';
 import { giftFor } from '../src/engine/unlocks.js';
-import { emotionsForClass } from '../src/engine/loadout.js';
+import { emotionsForClass, withClassMoods } from '../src/engine/loadout.js';
 
 const RUNS = Number(process.argv[2] ?? 2000);
 const R = new URL('../src/chapters/lake-ulysses/content/', import.meta.url);
@@ -24,7 +24,8 @@ const initial = (loadout) => ({
 
 // One conversation. `p` = { lie, attune, hesitate, exhaustion }.
 function play(state, npcKey, p, stats) {
-  const npc = NPCS[npcKey];
+  // Moods as this class meets them (MOOD [Class] lines: kin / foe).
+  const npc = withClassMoods(NPCS[npcKey], state.loadout);
   const openers = Object.keys(npc.nodes).filter((id) => /_01(_soft|_hard)?$/.test(id));
   let id = npcKey === 'THERAPIST' ? 'therapist_01' : openers[Math.floor(Math.random() * openers.length)];
   let s = state;

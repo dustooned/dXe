@@ -87,6 +87,7 @@ function parseManuscript(text, fileName) {
   let location = null;
   let accentColor = null;
   let portrait = null;
+  let npcClass = null;
   const nodes = {};
   const reveal = {};
   const connect = {};
@@ -134,6 +135,11 @@ function parseManuscript(text, fileName) {
       accentColor = line.slice(7).trim();
     } else if (line.startsWith('PORTRAIT:')) {
       portrait = line.slice(9).trim();
+    } else if (line.startsWith('CLASS:')) {
+      // Which class this NPC reads as (their own lens): tints their room's
+      // close-ups and their confrontation, as a hint of who they are.
+      npcClass = line.slice(6).trim();
+      if (!CLASSES.includes(npcClass)) throw new Error(`${fileName}:${lineNumber}: bad CLASS "${npcClass}"`);
     } else if (line.startsWith('OPENER')) {
       // How this NPC sizes up the player's class: a line before the first
       // prompt of the encounter, whichever node that turns out to be.
@@ -223,6 +229,12 @@ function parseManuscript(text, fileName) {
       const mask = line.slice(5).trim();
       if (!EMOTIONS.includes(mask)) throw new Error(`${fileName}:${lineNumber}: bad MASK "${mask}"`);
       currentNode.mask = mask;
+    } else if (line.startsWith('MOOD [')) {
+      // How they feel toward one class in particular (kin or foe): replaces
+      // MOOD for a player of that class (engine/loadout.js moodFor).
+      const m = line.match(/^MOOD \[(Guns|Bible|Crystals)\]:\s*(\w+)$/);
+      if (!m || !EMOTIONS.includes(m[2])) throw new Error(`${fileName}:${lineNumber}: bad MOOD line "${raw}"`);
+      currentNode.moodByClass = { ...currentNode.moodByClass, [m[1]]: m[2] };
     } else if (line.startsWith('MOOD:')) {
       // The NPC's feeling at this moment: tints the oscilloscope, and a
       // matching FEELZ pick counts as attunement (Trust).
@@ -326,6 +338,7 @@ function parseManuscript(text, fileName) {
   // Optional sections only appear in the JSON when authored, so NPCs that
   // don't use them build byte-identical to before they existed.
   const result = { npc, location, accentColor, portrait, nodes };
+  if (npcClass) result.npcClass = npcClass;
   if (Object.keys(reveal).length) result.reveal = reveal;
   if (Object.keys(connect).length) result.connect = connect;
   if (story.length) result.story = story;

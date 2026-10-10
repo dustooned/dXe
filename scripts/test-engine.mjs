@@ -8,6 +8,7 @@ import { resolveCard, resolveGatedNode, softStep, restAfter, LIE_FOG } from '../
 import { getEndingKey, getEpilogueLine } from '../src/engine/endingEngine.js';
 import { CONTACTS, callFor, voicemailFor, therapistReachable, FOG_WIFI } from '../src/engine/contacts.js';
 import { hazeFor } from '../src/engine/lake.js';
+import { moodFor, withClassMoods } from '../src/engine/loadout.js';
 import { buildReckoningDeck, resolveReckoningCard } from '../src/engine/reckoning.js';
 
 // A stand-in localStorage for the save checks below.
@@ -169,6 +170,42 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
   }
   const edges = Object.values(thr.nodes).flatMap((n) => Object.values(n.swipes ?? {})).filter((e) => e.reactByClass);
   check('tutorial: the meter and lake reactions have all three class versions', edges.length === 4 && edges.every((e) => ['Guns', 'Bible', 'Crystals'].every((c) => e.reactByClass[c])));
+}
+
+
+// ── Kin / foe moods, the room color code and the secret openers ──
+{
+  const C = 'src/chapters/lake-ulysses/';
+  const deb = JSON.parse(fs.readFileSync(C + 'content/deborah.json', 'utf8'));
+  check('kin/foe: MOOD [Bible] replaces MOOD for Bible only', moodFor(deb.nodes.deborah_01, 'Bible') === 'Fear' && moodFor(deb.nodes.deborah_01, 'Guns') === 'Sadness');
+  check('kin/foe: withClassMoods resolves every node and leaves the source alone', withClassMoods(deb, 'Crystals').nodes.deborah_01_secret.mood === 'Surprise' && deb.nodes.deborah_01_secret.mood === 'Sadness');
+  const ROOM = { deborah: 'deborah-hallway', rwanda: 'rwanda-alley', samun: 'samun-garage', rick: 'rick-barlot' };
+  const CLS = ['Guns', 'Bible', 'Crystals'];
+  const HELD = { Guns: ['Anger', 'Fear', 'Sadness'], Bible: ['Anxiety', 'Disgust', 'Fear'], Crystals: ['Happy', 'Anxiety', 'Surprise'] };
+  for (const [key, room] of Object.entries(ROOM)) {
+    const npc = JSON.parse(fs.readFileSync(C + `content/${key}.json`, 'utf8'));
+    const conf = JSON.parse(fs.readFileSync(C + `content/confront_${key}.json`, 'utf8'));
+    const secret = npc.nodes[key + '_01_secret'];
+    check(`${key}: has a class, and a secret opener with a line for each class`, CLS.includes(npc.npcClass) && !!secret && CLS.every((c) => secret.byClass?.[c]));
+    check(`${key}: every class holds the secret opener's first feeling`, CLS.every((c) => HELD[c].includes(moodFor(secret, c))));
+    check(`${key}: every class holds the first feeling of at least one plain opener`, CLS.every((c) => ['_01', '_01_soft', '_01_hard'].some((x) => HELD[c].includes(moodFor(npc.nodes[key + x], c)))));
+    const opts = conf.beats.flatMap((b) => b.interactive?.options ?? []);
+    const so = opts.find((o) => o.secret);
+    check(`${key}: the confrontation offers the secret, labelled for each class, after a secret beat`, so?.opener === key + '_01_secret' && CLS.every((c) => so.label[c]) && conf.beats.some((b) => b.secret && CLS.every((c) => b.text[c])));
+    check(`${key}: every opener the confrontation names exists`, opts.every((o) => npc.nodes[o.opener]));
+    // The room module (read as text: it lazy-loads in the browser): each
+    // object names an opener, one class restores it, and each class's
+    // caption colors the feeling that opener really meets for that class.
+    const src = fs.readFileSync(C + `minigames/${room}.js`, 'utf8');
+    const spots = src.split(/opener: '/).slice(1).map((chunk) => ({
+      opener: chunk.slice(0, chunk.indexOf("'")),
+      by: chunk.match(/by: '(\w+)'/)?.[1],
+      color: Object.fromEntries(CLS.map((c) => [c, chunk.match(new RegExp(c + String.raw`:\s+['"][^\n]*?\{color:(\w+)\}`))?.[1]])),
+    }));
+    check(`${key}: three objects, one per opener, one restore per class`, spots.length === 3 && new Set(spots.map((x) => x.opener)).size === 3 && CLS.every((c) => spots.filter((x) => x.by === c).length === 1));
+    const off = spots.flatMap((x) => CLS.filter((c) => x.color[c] !== moodFor(npc.nodes[x.opener], c)).map((c) => `${x.opener}/${c}: ${x.color[c]} vs ${moodFor(npc.nodes[x.opener], c)}`));
+    check(`${key}: each caption's colored word is the feeling its opener meets for that class` + (off.length ? ` (${off.join('; ')})` : ''), !off.length);
+  }
 }
 
 console.log(failed ? `\n${failed} failed, ${passed} passed` : `\nall ${passed} passed`);

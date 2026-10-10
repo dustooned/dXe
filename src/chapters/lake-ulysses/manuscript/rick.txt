@@ -1,6 +1,8 @@
 NPC: RICK
 LOCATION: 5
 ACCENT: var(--color-rick)
+# The class he reads as (their own lens): tints the room and the confrontation.
+CLASS: Guns
 
 # MASK: on the first two questions this one shows a feeling (the screen's
 # color) that isn't the real one (MOOD). The colored word in the line hints at
@@ -40,6 +42,8 @@ OPENER [Crystals]: (He sneers.) "What are you, the welcome committee?"
 GATE: trust < 4 -> rick_shut_down
 PROMPT: "Guy looked at me {color:Fear}wrong{/color} outside. Now he's got a busted jaw and I got my patch back. That's just how it works out here."
 MOOD: Fear
+# Kin: someone soft sitting down beside him, saying nothing. Under the snarl, he is jumpy.
+MOOD [Crystals]: Anxiety
 MASK: Anger
 # A comforting lie: what they want to hear. It turns toward them now; the lake pays later.
 BID: lie
@@ -129,6 +133,8 @@ NEXT: (end)
 GATE: trust < 4 -> rick_shut_down
 PROMPT: (He takes the drink without looking at it.) "You buying because you want something, or because I {color:Fear}scare{/color} you?"
 MOOD: Anxiety
+# Foe: a church kid buying him a drink. He knows what that is usually a down payment on.
+MOOD [Bible]: Disgust
 
 -- TRUTH
 SAY: Little of both.
@@ -167,6 +173,34 @@ EFFECTS: integrity-2 stability+3 trust+2
 DEBT: +4
 TAGS: Violence, Masculinity
 LEDGER: You told Rick the man he beat half to death had it coming.
+NEXT: rick_02_enabled
+
+=== rick_01_secret
+# The secret opener: you opened everything in his lot and restored what
+# your class restores (minigames/rick-barlot.js). His first feeling glows.
+CLASS [Guns]: (He saw you through the window. Out in the lot, his chain's back on.)
+CLASS [Bible]: (The flyer by the door hangs straight now. He's looking at it, not you.)
+CLASS [Crystals]: (Out the window, the ashtray sits empty on the sill.)
+PROMPT: "Somebody touched my stuff out there." (He doesn't stand up.) "Last guy who did that, I knew what he {color:Fear}wanted{/color}. I don't know what you want."
+MASK: Anger
+MOOD: Fear
+MOOD [Crystals]: Anxiety
+BID: truth
+
+-- TRUTH
+SAY: Nothing. It just needed doing.
+REACT: He looks at you a long time. Then he pushes the other stool out with his boot.
+EFFECTS: integrity+2 lucidity+1 trust+1
+DEBT: 0
+NEXT: rick_02_confronted
+
+-- LIE
+SAY: Wasn't me. I just got here.
+REACT: "Right." He goes back to his glass. "Course not."
+EFFECTS: integrity-1 stability+1
+DEBT: +2
+TAGS: Masculinity
+LEDGER: You told Rick you hadn't touched what you fixed.
 NEXT: rick_02_enabled
 
 === rick_03

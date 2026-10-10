@@ -42,6 +42,9 @@
         }
       },
       "mood": "Sadness",
+      "moodByClass": {
+        "Bible": "Fear"
+      },
       "bid": [
         "lie"
       ]
@@ -200,6 +203,54 @@
       },
       "mood": "Anger"
     },
+    "deborah_01_secret": {
+      "id": "deborah_01_secret",
+      "npc": "DEBORAH",
+      "location": 2,
+      "prompt": "\"My boy used to do that. Never asked. I'd come home and it was just {color:Sadness}done{/color}.\"",
+      "swipes": {
+        "truth": {
+          "playerText": "I didn't know. It just looked like it was waiting for someone.",
+          "npcReaction": "She holds the door open wider than she has for anyone in a year.",
+          "effects": {
+            "integrity": 2,
+            "lucidity": 1,
+            "trust": 1
+          },
+          "debtDelta": 0,
+          "tags": [],
+          "ledgerEntry": null,
+          "nextNodeId": "deborah_03"
+        },
+        "lie": {
+          "playerText": "Wasn't me. Must've been the super.",
+          "npcReaction": "\"Of course.\" She smiles like she believes it. She doesn't.",
+          "effects": {
+            "integrity": -1,
+            "stability": 1
+          },
+          "debtDelta": 2,
+          "tags": [
+            "Faith"
+          ],
+          "ledgerEntry": "You told Deborah someone else fixed what her son used to fix.",
+          "nextNodeId": "deborah_02_denial"
+        }
+      },
+      "byClass": {
+        "Guns": "(She looks past you, at the diploma. Straight now.)",
+        "Bible": "(She looks down at the mat. WELCOME side up.)",
+        "Crystals": "(She looks up at the hall light. It isn't flickering.)"
+      },
+      "mood": "Sadness",
+      "moodByClass": {
+        "Bible": "Fear",
+        "Crystals": "Surprise"
+      },
+      "bid": [
+        "truth"
+      ]
+    },
     "deborah_03": {
       "id": "deborah_03",
       "npc": "DEBORAH",
@@ -297,6 +348,7 @@
       ]
     }
   },
+  "npcClass": "Bible",
   "connect": {
     "Guns": "She holds out her hand, palm up, the way you'd show a dog you're not a threat. \"Caleb used to stand like you. Like he was waiting to get hit.\" She doesn't pull the hand back.",
     "Bible": "She opens her bible to a page with a pressed petunia in it. \"He picked this for me the Easter before. I never told anyone I kept it.\" She closes it gently, with you still looking.",

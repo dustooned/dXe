@@ -29,16 +29,23 @@ export const CLASSES = {
     label: 'GUNS',
     description: 'Confrontation. Force. No flinching.',
     emotions: ['Anger', 'Fear', 'Sadness'],
+    // A room object your class restores is stamped in your class's words.
+    glyph: '✛',
+    restored: 'SQUARED AWAY',
   },
   Bible: {
     label: 'BIBLE',
     description: 'Faith. Loyalty. Buried doubt.',
     emotions: ['Anxiety', 'Disgust', 'Fear'],
+    glyph: '✝',
+    restored: 'MADE RIGHT',
   },
   Crystals: {
     label: 'CRYSTALS',
     description: 'Feeling everything. Processing nothing.',
     emotions: ['Happy', 'Anxiety', 'Surprise'],
+    glyph: '❖',
+    restored: 'ATTUNED',
   },
 };
 
@@ -74,4 +81,26 @@ export function getDominantEmotion(counts) {
   const max = Math.max(...entries.map(([, n]) => n));
   const leaders = entries.filter(([, n]) => n === max);
   return leaders.length === 1 ? leaders[0][0] : null;
+}
+
+// How a node feels to a player of this class: an NPC can feel differently
+// toward their kin or their foe (manuscript `MOOD [Bible]: Fear`).
+export function moodFor(node, loadout) {
+  return node?.moodByClass?.[loadout] ?? node?.mood ?? null;
+}
+
+// The NPC as a player of this class meets them: every node's MOOD already
+// resolved for that class, so nothing downstream has to know about kin/foe.
+export function withClassMoods(npc, loadout) {
+  if (!npc?.nodes || !Object.values(npc.nodes).some((n) => n.moodByClass)) return npc;
+  const nodes = Object.fromEntries(Object.entries(npc.nodes).map(([id, n]) => (
+    [id, n.moodByClass ? { ...n, mood: moodFor(n, loadout) } : n]
+  )));
+  return { ...npc, nodes };
+}
+
+// Each class's own color (style.css --color-class-*): the room's tint for an
+// NPC of that class, and the cue when your class restores something.
+export function classColor(cls) {
+  return CLASSES[cls] ? `var(--color-class-${cls.toLowerCase()})` : 'var(--color-white)';
 }

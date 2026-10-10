@@ -13,6 +13,15 @@
       }
     },
     {
+      "secret": true,
+      "sprite": "/assets/lake-ulysses/sprites/npc_rwanda.svg",
+      "text": {
+        "Guns": "Down in the alley, the payphone rings once. The cord you knotted holds.\n\nShe hears it. Her shoulders change.",
+        "Bible": "Out the window, the sign is lit, every letter.\n\nShe's been reading it since before you came in.",
+        "Crystals": "Down in the alley, a painted face shows through the gray where you brushed it.\n\nShe's looking right at it."
+      }
+    },
+    {
       "speaker": "RWANDA",
       "sprite": "/assets/lake-ulysses/sprites/npc_rwanda.svg",
       "text": "\"You gonna stand there,{pause:300} or you gonna say the thing you came to say?\"",
@@ -30,6 +39,15 @@
           {
             "label": "\"People have been telling me about you.\"",
             "opener": "rwanda_01_hard"
+          },
+          {
+            "secret": true,
+            "label": {
+              "Guns": "\"Your payphone works again.\"",
+              "Bible": "\"Somebody should keep that sign lit.\"",
+              "Crystals": "\"There was a painting under the gray.\""
+            },
+            "opener": "rwanda_01_secret"
           }
         ]
       }
