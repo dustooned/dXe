@@ -9,6 +9,7 @@
 // step shape:
 //   { prompt: { text }, response: 'swipe-left' | 'swipe-right', timeoutMs? }
 //   { prompt: { text }, target: { x, y, w, h }, timeoutMs? }
+import { playSfx } from '../shell/audio.js';
 import { attachSwipe } from '../shell/input.js';
 import * as fx from '../shell/fx.js';
 
@@ -46,6 +47,8 @@ export function createQuickBeat(step, { onDone }) {
     : want === 'left' ? `${ARROW.left}  ${text}`
     : `${text}  ${ARROW.right}`;
   el.appendChild(prompt);
+  // The beat's own sound, as the prompt lands (audio.js playSfx).
+  if (step.sound) playSfx(step.sound);
 
   let resolved = false;
   let detachSwipe = null;

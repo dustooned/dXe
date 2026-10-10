@@ -29,6 +29,7 @@ const ROOMS = {
         x: 74, y: 430, w: 88, h: 132,
         sprite: `${SPR}alley_mural.svg`,
         closeup: `${SPR}alley_mural_closeup.svg`,
+        sound: 'peel',
         opener: 'rwanda_01',
         text: {
           Guns:     'Painted over twice. Whatever it said the first time, somebody was {color:Anger}furious{/color} enough to make it.',
@@ -45,6 +46,7 @@ const ROOMS = {
         x: 66, y: 208, w: 96, h: 58,
         sprite: `${SPR}alley_neon.svg`,
         closeup: `${SPR}alley_neon_closeup.svg`,
+        sound: 'fizz',
         opener: 'rwanda_01_soft',
         text: {
           Guns:     'Half the letters are dead. The half still lit spells something shorter and meaner, and it\'s {color:Fear}watching{/color} the street.',
@@ -61,6 +63,7 @@ const ROOMS = {
         x: 268, y: 356, w: 54, h: 118,
         sprite: `${SPR}alley_payphone.svg`,
         closeup: `${SPR}alley_payphone_closeup.svg`,
+        sound: 'click',
         opener: 'rwanda_01_hard',
         text: {
           Guns:     'Handset cord cut clean. Somebody was {color:Fear}scared{/color} of what the next call would say.',
@@ -84,7 +87,7 @@ const ROOMS = {
 
 const STEPS = [
   { type: 'walk', rooms: ['alley-01'], roomsById: ROOMS },
-  { type: 'gimmick', prompt: { text: 'THE DOG BEHIND THE FENCE' }, response: 'swipe-right' },
+  { type: 'gimmick', prompt: { text: 'THE DOG BEHIND THE FENCE' }, response: 'swipe-right', sound: 'bark' },
 ];
 
 export function mount(stageEl, scene, context) {

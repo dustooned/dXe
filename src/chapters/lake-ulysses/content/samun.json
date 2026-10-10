@@ -179,7 +179,7 @@
       "id": "samun_01_hard",
       "npc": "SAMUN",
       "location": 4,
-      "prompt": "(He puts the rag down.) \"Ask it, then. Everybody who comes in here asks it {color:Anxiety}eventually{/color}.\"",
+      "prompt": "(He puts the rag down.{sfx:rag}) \"Ask it, then. Everybody who comes in here asks it {color:Anxiety}eventually{/color}.\"",
       "swipes": {
         "truth": {
           "playerText": "What are you on, Samun?",

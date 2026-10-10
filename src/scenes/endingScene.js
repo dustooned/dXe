@@ -40,6 +40,8 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
     endingKey,
     truthDebt: run.get().truthDebt,
     baptism: rc.length ? (confessed * 2 >= rc.length ? 'confessed' : 'doubled') : null,
+    // How many rooms you restored something in (run.secrets).
+    restored: Object.keys(run.get().secrets ?? {}).length,
   } });
 
   const finalDebt = run.get().truthDebt;

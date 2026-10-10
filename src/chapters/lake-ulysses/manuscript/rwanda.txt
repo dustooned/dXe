@@ -224,7 +224,7 @@ LEDGER: You told Rwanda you'd fixed something in her alley that you hadn't.
 NEXT: rwanda_02_closed
 
 === rwanda_03
-PROMPT: (She lights a cigarette she doesn't smoke, just holds.) "You want to know the actual tiring part? It's not them. It's {color:Fear}flinching{/color} before they even say anything."
+PROMPT: (She lights{sfx:click} a cigarette she doesn't smoke, just holds.) "You want to know the actual tiring part? It's not them. It's {color:Fear}flinching{/color} before they even say anything."
 MOOD: Anxiety
 BID: truth
 

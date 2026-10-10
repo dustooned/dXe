@@ -356,7 +356,7 @@
       "id": "rwanda_03",
       "npc": "RWANDA",
       "location": 3,
-      "prompt": "(She lights a cigarette she doesn't smoke, just holds.) \"You want to know the actual tiring part? It's not them. It's {color:Fear}flinching{/color} before they even say anything.\"",
+      "prompt": "(She lights{sfx:click} a cigarette she doesn't smoke, just holds.) \"You want to know the actual tiring part? It's not them. It's {color:Fear}flinching{/color} before they even say anything.\"",
       "swipes": {
         "truth": {
           "playerText": "That's not a flaw in you. That's what being braced all the time does to a person.",

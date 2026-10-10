@@ -2,7 +2,8 @@
   "beats": [
     {
       "sprite": "/assets/lake-ulysses/sprites/npc_samun.svg",
-      "text": "He's wiping his hands on a rag that stopped being clean a long time ago.\n\nHe keeps doing it after they're dry."
+      "text": "He's wiping his hands on a rag that stopped being clean a long time ago.\n\nHe keeps doing it after they're dry.",
+      "sound": "rag"
     },
     {
       "it": true,
@@ -19,6 +20,26 @@
         "Guns": "Out by the curb, the drum you hauled sits where the truck will see it.\n\nHe keeps looking at the empty spot.",
         "Bible": "The calendar's on this month now.\n\nHe's counting something on it with his eyes.",
         "Crystals": "The radio plays an actual song now.\n\nHis rag has stopped moving."
+      }
+    },
+    {
+      "unrestored": true,
+      "speaker": "SAMUN",
+      "sprite": "/assets/lake-ulysses/sprites/npc_samun.svg",
+      "text": {
+        "Guns": "Don't trip on the drum. I keep meaning to haul it.",
+        "Bible": "Don't look at the calendar. It's wrong. It's been wrong a while.",
+        "Crystals": "Radio's busted. Only gets static. I like it that way. Mostly."
+      }
+    },
+    {
+      "unrestored": true,
+      "tip": true,
+      "it": true,
+      "text": {
+        "Guns": "You walked right past the full drum. He noticed.",
+        "Bible": "You walked past the stuck calendar. He noticed you didn't look.",
+        "Crystals": "You walked past the static. He's been waiting for someone to tune it."
       }
     },
     {

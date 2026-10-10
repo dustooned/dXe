@@ -1,3 +1,4 @@
+import { playSfx } from '../shell/audio.js';
 import { attachSwipe } from '../shell/input.js';
 
 // Hints live in their own row above the card, not overlaid inside it.
@@ -85,12 +86,25 @@ export function createSwipeCard({ promptText, onSwipe, hints, stamps, colors, ta
     el.dataset.side = '';
   }
 
+  // How the swipe was made: a fast flick cracks bright, a slow, decided drag
+  // lands heavy (audio.js swipeFast / swipeSlow, and a one-frame look).
+  let dragStart = 0;
+  const FLICK_MS = 260;
+  const landSwipe = () => {
+    const fast = performance.now() - dragStart < FLICK_MS;
+    playSfx(fast ? 'swipeFast' : 'swipeSlow');
+    el.classList.add(fast ? 'is-flicked' : 'is-placed');
+  };
+
   const detach = attachSwipe(card, {
     onDrag(dx) {
+      if (!dragStart) dragStart = performance.now();
       card.style.transform = `translateX(${dx}px) rotate(${dx / 20}deg)`;
       lean(dx);
     },
     onEnd(direction) {
+      if (direction === 'left' || direction === 'right') landSwipe();
+      dragStart = 0;
       if (direction === 'left') onSwipe?.('truth');
       else if (direction === 'right') onSwipe?.('lie');
       else {
@@ -107,6 +121,7 @@ export function createSwipeCard({ promptText, onSwipe, hints, stamps, colors, ta
       e.stopPropagation();
       lean(side === 'left' ? -LEAN_PX : LEAN_PX);
       card.style.transform = `translateX(${side === 'left' ? -40 : 40}px) rotate(${side === 'left' ? -2 : 2}deg)`;
+      playSfx('swipeSlow');
       setTimeout(() => onSwipe?.(side === 'left' ? 'truth' : 'lie'), 180);
     };
     el.querySelector('.dx-swipe-card__hint--truth').addEventListener('click', pick('left'));

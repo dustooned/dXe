@@ -27,11 +27,17 @@ const ROOMS = {
       Bible:    'Third floor. Somebody swept this hallway recently. Somebody up here is still trying.',
       Crystals: 'Third floor. The air is thick with something that has been sitting here a long time.',
     },
+    // The first room teaches the colors (walkRoom.js, only with TIPS on).
+    tip: {
+      clear: 'Everything in here is tinted by how she will feel when you knock. Look closely. Then look twice.',
+      fogged: 'Everything in here looks warm or grey. The warm things are what she would like to hear.',
+    },
     hotspots: [
       {
         x: 78, y: 250, w: 74, h: 96,
         sprite: `${SPR}hallway_diploma.svg`,
         closeup: `${SPR}hallway_diploma_closeup.svg`,
+        sound: 'creak',
         opener: 'deborah_01',
         text: {
           Guns:     "A diploma. Crooked. Nobody straightened it, including her. That isn't lazy. That's {color:Sadness}weight{/color}.",
@@ -48,6 +54,7 @@ const ROOMS = {
         x: 150, y: 596, w: 108, h: 44,
         sprite: `${SPR}hallway_doormat.svg`,
         closeup: `${SPR}hallway_doormat_closeup.svg`,
+        sound: 'scuff',
         opener: 'deborah_01_hard',
         text: {
           Guns:     "A doormat that says GO AWAY. She means it. There's a {color:Anger}fight{/color} in that, somewhere.",
@@ -64,6 +71,7 @@ const ROOMS = {
         x: 262, y: 214, w: 52, h: 62,
         sprite: `${SPR}hallway_lightbulb.svg`,
         closeup: `${SPR}hallway_lightbulb_closeup.svg`,
+        sound: 'buzz',
         opener: 'deborah_01_soft',
         text: {
           Guns:     'Bulb is dying. Nobody replaced it. Somebody keeps {color:Anxiety}checking{/color} it, though. The switch is worn shiny.',
@@ -87,7 +95,7 @@ const ROOMS = {
 
 const STEPS = [
   { type: 'walk', rooms: ['hallway-01'], roomsById: ROOMS },
-  { type: 'gimmick', prompt: { text: 'THE SMELL — GET PAST IT' }, response: 'swipe-left' },
+  { type: 'gimmick', prompt: { text: 'THE SMELL — GET PAST IT' }, response: 'swipe-left', sound: 'cough' },
 ];
 
 export function mount(stageEl, scene, context) {

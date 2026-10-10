@@ -2320,3 +2320,106 @@ export function playLakeSplash(truthDebt = 0) {
   }
   drop.onended = () => { dropGain.disconnect(); setTimeout(() => filter.disconnect(), 300); };
 }
+
+// ─── Sound effects ({sfx:name} in any line, and room / beat / swipe sounds) ───
+//
+// Retro and satisfying: square and noise voices, hard attacks, short tails,
+// pitch that steps or drops so every hit lands. One registry, so a writer can
+// put a sound anywhere ("She sets the pot down.{sfx:clink}"; typewriterText.js)
+// and rooms, cutscene beats and the swipe card name the same sounds.
+function sfxTone(at, { type = 'square', f0, f1 = f0, dur, gain = 0.07, lp = null, attack = 0.004 }) {
+  const audioCtx = ensureContext();
+  const o = audioCtx.createOscillator();
+  o.type = type;
+  o.frequency.setValueAtTime(f0, at);
+  if (f1 !== f0) o.frequency.exponentialRampToValueAtTime(Math.max(20, f1), at + dur);
+  const g = audioCtx.createGain();
+  g.gain.setValueAtTime(0.0001, at);
+  g.gain.linearRampToValueAtTime(gain, at + attack);
+  g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+  let node = o.connect(g);
+  if (lp) {
+    const f = audioCtx.createBiquadFilter();
+    f.type = 'lowpass';
+    f.frequency.value = lp;
+    node = node.connect(f);
+  }
+  node.connect(masterGain);
+  o.start(at);
+  o.stop(at + dur + 0.02);
+}
+
+// Noise, stepped like an old sound chip (each value held `hold` samples).
+function sfxNoise(at, { dur, filter = 'bandpass', f0 = 1200, f1 = f0, q = 1, gain = 0.1, hold = 1, attack = 0.004 }) {
+  const audioCtx = ensureContext();
+  const len = Math.max(1, Math.floor(audioCtx.sampleRate * dur));
+  const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+  const d = buf.getChannelData(0);
+  let v = 0;
+  for (let i = 0; i < len; i++) { if (i % hold === 0) v = Math.random() * 2 - 1; d[i] = v; }
+  const src = audioCtx.createBufferSource();
+  src.buffer = buf;
+  const f = audioCtx.createBiquadFilter();
+  f.type = filter;
+  f.Q.value = q;
+  f.frequency.setValueAtTime(f0, at);
+  if (f1 !== f0) f.frequency.exponentialRampToValueAtTime(Math.max(20, f1), at + dur);
+  const g = audioCtx.createGain();
+  g.gain.setValueAtTime(0.0001, at);
+  g.gain.linearRampToValueAtTime(gain, at + attack);
+  g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+  src.connect(f).connect(g).connect(masterGain);
+  src.start(at);
+}
+
+const thud = (t, f = 110, gain = 0.18) => {
+  sfxTone(t, { type: 'sine', f0: f, f1: f * 0.5, dur: 0.14, gain });
+  sfxNoise(t, { dur: 0.05, filter: 'lowpass', f0: 500, gain: 0.08 });
+};
+
+const SFX = {
+  // Rooms
+  creak: (t) => { for (let i = 0; i < 5; i++) sfxTone(t + i * 0.06, { f0: 190 - i * 14, f1: 170 - i * 14, dur: 0.07, gain: 0.04, lp: 900 }); },
+  doorCreak: (t) => { for (let i = 0; i < 9; i++) sfxTone(t + i * 0.07, { f0: 230 - i * 15, f1: 210 - i * 15, dur: 0.08, gain: 0.045, lp: 1000 }); },
+  clunk: (t) => { sfxNoise(t, { dur: 0.08, filter: 'lowpass', f0: 700, gain: 0.14, hold: 6 }); sfxTone(t, { f0: 120, f1: 60, dur: 0.16, gain: 0.12, lp: 500 }); },
+  doorOpen: (t) => { SFX.clunk(t); SFX.doorCreak(t + 0.12); },
+  scuff: (t) => sfxNoise(t, { dur: 0.22, f0: 700, f1: 1400, q: 1.5, gain: 0.12, hold: 3 }),
+  buzz: (t) => { for (let i = 0; i < 4; i++) sfxTone(t + i * 0.09 + (i === 2 ? 0.08 : 0), { f0: 120, dur: 0.06, gain: 0.06, lp: 700 }); },
+  click: (t) => { sfxTone(t, { f0: 1100, dur: 0.02, gain: 0.08 }); sfxTone(t + 0.05, { f0: 650, dur: 0.03, gain: 0.07 }); },
+  fizz: (t) => { for (let i = 0; i < 5; i++) sfxNoise(t + i * 0.05 + Math.random() * 0.03, { dur: 0.03, filter: 'highpass', f0: 4200, gain: 0.07 }); },
+  static: (t) => sfxNoise(t, { dur: 0.45, f0: 1800, q: 0.8, gain: 0.08, hold: 2 }),
+  flip: () => playPageTurn(),
+  slosh: (t) => { sfxNoise(t, { dur: 0.22, filter: 'lowpass', f0: 300, f1: 900, gain: 0.16, hold: 4 }); sfxNoise(t + 0.2, { dur: 0.25, filter: 'lowpass', f0: 800, f1: 260, gain: 0.12, hold: 4 }); },
+  tick: (t) => { [0, 0.2, 0.33].forEach((dt) => sfxTone(t + dt, { f0: 2400, dur: 0.015, gain: 0.05 })); },
+  tap: (t) => { sfxTone(t, { f0: 720, f1: 600, dur: 0.05, gain: 0.08 }); sfxTone(t + 0.11, { f0: 720, f1: 600, dur: 0.05, gain: 0.06 }); },
+  peel: (t) => sfxNoise(t, { dur: 0.28, f0: 900, f1: 4200, q: 2, gain: 0.09, hold: 2 }),
+  // Quick beats
+  cough: (t) => { sfxNoise(t, { dur: 0.12, f0: 520, q: 2, gain: 0.16, hold: 5 }); sfxNoise(t + 0.18, { dur: 0.1, f0: 460, q: 2, gain: 0.12, hold: 5 }); },
+  bark: (t) => { sfxTone(t, { f0: 330, f1: 170, dur: 0.11, gain: 0.1, lp: 1400 }); sfxTone(t + 0.18, { f0: 360, f1: 180, dur: 0.12, gain: 0.1, lp: 1400 }); },
+  whir: (t) => sfxTone(t, { type: 'sawtooth', f0: 70, f1: 170, dur: 0.6, gain: 0.07, lp: 600, attack: 0.08 }),
+  bump: (t) => thud(t, 95, 0.2),
+  // People and places
+  knock: (t) => { [0, 0.16, 0.32].forEach((dt) => thud(t + dt, 150, 0.15)); },
+  street: (t) => sfxNoise(t, { dur: 1.1, filter: 'lowpass', f0: 220, f1: 900, gain: 0.12, hold: 3, attack: 0.4 }),
+  rag: (t) => { sfxNoise(t, { dur: 0.16, f0: 1500, f1: 900, q: 1.2, gain: 0.09, hold: 2 }); sfxNoise(t + 0.22, { dur: 0.16, f0: 1500, f1: 900, q: 1.2, gain: 0.08, hold: 2 }); },
+  glass: (t) => { thud(t, 180, 0.08); sfxTone(t + 0.01, { type: 'sine', f0: 1760, dur: 0.5, gain: 0.05 }); sfxTone(t + 0.01, { type: 'sine', f0: 2640, dur: 0.35, gain: 0.03 }); },
+  clink: (t) => { sfxTone(t, { type: 'sine', f0: 2400, dur: 0.25, gain: 0.05 }); sfxTone(t, { type: 'sine', f0: 3600, dur: 0.15, gain: 0.03 }); },
+  vibrate: (t) => { [0, 0.38].forEach((dt) => { for (let i = 0; i < 6; i++) sfxTone(t + dt + i * 0.045, { f0: 140, dur: 0.04, gain: 0.08, lp: 500 }); }); },
+  gravel: (t) => { for (let i = 0; i < 7; i++) sfxNoise(t + i * 0.05 + Math.random() * 0.02, { dur: 0.04, f0: 2200, q: 1, gain: 0.07, hold: 3 }); },
+  footsteps: (t) => { [0, 0.34, 0.68, 1.02].forEach((dt, i) => thud(t + dt, i % 2 ? 100 : 115, 0.12)); },
+  sprinkler: (t) => { for (let i = 0; i < 8; i++) sfxNoise(t + i * 0.09, { dur: 0.03, filter: 'highpass', f0: 3600, gain: 0.05 }); },
+  whoosh: (t) => sfxNoise(t, { dur: 0.25, f0: 400, f1: 2400, q: 1.4, gain: 0.08, hold: 2 }),
+  ping: () => playFeelzPing(),
+  // The swipe card: a slow, decided swipe lands heavy and warm; a fast flick
+  // cracks bright and quick (ui/swipeCard.js).
+  swipeSlow: (t) => { sfxTone(t, { type: 'triangle', f0: 260, f1: 150, dur: 0.32, gain: 0.12 }); sfxNoise(t, { dur: 0.3, filter: 'lowpass', f0: 900, f1: 300, gain: 0.06, hold: 3, attack: 0.05 }); },
+  swipeFast: (t) => { sfxNoise(t, { dur: 0.12, f0: 3200, f1: 700, q: 1.6, gain: 0.12, hold: 1 }); sfxTone(t + 0.03, { f0: 880, f1: 1320, dur: 0.06, gain: 0.05 }); },
+};
+
+export const SFX_NAMES = Object.keys(SFX);
+
+export function playSfx(name) {
+  const fn = SFX[name];
+  if (!fn) return;
+  fn(ensureContext().currentTime + 0.01);
+}

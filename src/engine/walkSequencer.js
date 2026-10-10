@@ -107,7 +107,8 @@ export function mountNpcWalk(stageEl, scene, { run, onComplete }, { steps, secre
     loadout,
     onComplete,
     isRestored: () => !!run.get().secrets?.[secretKey],
-    onRestore: () => run.set({ secrets: { ...run.get().secrets, [secretKey]: true } }),
+    // The fixed object's sound, kept for the confrontation to play (truthy).
+    onRestore: (spot) => run.set({ secrets: { ...run.get().secrets, [secretKey]: spot?.sound ?? true } }),
   });
   sequencer.start();
   return function unmount() {

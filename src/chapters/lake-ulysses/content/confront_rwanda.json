@@ -2,7 +2,8 @@
   "beats": [
     {
       "sprite": "/assets/lake-ulysses/sprites/npc_rwanda.svg",
-      "text": "She's at the window with her back to the room.\n\nShe knew you came in. She hasn't decided yet whether to make that your problem."
+      "text": "She's at the window with her back to the room.\n\nShe knew you came in. She hasn't decided yet whether to make that your problem.",
+      "sound": "street"
     },
     {
       "it": true,
@@ -19,6 +20,26 @@
         "Guns": "Down in the alley, the payphone rings once. The cord you knotted holds.\n\nShe hears it. Her shoulders change.",
         "Bible": "Out the window, the sign is lit, every letter.\n\nShe's been reading it since before you came in.",
         "Crystals": "Down in the alley, a painted face shows through the gray where you brushed it.\n\nShe's looking right at it."
+      }
+    },
+    {
+      "unrestored": true,
+      "speaker": "RWANDA",
+      "sprite": "/assets/lake-ulysses/sprites/npc_rwanda.svg",
+      "text": {
+        "Guns": "Payphone out there's been dead since somebody cut it. Don't bother.",
+        "Bible": "Sign's been half dark for years. Nobody's ever going to fix it.",
+        "Crystals": "There's a wall out back I painted once. Somebody grayed it out."
+      }
+    },
+    {
+      "unrestored": true,
+      "tip": true,
+      "it": true,
+      "text": {
+        "Guns": "You walked right past the cut cord. She noticed.",
+        "Bible": "You walked under the dead letters. She noticed.",
+        "Crystals": "You walked past the gray wall. Something under it noticed you."
       }
     },
     {

@@ -181,7 +181,7 @@
       "id": "rick_01_soft",
       "npc": "RICK",
       "location": 5,
-      "prompt": "(He takes the drink without looking at it.) \"You buying because you want something, or because I {color:Fear}scare{/color} you?\"",
+      "prompt": "(He takes the drink{sfx:glass} without looking at it.) \"You buying because you want something, or because I {color:Fear}scare{/color} you?\"",
       "swipes": {
         "truth": {
           "playerText": "Little of both.",

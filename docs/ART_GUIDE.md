@@ -98,11 +98,13 @@ glows or colors into the sprite.
 
 The page of the novel before each room (`markerScene.js`). The plate is a
 placeholder drawn in code (`src/ui/plates.js`): 240×150, 1-bit, dithered, white
-on black. Replace with real plates in the same style.
+on black. Drop a PNG at the path below and it replaces the placeholder automatically.
+Draw it flat: the band-by-band load, scanlines, tape-stripe border and the
+warm fogged tint are all added in code.
 
 | Asset | Path | Draw at | Shown at | Format | Frames | Status | Template |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| Chapter plate × 4 (hallway, alley, garage, bar lot) | `src/ui/plates.js` → image | 480×300 (2×) | width of the page, under the name | 1-bit PNG / WebP, pixelated | 1 | 🎨 | — |
+| Chapter plate × 4 (hallway, alley, garage, bar lot) | `public/assets/lake-ulysses/plates/plate_<npc>.png` (`plate_deborah`, `plate_rwanda`, `plate_samun`, `plate_rick`) | 240×150 exactly (true pixels; the game scales it up crisp) | width of the page, under the name | PNG, pure black and white only, no gray, no antialiasing, no effects | 1 | 🔲 (code placeholder until a file exists) | — |
 
 ---
 

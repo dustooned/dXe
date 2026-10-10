@@ -13,8 +13,10 @@ const defaultSettings = {
   reduceEffects: false,
   // Text size: 'normal' | 'large' (all body text a step bigger).
   textSize: 'normal',
-  // Guide highlights: the spotlight, labels, "try this" line and glows that
-  // go with the Therapist's calls. Off: he still talks, nothing lights up.
+  // TIPS (Settings > TIPS, and the repeat client's "check in on you?"): the
+  // Therapist's tip calls in battles and the spotlight, labels, "try this"
+  // line and glows that go with his lessons. Off: no tip calls, nothing
+  // lights up. Your own calls to contacts work either way.
   guideHighlights: true,
 };
 

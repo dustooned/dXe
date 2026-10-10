@@ -2,7 +2,8 @@
   "beats": [
     {
       "sprite": "/assets/lake-ulysses/sprites/npc_deborah.svg",
-      "text": "The door opens before you knock.\n\nShe has been standing on the other side of it for a while."
+      "text": "The door opens before you knock.\n\nShe has been standing on the other side of it for a while.",
+      "sound": "doorOpen"
     },
     {
       "it": true,
@@ -19,6 +20,26 @@
         "Guns": "Behind you, the diploma hangs level.\n\nShe sees it before she sees you.",
         "Bible": "She looks down. The mat says WELCOME now.\n\nShe reads it twice.",
         "Crystals": "Over your head the hall light holds steady.\n\nShe looks up at it like it said her name."
+      }
+    },
+    {
+      "unrestored": true,
+      "speaker": "DEBORAH",
+      "sprite": "/assets/lake-ulysses/sprites/npc_deborah.svg",
+      "text": {
+        "Guns": "Don't mind the frame. It's been crooked since... it's been crooked.",
+        "Bible": "Wipe your feet. The mat says go away. It doesn't mean you.",
+        "Crystals": "Mind the light. It's been dying for months. I keep meaning to."
+      }
+    },
+    {
+      "unrestored": true,
+      "tip": true,
+      "it": true,
+      "text": {
+        "Guns": "You walked right past the crooked frame. She noticed.",
+        "Bible": "You stepped over the mat. She saw which side was up.",
+        "Crystals": "You walked under the dying bulb and left it dying. She noticed."
       }
     },
     {

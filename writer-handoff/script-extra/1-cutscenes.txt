@@ -165,7 +165,7 @@ Lake Ulysses. Three thousand acres, they call it. A jewel.
 It always does. Right before it isn't.
 
 [prologue / beat 4]
-{pause:400}You wake up on the shoulder of Lakeshore Drive.{pause:300} Ears ringing. Clothes damp.
+{pause:400}You wake up on the shoulder of Lakeshore Drive.{pause:300} Ears ringing.{sfx:gravel} Clothes damp.
 
 [prologue / beat 5]
 No pain.{pause:300} Except the ringing.
@@ -177,5 +177,5 @@ Your head throbs.
 [prologue / beat 6 / choice B] Stay down a little longer.
 
 [prologue / beat 7]
-Your phone buzzes against the gravel.
+Your phone{sfx:vibrate} buzzes against the gravel.
 

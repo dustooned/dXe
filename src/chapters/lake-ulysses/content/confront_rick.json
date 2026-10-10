@@ -2,7 +2,8 @@
   "beats": [
     {
       "sprite": "/assets/lake-ulysses/sprites/npc_rick.svg",
-      "text": "He's at the end of the bar with his back to the wall, which is where he always sits.\n\nThere's blood on his knuckles that isn't his."
+      "text": "He's at the end of the bar with his back to the wall, which is where he always sits.\n\nThere's blood on his knuckles that isn't his.",
+      "sound": "glass"
     },
     {
       "it": true,
@@ -19,6 +20,26 @@
         "Guns": "Out the window, his bike sits with its chain back on.\n\nHe noticed. He noticed before you sat.",
         "Bible": "By the door, the benefit flyer hangs straight now.\n\nHe's reading the name on it again.",
         "Crystals": "Out on the sill, the ashtray sits empty.\n\nHe taps his pack and doesn't take one out."
+      }
+    },
+    {
+      "unrestored": true,
+      "speaker": "RICK",
+      "sprite": "/assets/lake-ulysses/sprites/npc_rick.svg",
+      "text": {
+        "Guns": "Bike threw its chain on the way in. Don't touch it.",
+        "Bible": "That flyer by the door. Don't read it.",
+        "Crystals": "Ashtray's full. Leave it. It's a count."
+      }
+    },
+    {
+      "unrestored": true,
+      "tip": true,
+      "it": true,
+      "text": {
+        "Guns": "You walked right past the thrown chain. He noticed.",
+        "Bible": "You walked past the crooked flyer. He noticed.",
+        "Crystals": "You walked past the full ashtray. He noticed."
       }
     },
     {

@@ -29,6 +29,7 @@ const ROOMS = {
         x: 268, y: 520, w: 56, h: 40,
         sprite: `${SPR}barlot_ashtray.svg`,
         closeup: `${SPR}barlot_ashtray_closeup.svg`,
+        sound: 'tap',
         opener: 'rick_01',
         text: {
           Guns:     'One brand, all of them. Same man, same spot, every night, waiting on something he\'s {color:Fear}scared{/color} will come.',
@@ -45,6 +46,7 @@ const ROOMS = {
         x: 264, y: 232, w: 58, h: 78,
         sprite: `${SPR}barlot_flyer.svg`,
         closeup: `${SPR}barlot_flyer_closeup.svg`,
+        sound: 'peel',
         opener: 'rick_01_soft',
         text: {
           Guns:     'A benefit ride. For a guy nobody in there will say the name of anymore. Saying it makes them {color:Anxiety}twitchy{/color}.',
@@ -61,6 +63,7 @@ const ROOMS = {
         x: 60, y: 470, w: 116, h: 96,
         sprite: `${SPR}barlot_bike.svg`,
         closeup: `${SPR}barlot_bike_closeup.svg`,
+        sound: 'tick',
         opener: 'rick_01_hard',
         text: {
           Guns:     'Parked across two spaces. That is the whole message, and it\'s {color:Anger}spoiling{/color} for you to answer it.',
@@ -84,7 +87,7 @@ const ROOMS = {
 
 const STEPS = [
   { type: 'walk', rooms: ['barlot-01'], roomsById: ROOMS },
-  { type: 'gimmick', prompt: { text: 'SOMEONE SHOULDERS PAST' }, response: 'swipe-right' },
+  { type: 'gimmick', prompt: { text: 'SOMEONE SHOULDERS PAST' }, response: 'swipe-right', sound: 'bump' },
 ];
 
 export function mount(stageEl, scene, context) {

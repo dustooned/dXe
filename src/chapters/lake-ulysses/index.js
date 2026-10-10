@@ -186,8 +186,8 @@ const initialRunState = {
   // Each baptism card's answer, in order ('confess' | 'down'), for the
   // repeat client's file (endingScene.js saves it as save.lastRun).
   reckoningChoices: [],
-  // A player who has finished this chapter before: no tutorial (the
-  // Therapist reads last run's file instead) and no coach calls or tips.
+  // A player who has finished this chapter before: the Therapist reads last
+  // run's file and asks whether to check in (TIPS) and rerun the tutorial.
   repeat: false,
 };
 
@@ -201,8 +201,10 @@ export function mount(stageEl, { exit, restart, startSceneId }) {
   const lastRun = loadSave().lastRun;
   const repeatState = lastRun ? { repeat: true, scopeExplained: true } : {};
   const run = createStore({ ...initialRunState, ...repeatState, ...takeDebugOverrides() });
+  // Repeat client: his "you again" call takes the 'therapist' slot, with the
+  // full tutorial right after it for a player who asks to run it again.
   const scenes = run.get().repeat && lastRun
-    ? SCENES.map((s) => (s.id === 'therapist' ? therapistReturnScene(lastRun) : s))
+    ? SCENES.flatMap((s) => (s.id === 'therapist' ? [therapistReturnScene(lastRun), { ...s, id: 'therapist-tutorial' }] : [s]))
     : SCENES;
   const sequencer = createSceneSequencer({
     scenes,

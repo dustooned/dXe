@@ -430,20 +430,6 @@
   border-left: calc(8 * var(--px)) solid var(--mood);
 }
 
-.dx-cutscene-choices .dx-btn.is-secret {
-  outline: calc(2 * var(--px)) solid var(--cls);
-  outline-offset: calc(2 * var(--px));
-}
-
-.dx-cutscene-choices .dx-btn.is-secret::before {
-  content: attr(data-glyph) ' ';
-  color: var(--cls);
-}
-
-.dx-cutscene-screen.is-secret .dx-cutscene-textbox {
-  border-color: var(--cls);
-}
-
 .is-reduced-effects .dx-room__object.is-calling .dx-room__tint,
 .is-reduced-effects .dx-room__closeup-art.is-restorable .dx-room__tint,
 .is-reduced-effects .dx-room__closeup-art.is-restoring,
@@ -2323,7 +2309,8 @@
   clip-path: inset(0 0 calc(100% - var(--drawn, 100%)) 0);
 }
 
-.dx-marker__plate svg {
+.dx-marker__plate svg,
+.dx-marker__plate-art {
   display: block;
   width: 100%;
   height: auto;
@@ -2379,3 +2366,6 @@
 /* Fogged (Wi-Fi under 4): the page in lamplight. Warm ink, softer lines. */
 .dx-marker.is-fogged { color: var(--color-comfort); }
 .dx-marker.is-fogged::after { opacity: 0.5; }
+
+/* Fogged: real plate art takes the lamplight too (it's white on black). */
+.dx-marker.is-fogged .dx-marker__plate-art { filter: sepia(0.35) brightness(0.95); }

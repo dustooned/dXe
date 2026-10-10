@@ -348,7 +348,9 @@ Confrontation scenes also take `npc` (their content, for the colored option
 stripes) and may include `"secret": true` beats and options. These only
 exist once `run.secrets[opensDialog]` is set (the room restore): a secret beat
 plays (the NPC notices what you restored, text per class) and a secret option
-appears (per-class label, class glyph and outline) whose `opener` is the NPC's
+appears (per-class label, styled like any other option; the restored object's
+sound plays as the options come up, from `run.secrets[npc]`, which holds that
+sound name) whose `opener` is the NPC's
 `<npc>_01_secret` node, authored with `GLOW: yes` so it opens with their
 first feeling lit on the wheel. Every option also shows a stripe in the first
 feeling its opener meets for the player's class.

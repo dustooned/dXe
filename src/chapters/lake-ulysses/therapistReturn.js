@@ -2,11 +2,15 @@
 // sit through the Therapist's tutorial again. Instead he picks up, already
 // holding last run's file (save.lastRun, written by endingScene.js), and
 // reads it back at you: how wet you came out of the lake, what you did under
-// Gabriel's hand, your class then and now. Then the same homework, and off.
+// Gabriel's hand, your class then and now. Then he asks two things:
+//   check in on you?    sets TIPS (settings.js guideHighlights): his tip calls
+//                       in battles and the highlights. Changeable in Settings.
+//   run the exercise?   yes: the full tutorial plays next ('therapist-tutorial',
+//                       the original dialog). no: straight to the walk home.
 // Dark, a little funny, in his voice (docs/HANDOFF.md "Therapist voice").
 //
-// Returns a cutscene scene that replaces the 'therapist' dialog
-// (chapters/lake-ulysses/index.js). PLACEHOLDER lines for the writer pass.
+// Returns a cutscene for the 'therapist' slot; the original tutorial follows
+// it (chapters/lake-ulysses/index.js). PLACEHOLDER lines for the writer pass.
 import therapist from './content/therapist.json';
 import { ppmFor } from '../../engine/lake.js';
 
@@ -47,9 +51,25 @@ export function therapistReturnScene(lastRun) {
     say(`Oh. {pause:300}You again. ${WET[lastRun.endingKey] ?? WET.FUNCTIONAL_MASK} You left at ${ppm} ppm.`),
     lastRun.baptism && say(BAPTISM[lastRun.baptism]),
     say(changedClass),
+    // Restored nothing last run: the nudge for this one.
+    lastRun.restored === 0 && say("Also, you didn't fix a single thing last time. Not one. People notice when you fix things. I'm just reading the file."),
     say('So you\'re doing the whole lake again. On purpose. I\'m not judging. I\'m writing it down, which is different, legally.'),
-    say(Object.fromEntries(['Guns', 'Bible', 'Crystals'].map((cls) => [cls,
-      `We did the tutorial. I'm not doing the voices again. Same homework: ${homeworkFor(cls)} Okay. Bye.`]))),
+    {
+      ...say('Do you want me to check in on you this time? Tips, reminders, me calling at bad moments. For accountability.'),
+      interactive: { type: 'choice', options: [
+        { label: 'Yes. Check in on me.', setting: { guideHighlights: true } },
+        { label: "No. I've got it.", setting: { guideHighlights: false } },
+      ] },
+    },
+    say("Noted. You can change your mind any time: Settings, then TIPS. I won't take it personally. I will write it down."),
+    {
+      ...say(Object.fromEntries(['Guns', 'Bible', 'Crystals'].map((cls) => [cls,
+        `Same homework as last time: ${homeworkFor(cls)} And do you want to run the exercise again, or skip it?`]))),
+      interactive: { type: 'choice', options: [
+        { label: 'Run it again.' },
+        { label: 'Skip it.', jumpTo: 'walk-home' },
+      ] },
+    },
   ].filter(Boolean);
   return { type: 'cutscene', id: 'therapist', beats };
 }

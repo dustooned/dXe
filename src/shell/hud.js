@@ -350,7 +350,8 @@ function renderSettingsPanel() {
   });
   panelEl.querySelector('.dx-hud-guide').addEventListener('click', renderGuidePage);
 
-  // Tips: the spotlight, labels and glows on the Therapist's calls.
+  // Tips: the Therapist's tip calls and the highlights on his lessons
+  // (settings.js guideHighlights). Calls you make yourself aren't affected.
   const hiliteBtn = panelEl.querySelector('.dx-hud-hilite');
   const syncHilite = (s) => { hiliteBtn.textContent = `TIPS: ${s.guideHighlights ? 'ON' : 'OFF'}`; };
   syncHilite(settings);

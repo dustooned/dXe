@@ -26,8 +26,10 @@
 // scales with the canvas; nothing pixel-valued ever reaches a style property.
 import { createSpriteAnimator } from './spriteAnimator.js';
 import { createTypewriter } from './typewriterText.js';
-import { preloadTypewriterTick, playTypewriterTick, playClassSigil } from '../shell/audio.js';
+import { preloadTypewriterTick, playTypewriterTick, playClassSigil, playSfx } from '../shell/audio.js';
+import { createItPopup } from './itPopup.js';
 import { CLASSES, classColor, emotionColor, forClass } from '../engine/loadout.js';
+import { loadSettings } from '../shell/settings.js';
 
 const FRAME_W = 390;
 const FRAME_H = 844;
@@ -39,6 +41,13 @@ function place(el, { x, y, w, h }) {
   el.style.height = `${(h / FRAME_H) * 100}%`;
 }
 
+
+// IT's nudge once every object is open, in your class's words (TIPS on).
+const WHISPER = {
+  Guns: 'One of these is broken in a way your hands understand.',
+  Bible: 'Something in here was set down wrong. You could set it right.',
+  Crystals: 'One of these is humming at you. Listen for it.',
+};
 
 export function createWalkRoom(room, { loadout, onAdvance, restored = false, onRestore }) {
   // playTypewriterTick() no-ops until its buffer is loaded. In normal play a
@@ -86,13 +95,23 @@ export function createWalkRoom(room, { loadout, onAdvance, restored = false, onR
   place(advanceEl, room.advance);
   advanceEl.addEventListener('click', () => {
     if (advanceEl.hidden) return;
+    playSfx('doorOpen');
     onAdvance(room.advance.to);
   });
 
-  // Everything opened: your class's object starts calling.
+  // Everything opened: your class's object starts calling. The first time,
+  // a faint echo of your class's sound (heard even fogged, when the colors
+  // are gone), and, with TIPS on, IT says it in your class's words once the
+  // close-up is closed.
+  let called = false;
+  let whisperPending = false;
   function callIfReady() {
     if (mine < 0 || isRestored || !allSeen()) return;
     buttons[mine].classList.add('is-calling');
+    if (called) return;
+    called = true;
+    playClassSigil(loadout, { gain: 0.25 });
+    if (loadSettings().guideHighlights !== false && WHISPER[loadout]) whisperPending = true;
   }
 
   function revealAdvanceIfDone() {
@@ -102,13 +121,20 @@ export function createWalkRoom(room, { loadout, onAdvance, restored = false, onR
     advanceEl.hidden = false;
     // Animate in rather than snapping — this is the "you can move on" hint.
     advanceEl.classList.add('is-revealing');
+    playSfx('clunk');
   }
 
+  let itPopup = null;
   function closeCloseup() {
     typewriter?.destroy();
     typewriter = null;
+    const wasOpen = !!closeupEl;
     closeupEl?.remove();
     closeupEl = null;
+    if (wasOpen && whisperPending) {
+      whisperPending = false;
+      itPopup = createItPopup(el, { text: WHISPER[loadout], loadout, onClose: () => { itPopup?.destroy(); itPopup = null; } });
+    }
   }
 
   function openCloseup(spot, i) {
@@ -192,7 +218,7 @@ export function createWalkRoom(room, { loadout, onAdvance, restored = false, onR
     stamp.className = 'dx-room__stamp';
     stamp.textContent = `${CLASSES[loadout].glyph} ${CLASSES[loadout].restored}`;
     closeupEl.appendChild(stamp);
-    onRestore?.();
+    onRestore?.(spot);
   }
 
   room.hotspots.forEach((spot, i) => {
@@ -218,6 +244,11 @@ export function createWalkRoom(room, { loadout, onAdvance, restored = false, onR
       btn.classList.remove('is-popping');
       void btn.offsetWidth;
       btn.classList.add('is-popping');
+      // The object's own sound; your class's object, once it's calling,
+      // answers with the faint echo of your class instead.
+      const echo = i === mine && called && !isRestored;
+      if (echo) playClassSigil(loadout, { gain: 0.25 });
+      else if (spot.sound) playSfx(spot.sound);
       seen.add(i);
       revealAdvanceIfDone();
       openCloseup(spot, i);
@@ -252,7 +283,9 @@ export function createWalkRoom(room, { loadout, onAdvance, restored = false, onR
     introEl.appendChild(box);
     el.appendChild(introEl);
 
-    introTypewriter = createTypewriter(p, forClass(room.intro, loadout), {
+    // The first room's tip (TIPS on): what the colors mean, said once, plainly.
+    const tip = room.tip && loadSettings().guideHighlights !== false ? forClass(fogged ? room.tip.fogged : room.tip.clear, loadout) : '';
+    introTypewriter = createTypewriter(p, tip ? `${forClass(room.intro, loadout)} {pause:300}${tip}` : forClass(room.intro, loadout), {
       onChar: playTypewriterTick,
     });
 
@@ -265,6 +298,8 @@ export function createWalkRoom(room, { loadout, onAdvance, restored = false, onR
   return {
     el,
     destroy() {
+      whisperPending = false;
+      itPopup?.destroy();
       closeIntro();
       closeCloseup();
       bgAnimator.destroy();

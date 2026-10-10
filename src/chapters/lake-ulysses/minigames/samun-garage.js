@@ -29,6 +29,7 @@ const ROOMS = {
         x: 256, y: 470, w: 68, h: 46,
         sprite: `${SPR}garage_radio.svg`,
         closeup: `${SPR}garage_radio_closeup.svg`,
+        sound: 'static',
         opener: 'samun_01',
         text: {
           Guns:     'On, but tuned to nothing. He wants noise, not a station. Quiet is what he\'s {color:Fear}scared{/color} of.',
@@ -45,6 +46,7 @@ const ROOMS = {
         x: 258, y: 222, w: 66, h: 88,
         sprite: `${SPR}garage_calendar.svg`,
         closeup: `${SPR}garage_calendar_closeup.svg`,
+        sound: 'flip',
         opener: 'samun_01_soft',
         text: {
           Guns:     'Stopped on a month two years back. Nobody flips it because nobody can stand the {color:Disgust}sight{/color} of the count.',
@@ -61,6 +63,7 @@ const ROOMS = {
         x: 72, y: 468, w: 78, h: 112,
         sprite: `${SPR}garage_drum.svg`,
         closeup: `${SPR}garage_drum_closeup.svg`,
+        sound: 'slosh',
         opener: 'samun_01_hard',
         text: {
           Guns:     'Full to the lip. Nobody has hauled this off in a long while. Somebody\'s {color:Anger}sick of it{/color} and won\'t say so.',
@@ -84,7 +87,7 @@ const ROOMS = {
 
 const STEPS = [
   { type: 'walk', rooms: ['garage-01'], roomsById: ROOMS },
-  { type: 'gimmick', prompt: { text: 'DUCK THE HOIST' }, response: 'swipe-left' },
+  { type: 'gimmick', prompt: { text: 'DUCK THE HOIST' }, response: 'swipe-left', sound: 'whir' },
 ];
 
 export function mount(stageEl, scene, context) {

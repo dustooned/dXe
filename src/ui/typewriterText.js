@@ -29,6 +29,7 @@
 import { emotionColor } from '../engine/loadout.js';
 import { FEELZ_COLORS } from '../shell/feelzWord.js';
 import { loadSettings } from '../shell/settings.js';
+import { playSfx } from '../shell/audio.js';
 
 // The player's text speed setting scales every character delay (the
 // authored {slow}/{fast}/{pause} rhythm stays proportional); 'instant'
@@ -42,7 +43,10 @@ const SPEED_MULTIPLIER = { slow: 2.6, fast: 0.35, normal: 1 };
 // bring the lake in mid-reaction). {cue:name} is the same callback without
 // the page break: it fires the moment the draw reaches that spot (the
 // therapist naming each status-bar icon as it flashes).
-const TAG_PATTERN = /\{(\/?)(slow|fast)\}|\{color:(\w+)\}|\{(\/)color\}|\{pause:(\d+)\}|\{mark:(\w+)\}|\{cue:(\w+)\}/g;
+// {sfx:name} plays a sound (audio.js playSfx) the moment the draw reaches it:
+// a writer places sounds inside the line ("She sets the pot down.{sfx:clink}").
+// A finished-early line skips them, so a tap never fires a pile of sounds.
+const TAG_PATTERN = /\{(\/?)(slow|fast)\}|\{color:(\w+)\}|\{(\/)color\}|\{pause:(\d+)\}|\{mark:(\w+)\}|\{cue:(\w+)\}|\{sfx:(\w+)\}/g;
 
 // Narration vs speech (a tester asked for it): stage directions and
 // description render in a grey slant (.is-narration), spoken words stay
@@ -107,7 +111,9 @@ export function parseSegments(raw) {
     pushChars(raw.slice(lastIndex, match.index));
     lastIndex = TAG_PATTERN.lastIndex;
 
-    if (match[7] != null) {
+    if (match[8] != null) {
+      segments.push({ type: 'sfx', name: match[8], delayMs: 0 });
+    } else if (match[7] != null) {
       segments.push({ type: 'cue', name: match[7], delayMs: 0 });
     } else if (match[6] != null) {
       segments.push({ type: 'mark', name: match[6], delayMs: 0 });
@@ -354,6 +360,8 @@ function drawPage(container, segments, { onDone, onChar, onCue, startRevealed, n
       charIndex += 1;
     } else if (seg.type === 'cue') {
       fireCue(seg);
+    } else if (seg.type === 'sfx') {
+      playSfx(seg.name);
     }
     timer = setTimeout(step, seg.delayMs * speed);
   }

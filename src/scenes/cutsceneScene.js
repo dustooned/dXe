@@ -45,12 +45,13 @@
 // object there too.
 import { createTypewriter } from '../ui/typewriterText.js';
 import { isFogged } from '../engine/contacts.js';
+import { updateSettings, loadSettings } from '../shell/settings.js';
 import { resolveCard } from '../engine/cardEngine.js';
-import { CLASSES, classColor, emotionColor, forClass, moodFor } from '../engine/loadout.js';
+import { emotionColor, forClass, moodFor } from '../engine/loadout.js';
 import { later, cancelLater } from '../shell/pauseBus.js';
 import { quoteSpeech } from '../ui/speech.js';
 import * as encounterMusic from '../shell/encounterMusic.js';
-import { preloadTypewriterTick, playTypewriterTick, startAmbient, stopAmbient, startLeitmotif, playFeelzBoot } from '../shell/audio.js';
+import { preloadTypewriterTick, playTypewriterTick, startAmbient, stopAmbient, startLeitmotif, playFeelzBoot, playSfx } from '../shell/audio.js';
 import { createFeelzSilhouette } from '../ui/feelzSilhouette.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
 
@@ -90,6 +91,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // lie is offered, and a player who restored nothing can bluff the secret.
   const fogged = () => !!scene.opensDialog && isFogged(run.get());
   const shown = (item) => {
+    // A missed restore leaves a trace: the NPC mentions the thing, and (TIPS
+    // on) IT points out you walked past it. For next room, or next run.
+    if (item.unrestored && (!scene.opensDialog || secretOpen())) return false;
+    if (item.tip && loadSettings().guideHighlights === false) return false;
     if (item.secret) return secretOpen();
     if (item.fake) return fogged() && !secretOpen();
     if (item.whenFogged) return fogged();
@@ -190,7 +195,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
       if (scene.beats[beatIndex - 1]?.art !== beat.art) artEl.classList.add('is-entering');
       screen.appendChild(artEl);
     }
-    if (beat.sound) SOUNDS[beat.sound]?.();
+    // A built-in sound by key, else any sound effect (audio.js playSfx).
+    if (beat.sound) (SOUNDS[beat.sound] ?? (() => playSfx(beat.sound)))();
 
     const textBox = document.createElement('div');
     textBox.className = 'dx-cutscene-textbox';
@@ -206,8 +212,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
     screen.appendChild(textBox);
     stageEl.appendChild(screen);
 
-    if (beat.secret) screen.classList.add('is-secret');
-    screen.style.setProperty('--cls', classColor(loadout()));
 
     if (beat.text) {
       const textEl = document.createElement('p');
@@ -259,6 +263,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
   function showChoices(textBox, interactive) {
     const choices = document.createElement('div');
     choices.className = 'dx-cutscene-choices';
+    // The secret option looks like any other. What gives it away is the sound
+    // of the thing you fixed, as the options come up (run.secrets holds that
+    // object's sound; walkSequencer.js). A bluff has no sound to play.
+    const fixed = scene.opensDialog && run.get().secrets?.[scene.opensDialog];
+    if (typeof fixed === 'string' && interactive.options.some((o) => o.secret)) playSfx(fixed);
     interactive.options.filter(shown).forEach((option) => {
       const btn = document.createElement('button');
       btn.className = 'dx-btn';
@@ -273,11 +282,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
       } else if (mood) {
         btn.classList.add('has-mood');
         btn.style.setProperty('--mood', emotionColor(mood));
-      }
-      if (option.secret || option.fake) {
-        btn.classList.add('is-secret');
-        btn.style.setProperty('--cls', classColor(loadout()));
-        btn.dataset.glyph = CLASSES[loadout()]?.glyph ?? '';
       }
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -307,6 +311,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
   function resolveChoice(option) {
+    // An option can set a player setting (the repeat client's "want me to
+    // check in on you?" sets TIPS).
+    if (option.setting) updateSettings(option.setting);
     applyLie(option);
     applyOpener(option);
     if (option.record) {

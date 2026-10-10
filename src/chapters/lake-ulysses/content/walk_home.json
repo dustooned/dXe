@@ -1,10 +1,22 @@
 {
   "beats": [
-    { "text": "FEELZ goes dark. {pause:400}The lake doesn't." },
-    { "text": "You get up off the shoulder of Lakeshore Drive and start walking. Your legs remember the way home before you do." },
-    { "text": "Lake Ulysses at this hour: sprinklers ticking, a church sign missing half its letters, a dog barking at the water like it owes him money." },
-    { "text": "Your building. Three flights. The stairwell smells like lemon cleaner and somebody else's dinner." },
-    { "text": "Third floor. {pause:300}One door down the hall is propped open. Someone inside is humming a hymn, a little off-key." },
-    { "text": "{slow}Homework,{/slow} you think. {pause:300}Ask one question." }
+    {
+      "text": "FEELZ goes dark. {pause:400}The lake doesn't."
+    },
+    {
+      "text": "You get up off the shoulder of Lakeshore Drive and start walking.{sfx:footsteps} Your legs remember the way home before you do."
+    },
+    {
+      "text": "Lake Ulysses at this hour: sprinklers ticking,{sfx:sprinkler} a church sign missing half its letters, a dog{sfx:bark} barking at the water like it owes him money."
+    },
+    {
+      "text": "Your building. Three flights.{sfx:footsteps} The stairwell smells like lemon cleaner and somebody else's dinner."
+    },
+    {
+      "text": "Third floor. {pause:300}One door down the hall is propped open. Someone inside is humming a hymn, a little off-key."
+    },
+    {
+      "text": "{slow}Homework,{/slow} you think. {pause:300}Ask one question."
+    }
   ]
 }

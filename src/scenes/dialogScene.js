@@ -1117,8 +1117,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   const guideOn = () => loadSettings().guideHighlights !== false;
 
   function startCoach(key, guide) {
-    // A repeat player isn't coached: they've had the tutorial.
-    if (unmounted || npc.reveal || coach || itPopup || run.get().repeat) return;
+    // TIPS off (Settings, or a repeat player who said no to check-ins): no
+    // tip calls. Calling him yourself still works.
+    if (unmounted || npc.reveal || coach || itPopup || !guideOn()) return;
     const seen = run.get().coachSeen ?? [];
     if (seen.includes(key)) return;
     run.set({ coachSeen: [...seen, key] });
@@ -1311,8 +1312,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
   const inClass = (plain, byClass) => byClass[run.get().loadout] ?? plain;
 
   function nodeCoach() {
-    // Repeat players get no calls and no dock pulse: they've done this.
-    if (coachCheckedFor === currentNodeId || run.get().repeat) return;
+    // TIPS off: no tip calls and no dock pulse.
+    if (coachCheckedFor === currentNodeId || !guideOn()) return;
     coachCheckedFor = currentNodeId;
     const node = currentNode();
     const facing = npc.npc.charAt(0) + npc.npc.slice(1).toLowerCase();

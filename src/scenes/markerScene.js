@@ -64,7 +64,15 @@ export function mount(stageEl, scene, { run, onComplete }) {
   const name = add(page, 'dx-marker__name', npc.npc);
 
   const plate = add(page, 'dx-marker__plate', null, 'div');
-  plate.innerHTML = plateSvg(key);
+  // Real art when it's there (public/assets/lake-ulysses/plates/plate_<npc>.png,
+  // 1-bit pixel art, see ART_GUIDE.md); the code-drawn placeholder otherwise.
+  // The load, scanlines and fog tint are applied on top either way.
+  const art = new Image();
+  art.alt = '';
+  art.className = 'dx-marker__plate-art';
+  art.onerror = () => { plate.innerHTML = plateSvg(key); };
+  art.src = `/assets/lake-ulysses/plates/plate_${key}.png`;
+  plate.appendChild(art);
   plate.style.setProperty('--drawn', '0%');
   const caption = add(page, 'dx-marker__caption', scene.plate ?? '');
 

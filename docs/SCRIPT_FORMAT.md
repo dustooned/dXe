@@ -82,6 +82,14 @@ e.g. `deborah_01`, `deborah_02_denial`.
   character-by-character like every other line in the game (`src/ui/
   typewriterText.js`), so the `{slow}`/`{fast}`/`{pause:N}` pacing codes
   work here too.
+- `{sfx:name}` (any line: PROMPT, SAY, REACT, cutscene text, room captions)
+  plays a retro sound effect the moment the text draws to that spot, e.g.
+  `(He takes the drink{sfx:glass} without looking at it.)`. A line the player
+  taps through skips its sounds. Names (`src/shell/audio.js` SFX): creak,
+  doorCreak, clunk, doorOpen, scuff, buzz, click, fizz, static, flip, slosh,
+  tick, tap, peel, cough, bark, whir, bump, knock, street, rag, glass, clink,
+  vibrate, gravel, footsteps, sprinkler, whoosh, ping. Rooms (`sound:` on a
+  hotspot or quick beat) and cutscene beats (`"sound":`) take the same names.
 - `GATE:` (optional) — redirects to a *different* node instead of this
   one, if a stat condition is true. Format:
   `GATE: <stat> <op> <value> -> <nodeId>`, e.g.

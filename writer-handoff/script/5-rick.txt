@@ -131,7 +131,7 @@ NEXT: (end)
 
 === rick_01_soft
 GATE: trust < 4 -> rick_shut_down
-PROMPT: (He takes the drink without looking at it.) "You buying because you want something, or because I {color:Fear}scare{/color} you?"
+PROMPT: (He takes the drink{sfx:glass} without looking at it.) "You buying because you want something, or because I {color:Fear}scare{/color} you?"
 MOOD: Anxiety
 # Foe: a church kid buying him a drink. He knows what that is usually a down payment on.
 MOOD [Bible]: Disgust
