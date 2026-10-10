@@ -155,6 +155,7 @@ MOOD: Surprise
 MOOD [Guns]: Fear
 MOOD [Bible]: Anxiety
 BID: truth
+GLOW: yes
 
 -- TRUTH
 SAY: It was me. It looked like it was waiting for somebody to bother.

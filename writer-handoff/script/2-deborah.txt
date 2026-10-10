@@ -151,6 +151,7 @@ MOOD: Sadness
 MOOD [Bible]: Fear
 MOOD [Crystals]: Surprise
 BID: truth
+GLOW: yes
 
 -- TRUTH
 SAY: I didn't know. It just looked like it was waiting for someone.

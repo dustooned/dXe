@@ -44,7 +44,7 @@
 // beat's `text` or an option's `label` may be a { Guns, Bible, Crystals }
 // object there too.
 import { createTypewriter } from '../ui/typewriterText.js';
-import { CLASSES, classColor, emotionColor, moodFor } from '../engine/loadout.js';
+import { CLASSES, classColor, emotionColor, forClass, moodFor } from '../engine/loadout.js';
 import { later, cancelLater } from '../shell/pauseBus.js';
 import { quoteSpeech } from '../ui/speech.js';
 import * as encounterMusic from '../shell/encounterMusic.js';
@@ -84,7 +84,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   const loadout = () => run.get().loadout;
   const secretOpen = () => !!(scene.opensDialog && run.get().secrets?.[scene.opensDialog]);
   const shown = (item) => !item.secret || secretOpen();
-  const inClass = (text) => (text && typeof text === 'object' ? text[loadout()] ?? Object.values(text)[0] : text);
+  const inClass = (text) => forClass(text, loadout());
 
   function destroyAnimators() {
     for (const { key, animator } of activeAnimators) {

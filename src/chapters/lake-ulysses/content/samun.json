@@ -262,7 +262,8 @@
       },
       "bid": [
         "truth"
-      ]
+      ],
+      "glow": true
     },
     "samun_03": {
       "id": "samun_03",

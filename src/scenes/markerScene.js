@@ -88,6 +88,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let loaded = false;
   let leaving = false;
   let fadeTimer = null;
+  let theme = null;
   const print = (el, data = false) => {
     el.classList.remove('is-unprinted');
     el.classList.add('is-printed');
@@ -104,23 +105,24 @@ export function mount(stageEl, scene, { run, onComplete }) {
     loaded = true;
     screen.classList.remove('is-loading');
   };
+  // [step, how long until the next one]
   const sequence = [
-    ...[head, chapter, name].map((el) => () => print(el)),
-    () => plate.classList.remove('is-unprinted'),
-    ...Array.from({ length: BANDS }, (_, i) => () => {
+    ...[head, chapter, name].map((el) => [() => print(el), LINE_MS]),
+    [() => plate.classList.remove('is-unprinted'), BAND_MS],
+    ...Array.from({ length: BANDS }, (_, i) => [() => {
       plate.style.setProperty('--drawn', `${Math.round(((i + 1) / BANDS) * 100)}%`);
       playClassBleep(npcClass, step++, { data: true });
-    }),
-    () => { playOpenerTheme(npc.npc); print(caption); },
-    () => print(cap),
-    () => { print(foot); typeProse(); },
+    }, i < BANDS - 1 ? BAND_MS : LINE_MS]),
+    [() => { theme = playOpenerTheme(npc.npc); print(caption); }, LINE_MS],
+    [() => print(cap), LINE_MS],
+    [() => { print(foot); typeProse(); }, 0],
   ];
   const next = () => {
-    const fn = sequence.shift();
-    if (!fn) return;
-    const banding = plate.classList.contains('is-unprinted') === false && sequence.length > 3;
+    const entry = sequence.shift();
+    if (!entry) return;
+    const [fn, ms] = entry;
     fn();
-    timer = later(next, banding ? BAND_MS : LINE_MS);
+    if (sequence.length) timer = later(next, ms);
   };
   timer = later(next, 450);
 
@@ -140,6 +142,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     leaving = true;
     screen.classList.add('is-fading');
     stopAmbience(FADE_MS / 1000);
+    theme?.stop(FADE_MS / 1000);
     fadeTimer = later(onComplete, FADE_MS);
   });
 
@@ -147,6 +150,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     leaving = true;
     [timer, fadeTimer].forEach(cancelLater);
     typewriter?.destroy();
+    theme?.stop(0.2);
     stopAmbience(0.3);
     stageEl.innerHTML = '';
   };

@@ -249,7 +249,8 @@
       },
       "bid": [
         "truth"
-      ]
+      ],
+      "glow": true
     },
     "deborah_03": {
       "id": "deborah_03",

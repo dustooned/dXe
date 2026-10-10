@@ -165,6 +165,7 @@ MASK: Happy
 MOOD: Fear
 MOOD [Crystals]: Anxiety
 BID: truth
+GLOW: yes
 
 -- TRUTH
 SAY: It looked like you'd been meaning to.

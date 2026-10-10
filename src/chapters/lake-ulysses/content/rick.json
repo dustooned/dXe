@@ -317,7 +317,8 @@
       },
       "bid": [
         "truth"
-      ]
+      ],
+      "glow": true
     },
     "rick_03": {
       "id": "rick_03",

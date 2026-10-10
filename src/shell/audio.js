@@ -1817,6 +1817,8 @@ export function startOpenerAmbience(npcKey) {
     tone('square', 240, 0.012).connect(bp);
     // The bulb: mostly on, now and then a stutter or a drop.
     timer = setInterval(() => {
+      // Paused (the context is suspended): nothing to schedule.
+      if (audioCtx.state !== 'running') return;
       const now = audioCtx.currentTime;
       if (Math.random() < 0.35) {
         flicker.gain.setValueAtTime(0.15, now);
@@ -1854,6 +1856,9 @@ export function startOpenerAmbience(npcKey) {
     noiseLoop().connect(rumble).connect(rg).connect(out);
     // The kick through the wall, four to the floor.
     const kick = () => {
+      // Paused (the context is suspended): kicks would pile up at one frozen
+      // time and all land on resume.
+      if (audioCtx.state !== 'running') return;
       const now = audioCtx.currentTime;
       const o = audioCtx.createOscillator();
       o.frequency.setValueAtTime(110, now);
@@ -1883,8 +1888,8 @@ export function startOpenerAmbience(npcKey) {
 }
 
 // Each NPC's way in (scenes/markerScene.js), as sound only for now: the page
-// turns in to their world's noise. Returns how long it runs, in ms, so the
-// marker can let their soul (playClassSigil) sound after it.
+// turns in to their world's noise. Returns { ms, stop }: how long it runs,
+// and stop(fadeSec) to cut it when the page is left early.
 //   DEBORAH  a bible page turning
 //   RWANDA   a spray can: the rattle, then the hiss across a wall
 //   SAMUN    a crosswalk button: wait, wait, WAIT, then the walk chirp
@@ -1892,6 +1897,17 @@ export function startOpenerAmbience(npcKey) {
 export function playOpenerTheme(npcKey) {
   const audioCtx = ensureContext();
   const t = audioCtx.currentTime + 0.02;
+  // Everything goes through one gain, so leaving the page can cut it.
+  const out = audioCtx.createGain();
+  out.connect(masterGain);
+  setTimeout(() => out.disconnect(), 4000); // every theme is done by then
+  const stop = (fadeSec = 0.25) => {
+    const now = audioCtx.currentTime;
+    out.gain.cancelScheduledValues(now);
+    out.gain.setValueAtTime(out.gain.value, now);
+    out.gain.linearRampToValueAtTime(0.0001, now + fadeSec);
+    setTimeout(() => out.disconnect(), fadeSec * 1000 + 50);
+  };
   const noise = (dur) => {
     const buf = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * dur), audioCtx.sampleRate);
     const d = buf.getChannelData(0);
@@ -1906,7 +1922,7 @@ export function playOpenerTheme(npcKey) {
     g.gain.linearRampToValueAtTime(peak, at + attack);
     g.gain.setValueAtTime(peak, at + attack + hold);
     g.gain.exponentialRampToValueAtTime(0.0001, at + attack + hold + release);
-    node.connect(g).connect(masterGain);
+    node.connect(g).connect(out);
     return g;
   };
 
@@ -1936,7 +1952,7 @@ export function playOpenerTheme(npcKey) {
     env(hp, at, 0.13, 0.05, 0.75, 0.25);
     src.start(at);
     src.stop(at + 1.15);
-    return 1800;
+    return { ms: 1800, stop };
   }
 
   if (npcKey === 'SAMUN') {
@@ -1965,7 +1981,7 @@ export function playOpenerTheme(npcKey) {
       osc.start(at);
       osc.stop(at + 0.09);
     }
-    return 2100;
+    return { ms: 2100, stop };
   }
 
   if (npcKey === 'RICK') {
@@ -1981,8 +1997,8 @@ export function playOpenerTheme(npcKey) {
     const lp = audioCtx.createBiquadFilter();
     lp.type = 'lowpass';
     lp.Q.value = 2;
-    const out = audioCtx.createGain();
-    engine.connect(shaper).connect(lp).connect(out).connect(masterGain);
+    const engineOut = audioCtx.createGain();
+    engine.connect(shaper).connect(lp).connect(engineOut).connect(out);
     const end = t + 2.6;
     const oscs = [['sawtooth', 0], ['sawtooth', 9], ['square', -6]].map(([type, detune]) => {
       const o = audioCtx.createOscillator();
@@ -2006,16 +2022,16 @@ export function playOpenerTheme(npcKey) {
     };
     oscs.forEach((o) => rev(o.frequency, 1));
     rev(lp.frequency, 9);
-    out.gain.setValueAtTime(0.0001, t);
-    out.gain.linearRampToValueAtTime(0.16, t + 0.06);
-    out.gain.setValueAtTime(0.16, t + 1.9);
-    out.gain.exponentialRampToValueAtTime(0.0001, end);
-    return 2300;
+    engineOut.gain.setValueAtTime(0.0001, t);
+    engineOut.gain.linearRampToValueAtTime(0.16, t + 0.06);
+    engineOut.gain.setValueAtTime(0.16, t + 1.9);
+    engineOut.gain.exponentialRampToValueAtTime(0.0001, end);
+    return { ms: 2300, stop };
   }
 
   // DEBORAH (and anyone without a theme yet): the page itself.
   playPageTurn();
-  return 600;
+  return { ms: 600, stop };
 }
 
 // A fax coming in (ui/feelzRecord.js): the handshake (two tones and a

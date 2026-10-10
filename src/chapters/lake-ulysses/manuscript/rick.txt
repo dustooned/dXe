@@ -186,6 +186,7 @@ MASK: Anger
 MOOD: Fear
 MOOD [Crystals]: Anxiety
 BID: truth
+GLOW: yes
 
 -- TRUTH
 SAY: Nothing. It just needed doing.

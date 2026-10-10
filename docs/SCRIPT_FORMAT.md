@@ -111,6 +111,8 @@ gone, and the build rejects one if it turns up in a file.
   it counts toward trust, and it's when the NPC gives the player a
   feeling (engine/unlocks.js). Use `both` when a kind lie still meets
   them.
+- `GLOW: yes` — the node opens with its MOOD already glowing on the
+  player's wheel (the secret openers, earned by a room restore).
 - `MOOD [Guns|Bible|Crystals]: Emotion` — how they feel toward one class in
   particular (kin or foe): replaces `MOOD` for a player of that class. The
   balance check's first-card table shows which openers each class can

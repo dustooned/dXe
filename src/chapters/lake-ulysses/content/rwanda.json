@@ -263,7 +263,8 @@
       },
       "bid": [
         "truth"
-      ]
+      ],
+      "glow": true
     },
     "rwanda_03": {
       "id": "rwanda_03",

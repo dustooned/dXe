@@ -241,6 +241,12 @@ function parseManuscript(text, fileName) {
       const mood = line.slice(5).trim();
       if (!EMOTIONS.includes(mood)) throw new Error(`${fileName}:${lineNumber}: bad MOOD "${mood}"`);
       currentNode.mood = mood;
+    } else if (line.startsWith('GLOW:')) {
+      // The node opens with their feeling already glowing on your wheel (a
+      // secret opener you earned in their room).
+      const value = line.slice(5).trim().toLowerCase();
+      if (value !== 'yes') throw new Error(`${fileName}:${lineNumber}: bad GLOW "${value}" (only "yes")`);
+      currentNode.glow = true;
     } else if (line.startsWith('BID:')) {
       // A vulnerable moment. Which answer(s) turn toward it: truth, lie, or both.
       const value = line.slice(4).trim().toLowerCase();

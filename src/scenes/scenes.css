@@ -441,6 +441,10 @@
 .is-reduced-effects .dx-room__closeup-art.is-restorable .dx-room__tint,
 .is-reduced-effects .dx-room__closeup-art.is-restoring,
 .is-reduced-effects .dx-room__stamp { animation: none; }
+/* Without the swap blink, your class's object still reads as yours: it holds
+   your class color instead. */
+.is-reduced-effects .dx-room__object.is-calling .dx-room__tint,
+.is-reduced-effects .dx-room__closeup-art.is-restorable .dx-room__tint { background: var(--cls); }
 
 /* ── Mini-game: Quick Beat gimmick ─────────────────────────── */
 .dx-beat {

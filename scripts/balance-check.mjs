@@ -56,7 +56,8 @@ function evalNpc(name, have, cls) {
     if (syncs >= 2 && bids >= 1) trustPaths++;
     if (syncs > best.syncs) best = { syncs, bids, path: p.map((s) => s.id.replace(name.toLowerCase() + '_', '') + ':' + s.side[0]).join(' '), gifts };
   }
-  const moods = Object.values(npc.nodes).map((n) => n.mood).filter(Boolean);
+  // The secret openers are a bonus, reported in the first-card table below.
+  const moods = Object.entries(npc.nodes).filter(([id]) => !/_secret$/.test(id)).map(([, n]) => n.mood).filter(Boolean);
   const matchable = moods.filter((m) => have.includes(m)).length;
   return { best, trustPaths, total: all.length, matchable, moods: moods.length, unlock: best.gifts };
 }

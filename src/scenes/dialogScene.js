@@ -77,6 +77,9 @@ const CAUGHT_FALLBACK = {
   RICK: '"Thought you said different."',
 };
 
+// The shortest a tapped-through breath in the connection story can be.
+const HURRY_FLOOR_MS = 180;
+
 // How long the committed card hangs before the answer plays out.
 const FREEZE_MS = 150;
 
@@ -186,13 +189,16 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // player does the thing it asks (until: 'sync' | 'pick' | 'swipe' | 'call')
   // or the moment passes. Each key once a run (run.coachSeen); never popups.
   let coach = null;
+  // A new friend in a late encounter, where he doesn't call: their button
+  // pulses on this card instead, so the dock still gets noticed.
+  let quietPulse = null;
   // The opponent's weather (ui/opponentFx.js); picking their real feeling
   // settles it until this time.
   let opfx = null;
   // A lie that warmed them: they relax, and their next feeling shows on your wheel.
-  // The secret opener (you restored something in their room) starts with
+  // A GLOW node (the secret opener you earned in their room) starts with
   // their first feeling glowing on your wheel, the way a relaxing lie does.
-  let pendingRelax = /_secret$/.test(currentNodeId);
+  let pendingRelax = !!npc.nodes[currentNodeId]?.glow;
   // Set on unmount, so a delayed call can't land in the next scene.
   let unmounted = false;
   let settleUntil = 0;
@@ -292,6 +298,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   function enterNode() {
     beatIndex++;
     activeEmotion = null;
+    quietPulse = null;
     switchesHere = 0;
     activeEmotionColor = null;
     stage = 'prompt';
@@ -1359,23 +1366,31 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
     // He's early-game only: the friend call teaches the dock once, for the
     // first friend, and never past the third encounter (so never on Rick).
+    // A first friend that arrives later just pulses in the dock, quietly.
+    // (Saves from before 2026-10-10 keyed this call per friend: 'friend:X'.)
     const friends = contactsFor(run.get(), npc.npc).filter((w) => w !== 'THERAPIST');
     const who = friends.at(-1);
+    const seen = run.get().coachSeen ?? [];
+    if (!who || !isRevealed('dock') || seen.some((k) => k === 'friend' || k.startsWith('friend:'))) return;
     const metBefore = new Set(Object.keys(run.get().choices ?? {}).map((id) => id.split('_')[0]).filter((n) => n !== 'therapist' && n !== npc.npc.toLowerCase()));
-    if (who && isRevealed('dock') && metBefore.size < 3) {
-      const name = CONTACTS[who].name;
-      startCoach('friend', {
-        steps: [
-          { say: `It's me. FEELZ tells me ${name}'s in your phone now.`, target: `who:${who}`, label: name.toUpperCase() },
-          { say: inClass(`Tap them anytime for their read on ${facing}. Their own way. Doesn't mean they're right. Okay. Bye.`, {
-            Guns: `Tap them anytime for their read on ${facing}. Think of them as a spotter. Doesn't mean they're right. Okay. Bye.`,
-            Bible: `Tap them anytime for their read on ${facing}. Think of a second opinion from the pew. Doesn't mean they're right. Okay. Bye.`,
-            Crystals: `Tap them anytime for their read on ${facing}. A second pair of eyes. Doesn't mean they're right. Okay. Bye.`,
-          }), target: `who:${who}`, label: name.toUpperCase() },
-        ],
-        task: { text: `${name} is here when you want a read.`, target: `who:${who}`, pulseWho: who, until: ['call', 'swipe'] },
-      });
+    if (metBefore.size >= 3) {
+      run.set({ coachSeen: [...seen, 'friend'] });
+      quietPulse = who;
+      render();
+      return;
     }
+    const name = CONTACTS[who].name;
+    startCoach('friend', {
+      steps: [
+        { say: `It's me. FEELZ tells me ${name}'s in your phone now.`, target: `who:${who}`, label: name.toUpperCase() },
+        { say: inClass(`Tap them anytime for their read on ${facing}. Their own way. Doesn't mean they're right. Okay. Bye.`, {
+          Guns: `Tap them anytime for their read on ${facing}. Think of them as a spotter. Doesn't mean they're right. Okay. Bye.`,
+          Bible: `Tap them anytime for their read on ${facing}. Think of a second opinion from the pew. Doesn't mean they're right. Okay. Bye.`,
+          Crystals: `Tap them anytime for their read on ${facing}. A second pair of eyes. Doesn't mean they're right. Okay. Bye.`,
+        }), target: `who:${who}`, label: name.toUpperCase() },
+      ],
+      task: { text: `${name} is here when you want a read.`, target: `who:${who}`, pulseWho: who, until: ['call', 'swipe'] },
+    });
   }
 
   // The Therapist's find-me exercise: the piece of the little screen your
@@ -1400,7 +1415,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       btn.setAttribute('aria-label', `Call ${CONTACTS[who].name}`);
       btn.style.setProperty('--contact', contactColor(who));
       btn.dataset.who = who;
-      if (coach?.pulseWho === who) btn.classList.add('is-coached');
+      if (coach?.pulseWho === who || quietPulse === who) btn.classList.add('is-coached');
       const offline = who === 'THERAPIST' && !therapistReachable(state);
       if (offline) btn.classList.add('is-offline');
       if (calledThisEncounter.has(who)) btn.classList.add('is-used');
@@ -1686,9 +1701,23 @@ export function mount(stageEl, scene, { run, onComplete }) {
     let p = null;
     let tw = null;
     let beat = 0;
-    let busy = true; // a breath is happening: taps wait
+    let busy = true; // a breath is happening: a tap hurries it
     let over = false;
-    const wait = (ms, fn) => setTimeout(() => { if (!unmounted && !over) fn(); }, ms);
+    // The breaths are for a player who lets it play. A tap during one cuts it
+    // short (after a beat, so it never snaps), so tapping draws the reveal
+    // as fast as the player wants it.
+    let pending = null;
+    const wait = (ms, fn) => {
+      const fire = () => { pending = null; if (!unmounted && !over) fn(); };
+      pending = { fire, at: performance.now(), timer: setTimeout(fire, ms) };
+    };
+    const hurry = () => {
+      if (!pending) return;
+      const { fire, at, timer } = pending;
+      clearTimeout(timer);
+      const left = Math.max(0, HURRY_FLOOR_MS - (performance.now() - at));
+      pending = { fire, at, timer: setTimeout(fire, left) };
+    };
 
     function show(i) {
       if (!box) {
@@ -1737,7 +1766,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
 
     overlay.addEventListener('click', () => {
-      if (busy || over) return;
+      if (over) return;
+      if (busy) { hurry(); return; }
       if (tw && !tw.isDone()) { tw.finish(); return; }
       advance();
     });

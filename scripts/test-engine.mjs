@@ -187,6 +187,7 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
     const conf = JSON.parse(fs.readFileSync(C + `content/confront_${key}.json`, 'utf8'));
     const secret = npc.nodes[key + '_01_secret'];
     check(`${key}: has a class, and a secret opener with a line for each class`, CLS.includes(npc.npcClass) && !!secret && CLS.every((c) => secret.byClass?.[c]));
+    check(`${key}: the secret opener glows (GLOW: yes)`, secret?.glow === true);
     check(`${key}: every class holds the secret opener's first feeling`, CLS.every((c) => HELD[c].includes(moodFor(secret, c))));
     check(`${key}: every class holds the first feeling of at least one plain opener`, CLS.every((c) => ['_01', '_01_soft', '_01_hard'].some((x) => HELD[c].includes(moodFor(npc.nodes[key + x], c)))));
     const opts = conf.beats.flatMap((b) => b.interactive?.options ?? []);

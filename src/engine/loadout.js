@@ -104,3 +104,12 @@ export function withClassMoods(npc, loadout) {
 export function classColor(cls) {
   return CLASSES[cls] ? `var(--color-class-${cls.toLowerCase()})` : 'var(--color-white)';
 }
+
+// Text authored per class ({ Guns, Bible, Crystals }) or once for everyone (a
+// string): this player's version, falling back to the first one written so a
+// half-authored line still shows something. Used by room captions
+// (ui/walkRoom.js) and cutscene beats and options (scenes/cutsceneScene.js).
+export function forClass(text, loadout) {
+  if (text == null || typeof text === 'string') return text ?? '';
+  return text[loadout] ?? Object.values(text)[0] ?? '';
+}

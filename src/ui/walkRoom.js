@@ -27,7 +27,7 @@
 import { createSpriteAnimator } from './spriteAnimator.js';
 import { createTypewriter } from './typewriterText.js';
 import { preloadTypewriterTick, playTypewriterTick, playClassSigil } from '../shell/audio.js';
-import { CLASSES, classColor, emotionColor } from '../engine/loadout.js';
+import { CLASSES, classColor, emotionColor, forClass } from '../engine/loadout.js';
 
 const FRAME_W = 390;
 const FRAME_H = 844;
@@ -39,12 +39,6 @@ function place(el, { x, y, w, h }) {
   el.style.height = `${(h / FRAME_H) * 100}%`;
 }
 
-// Caption text is authored per class. Falls back to the first available
-// variant so a half-authored room still renders instead of showing blank.
-function captionFor(text, loadout) {
-  if (typeof text === 'string') return text;
-  return text?.[loadout] ?? Object.values(text ?? {})[0] ?? '';
-}
 
 export function createWalkRoom(room, { loadout, onAdvance, restored = false, onRestore }) {
   // playTypewriterTick() no-ops until its buffer is loaded. In normal play a
@@ -158,8 +152,8 @@ export function createWalkRoom(room, { loadout, onAdvance, restored = false, onR
     closeupEl.appendChild(box);
 
     el.appendChild(closeupEl);
-    const caption = captionFor(spot.text, loadout);
-    const hint = restorable ? captionFor(spot.restore.hint, loadout) : '';
+    const caption = forClass(spot.text, loadout);
+    const hint = restorable ? forClass(spot.restore.hint, loadout) : '';
     typewriter = createTypewriter(p, hint ? `${caption} {pause:300}${hint}` : caption, {
       onChar: playTypewriterTick,
     });
@@ -182,7 +176,7 @@ export function createWalkRoom(room, { loadout, onAdvance, restored = false, onR
     playClassSigil(loadout);
     typewriter?.destroy();
     p.textContent = '';
-    typewriter = createTypewriter(p, captionFor(spot.restore.done, loadout), { onChar: playTypewriterTick });
+    typewriter = createTypewriter(p, forClass(spot.restore.done, loadout), { onChar: playTypewriterTick });
     const stamp = document.createElement('span');
     stamp.className = 'dx-room__stamp';
     stamp.textContent = `${CLASSES[loadout].glyph} ${CLASSES[loadout].restored}`;
@@ -247,7 +241,7 @@ export function createWalkRoom(room, { loadout, onAdvance, restored = false, onR
     introEl.appendChild(box);
     el.appendChild(introEl);
 
-    introTypewriter = createTypewriter(p, captionFor(room.intro, loadout), {
+    introTypewriter = createTypewriter(p, forClass(room.intro, loadout), {
       onChar: playTypewriterTick,
     });
 
