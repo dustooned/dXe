@@ -76,7 +76,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let itPopup = null;
   let oscilloscope = null;
   // The speaking character's portrait on this beat (talks while the line draws).
-  let portraitOff = null;
+  let portraitRef = null;
   let portraitDestroy = null;
 
   // Sprite animators persist frame position across beats for the same anim key
@@ -129,7 +129,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     oscilloscope?.destroy();
     oscilloscope = null;
     portraitDestroy?.();
-    portraitOff = portraitDestroy = null;
+    portraitRef = portraitDestroy = null;
     stageEl.innerHTML = '';
     typewriter = null;
 
@@ -192,8 +192,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (beat.portrait) {
       const p = createNpcPortrait(beat.portrait.npc, beat.portrait.accent, beat.portrait.url, { hat: beat.portrait.hat });
       p.el.classList.add('dx-cutscene-portrait');
-      // He's talking while his line draws (his art plays its talk loop).
-      if (beat.speaker) { p.el.classList.add('is-speaking'); portraitOff = () => p.el.classList.remove('is-speaking'); }
+      portraitRef = p;
       portraitDestroy = p.destroy;
       screen.appendChild(p.el);
     }
@@ -237,7 +236,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
       // A beat with a speaker is that character talking: always in quotes.
       const text = inClass(beat.text);
       const said = beat.speaker ? quoteSpeech(text) : text;
-      typewriter = createTypewriter(textEl, said, { onDone: () => { portraitOff?.(); handleBeatReady(); }, onChar: playTypewriterTick });
+      typewriter = createTypewriter(textEl, said, { onDone: handleBeatReady, onChar: playTypewriterTick });
+      // The speaker's mouth moves on their quoted words only.
+      if (portraitRef) typewriter.onSpeech((on) => portraitRef.speak(on));
     } else {
       handleBeatReady();
     }

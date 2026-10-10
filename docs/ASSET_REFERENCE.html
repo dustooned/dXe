@@ -137,10 +137,10 @@ add({ g: 'Characters', n: 'Bob Baiter (speaker)', p: `${P}sprites/spr_bb/`, w: 6
 
 // Character sets (docs/CHARACTER_ART.md). Per NPC: Deborah, Rwanda, Samun, Rick.
 const CH = `${P}characters/<npc>/`;
-add({ g: 'Character sets', n: 'Idle (neutral, listening)', p: `${CH}idle.png`, w: 192, h: 192, kind: 4, fmt: 'GIF or PNG, 1-bit, transparent', px: true, note: 'One per NPC. Everything else falls back to this.' });
-add({ g: 'Character sets', n: 'Talk loop (mouth moving)', p: `${CH}talk/talk_0000.png …`, w: 192, h: 192, frames: 3, kind: 4, fmt: 'GIF, 3 frames at 100 ms', px: true, note: 'Plays while they speak.' });
-add({ g: 'Character sets', n: 'Feeling faces (8 per NPC)', p: `${CH}feel_<emotion>.png`, w: 192, h: 192, kind: 32, fmt: 'GIF or PNG, 1-bit', px: true, note: 'happy, trust, fear, surprise, sadness, disgust, anger, anxiety.' });
-add({ g: 'Character sets', n: 'Reactions (5 per NPC)', p: `${CH}react_<kind>.png`, w: 192, h: 192, kind: 20, fmt: 'GIF or PNG, 1-bit', px: true, note: 'truth, lie, hit (big swing), warm (turn toward you), cold (close up).' });
+add({ g: 'Character sets', n: 'Talk loop (frame 0 is the rest pose)', p: `${CH}talk/talk_0000.png ...`, w: 192, h: 192, frames: 3, kind: 4, fmt: 'GIF, 3 frames at 100 ms', px: true, note: 'Plays ONLY while quoted words draw. Frame 0, held, is the idle face.' });
+add({ g: 'Character sets', n: 'Talk in each feeling (8 per NPC)', p: `${CH}talk_<feeling>/...`, w: 192, h: 192, frames: 3, kind: 8 * 4, fmt: 'GIF, 3 frames at 100 ms', px: true, note: 'happy, trust, fear, surprise, sadness, disgust, anger, anxiety. Falls back to the plain talk loop.' });
+add({ g: 'Character sets', n: 'Wait / anticipation (8 per NPC)', p: `${CH}wait_<feeling>...`, w: 192, h: 192, kind: 8 * 4, fmt: 'GIF or PNG, 1 to 4 frames', px: true, note: "On the player's turn, in their feeling. Plays once and holds the last frame." });
+add({ g: 'Character sets', n: 'Reactions (5 per NPC, played once)', p: `${CH}react_<kind>/...`, w: 192, h: 192, frames: 3, kind: 5 * 4, fmt: 'GIF, 3 to 4 frames', px: true, note: 'A moment before they speak: they take your words. truth, lie, hit (big swing), warm (turn toward you), cold (close up).' });
 add({ g: 'Character sets', n: 'Connect + pushaway', p: `${CH}connect.png, pushaway.png`, w: 192, h: 192, kind: 8, fmt: 'GIF or PNG, 1-bit', px: true, note: 'The stay-in-touch moment, and being pushed away.' });
 add({ g: 'Character sets', n: 'Trauma / confession images (5 per NPC)', p: `${CH}trauma_1.png … trauma_5.png`, w: 240, h: 240, kind: 20, fmt: 'PNG, 1-bit', px: true, note: 'PROPOSED size. One per story beat, shown in silence.' });
 add({ g: 'Character sets', n: 'The Therapist: hats (9 sets)', p: `${CH.replace('<npc>', 'therapist')}<hat>_1…3.png + <hat>_talk/`, w: 192, h: 192, kind: 35, st: 'ok', fmt: 'Palette PNG', px: true, note: 'Done. bare, bunny, derby, fez, jester, old man, pork pie, sombrero, top hat: 3 stills + a talk loop each. Fez_02 missing.' });

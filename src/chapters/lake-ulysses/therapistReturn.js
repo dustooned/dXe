@@ -13,7 +13,7 @@
 // it (chapters/lake-ulysses/index.js). PLACEHOLDER lines for the writer pass.
 import therapist from './content/therapist.json';
 import { ppmFor } from '../../engine/lake.js';
-import { hatFor } from '../../engine/characters.js';
+import { hatFor, hatForContext } from '../../engine/characters.js';
 
 const WET = {
   CLEAN_CUT: 'Your file says you came out of the lake dry. Statistically that\'s rude to everyone else.',
@@ -74,7 +74,7 @@ export function therapistReturnScene(lastRun) {
       ] },
     },
   ].filter(Boolean);
-  // A different hat than last time, the same one all call.
-  const hat = hatFor(Math.floor(Math.random() * 1000));
+  // The hat that fits how the lake went (HAT_RULES), the same one all call.
+  const hat = hatForContext({ kind: 'return', ending: lastRun.endingKey }).hat ?? hatFor(Math.floor(Math.random() * 1000));
   return { type: 'cutscene', id: 'therapist', beats: beats.map((b) => ({ ...b, portrait: { ...b.portrait, hat } })) };
 }

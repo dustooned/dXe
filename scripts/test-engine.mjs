@@ -9,7 +9,7 @@ import { getEndingKey, getEpilogueLine } from '../src/engine/endingEngine.js';
 import { CONTACTS, callFor, voicemailFor, therapistReachable, FOG_WIFI } from '../src/engine/contacts.js';
 import { hazeFor } from '../src/engine/lake.js';
 import { moodFor, withClassMoods, effortCost } from '../src/engine/loadout.js';
-import { registerCharacterArt, characterArt, missingStates, hatFor, THERAPIST_HATS, STATE_NAMES } from '../src/engine/characters.js';
+import { registerCharacterArt, characterArt, restArt, missingStates, hatFor, hatForContext, HAT_RULES, THERAPIST_HATS, STATE_NAMES } from '../src/engine/characters.js';
 import { buildReckoningDeck, resolveReckoningCard } from '../src/engine/reckoning.js';
 
 // A stand-in localStorage for the save checks below.
@@ -234,8 +234,17 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
   const talk = characterArt('THERAPIST', 'talk');
   check('characters: the Therapist has an idle still and a 3-frame talk loop', idle?.kind === 'still' && talk?.kind === 'anim' && talk.frames === 3 && talk.fps === 10);
   check('characters: an undrawn state falls back to idle, an NPC with no art to nothing', characterArt('THERAPIST', 'feel_anger')?.url === idle.url && characterArt('DEBORAH', 'idle') === null);
-  check('characters: a hat swaps his idle and his talk loop', characterArt('THERAPIST', 'idle', { hat: 'fez' }).url.endsWith('fez_1.png') && characterArt('THERAPIST', 'talk', { hat: 'top' }).base.endsWith('top_talk/top_talk_'));
-  check('characters: the standard list has idle, talk, 8 feelings, 5 reactions, connect, pushaway, 5 trauma beats', STATE_NAMES.length === 2 + 8 + 5 + 2 + 5 && missingStates('therapist').length === STATE_NAMES.length - 2 && missingStates('deborah').length === STATE_NAMES.length);
+  check('characters: a hat swaps his idle and his talk loop', characterArt('THERAPIST', 'idle', { hat: 'fez' }).url.endsWith('fez_3.png') && characterArt('THERAPIST', 'talk', { hat: 'top' }).base.endsWith('top_talk/top_talk_'));
+  check('characters: the standard list has idle, talk, 8 talk_ + 8 wait_ feelings, 5 reactions, connect, pushaway, 5 trauma beats', STATE_NAMES.length === 2 + 8 + 8 + 5 + 2 + 5 && missingStates('therapist').length === STATE_NAMES.length - 2 && missingStates('deborah').length === STATE_NAMES.length);
+  const rest = restArt('THERAPIST');
+  check('characters: the rest face is the drawn idle still (mouth shut: neutral_3, never the open-mouth _1), and a hat keeps that rule', rest.kind === 'still' && rest.url.endsWith('neutral_3.png') && restArt('THERAPIST', { hat: 'top' }).url.endsWith('top_3.png') && restArt('DEBORAH') === null);
+  check('characters: pieces say which file they are, so a fallback can be told from the real thing', characterArt('THERAPIST', 'wait_anger').key === 'neutral_3' && characterArt('THERAPIST', 'react_hit').key === 'neutral_3' && talk.key === 'neutral_talk');
+  const mid = { truthDebt: 4, stability: 5, lucidity: 5, trust: 5, lieStreak: 0 };
+  check('hats: every rule uses a real hat, and every hat has a moment', HAT_RULES.every((r) => THERAPIST_HATS.includes(r.hat) && r.why) && THERAPIST_HATS.every((h) => HAT_RULES.some((r) => r.hat === h)));
+  check('hats: voicemail is a siesta, a mask is a jester, a new friend a fez, a dirty lake a detective', hatForContext({ ...mid, kind: 'voicemail' }).hat === 'sombrero' && hatForContext({ ...mid, kind: 'mask' }).hat === 'jester' && hatForContext({ ...mid, kind: 'friend' }).hat === 'fez' && hatForContext({ ...mid, kind: 'call', truthDebt: 7 }).hat === 'pork_pie');
+  check('hats: how you left the lake picks his repeat-playthrough hat', ['CLEAN_CUT', 'FUNCTIONAL_MASK', 'COLLAPSE', 'LIVING_LIE'].map((e) => hatForContext({ kind: 'return', ending: e }).hat).join() === 'top,derby,old_man,pork_pie');
+  check('hats: never the same hat twice in a row, and bare-headed when nothing fits', hatForContext({ ...mid, kind: 'mask', last: 'jester' }).hat !== 'jester' && hatForContext({ ...mid, kind: 'call' }).hat === null);
+  check('hats: low battery is an old man, a fog is a sombrero, low Bars is a bunny, a clean lake in dress', hatForContext({ ...mid, kind: 'call', stability: 1 }).hat === 'old_man' && hatForContext({ ...mid, kind: 'call', lucidity: 2 }).hat === 'sombrero' && hatForContext({ ...mid, kind: 'call', trust: 2 }).hat === 'bunny' && hatForContext({ ...mid, kind: 'call', truthDebt: 1 }).hat === 'top');
   check('characters: hatFor always picks a real hat', [0, 1, 7, 8, 123, -4].every((n) => THERAPIST_HATS.includes(hatFor(n))));
   let missingFiles = [];
   for (const f of fs.readdirSync(dir)) {

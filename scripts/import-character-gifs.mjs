@@ -24,7 +24,7 @@ const MANIFEST = path.join('src', 'chapters', 'lake-ulysses', 'characters', `${n
 
 // Profile_Therapist_Old_Man_Hat_Ani.gif -> old_man_talk
 // Profile_Therapist_Top_Hat02.gif       -> top_2
-// Profile_Deborah_Feel_Anger.gif        -> feel_anger  (a state in engine/characters.js)
+// Profile_Deborah_Wait_Anger.gif        -> wait_anger  (a state in engine/characters.js)
 // Profile_Therapist_Neutral01.gif       -> neutral_1
 // Profile_Therapist_Neutral_Hat03.gif   -> neutral_3   (a mis-named Neutral03)
 function nameFor(file) {

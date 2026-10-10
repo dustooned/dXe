@@ -23,6 +23,7 @@ import { sharpen } from '../engine/itSharpen.js';
 import { createStatusBar } from '../ui/statusBar.js';
 import { CONTACTS, contactsFor, therapistReachable, voicemailFor, callFor } from '../engine/contacts.js';
 import { createNpcPortrait } from '../ui/npcPortrait.js';
+import { characterArt, hatForContext } from '../engine/characters.js';
 import { createFeelzDartboard } from '../ui/feelzDartboard.js';
 import { EMOTIONS, emotionColor, emotionsForClass, getDominantEmotion, withClassMoods } from '../engine/loadout.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
@@ -144,6 +145,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // Set once the player turns toward one of this NPC's bids; warms the
   // portrait for the rest of the encounter (engine/trust.js).
   let turnedTowardThisEncounter = false;
+  // The kind of reaction their face plays when your answer lands (portrait.react).
+  let pendingReact = null;
+  let livePortrait = null;
+  let wasBigFace = false;
   // Answers this encounter that neither met their mood nor turned toward a
   // bid — each pushes the oscilloscope's two lines a little further apart.
   let missesHere = 0;
@@ -451,7 +456,17 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (applyReveal(meters, 'meters')) spotlitHud.push(meters);
     content.appendChild(meters);
 
+    // render() rebuilds the portrait each time: put the old one's animation away.
+    livePortrait?.destroy();
     const portrait = createNpcPortrait(npc.npc, npc.accentColor, npc.portrait);
+    livePortrait = portrait;
+    // While your answer lands and they react, the face is big (it covers the
+    // scope behind it); when the battle UI is yours again it shrinks back, in
+    // steps, to uncover it. Only the change animates, not every redraw.
+    const bigFace = stage === 'say' || stage === 'reaction';
+    portrait.el.classList.add(bigFace ? 'dx-portrait--big' : 'dx-portrait--small');
+    if (bigFace !== wasBigFace) portrait.el.classList.add(bigFace ? 'is-growing' : 'is-shrinking');
+    wasBigFace = bigFace;
     content.appendChild(portrait.el);
     content.appendChild(portrait.nameplate);
     // render() rebuilds the portrait from scratch every call, so syncing here
@@ -459,6 +474,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // including the very first render, where mood is still neutral (0).
     portrait.updateMood(audio.getLeitmotifMood());
     if (turnedTowardThisEncounter) portrait.el.classList.add('is-warm');
+    // Waiting on you in the feeling they're in (a mask shows its shown feeling).
+    portrait.setMood(stage === 'prompt' ? shownMood(currentNode()) : null);
+    // Your answer just landed: they take it a moment before they speak.
+    if (stage === 'reaction' && pendingReact) { portrait.react(pendingReact); pendingReact = null; }
 
     if (stage === 'outro') {
       const line = document.createElement('p');
@@ -618,7 +637,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
               const target = name === 'allmeters' ? statusBar?.el : statusBar?.el.querySelector(`[data-meter="${name}"]`);
               if (target) {
                 spotlight?.destroy();
-                spotlight = createSpotlight(screen, [target, reaction]);
+                spotlight = createSpotlight(screen, [livePortrait?.el, target, reaction]);
               }
             }
           },
@@ -829,7 +848,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // introducing it (her reaction), for as long as that beat lasts.
     if (spotlitHud.length) {
       const words = content.querySelector('.dx-reaction');
-      spotlight = createSpotlight(screen, [...spotlitHud, words]);
+      spotlight = createSpotlight(screen, [livePortrait?.el, ...spotlitHud, words]);
     }
     if (stage === 'prompt' && promptRevealed) spotlightInteractive();
   }
@@ -860,7 +879,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     lake.classList.add('is-revealing');
     audio.playLakeSplash(run.get().truthDebt);
     spotlight?.destroy();
-    spotlight = createSpotlight(screen, [lake, words]);
+    spotlight = createSpotlight(screen, [livePortrait?.el, lake, words]);
   }
 
   // SPOTLIGHT: on a node — before a pick, the wheel (plus her prompt, so
@@ -882,7 +901,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
     if (!targets) return;
     spotlight?.destroy();
-    spotlight = createSpotlight(screen, targets);
+    spotlight = createSpotlight(screen, [livePortrait?.el, ...targets]); // the speaker's face is never in the dark
   }
 
   function handleSwipe(swipeKey) {
@@ -980,6 +999,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
     pendingEdge = edge;
     reactionEmotion = activeEmotion;
+    // How it lands on them, for their face (a big swing, a turn toward you, or
+    // just truth or lie): played once when the reaction stage opens.
+    const swing = Object.values(edge.effects || {}).reduce((sum, v) => sum + Math.abs(v), 0) + Math.abs(edge.debtDelta || 0);
+    pendingReact = swing >= STRONG_HIT_THRESHOLD ? 'hit' : turnedToward ? 'warm' : swipeKey;
     reactionSwipeKey = swipeKey;
     if (edge.playerText) stage = 'say';
     else enterReaction();
@@ -1098,6 +1121,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   // The speaker's picture (or call avatar) glows while their words type.
   function markSpeaking(el, tw) {
+    // The mouth follows quoted speech only (typewriterText.js onSpeech):
+    // narration, directions and pauses leave it on its rest frame.
+    if (el?._portrait && tw?.onSpeech) tw.onSpeech((on) => el._portrait.speak(on));
     if (!el || !tw || tw.isDone()) return;
     el.classList.add('is-speaking');
     const check = () => { if (tw.isDone()) el.classList.remove('is-speaking'); else later(check, 120); };
@@ -1194,6 +1220,29 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // His incoming call: rings (on repeat) until tapped, then his lines one
   // step at a time, then he hangs up. Nothing else moves while it's up.
   // steps: [{ say, target?, label? }] (a plain string is one untargeted step).
+  // A call's picture: their drawn face when they have one (it talks only on
+  // their quoted words, like in the battle), else their letter.
+  function callAvatar(name, { hat = null } = {}) {
+    if (characterArt(name, 'idle', { hat })) {
+      const portrait = createNpcPortrait(name.toUpperCase(), null, null, { hat });
+      portrait.el.classList.add('dx-call__avatar', 'dx-call__avatar--art');
+      return portrait.el;
+    }
+    const el = document.createElement('div');
+    el.className = 'dx-call__avatar';
+    el.textContent = name.charAt(0).toUpperCase();
+    return el;
+  }
+
+  // The Therapist's hat for this call (engine/characters.js HAT_RULES): a dry
+  // visual gag, never mentioned. Remembers the last one so it never repeats.
+  function therapistHat(kind) {
+    const s = run.get();
+    const { hat } = hatForContext({ kind, truthDebt: s.truthDebt, stability: s.stability, lucidity: s.lucidity, trust: s.trust, lieStreak: s.lieStreak, last: s.lastHat });
+    run.set({ lastHat: hat });
+    return hat;
+  }
+
   function placeIncoming(steps) {
     clearStall();
     const said = (Array.isArray(steps) ? steps : [steps]).map((s) => (typeof s === 'string' ? { say: s } : s));
@@ -1230,9 +1279,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     ring();
     const box = document.createElement('div');
     box.className = 'dx-call__box';
-    const avatar = document.createElement('div');
-    avatar.className = 'dx-call__avatar';
-    avatar.textContent = 'T';
+    const avatar = callAvatar('THERAPIST', { hat: therapistHat((coach?.key ?? 'coach').split(':')[0]) });
     const p = document.createElement('p');
     p.className = 'dx-text';
     box.append(avatar, p);
@@ -1251,7 +1298,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       overlay.classList.toggle('is-guiding', !!target);
       if (coach) coach.highlight = ['trace', 'scope', 'needle'].includes(step.target) ? step.target : null;
       if (target && screen) {
-        spot = createSpotlight(screen, [target]);
+        spot = createSpotlight(screen, [livePortrait?.el, target]);
         if (step.label) label = guideLabel(overlay, target, step.label);
         const ov = overlay.getBoundingClientRect();
         const r = target.getBoundingClientRect();
@@ -1537,9 +1584,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       overlay.querySelector('.dx-call__who').textContent = CONTACTS.THERAPIST.name.toUpperCase();
       const box = document.createElement('div');
       box.className = 'dx-call__box';
-      const avatar = document.createElement('div');
-      avatar.className = 'dx-call__avatar';
-      avatar.textContent = CONTACTS.THERAPIST.name.charAt(0);
+      const avatar = callAvatar('THERAPIST'); // the tutorial: bare-headed
       const p = document.createElement('p');
       p.className = 'dx-text dx-call__echo';
       box.append(avatar, p);
@@ -1585,9 +1630,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     later(() => audio.playRingtone('THERAPIST'), ringMs);
     const box = document.createElement('div');
     box.className = 'dx-call__box';
-    const avatar = document.createElement('div');
-    avatar.className = 'dx-call__avatar';
-    avatar.textContent = 'T';
+    const avatar = callAvatar('THERAPIST', { hat: therapistHat('voicemail') });
     const p = document.createElement('p');
     p.className = 'dx-text';
     box.append(avatar, p);
@@ -1637,9 +1680,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     let tw = null;
     const box = document.createElement('div');
     box.className = 'dx-call__box';
-    const avatar = document.createElement('div');
-    avatar.className = 'dx-call__avatar';
-    avatar.textContent = CONTACTS[who].name.charAt(0);
+    const avatar = callAvatar(CONTACTS[who].name, { hat: who === 'THERAPIST' ? therapistHat('call') : null });
     const p = document.createElement('p');
     p.className = 'dx-text';
     box.append(avatar, p);
@@ -1695,6 +1736,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     let box = null;
     let p = null;
     let tw = null;
+    let storyBust = null;
     let beat = 0;
     let busy = true; // a breath is happening: a tap hurries it
     let over = false;
@@ -1734,6 +1776,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
           if (b.action) { busy = true; wait(900, advance); } // held, then the words
         },
       });
+      // Their mouth moves on their quoted words only (the [stage directions] don't).
+      tw.onSpeech((on) => storyBust?.speak(on));
     }
 
     function finish() {
@@ -1780,6 +1824,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
         wait(500, () => {
           overlay.classList.add('is-asking');
           const bust = createNpcPortrait(npc.npc, npc.accentColor, npc.portrait);
+          storyBust = bust;
           bust.el.classList.add('dx-connect__bust');
           const name = document.createElement('p');
           name.className = 'dx-connect__name';
@@ -2283,6 +2328,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   enterNode();
 
   return function unmount() {
+    livePortrait?.destroy();
     unmounted = true;
     opfx?.destroy();
     offPause();

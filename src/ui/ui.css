@@ -1588,3 +1588,33 @@ svg .is-hinted path {
 }
 .is-reduced-effects .dx-swipe-card-wrap.is-flicked .dx-swipe-card,
 .is-reduced-effects .dx-swipe-card-wrap.is-placed .dx-swipe-card { animation: none; }
+
+/* The face grows while your answer lands and they react (it covers the scope
+   behind it), then shrinks back in steps when the battle UI is yours again
+   (dialogScene.js render). Hard steps, like everything else here. */
+.dx-portrait.dx-portrait--big {
+  width: calc(150 * var(--px));
+  height: calc(150 * var(--px));
+  font-size: calc(52 * var(--px));
+}
+.dx-portrait.is-growing { animation: dx-face-grow 0.24s steps(4, end); }
+.dx-portrait.is-shrinking { animation: dx-face-shrink 0.28s steps(4, end); }
+@keyframes dx-face-grow {
+  from { width: calc(96 * var(--px)); height: calc(96 * var(--px)); font-size: calc(32 * var(--px)); }
+}
+@keyframes dx-face-shrink {
+  from { width: calc(150 * var(--px)); height: calc(150 * var(--px)); font-size: calc(52 * var(--px)); }
+}
+.is-reduced-effects .dx-portrait.is-growing,
+.is-reduced-effects .dx-portrait.is-shrinking { animation: none; }
+
+/* The Therapist's (or anyone's) drawn face on a phone call: the call box's
+   64px picture slot, in the call's own color. */
+.dx-portrait.dx-call__avatar--art {
+  --accent: var(--contact, #ffc94d);
+  flex: 0 0 calc(72 * var(--px));
+  width: calc(72 * var(--px));
+  height: calc(72 * var(--px));
+  margin: 0;
+  font-size: calc(24 * var(--px));
+}

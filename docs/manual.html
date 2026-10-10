@@ -1737,6 +1737,8 @@ last page with no opening one.</li>
 <li><strong>Asset reference page (2026-10-10):</strong> <code>docs/ASSET_REFERENCE.html</code>, one self-contained page (also published as an Artifact): every asset drawn to scale with exact sizes, filters, search, per-asset blank PNG templates at the exact pixel size, and CSV and page downloads. The asset list lives in its script (<code>A</code>); update it when sizes change.</li>
 <li><strong>Standard character art (2026-10-10):</strong> <code>engine/characters.js</code> defines the state list every NPC avatar is drawn in (idle, talk loop, 8 feeling faces, 5 reactions, connect, pushaway, 5 trauma beats; 192x192, 1-bit) with fallbacks (state -&gt; idle -&gt; letter avatar). <code>scripts/import-character-gifs.mjs &lt;folder&gt; &lt;npc&gt;</code> turns an artist&#39;s GIFs (<code>Profile_&lt;Npc&gt;_&lt;State&gt;.gif</code>) into palette-PNG stills/frame folders under <code>public/assets/lake-ulysses/characters/&lt;npc&gt;/</code> plus a manifest in <code>src/chapters/lake-ulysses/characters/&lt;npc&gt;.json</code> (auto-registered in the chapter index). <code>createNpcPortrait</code> shows the art and plays the talk loop while the <code>.is-speaking</code> class is on (a MutationObserver, so dialogScene needed no change); <code>setState()</code> is there for feelings and reactions, not wired to gameplay yet. The Therapist is imported (35 pieces from the artist&#39;s Drive folder; originals in <code>art-import/therapist/</code>): bare-headed in the tutorial, a random hat on his repeat-client call (<code>hatFor</code>). Spec and artist checklist: <code>docs/CHARACTER_ART.md</code>; also a Character sets group in ASSET_REFERENCE.html. Open: wiring <code>setState</code> to MOOD / reactions / trauma story beats once the art exists; what the Therapist&#39;s <code>_1/_2/_3</code> poses mean (named generically); <code>Fez_Hat02</code> missing; Deborah and Samun Drive folders were empty.</li>
 <li><strong>IT and SO icons (2026-10-10):</strong> the artist&#39;s <code>DX_IT_Icon.gif</code> and <code>DX_SO_Icon.gif</code> (32x32, in <code>art-import/it-so/</code>) are now <code>spr_it_icon.png</code> and <code>spr_so_icon.png</code>; <code>itPopup.js</code> picks by voice, and the CSS invert for SO is gone because the new SO art is already the inverse. The Drive also has a <code>Chapter Images</code> folder (<code>Deobrah_Chapter_Open.gif</code> 93 KB, <code>Samun_ChapterOpen.gif</code> 159 KB), not imported yet.</li>
+<li><strong>Character animation rules (2026-10-10):</strong> a character&#39;s face is a state machine (<code>ui/npcPortrait.js</code>) on one <code>&lt;img&gt;</code>, played by <code>ui/characterAnimator.js</code> (a clock from <code>performance.now</code>, stopped while paused, every frame its full time, frames preloaded; it stops itself when its picture leaves the page). <strong>Rest</strong> = frame 0 of the talk loop, held. <strong>Speaking</strong> = the talk loop (or <code>talk_&lt;feeling&gt;</code>), only while quoted speech draws: the typewriter now reports it (<code>createTypewriter(...).onSpeech(fn)</code>, from the <code>narr</code> flag: not narration, not <code>( )</code> or <code>[ ]</code>; a <code>{pause}</code> of 150 ms or more shuts the mouth; <code>MOUTH_GRACE_MS</code> 90 bridges the gaps between letters). <code>dialogScene.markSpeaking</code>, cutscene portraits and the trauma story bust all subscribe. <strong>Waiting</strong> = <code>portrait.setMood(feeling)</code> plays <code>wait_&lt;feeling&gt;</code> once and holds (dialog prompt stage, the shown mood, so a mask shows its mask). <strong>Reacting</strong> = <code>portrait.react(&#39;hit&#39;|&#39;warm&#39;|&#39;truth&#39;|&#39;lie&#39;|&#39;cold&#39;)</code> plays <code>react_&lt;kind&gt;</code> once when the reaction stage opens, before they speak (<code>pendingReact</code>: big swing = hit, a bid = warm, else the swipe). Undrawn states fall back, so only the Therapist (rest + talk + hats) shows any of this today. <code>characterArt()</code> returns the <code>key</code> it found, so a real <code>wait_anger</code> can be told from the idle it fell back to. The standard list changed: <code>feel_*</code> became <code>talk_*</code> and <code>wait_*</code> (about 30 pieces per NPC). Verified in the browser with stand-in frames: rest frame, 0 mouth moves during narration, frames flip every 100 ms, reaction frames at 0/104/205 and back to rest at 304 ms, pause freezes the face, destroyed portraits stop their loop. Also fixed: <code>render()</code> rebuilt the dialog portrait without destroying the old one.</li>
+<li><strong>Therapist on every call, and his hats (2026-10-10):</strong> <code>dialogScene.callAvatar(name, { hat })</code> puts a character&#39;s drawn face (talking only on quoted words, shut mouth at rest) in every phone call&#39;s picture slot (coach calls, your dock call to him, his voicemail, the tutorial echo call, contact calls; a letter when they have no art). <code>therapistHat(kind)</code> picks his hat from <code>HAT_RULES</code> (engine/characters.js; <code>hatForContext</code>, first match wins, never repeats <code>run.lastHat</code>, bare-headed if nothing fits): voicemail sombrero, fog sombrero, mask or lie streak jester, dirty lake pork pie, low battery old man, low Bars bunny, new friend fez, first battle derby, clean lake top; the repeat-playthrough call uses how you left the lake. A visual gag only, never mentioned. Table in <code>docs/CHARACTER_ART.md</code>. Also: rest face is now the shut-mouth idle (his <code>_3</code>; <code>_1</code> is the open mouth), the speaker is never dimmed by the tutorial spotlight, and the face grows to 150 px (stepped) while your answer lands and shrinks back when the battle UI returns (verified: 103, 117, 132, 146, 161 px at that zoom, then back).</li>
 <li><strong>Repeat client (2026-10-10):</strong> the ending saves <code>save.lastRun</code> (class, ending, debt, baptism confessed/doubled from <code>run.reckoningChoices</code>). With a lastRun, <code>therapistReturn.js</code> (a cutscene) takes the &#39;therapist&#39; slot and the original tutorial follows as &#39;therapist-tutorial&#39;: he reads the file back (how wet you came out, the ppm, the baptism, same or new class), says you&#39;re doing it again, then asks two things: check in on you? (sets TIPS) and run the exercise again? (yes: the tutorial plays; no: <code>jumpTo</code> walk-home, after the class homework). <strong>TIPS</strong> (Settings, <code>guideHighlights</code>) now controls all of his tip calls in battles plus the lesson highlights; calls you make yourself are unaffected. Verified both paths in the browser.</li>
 <li><strong>Therapist is early-game only</strong> (<code>dialogScene.js</code> nodeCoach): the new-friend call is one call per run (key <code>friend</code>, was <code>friend:&lt;who&gt;</code>; old keys still count) and only in the first three encounters, so he never calls during Rick. A first friend who arrives later pulses quietly in the dock for that card instead. His other calls are the first battle (scope) and the first mask (Samun). Verified: Rick with a fresh contact gets no call; Rwanda with Deborah in the phone does.</li>
 <li><strong>Rooms</strong> (<code>minigames/*.js</code> via <code>engine/walkSequencer.js</code> <code>mountNpcWalk</code>; <code>ui/walkRoom.js</code>): each object names an opener; it glows in that opener&#39;s first feeling for your class, its close-up is washed in it with the NPC&#39;s class glyph in the corner, and each class&#39;s caption is its own perception with that feeling&#39;s word colored (tests check the color matches). One object per class can be restored: once all three are opened, yours calls in your class color; open it again for a hint in your class&#39;s voice, tap the picture to do it (class sigil sound, done line, stamp). That writes <code>run.secrets[npc]</code>.</li>
@@ -3113,16 +3115,50 @@ close-up (<strong>780 × 1440</strong>, see Full screen).</p>
     </article>
 <article class="doc" id="doc-character_art" data-title="Character Art (the standard set)" data-file="CHARACTER_ART.md" hidden>
       <p class="doc-source">Start here · <code>docs/CHARACTER_ART.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-character_art--the-standard-per-npc">The standard (per NPC)</a></li><li><a href="#doc-character_art--the-therapist-done">The Therapist (done)</a></li><li><a href="#doc-character_art--sending-art">Sending art</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-character_art--how-characters-move-the-rules">How characters move (the rules)</a></li><li><a href="#doc-character_art--the-standard-per-npc">The standard (per NPC)</a></li><li><a href="#doc-character_art--the-therapist-done">The Therapist (done)</a></li><li><a href="#doc-character_art--the-hat-gags">The hat gags</a></li><li><a href="#doc-character_art--sending-art">Sending art</a></li></ul></nav>
       <h1 id="doc-character_art--character-art-the-standard-set"><a class="anchor" href="#doc-character_art--character-art-the-standard-set" aria-label="Link to this section">#</a>Character Art — the standard set</h1>
 <p>How every NPC avatar is drawn, named and played. One standard, so a new
 character is just a new set of files. The game side is
 <code>src/engine/characters.js</code>; the converter is <code>scripts/import-character-gifs.mjs</code>.</p>
+<h2 id="doc-character_art--how-characters-move-the-rules"><a class="anchor" href="#doc-character_art--how-characters-move-the-rules" aria-label="Link to this section">#</a>How characters move (the rules)</h2>
+<p>Calm by default. The mouth moves <strong>only</strong> while their quoted words are being
+typed.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Moment</th>
+<th align="left">What you see</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Nothing happening, narration, directions, a pause</td>
+<td align="left"><strong>Rest:</strong> the first frame of the talk loop, held still. Never animates.</td>
+</tr>
+<tr>
+<td align="left">Their quoted words are drawing</td>
+<td align="left"><strong>Talk loop</strong>, from frame 0, 100 ms a frame. Closes about 90 ms after the last quoted letter, at once on a pause.</td>
+</tr>
+<tr>
+<td align="left">Your turn to answer</td>
+<td align="left"><strong>Wait:</strong> their <code>wait_&lt;feeling&gt;</code> anticipation plays once and holds.</td>
+</tr>
+<tr>
+<td align="left">Your answer lands</td>
+<td align="left"><strong>React:</strong> <code>react_&lt;kind&gt;</code> plays once, a moment before they speak, then back to rest.</td>
+</tr>
+<tr>
+<td align="left">The game is paused</td>
+<td align="left">Everything freezes where it is.</td>
+</tr>
+</tbody></table>
+<p>Every frame gets its full time (100 ms unless set otherwise). Narration and
+<code>[stage directions]</code> never move the mouth.</p>
 <h2 id="doc-character_art--the-standard-per-npc"><a class="anchor" href="#doc-character_art--the-standard-per-npc" aria-label="Link to this section">#</a>The standard (per NPC)</h2>
-<p>All <strong>192 × 192</strong>, 1-bit look (white and black pixel art), transparent
-background, GIF or PNG. A state is a <strong>still</strong> (1 frame) or a <strong>loop</strong>
-(several frames, 10 fps = 100 ms a frame). Anything not drawn yet falls back
-to <em>idle</em>, so a character with only idle and talk already works everywhere.</p>
+<p>All <strong>192 x 192</strong>, 1-bit look (white and black pixel art), transparent
+background, GIF or PNG. A state is a <strong>still</strong> (1 frame) or a <strong>loop / one-shot</strong>
+(several frames, 10 fps = 100 ms a frame). Anything not drawn yet falls back,
+so a character with only a talk loop already works everywhere (idle = frame 0
+of the loop).</p>
 <table>
 <thead>
 <tr>
@@ -3134,50 +3170,56 @@ to <em>idle</em>, so a character with only idle and talk already works everywher
 </thead>
 <tbody><tr>
 <td align="left"><code>idle</code></td>
-<td align="left">neutral, listening</td>
+<td align="left">optional: a neutral still if it differs from talk frame 0</td>
 <td align="left">1</td>
-<td align="left">1</td>
+<td align="left">0-1</td>
 </tr>
 <tr>
 <td align="left"><code>talk</code></td>
-<td align="left">mouth moving, plays while they speak</td>
+<td align="left">mouth moving; <strong>frame 0 is the rest pose</strong></td>
 <td align="left">3 loop</td>
 <td align="left">1</td>
 </tr>
 <tr>
-<td align="left"><code>feel_happy</code> <code>feel_trust</code> <code>feel_fear</code> <code>feel_surprise</code> <code>feel_sadness</code> <code>feel_disgust</code> <code>feel_anger</code> <code>feel_anxiety</code></td>
-<td align="left">how they feel right now (their MOOD): the face the oscilloscope color goes with</td>
-<td align="left">1 each</td>
+<td align="left"><code>talk_happy</code> <code>talk_trust</code> <code>talk_fear</code> <code>talk_surprise</code> <code>talk_sadness</code> <code>talk_disgust</code> <code>talk_anger</code> <code>talk_anxiety</code></td>
+<td align="left">speaking in each feeling (falls back to <code>talk</code>)</td>
+<td align="left">3 loop each</td>
+<td align="left">8</td>
+</tr>
+<tr>
+<td align="left"><code>wait_happy</code> ... <code>wait_anxiety</code></td>
+<td align="left">on your turn, in their feeling: a short anticipation that plays once and holds its last frame (a 1-frame still is just held)</td>
+<td align="left">1-4 each</td>
 <td align="left">8</td>
 </tr>
 <tr>
 <td align="left"><code>react_truth</code></td>
 <td align="left">a true answer lands</td>
-<td align="left">1</td>
+<td align="left">3-4, once</td>
 <td align="left">1</td>
 </tr>
 <tr>
 <td align="left"><code>react_lie</code></td>
 <td align="left">a comforting lie lands</td>
-<td align="left">1</td>
+<td align="left">3-4, once</td>
 <td align="left">1</td>
 </tr>
 <tr>
 <td align="left"><code>react_hit</code></td>
-<td align="left">a big swing (strong hit)</td>
-<td align="left">1</td>
+<td align="left">a big swing: they take your words</td>
+<td align="left">3-4, once</td>
 <td align="left">1</td>
 </tr>
 <tr>
 <td align="left"><code>react_warm</code></td>
 <td align="left">they turn toward you (a bid)</td>
-<td align="left">1</td>
+<td align="left">3-4, once</td>
 <td align="left">1</td>
 </tr>
 <tr>
 <td align="left"><code>react_cold</code></td>
 <td align="left">they close up</td>
-<td align="left">1</td>
+<td align="left">3-4, once</td>
 <td align="left">1</td>
 </tr>
 <tr>
@@ -3193,18 +3235,18 @@ to <em>idle</em>, so a character with only idle and talk already works everywher
 <td align="left">1</td>
 </tr>
 <tr>
-<td align="left"><code>trauma_1</code> … <code>trauma_5</code></td>
+<td align="left"><code>trauma_1</code> ... <code>trauma_5</code></td>
 <td align="left">the confession: one image per story beat, shown in silence</td>
 <td align="left">1 each</td>
 <td align="left">5</td>
 </tr>
 </tbody></table>
-<p>That is <strong>24 images per NPC</strong>, ×4 NPCs (Deborah, Rwanda, Samun, Rick) = 96.
-The Therapist is a voice first, so his set is optional beyond idle and talk
+<p>That is <strong>about 30 pieces per NPC</strong>, x4 NPCs (Deborah, Rwanda, Samun, Rick).
+The Therapist is a voice first, so his set is optional beyond rest and talk
 (he has a lot already, below).</p>
-<p><strong>Trauma / confession images (proposed size):</strong> 240 × 240, true pixels (the
-game scales it up crisp, like the chapter plates). They are the bigger,
-quieter picture under each story line. Say if you&#39;d rather they match 192.</p>
+<p><strong>Trauma / confession images (proposed size):</strong> 240 x 240, true pixels (the
+game scales it up crisp, like the chapter plates). Say if you would rather they
+match 192.</p>
 <h2 id="doc-character_art--the-therapist-done"><a class="anchor" href="#doc-character_art--the-therapist-done" aria-label="Link to this section">#</a>The Therapist (done)</h2>
 <p>He wears a different hat on each call. Per hat: three stills (<code>_1</code>, <code>_2</code>,
 <code>_3</code>) and a talk loop. Hats: bunny, derby, fez, jester, old man, pork pie,
@@ -3213,9 +3255,74 @@ the tutorial; a random hat on his &quot;you again&quot; call on a repeat playthr
 <p>Still to fix: <code>Fez_Hat02</code> is missing, and <code>Neutral_Hat03</code> is named like a hat
 (it&#39;s read as <code>neutral_3</code>). <code>_1</code>, <code>_2</code>, <code>_3</code> are three poses; tell me what
 each is and I&#39;ll name them (e.g. <code>_2</code> = eyes closed).</p>
+<h2 id="doc-character_art--the-hat-gags"><a class="anchor" href="#doc-character_art--the-hat-gags" aria-label="Link to this section">#</a>The hat gags</h2>
+<p>His hats are a visual gag on his dry, neutral voice. He never mentions the hat.
+It is always a little too appropriate. The game picks it from the moment
+(<code>HAT_RULES</code> in <code>src/engine/characters.js</code>, first match wins, never the same
+hat twice in a row, bare-headed when nothing fits, which is the baseline):</p>
+<table>
+<thead>
+<tr>
+<th align="left">Hat</th>
+<th align="left">When</th>
+<th align="left">The joke</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">sombrero</td>
+<td align="left">his voicemail</td>
+<td align="left">out of office, taking a siesta</td>
+</tr>
+<tr>
+<td align="left">sombrero</td>
+<td align="left">your Wi-Fi is fogged</td>
+<td align="left">a sun-struck siesta in the haze</td>
+</tr>
+<tr>
+<td align="left">jester</td>
+<td align="left">a masked feeling, or a lie streak (2+)</td>
+<td align="left">he is not laughing, the hat is</td>
+</tr>
+<tr>
+<td align="left">pork pie</td>
+<td align="left">the lake is dirty (debt 6+)</td>
+<td align="left">a noir detective on the case</td>
+</tr>
+<tr>
+<td align="left">old man</td>
+<td align="left">your battery is nearly empty (2 or less)</td>
+<td align="left">he is tired on your behalf</td>
+</tr>
+<tr>
+<td align="left">bunny</td>
+<td align="left">your Bars are low (3 or less)</td>
+<td align="left">he is gentle about it, which is funnier</td>
+</tr>
+<tr>
+<td align="left">fez</td>
+<td align="left">a new friend joins your phone</td>
+<td align="left">welcome to the club</td>
+</tr>
+<tr>
+<td align="left">derby</td>
+<td align="left">the first real battle</td>
+<td align="left">he is being professional about it</td>
+</tr>
+<tr>
+<td align="left">top hat</td>
+<td align="left">the lake is clean (debt 2 or less)</td>
+<td align="left">dressed for the occasion</td>
+</tr>
+</tbody></table>
+<p>On his &quot;you again&quot; call, the hat is how you left the lake: clean = top hat,
+damp = derby, soaked = old man, &quot;a water-quality advisory&quot; = pork pie.</p>
+<p>The tutorial and the first-ever call are bare-headed (the baseline), and his
+face is on every phone call: coach calls, your calls to him, his voicemail, and
+the repeat-playthrough call. Add a hat rule by adding a line to <code>HAT_RULES</code>
+(and a test).</p>
 <h2 id="doc-character_art--sending-art"><a class="anchor" href="#doc-character_art--sending-art" aria-label="Link to this section">#</a>Sending art</h2>
 <ol>
-<li>Name each GIF <code>Profile_&lt;Npc&gt;_&lt;State&gt;.gif</code>, e.g. <code>Profile_Deborah_Feel_Anger.gif</code>,
+<li>Name each GIF <code>Profile_&lt;Npc&gt;_&lt;State&gt;.gif</code>, e.g. <code>Profile_Deborah_Wait_Anger.gif</code>,
 <code>Profile_Deborah_React_Lie.gif</code>, <code>Profile_Deborah_Trauma_3.gif</code>. The talk loop is
 <code>Profile_Deborah_Talk.gif</code> (or <code>Profile_Deborah_Ani.gif</code>).</li>
 <li>Put them in a folder, then run:

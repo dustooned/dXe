@@ -190,6 +190,8 @@ const initialRunState = {
   // Each baptism card's answer, in order ('confess' | 'down'), for the
   // repeat client's file (endingScene.js saves it as save.lastRun).
   reckoningChoices: [],
+  // The hat the Therapist wore on his last call (engine/characters.js HAT_RULES).
+  lastHat: null,
   // A player who has finished this chapter before: the Therapist reads last
   // run's file and asks whether to check in (TIPS) and rerun the tutorial.
   repeat: false,

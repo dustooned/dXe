@@ -78,6 +78,12 @@ function markNarration(segments, mode) {
   return segments;
 }
 
+// Which characters of this text are quoted speech (a mouth moves for these)
+// and which are narration. Used by tests; the typewriter does the same live.
+export function speechFlags(text, narration = 'auto') {
+  return markNarration(parseSegments(text), narration).filter((s) => s.type === 'char').map((s) => ({ char: s.char, speech: !s.narr }));
+}
+
 export function parseSegments(raw) {
   const segments = [];
   const speedStack = ['normal'];
@@ -206,6 +212,17 @@ export function createTypewriter(container, text, { onDone, onChar, onMark, onPa
   const startRevealed = revealedArg || speed === 0;
   const segments = markNarration(parseSegments(text), narration);
   const pages = onePage ? [segments] : paginate(segments);
+  // Is quoted speech being drawn right now? (Narration, stage directions and
+  // the gaps of a {pause} are not.) A character's mouth follows this, and only
+  // this: ui/npcPortrait.js speak(). Subscribers are told the current state at
+  // once, so one that attaches after the first character still starts right.
+  let speaking = false;
+  const speechListeners = new Set();
+  const setSpeech = (on) => {
+    if (on === speaking) return;
+    speaking = on;
+    speechListeners.forEach((fn) => fn(on));
+  };
   let pageIndex = revealedArg ? pages.length - 1 : 0;
   let page = null;
 
@@ -230,6 +247,7 @@ export function createTypewriter(container, text, { onDone, onChar, onMark, onPa
     setTimeout(fireMarks, 0);
     page = drawPage(container, pages[pageIndex] ?? [], {
       onChar,
+      onSpeech: setSpeech,
       onCue: (name) => onMark?.(name),
       startRevealed,
       speed,
@@ -263,7 +281,9 @@ export function createTypewriter(container, text, { onDone, onChar, onMark, onPa
     // True while characters are still revealing (a tap now cuts the line
     // short), false when a page is fully shown (a tap only turns the page).
     isDrawing: () => !page.isDone(),
-    destroy: () => page.destroy(),
+    speaking: () => speaking,
+    onSpeech(fn) { speechListeners.add(fn); fn(speaking); return () => speechListeners.delete(fn); },
+    destroy: () => { page.destroy(); setSpeech(false); speechListeners.clear(); },
   };
 }
 
@@ -271,8 +291,10 @@ export function createTypewriter(container, text, { onDone, onChar, onMark, onPa
 // Cues still pending when a page is revealed all at once fire in a quick
 // run instead of together, so each one still lands.
 const CUE_STAGGER_MS = 260;
+// A {pause} at least this long shuts the speaker's mouth.
+const PAUSE_CLOSES_MOUTH_MS = 150;
 
-function drawPage(container, segments, { onDone, onChar, onCue, startRevealed, notifyDone = false, moreAfter, speed = 1 }) {
+function drawPage(container, segments, { onDone, onChar, onSpeech, onCue, startRevealed, notifyDone = false, moreAfter, speed = 1 }) {
   const firedCues = new Set();
   function fireCue(seg) {
     if (firedCues.has(seg)) return;
@@ -343,6 +365,7 @@ function drawPage(container, segments, { onDone, onChar, onCue, startRevealed, n
     done = true;
     more.hidden = false;
     flushCues();
+    onSpeech?.(false);
     onDone?.();
   }
 
@@ -357,12 +380,16 @@ function drawPage(container, segments, { onDone, onChar, onCue, startRevealed, n
     if (seg.type === 'char') {
       charSpans[charIndex]?.classList.add('is-visible');
       onChar?.();
+      // Quoted speech moves the mouth; narration, directions and brackets don't.
+      onSpeech?.(!seg.narr);
       charIndex += 1;
     } else if (seg.type === 'cue') {
       fireCue(seg);
     } else if (seg.type === 'sfx') {
       playSfx(seg.name);
     }
+    // A real beat of silence ({pause:N}) closes the mouth.
+    if (seg.type !== 'char' && seg.delayMs >= PAUSE_CLOSES_MOUTH_MS) onSpeech?.(false);
     timer = setTimeout(step, seg.delayMs * speed);
   }
 
@@ -380,6 +407,6 @@ function drawPage(container, segments, { onDone, onChar, onCue, startRevealed, n
   return {
     finish: finishNow,
     isDone: () => done,
-    destroy: () => clearTimeout(timer),
+    destroy: () => { clearTimeout(timer); onSpeech?.(false); },
   };
 }
