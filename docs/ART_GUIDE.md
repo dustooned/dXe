@@ -3,6 +3,8 @@
 **Just need sizes?** [`ASSET_SIZES.md`](ASSET_SIZES.md) is the one-page quick
 reference (every asset, the size to draw it at, where it goes).
 
+**Battle faces (character poses):** [`BATTLE_ART.pdf`](BATTLE_ART.pdf), built from the game's script by `npm run battle-art`.
+
 The one page for artists (and for us): every image the game uses or still
 needs, the size to draw it at, how it's shown, the file format, and which
 template to start from. Templates live in [`art-templates/`](../art-templates/)

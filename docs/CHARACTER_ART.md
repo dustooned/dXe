@@ -4,6 +4,11 @@ How every NPC avatar is drawn, named and played. One standard, so a new
 character is just a new set of files. The game side is
 `src/engine/characters.js`; the converter is `scripts/import-character-gifs.mjs`.
 
+> **For the artists:** `docs/BATTLE_ART.pdf` is the printable brief: this
+> standard, cut down to the feelings each NPC actually shows in a battle, with
+> the exact file names and a status. `npm run battle-art` rebuilds it from the
+> game's own script and art, so it never goes stale.
+
 ## How characters move (the rules)
 
 Calm by default. The mouth moves **only** while their quoted words are being
@@ -22,8 +27,8 @@ Every frame gets its full time (100 ms unless set otherwise). Narration and
 
 ## The standard (per NPC)
 
-All **192 x 192**, 1-bit look (white and black pixel art), transparent
-background, GIF or PNG. A state is a **still** (1 frame) or a **loop / one-shot**
+All **192 x 192**, 1-bit look (black pixel art on an opaque **white**
+background, like the Therapist's, Deborah's and Samun's files), GIF or PNG. A state is a **still** (1 frame) or a **loop / one-shot**
 (several frames, 10 fps = 100 ms a frame). Anything not drawn yet falls back,
 so a character with only a talk loop already works everywhere (idle = frame 0
 of the loop).

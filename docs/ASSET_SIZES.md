@@ -3,6 +3,8 @@
 Every image the game takes, with the size to draw it at and where it goes.
 **Visual version:** open [`ASSET_REFERENCE.html`](ASSET_REFERENCE.html) in a browser for every asset drawn to scale, with blank PNG templates at the exact size and a CSV checklist (no zip needed).
 
+**Character poses (battle faces):** [`BATTLE_ART.pdf`](BATTLE_ART.pdf) is the printable brief for the artists: every pose per NPC, the exact file names, and what is drawn so far (`npm run battle-art` rebuilds it).
+
 For templates, status and the reasons behind each size, see
 [`ART_GUIDE.md`](ART_GUIDE.md).
 
