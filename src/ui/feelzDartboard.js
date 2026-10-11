@@ -82,12 +82,14 @@ function isOverEl(el, x, y) {
   return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
 }
 
+// `onUse` (optional): called the moment a wedge is touched, before anything is
+// picked (dialogScene.js sends the NPC's face back while you reach for a feeling).
 // `fresh` (optional): a feeling just unlocked this run — its slice lights up
 // with a glow the first time the wheel shows it (engine/unlocks.js).
 // `dormant`: shown but asleep (dim, not pickable) — the Therapist's intake read
 // lights the class's slices one at a time with light(), echoing the FEELZ
 // profile screen, before the wheel wakes for the first pick.
-export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dropTarget, onSelect, selected, harmonicFunction = 'tonic', dormant = false, lit = [], exhausted = null }) {
+export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dropTarget, onSelect, onUse, selected, harmonicFunction = 'tonic', dormant = false, lit = [], exhausted = null }) {
   const activeEmotions = new Set([...(CLASSES[loadout]?.emotions ?? []), ...unlocked]);
   // Same order engine/loadout.js's emotionsForClass() returns (Set preserves
   // insertion order) — has to match dialogScene.js's own ordering exactly,
@@ -192,6 +194,7 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
     });
 
     g.addEventListener('pointerdown', (e) => {
+      onUse?.(emotion); // any touch of the wheel (a pick, a drag, or just listening)
       dragging = true;
       startX = e.clientX;
       startY = e.clientY;

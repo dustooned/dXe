@@ -463,7 +463,7 @@
       "id": "rick_04",
       "npc": "RICK",
       "location": 5,
-      "prompt": "(He rolls his sleeve back up, slow, like it costs him something now.) \"Guys who try to walk {color:Fear}away{/color} from this patch don't walk away clean. Never have.\"",
+      "prompt": "(He pushes his sleeve up, slow, like it costs him something now.) \"Guys who try to walk {color:Fear}away{/color} from this patch don't walk away clean. Never have.\"",
       "swipes": {
         "truth": {
           "playerText": "So who's stopping you — them, or you?",
@@ -520,15 +520,15 @@
   },
   "npcClass": "Guns",
   "connect": {
-    "Guns": "He squares up, then doesn't. \"Takes one to know one, huh.\" He rolls his sleeve down over the patch. \"Nobody's ever seen me back down. Keep it that way.\"",
+    "Guns": "He squares up, then doesn't. \"Takes one to know one, huh.\" His hands open at his sides. \"Nobody's ever seen me back down. Keep it that way.\"",
     "Bible": "\"My old man quoted Leviticus at me till the day I left.\" His jaw works. \"You're the first churchy type who didn't make me feel like the verse.\"",
     "Crystals": "He looks at you a long time. \"There was a guy. Before the patch.\" He doesn't say more. He doesn't have to. He lets you see it."
   },
   "story": [
-    "[He rolls the sleeve all the way up. Under the patch, older ink, scarred over.] \"Sixteen. My old man found me with a boy.\"",
+    "[He turns his arm over. Under the patch, older ink, scarred over.] \"Sixteen. My old man found me with a boy.\"",
     "\"Didn't hit me. Worse. Drove me straight to the lake. To Gabriel.\"",
     "\"He walked me in, hand on my chest. Said he'd wash it out of me. Held me under till I quit fighting. When I came up, they were singing.\"",
-    "\"I joined the club that summer. Figured you can't wash off skin. So I made sure mine couldn't be.\"",
+    "\"I joined the club that summer. Nobody in it ever asked about a boy. Nobody lays a hand on me unless I say so.\"",
     "[He looks out toward the water.] \"He's still down there every Sunday. You go near that lake, you don't let him put his hand on you.\""
   ],
   "contactAsk": {

@@ -20,10 +20,21 @@ export function mount(stageEl, scene, context) {
   screen.innerHTML = '<div class="dx-minigame-spinner"></div>';
   stageEl.appendChild(screen);
 
+  // The import can fail (offline, or a page left open across a new deploy whose
+  // old chunk is gone). A spinner that never ends strands the player, so say so.
+  // A browser remembers a failed import, so trying again means reloading the
+  // page, and the autosave (shell/save.js, written as this scene started) puts
+  // them right back in this room.
+  // (Two-argument then: only a failed import lands here. A bug inside the
+  // module's own mount still surfaces as the error it is.)
   scene.load().then((mod) => {
     if (cancelled) return;
     stageEl.innerHTML = '';
     unmountLoaded = mod.mount(stageEl, scene, context);
+  }, () => {
+    if (cancelled) return;
+    screen.innerHTML = '<p class="dx-text">The room did not load.</p><p class="dx-text dx-tap-hint">(tap to reload. Your progress is saved.)</p>';
+    screen.addEventListener('click', () => location.reload(), { once: true });
   });
 
   return function unmount() {

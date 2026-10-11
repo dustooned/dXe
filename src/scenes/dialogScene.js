@@ -151,7 +151,23 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // The Therapist's hat in his tutorial (engine/characters.js TUTORIAL_HATS): bare to start.
   let tutorialHat = null;
   const putOnHat = (hat) => { if (hat === undefined) return; tutorialHat = hat; livePortrait?.setHat(hat); };
-  let wasBigFace = false;
+  // Their face is close while they speak and drops back while you choose: it
+  // reads as you stepping away to think. `shownBig` is what is on screen;
+  // `choosing` is true from your first touch of the wheel until they speak again.
+  let shownBig = true;
+  let choosing = false;
+  const faceWanted = () => {
+    if (stage === 'say') return false;      // your answer is on screen: they wait, at a distance
+    if (stage === 'reaction') return true;  // they answer you: close
+    return !choosing;                       // their prompt, or a line of his: close until you reach for a feeling
+  };
+  // Send the live face back at once (the wheel was just touched; no redraw).
+  function faceStepsBack() {
+    choosing = true;
+    if (!shownBig) return;
+    shownBig = false;
+    livePortrait?.el.classList.remove('dx-portrait--big');
+  }
   // Answers this encounter that neither met their mood nor turned toward a
   // bid — each pushes the oscilloscope's two lines a little further apart.
   let missesHere = 0;
@@ -174,6 +190,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // This NPC just crossed into trusting the player: their connection moment
   // plays after the reaction that tipped it (see showConnection).
   let pendingConnect = false;
+  let connectionShown = false;
   // Pace pressure (engine/itPressure.js): the stall clock for the current
   // card, when the card appeared, and the rushing streaks.
   let stallTimers = [];
@@ -303,6 +320,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   function enterNode() {
     beatIndex++;
+    choosing = false;
     activeEmotion = null;
     quietPulse = null;
     activeEmotionColor = null;
@@ -470,13 +488,21 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
     const portrait = createNpcPortrait(npc.npc, npc.accentColor, npc.portrait, { hat: npc.reveal ? tutorialHat : null });
     livePortrait = portrait;
-    // While your answer lands and they react, the face is big (it covers the
-    // scope behind it); when the battle UI is yours again it shrinks back, in
-    // steps, to uncover it. Only the change animates, not every redraw.
-    const bigFace = stage === 'say' || stage === 'reaction';
-    portrait.el.classList.add(bigFace ? 'dx-portrait--big' : 'dx-portrait--small');
-    if (bigFace !== wasBigFace) portrait.el.classList.add(bigFace ? 'is-growing' : 'is-shrinking');
-    wasBigFace = bigFace;
+    // Close while they speak, back while you choose (faceWanted). A redraw
+    // rebuilds the face, so it starts in the state the last one left and, if
+    // that has to change, eases there once it is on screen (a CSS transition
+    // on `scale`: the face never changes the layout, so nothing moves under
+    // your finger).
+    const wantBig = faceWanted();
+    portrait.el.classList.toggle('dx-portrait--big', shownBig);
+    if (wantBig !== shownBig) {
+      requestAnimationFrame(() => {
+        if (livePortrait !== portrait) return; // redrawn again already
+        void portrait.el.offsetWidth;          // settle the start state first
+        portrait.el.classList.toggle('dx-portrait--big', wantBig);
+      });
+    }
+    shownBig = wantBig;
     content.appendChild(portrait.el);
     content.appendChild(portrait.nameplate);
     // render() rebuilds the portrait from scratch every call, so syncing here
@@ -541,7 +567,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
           unlocked: run.get().unlocked,
           selected: activeEmotion,
           harmonicFunction: 'tonic',
+          onUse: faceStepsBack,
           onSelect: (emotion) => {
+            choosing = true;
             activeEmotion = emotion;
             trial.pickedAt = performance.now();
             // want:miss is done by any feeling but his; want:match by his.
@@ -727,7 +755,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
         // visible reads as broken, not as restraint. (`source` is kept in
         // the callback signature in case a future pass wants to bring back
         // a lighter tap-only treatment; it isn't used for that today.)
+        onUse: faceStepsBack,
         onSelect: (emotion, _source) => {
+          choosing = true;
           freshFeeling = null;
           // Touching and switching on the wheel are free. A feeling your class
           // isn't used to costs battery only when you commit to it (the swipe:
@@ -966,7 +996,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (synced || turnedToward) {
       const wasTrusted = isTrusted(run.get().bonds?.[npc.npc]);
       run.set({ bonds: recordTrust(run.get().bonds ?? {}, npc.npc, { synced, turnedToward }) });
-      if (!wasTrusted && isTrusted(run.get().bonds[npc.npc]) && npc.connect) pendingConnect = true;
+      // Once per encounter: being caught contradicting yourself can cost a sync, and
+      // earning it back must not play their story a second time.
+      if (!wasTrusted && isTrusted(run.get().bonds[npc.npc]) && npc.connect && !connectionShown) pendingConnect = true;
     }
     if (turnedToward) turnedTowardThisEncounter = true;
     if (!synced && !turnedToward) missesHere += 1;
@@ -1198,7 +1230,13 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const above = r.top - h.top > 70;
     label.classList.add(above ? 'is-above' : 'is-below');
     const center = r.left - h.left + r.width / 2;
-    label.style.left = `${Math.max(8, Math.min(h.width - 8, center))}px`;
+    label.style.left = `${center}px`;
+    // The whole label stays on screen (a target near a side would push half of
+    // it out), and the arrow slides along it to keep pointing at the target.
+    const half = label.offsetWidth / 2;
+    const left = Math.max(half + 8, Math.min(h.width - half - 8, center));
+    label.style.left = `${left}px`;
+    label.style.setProperty('--arrow-shift', `${center - left}px`);
     if (above) label.style.bottom = `${h.bottom - r.top + 8}px`;
     else label.style.top = `${r.bottom - h.top + 8}px`;
     return label;
@@ -1731,6 +1769,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // and moves to the next beat; it never skips a breath. Bracketed stage
   // directions stand alone first and turn themselves.
   function showConnection(onDone) {
+    connectionShown = true;
     const loadout = run.get().loadout;
     const text = npc.connect[loadout] ?? Object.values(npc.connect)[0];
     const story = npc.story ?? [];
@@ -2309,6 +2348,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
     outroBeat = beat;
     stage = 'outro';
+    choosing = false;
     render();
   }
 

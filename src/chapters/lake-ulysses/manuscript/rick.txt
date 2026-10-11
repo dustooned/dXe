@@ -9,15 +9,15 @@ CLASS: Guns
 # the real one. The masks drop on questions 3 and 4.
 
 # The connection moment: played when this NPC first trusts you.
-CONNECT [Guns]: He squares up, then doesn't. "Takes one to know one, huh." He rolls his sleeve down over the patch. "Nobody's ever seen me back down. Keep it that way."
+CONNECT [Guns]: He squares up, then doesn't. "Takes one to know one, huh." His hands open at his sides. "Nobody's ever seen me back down. Keep it that way."
 CONNECT [Bible]: "My old man quoted Leviticus at me till the day I left." His jaw works. "You're the first churchy type who didn't make me feel like the verse."
 CONNECT [Crystals]: He looks at you a long time. "There was a guy. Before the patch." He doesn't say more. He doesn't have to. He lets you see it.
 # The story you earn by connecting: right after the CONNECT beat, they tell
 # you, in their own words, the wound that led them here. One beat per line.
-STORY: [He rolls the sleeve all the way up. Under the patch, older ink, scarred over.] "Sixteen. My old man found me with a boy."
+STORY: [He turns his arm over. Under the patch, older ink, scarred over.] "Sixteen. My old man found me with a boy."
 STORY: "Didn't hit me. Worse. Drove me straight to the lake. To Gabriel."
 STORY: "He walked me in, hand on my chest. Said he'd wash it out of me. Held me under till I quit fighting. When I came up, they were singing."
-STORY: "I joined the club that summer. Figured you can't wash off skin. So I made sure mine couldn't be."
+STORY: "I joined the club that summer. Nobody in it ever asked about a boy. Nobody lays a hand on me unless I say so."
 STORY: [He looks out toward the water.] "He's still down there every Sunday. You go near that lake, you don't let him put his hand on you."
 
 # After the story, in the silence: IT weighs it, SO doubts a corner of it (never the person).
@@ -280,7 +280,7 @@ CAUGHT [rick_01]: "Five minutes ago I was just looking for a reason. Now I'm com
 NEXT: rick_04
 
 === rick_04
-PROMPT: (He rolls his sleeve back up, slow, like it costs him something now.) "Guys who try to walk {color:Fear}away{/color} from this patch don't walk away clean. Never have."
+PROMPT: (He pushes his sleeve up, slow, like it costs him something now.) "Guys who try to walk {color:Fear}away{/color} from this patch don't walk away clean. Never have."
 MOOD: Fear
 BID: both
 

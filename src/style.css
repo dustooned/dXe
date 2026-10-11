@@ -130,6 +130,9 @@ body {
   padding: calc(16 * var(--px));
   gap: calc(12 * var(--px));
   overflow-y: auto;
+  /* With overflow-y set, overflow-x is no longer "visible": a swipe card flung
+     off the side would otherwise add a sideways scroll (and a scrollbar). */
+  overflow-x: hidden;
 }
 
 .dx-title {
