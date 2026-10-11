@@ -29,7 +29,6 @@ function play(state, npcKey, p, stats) {
   const openers = Object.keys(npc.nodes).filter((id) => /_01(_soft|_hard)?$/.test(id));
   let id = npcKey === 'THERAPIST' ? 'therapist_01' : openers[Math.floor(Math.random() * openers.length)];
   let s = state;
-  let met = false;
   while (id) {
     id = resolveGatedNode(id, npc, s);
     const node = npc.nodes[id];
@@ -55,7 +54,6 @@ function play(state, npcKey, p, stats) {
     const turned = !!node.bid?.includes(side);
     if (synced || turned) s = { ...s, bonds: recordTrust(s.bonds, npcKey, { synced, turnedToward: turned }) };
     if (turned) {
-      met = true;
       const gift = giftFor(npcKey, s);
       if (gift) s = { ...s, unlocked: [...s.unlocked, gift], giftedBy: { ...s.giftedBy, [npcKey]: gift } };
     }

@@ -318,14 +318,30 @@ export function resumeAudio() {
   ctx.resume().then(restore, restore);
 }
 
+// A sound that won't load (offline, a missing file, a codec this browser lacks)
+// must never stop the game: the START jingle's promise gates the fade into the
+// story, so a rejection there left the title screen dead. A failed load hands
+// back a second of silence instead (long enough that a looping caller doesn't
+// spin the audio thread), and says so once in the console.
+const audioFailed = new Set();
+let silentBuffer = null;
 async function loadAudio(url) {
   if (audioCache.has(url)) return audioCache.get(url);
   const audioCtx = ensureContext();
-  const response = await fetch(url);
-  const arrayBuffer = await response.arrayBuffer();
-  const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-  audioCache.set(url, audioBuffer);
-  return audioBuffer;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const audioBuffer = await audioCtx.decodeAudioData(await response.arrayBuffer());
+    audioCache.set(url, audioBuffer);
+    return audioBuffer;
+  } catch (e) {
+    if (!audioFailed.has(url)) {
+      audioFailed.add(url);
+      console.warn(`audio: could not load ${url} (${e?.message ?? e?.name ?? e}); playing silence`);
+    }
+    silentBuffer ??= audioCtx.createBuffer(1, audioCtx.sampleRate, audioCtx.sampleRate);
+    return silentBuffer;
+  }
 }
 
 // ─── Ambient room music ───────────────────────────────────────────────────────

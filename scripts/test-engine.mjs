@@ -162,7 +162,6 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
 {
   const thr = JSON.parse(fs.readFileSync('src/chapters/lake-ulysses/content/therapist.json', 'utf8'));
   const applies = (b, cls) => !(b.when?.class && b.when.class !== cls) && !(b.when?.noClass && ['Guns', 'Bible', 'Crystals'].includes(cls));
-  const keyOf = (b) => (b.watch ? 'watch:' + b.watch : b.kind + ':' + (b.text ?? '').slice(0, 12));
   const mechanic = (b) => ['trycall'].includes(b.kind) || b.watch || (b.kind === 'line' && /Practical stuff|Also\. Tell someone|There\. A circle|calling me while/.test(b.text ?? ''));
   for (const cls of ['Guns', 'Bible', 'Crystals', undefined]) {
     const beats = thr.outro.filter((b) => mechanic(b) && applies(b, cls));
