@@ -20,13 +20,14 @@
 //
 // Later (JOBS.md): an interactive way in before the page, per NPC.
 //
-// scene shape: { type: 'marker', id, numeral: 'I', npc, plate, prose, folio }
+// scene shape: { type: 'marker', id, numeral: 'I', npc, plate, plateArt?, prose, folio }
 import { later, cancelLater } from '../shell/pauseBus.js';
 import { playClassBleep, playOpenerTheme, startOpenerAmbience, playTypewriterTick, preloadTypewriterTick } from '../shell/audio.js';
 import { CLASSES, classColor } from '../engine/loadout.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { isFogged } from '../engine/contacts.js';
 import { plateSvg } from '../ui/plates.js';
+import { createPlateCanvas, PASSES } from '../ui/plateCanvas.js';
 
 const LINE_MS = 140;
 const BANDS = 12;
@@ -64,16 +65,24 @@ export function mount(stageEl, scene, { run, onComplete }) {
   const name = add(page, 'dx-marker__name', npc.npc);
 
   const plate = add(page, 'dx-marker__plate', null, 'div');
-  // Real art when it's there (public/assets/lake-ulysses/plates/plate_<npc>.png,
-  // 1-bit pixel art, see ART_GUIDE.md); the code-drawn placeholder otherwise.
-  // The load, scanlines and fog tint are applied on top either way.
-  const art = new Image();
-  art.alt = '';
-  art.className = 'dx-marker__plate-art';
-  art.onerror = () => { plate.innerHTML = plateSvg(key); };
-  art.src = `/assets/lake-ulysses/plates/plate_${key}.png`;
-  plate.appendChild(art);
-  plate.style.setProperty('--drawn', '0%');
+  // The artist's plate (scene.plateArt: frames and each frame's delay, from
+  // scripts/import-chapter-plates.mjs) holds its first frame while the page
+  // loads, then plays once it's all in. An NPC with no plate yet keeps the
+  // code-drawn placeholder. The load, scanlines and fog tint go on top either way.
+  let plateCanvas = null;
+  if (scene.plateArt) {
+    // It plays at the artist's own timing from the first moment (plateCanvas.js)
+    // and loads interlaced, like a Spectrum screen, a pass at a time.
+    plateCanvas = createPlateCanvas({ base: `/assets/lake-ulysses/plates/${key}/${key}_`, frames: scene.plateArt.frames, delays: scene.plateArt.delays, size: scene.plateArt.size });
+    const crt = document.createElement('div');
+    crt.className = 'dx-marker__crt';
+    crt.appendChild(plateCanvas.el);
+    plate.appendChild(crt);
+    plate.style.setProperty('--drawn', '100%');
+  } else {
+    plate.innerHTML = plateSvg(key);
+    plate.style.setProperty('--drawn', '0%');
+  }
   const caption = add(page, 'dx-marker__caption', scene.plate ?? '');
 
   const prose = add(page, 'dx-marker__prose', null);
@@ -117,14 +126,17 @@ export function mount(stageEl, scene, { run, onComplete }) {
     loaded = true;
     screen.classList.remove('is-loading');
   };
+  // The plate comes in as 8 interlaced passes (a real plate) or 12 bands (the placeholder).
+  const bands = plateCanvas ? PASSES : BANDS;
   // [step, how long until the next one]
   const sequence = [
     ...[head, chapter, name].map((el) => [() => print(el), LINE_MS]),
     [() => plate.classList.remove('is-unprinted'), BAND_MS],
-    ...Array.from({ length: BANDS }, (_, i) => [() => {
-      plate.style.setProperty('--drawn', `${Math.round(((i + 1) / BANDS) * 100)}%`);
+    ...Array.from({ length: bands }, (_, i) => [() => {
+      if (plateCanvas) plateCanvas.reveal(i + 1);
+      else plate.style.setProperty('--drawn', `${Math.round(((i + 1) / bands) * 100)}%`);
       playClassBleep(npcClass, step++, { data: true });
-    }, i < BANDS - 1 ? BAND_MS : LINE_MS]),
+    }, i < bands - 1 ? BAND_MS : LINE_MS]),
     [() => { theme = playOpenerTheme(npc.npc); print(caption); }, LINE_MS],
     [() => print(cap), LINE_MS],
     [() => { print(foot); typeProse(); }, 0],
@@ -143,6 +155,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     sequence.length = 0;
     lines.forEach((el) => el.classList.remove('is-unprinted'));
     plate.style.setProperty('--drawn', '100%');
+    plateCanvas?.reveal(PASSES);
     if (!typewriter) typeProse();
     typewriter.finish();
     done();
@@ -162,6 +175,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     leaving = true;
     [timer, fadeTimer].forEach(cancelLater);
     typewriter?.destroy();
+    plateCanvas?.destroy();
     theme?.stop(0.2);
     stopAmbience(0.3);
     stageEl.innerHTML = '';

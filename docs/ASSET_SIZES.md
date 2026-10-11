@@ -45,7 +45,7 @@ Busts stand on the bottom edge: they may bleed off the sides, **never off the bo
 
 | What | Draw at | Format | Put it in |
 | :-- | :-- | :-- | :-- |
-| Plate × 4 | **240 × 150** (actual pixels) | PNG, **pure black and white only** (no gray, no antialiasing) | `plates/plate_deborah.png` · `plate_rwanda.png` · `plate_samun.png` · `plate_rick.png` |
+| Plate × 4, animated (3 to 7 frames) | **240 × 150** (actual pixels); export a GIF at any whole multiple, e.g. 2400 × 1500 | GIF; 1-bit look (a dark ink and white is fine) | Send `<Npc>_ChapterOpen.gif`; `scripts/import-chapter-plates.mjs` writes `plates/<npc>/<npc>_0000.png` ... Deborah and Samun are done |
 
 Draw it flat. The loading bands, scanlines, tape border and fog tint are added in code.
 

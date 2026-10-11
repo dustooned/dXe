@@ -9,7 +9,7 @@
 // Prototyped and confirmed working against real production art before this was
 // wired in for real (see the Mood Mask Lab artifact). No-op with no portrait image:
 // there's nothing to mask yet on the colored-letter placeholder.
-import { characterArt, restArt } from '../engine/characters.js';
+import { characterArt, restArt, idleGapMs } from '../engine/characters.js';
 import { createCharacterAnimator, durationOf, frameUrl } from './characterAnimator.js';
 
 const MOOD_CLAMP = 6;
@@ -32,7 +32,9 @@ function moodToColor(mood) {
 
 // Standard character art (engine/characters.js): when the NPC has drawn
 // states, the portrait is a small state machine on one <img>:
-//   rest       the first frame of their talk loop, held (nothing moves)
+//   rest       their idle still (else the first frame of their talk loop), held
+//              (nothing moves). A looping idle plays once every few seconds
+//              from that frame, then settles again.
 //   speaking   the talk loop, only while quoted speech is drawing: speak(true/
 //              false), fed by the typewriter (typewriterText.js onSpeech). A
 //              brief grace keeps the mouth moving through the gaps between
@@ -59,22 +61,36 @@ export function createNpcPortrait(npcName, accentColor, portraitUrl, { hat = nul
   let react = () => 0;
   let setState = none;
 
-  const rest = restArt(npcName, { hat });
-  if (rest) {
+  let hatNow = hat;
+  const restFor = () => restArt(npcName, { hat: hatNow });
+  const rest0 = restFor();
+  let setHat = none;
+  if (rest0) {
     const img = document.createElement('img');
     img.className = 'dx-portrait__img dx-portrait__art';
     img.alt = npcName;
     el.appendChild(img);
     const anim = createCharacterAnimator(img);
-    const art = (state, emotion) => characterArt(npcName, emotion ? `${state}_${emotion}` : state, { hat });
+    const art = (state, emotion) => characterArt(npcName, emotion ? `${state}_${emotion}` : state, { hat: hatNow });
     let mood = null;
     let held = null;       // a named state set by setState
     let speaking = false;
     let reacting = false;
     let stopTimer = null;
+    let idleTimer = null;
 
+    // A looping idle: wait on frame 0, play it once, settle, wait again. Only
+    // while truly resting; anything else (speech, a wait, a reaction) cancels it.
+    const idleAfterGap = (rest) => {
+      idleTimer = setTimeout(() => {
+        if (!img.isConnected) return;
+        anim.once(rest, show);
+      }, idleGapMs());
+    };
     const show = () => {
+      clearTimeout(idleTimer);
       if (reacting) return;
+      const rest = restFor();
       if (speaking) {
         const t = (mood && art('talk', mood)) || art('talk');
         if (t?.kind === 'anim') { anim.loop(t); return; }
@@ -83,8 +99,11 @@ export function createNpcPortrait(npcName, accentColor, portraitUrl, { hat = nul
       const w = mood ? art('wait', mood) : null;
       if (w?.key.startsWith('wait_')) { w.kind === 'anim' ? anim.once(w) : anim.hold(w); return; }
       anim.hold(rest, rest.frame ?? 0);
+      if (rest.cycle) idleAfterGap(rest);
     };
     show();
+    // A new hat, mid-line: the next frame is already in it.
+    setHat = (h) => { hatNow = h ?? null; show(); };
 
     speak = (on) => {
       clearTimeout(stopTimer);
@@ -104,11 +123,11 @@ export function createNpcPortrait(npcName, accentColor, portraitUrl, { hat = nul
       if (r.kind === 'anim') anim.once(r, done); else { anim.hold(r); setTimeout(done, ms); }
       return ms;
     };
-    teardown = () => { clearTimeout(stopTimer); anim.destroy(); };
+    teardown = () => { clearTimeout(stopTimer); clearTimeout(idleTimer); anim.destroy(); };
     maskLayer = document.createElement('div');
     maskLayer.className = 'dx-portrait__mood';
-    if (rest.kind === 'still') maskLayer.style.setProperty('--mask-url', `url('${rest.url}')`);
-    else maskLayer.style.setProperty('--mask-url', `url('${frameUrl(rest, 0)}')`);
+    if (rest0.kind === 'still') maskLayer.style.setProperty('--mask-url', `url('${rest0.url}')`);
+    else maskLayer.style.setProperty('--mask-url', `url('${frameUrl(rest0, 0)}')`);
     el.appendChild(maskLayer);
   } else if (portraitUrl) {
     const img = document.createElement('img');
@@ -133,6 +152,7 @@ export function createNpcPortrait(npcName, accentColor, portraitUrl, { hat = nul
     el,
     nameplate,
     speak,
+    setHat,
     setMood,
     react,
     setState,

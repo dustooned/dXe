@@ -9,7 +9,8 @@ import { getEndingKey, getEpilogueLine } from '../src/engine/endingEngine.js';
 import { CONTACTS, callFor, voicemailFor, therapistReachable, FOG_WIFI } from '../src/engine/contacts.js';
 import { hazeFor } from '../src/engine/lake.js';
 import { moodFor, withClassMoods, effortCost } from '../src/engine/loadout.js';
-import { registerCharacterArt, characterArt, restArt, missingStates, hatFor, hatForContext, HAT_RULES, THERAPIST_HATS, STATE_NAMES } from '../src/engine/characters.js';
+import { frameAt, durationOf } from '../src/ui/characterAnimator.js';
+import { registerCharacterArt, characterArt, restArt, missingStates, idleGapMs, IDLE_GAP_MS, hatFor, hatForContext, HAT_RULES, THERAPIST_HATS, STATE_NAMES, TUTORIAL_HATS, tutorialHatForBeat } from '../src/engine/characters.js';
 import { buildReckoningDeck, resolveReckoningCard } from '../src/engine/reckoning.js';
 
 // A stand-in localStorage for the save checks below.
@@ -233,12 +234,46 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
   const idle = characterArt('THERAPIST', 'idle');
   const talk = characterArt('THERAPIST', 'talk');
   check('characters: the Therapist has an idle still and a 3-frame talk loop', idle?.kind === 'still' && talk?.kind === 'anim' && talk.frames === 3 && talk.fps === 10);
-  check('characters: an undrawn state falls back to idle, an NPC with no art to nothing', characterArt('THERAPIST', 'feel_anger')?.url === idle.url && characterArt('DEBORAH', 'idle') === null);
+  check('characters: an undrawn state falls back to idle, an NPC with no art to nothing', characterArt('THERAPIST', 'feel_anger')?.url === idle.url && characterArt('RWANDA', 'idle') === null);
   check('characters: a hat swaps his idle and his talk loop', characterArt('THERAPIST', 'idle', { hat: 'fez' }).url.endsWith('fez_3.png') && characterArt('THERAPIST', 'talk', { hat: 'top' }).base.endsWith('top_talk/top_talk_'));
-  check('characters: the standard list has idle, talk, 8 talk_ + 8 wait_ feelings, 5 reactions, connect, pushaway, 5 trauma beats', STATE_NAMES.length === 2 + 8 + 8 + 5 + 2 + 5 && missingStates('therapist').length === STATE_NAMES.length - 2 && missingStates('deborah').length === STATE_NAMES.length);
+  check('characters: the standard list has idle, talk, 8 talk_ + 8 wait_ feelings, 5 reactions, connect, pushaway, 5 trauma beats', STATE_NAMES.length === 2 + 8 + 8 + 5 + 2 + 5 && missingStates('therapist').length === STATE_NAMES.length - 2 && missingStates('rwanda').length === STATE_NAMES.length);
   const rest = restArt('THERAPIST');
-  check('characters: the rest face is the drawn idle still (mouth shut: neutral_3, never the open-mouth _1), and a hat keeps that rule', rest.kind === 'still' && rest.url.endsWith('neutral_3.png') && restArt('THERAPIST', { hat: 'top' }).url.endsWith('top_3.png') && restArt('DEBORAH') === null);
+  check('characters: the rest face is the drawn idle still (mouth shut: neutral_3, never the open-mouth _1), and a hat keeps that rule', rest.kind === 'still' && rest.url.endsWith('neutral_3.png') && restArt('THERAPIST', { hat: 'top' }).url.endsWith('top_3.png') && restArt('RWANDA') === null);
   check('characters: pieces say which file they are, so a fallback can be told from the real thing', characterArt('THERAPIST', 'wait_anger').key === 'neutral_3' && characterArt('THERAPIST', 'react_hit').key === 'neutral_3' && talk.key === 'neutral_talk');
+  // Deborah (a still + a talk loop) and Samun (a looping idle, no talk loop yet): placeholders on the standard
+  const dIdle = characterArt('DEBORAH', 'idle');
+  const dTalk = characterArt('DEBORAH', 'talk');
+  const dir0 = 'public/assets/lake-ulysses/characters/deborah/';
+  check('characters: Deborah has a shut-mouth idle still and a 3-frame talk loop, and her rest face is the still', dIdle?.kind === 'still' && dTalk?.kind === 'anim' && dTalk.frames === 3 && restArt('DEBORAH').url === dIdle.url && missingStates('deborah').length === STATE_NAMES.length - 2);
+  check('characters: Deborah talk loop starts on her rest pose (frame 0 is the idle picture), so the mouth is shut until she speaks', Buffer.compare(fs.readFileSync(dir0 + 'talk/talk_0000.png'), fs.readFileSync(dir0 + 'idle.png')) === 0);
+  const sIdle = characterArt('SAMUN', 'idle');
+  const sRest = restArt('SAMUN');
+  check('characters: Samun idle is a 9-frame loop; he rests on its first frame and the portrait plays it now and then (cycle)', sIdle.kind === 'anim' && sIdle.frames === 9 && sRest.cycle === true && sRest.kind === 'anim' && restArt('DEBORAH').cycle === undefined && restArt('THERAPIST').cycle === undefined);
+  check('characters: with no talk loop drawn, speaking falls back to his idle (the mouth never moves), and a talk loop is never taken for a rest cycle', characterArt('SAMUN', 'talk').key === 'idle' && missingStates('samun').length === STATE_NAMES.length - 1 && restArt('DEBORAH', {}).kind === 'still');
+  registerCharacterArt({ t: { npc: 'testy', art: { idle: { frames: 3, delays: [100, 300, 100] }, talk: { frames: 3, fps: 10 } } } });
+  check('characters: a piece with its own frame timings keeps them (delays), an even one stays an fps', JSON.stringify(characterArt('testy', 'idle').delays) === '[100,300,100]' && characterArt('testy', 'talk').delays === undefined);
+  check('characters: a looping idle waits 2.5 to 6.5 seconds between plays, never in step', idleGapMs(() => 0) === IDLE_GAP_MS[0] && idleGapMs(() => 1) === IDLE_GAP_MS[1] && idleGapMs(() => 0.5) === 4500 && IDLE_GAP_MS[0] >= 2000);
+  // Chapter plates (scripts/import-chapter-plates.mjs): every frame on disk, a delay per frame
+  const plates = JSON.parse(fs.readFileSync('src/chapters/lake-ulysses/plates.json', 'utf8'));
+  const plateProblems = [];
+  for (const [npc, p] of Object.entries(plates)) {
+    if (p.delays.length !== p.frames || p.delays.some((d) => !(d > 0))) plateProblems.push(npc + ' delays');
+    for (let i = 0; i < p.frames; i++) if (!fs.existsSync(`public/assets/lake-ulysses/plates/${npc}/${npc}_${String(i).padStart(4, '0')}.png`)) plateProblems.push(`${npc} frame ${i}`);
+  }
+  check('plates: the artist\'s chapter plates (Deborah, Samun) have every frame on disk and a delay for each' + (plateProblems.length ? ` (${plateProblems.join(', ')})` : ''), !plateProblems.length && !!plates.deborah && !!plates.samun);
+  // Frame timing: exact, from the clock, with uneven delays (Deborah's plate: 80/150/80 ms)
+  const bulb = { frames: 3, delays: [80, 150, 80] };
+  const at = (t, loop) => frameAt(bulb, t, loop).frame;
+  check('animation: uneven delays land on the right frame (0 until 80, 1 until 230, 2 until 310)', [0, 79, 80, 229, 230, 309].map((t) => at(t, true)).join() === '0,0,1,1,2,2');
+  check('animation: a loop wraps at its total (310 ms), a one-shot holds the last frame and is done only after it', at(310, true) === 0 && at(400, true) === 1 && frameAt(bulb, 309, false).done === false && frameAt(bulb, 310, false).done === true && frameAt(bulb, 999, false).frame === 2);
+  check('animation: even fps is 100 ms a frame, and the duration adds up', frameAt({ frames: 3, fps: 10 }, 199, true).frame === 1 && frameAt({ frames: 3, fps: 10 }, 200, true).frame === 2 && durationOf(bulb) === 310 && durationOf({ frames: 3, fps: 10 }) === 300);
+  // The tutorial establishes the gag: every hat shows up, tied to what he is explaining
+  const thr0 = JSON.parse(fs.readFileSync('src/chapters/lake-ulysses/content/therapist.json', 'utf8'));
+  const used = new Set([...Object.values(TUTORIAL_HATS.marks), ...Object.values(TUTORIAL_HATS.nodes), ...Object.values(TUTORIAL_HATS.reactions), ...Object.values(TUTORIAL_HATS.outroKinds), ...TUTORIAL_HATS.outroText.map(([, h]) => h), ...Object.values(TUTORIAL_HATS.watch)].filter(Boolean));
+  check('tutorial hats: all 8 hats appear in his tutorial, and only real ones', THERAPIST_HATS.every((h) => used.has(h)) && [...used].every((h) => THERAPIST_HATS.includes(h)));
+  const outroHats = thr0.outro.filter((b) => !b.when || b.when.class === 'Guns').map((b) => tutorialHatForBeat(b)).filter((h) => h !== undefined);
+  check('tutorial hats: his actual lines pick them (homework, mask exercise, practical stuff, the call, each watch-out)', thr0.outro.some((b) => /homework/.test(b.text ?? '') && tutorialHatForBeat(b) === 'top') && thr0.outro.some((b) => b.kind === 'tryfeel' && tutorialHatForBeat(b) === 'jester') && thr0.outro.some((b) => /Practical stuff/.test(b.text ?? '') && tutorialHatForBeat(b) === 'old_man') && thr0.outro.some((b) => b.kind === 'trycall' && tutorialHatForBeat(b) === 'fez') && thr0.outro.filter((b) => b.watch).every((b) => tutorialHatForBeat(b)) && outroHats.length >= 8);
+  check('tutorial hats: every cue he fires on the meters page has a hat, and the page ends bare', Object.keys(TUTORIAL_HATS.marks).every((m) => thr0.nodes.therapist_01.swipes.truth.npcReaction.includes(`{mark:${m}}`)) && TUTORIAL_HATS.marks.allmeters === null);
   const mid = { truthDebt: 4, stability: 5, lucidity: 5, trust: 5, lieStreak: 0 };
   check('hats: every rule uses a real hat, and every hat has a moment', HAT_RULES.every((r) => THERAPIST_HATS.includes(r.hat) && r.why) && THERAPIST_HATS.every((h) => HAT_RULES.some((r) => r.hat === h)));
   check('hats: voicemail is a siesta, a mask is a jester, a new friend a fez, a dirty lake a detective', hatForContext({ ...mid, kind: 'voicemail' }).hat === 'sombrero' && hatForContext({ ...mid, kind: 'mask' }).hat === 'jester' && hatForContext({ ...mid, kind: 'friend' }).hat === 'fez' && hatForContext({ ...mid, kind: 'call', truthDebt: 7 }).hat === 'pork_pie');

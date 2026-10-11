@@ -11,7 +11,10 @@
 // How they move (ui/characterAnimator.js, ui/npcPortrait.js):
 //   rest       their `idle` still, held: a calm face with the MOUTH SHUT. Nothing
 //              moves, so the screen stays calm. (With no idle drawn, frame 0 of
-//              the talk loop: so draw that frame mouth shut.)
+//              the talk loop: so draw that frame mouth shut.) An idle can also
+//              be a short loop (eyes drifting, a blink): it rests on frame 0 and
+//              plays once every few seconds, then settles again. Mouth shut in
+//              every frame of it.
 //   speaking   the talk loop, ONLY while quoted speech is drawing. Never for
 //              narration, directions or a pause. talk_<emotion> if drawn.
 //   waiting    on the player's turn: wait_<emotion>, a short anticipation that
@@ -84,7 +87,8 @@ export function characterArt(npcName, state = 'idle', { hat = null } = {}) {
       if (!piece) continue;
       // `key` is the piece that was found (after fallbacks), so a caller can tell
       // a real wait_anger from the idle it fell back to.
-      if (piece.frames > 1) return { kind: 'anim', key, base: `${dirOf(npc)}/${key}/${key}_`, frames: piece.frames, fps: piece.fps ?? 10, ext: 'png' };
+      // `delays` (ms, one per frame) when the artist's frames have their own timings.
+      if (piece.frames > 1) return { kind: 'anim', key, base: `${dirOf(npc)}/${key}/${key}_`, frames: piece.frames, fps: piece.fps ?? 10, ...(piece.delays ? { delays: piece.delays } : {}), ext: 'png' };
       return { kind: 'still', key, url: `${dirOf(npc)}/${key}.png` };
     }
   }
@@ -95,10 +99,18 @@ export function characterArt(npcName, state = 'idle', { hat = null } = {}) {
 // frame 0 of their talk loop.
 export function restArt(npcName, { hat = null } = {}) {
   const idle = characterArt(npcName, 'idle', { hat });
-  if (idle) return idle;
+  // A looping idle rests on frame 0 and plays now and then (`cycle`).
+  if (idle) return idle.kind === 'anim' ? { ...idle, cycle: true } : idle;
   const talk = characterArt(npcName, 'talk', { hat });
   if (talk?.kind === 'anim') return { ...talk, kind: 'frame', frame: 0 };
   return null;
+}
+
+// A looping idle waits this long on its rest frame between plays: calm, not
+// twitchy, and never in step from one scene to the next. [min, max] in ms.
+export const IDLE_GAP_MS = [2500, 6500];
+export function idleGapMs(rand = Math.random) {
+  return Math.round(IDLE_GAP_MS[0] + rand() * (IDLE_GAP_MS[1] - IDLE_GAP_MS[0]));
 }
 
 // Which states a character has art for, against the standard list: what is
@@ -135,6 +147,40 @@ export const HAT_RULES = [
 export function hatForContext(ctx) {
   const rule = HAT_RULES.find((r) => r.hat !== ctx.last && r.when(ctx));
   return rule ? { hat: rule.hat, why: rule.why } : { hat: null, why: 'bare-headed: nothing calls for a hat' };
+}
+
+// In the tutorial the hat changes with the subject, so the gag is established
+// before the rules are: he is bare-headed to start (the baseline), then each
+// thing he explains gets its hat. `undefined` keeps the hat he has, `null` is
+// bare. Every hat appears once here.
+export const TUTORIAL_HATS = {
+  // {mark:...} cues inside his answer to the first question (the meters page)
+  marks: { stability: 'old_man', trust: 'bunny', lucidity: 'sombrero', integrity: 'derby', allmeters: null },
+  // when a question comes up
+  nodes: { therapist_intrusive: 'fez', therapist_02: 'sombrero' },
+  // when a node's answer comes up (the lake explanation)
+  reactions: { therapist_02: 'pork_pie' },
+  // after the questions: by the kind of beat, then the start of its words
+  outroKinds: { tryfeel: 'jester', trycall: 'fez' },
+  outroText: [
+    [/^"?I give everyone homework/, 'top'],
+    [/^"?Last thing\. See the lines/, 'derby'],
+    [/^"?There\. A circle that holds still/, null],
+    [/^"?Practical stuff/, 'old_man'],
+    [/^"?Also\. Tell someone what they want to hear/, 'jester'],
+    [/^"?Okay\. You're calling me while I'm on the phone/, 'derby'],
+  ],
+  watch: { stability: 'old_man', trust: 'bunny', lucidity: 'sombrero', integrity: 'derby', lake: 'pork_pie', steady: 'top' },
+};
+
+// The hat for an outro beat of his tutorial: a hat name, null (bare), or
+// undefined (no change).
+export function tutorialHatForBeat(beat) {
+  if (beat.watch) return TUTORIAL_HATS.watch[beat.watch];
+  const text = String(beat.text ?? '').replace(/\{[^}]*\}/g, '').trim();
+  const hit = TUTORIAL_HATS.outroText.find(([re]) => re.test(text));
+  if (hit) return hit[1];
+  return TUTORIAL_HATS.outroKinds[beat.kind];
 }
 
 // A random hat, never the same twice in a row. (A fallback; hatForContext is the gag.)

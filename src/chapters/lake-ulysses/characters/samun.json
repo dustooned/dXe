@@ -1,0 +1,10 @@
+{
+  "npc": "samun",
+  "size": 192,
+  "art": {
+    "idle": {
+      "frames": 9,
+      "fps": 10
+    }
+  }
+}

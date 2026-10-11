@@ -3,6 +3,7 @@ import { takeDebugOverrides } from '../../shell/debug.js';
 import { createSceneSequencer } from '../../engine/sceneSequencer.js';
 import { recordEnding, saveCheckpoint, clearCheckpoint, loadSave } from '../../shell/save.js';
 import { therapistReturnScene } from './therapistReturn.js';
+import plates from './plates.json';
 import { registerCharacterArt } from '../../engine/characters.js';
 import * as hud from '../../shell/hud.js';
 import * as audio from '../../shell/audio.js';
@@ -87,28 +88,28 @@ const SCENES = [
   // to the building where the homework's neighbor lives.
   { type: 'cutscene', id: 'walk-home', beats: walkHome.beats },
 
-  { type: 'marker', id: 'deborah-marker', numeral: 'I', npc: deborah, folio: 23,
+  { type: 'marker', id: 'deborah-marker', numeral: 'I', npc: deborah, plateArt: plates.deborah, folio: 23,
     plate: "PLATE I. THE THIRD FLOOR.",
     prose: "The bulb over her door has been dying for months. Every night she stands under it with her key in her hand, and every night she does not reach up." },
   { type: 'minigame', id: 'deborah-hallway', load: () => import('./minigames/deborah-hallway.js'), npc: deborah },
   { type: 'cutscene', id: 'deborah-confront', beats: confrontDeborah.beats, opensDialog: 'deborah', npc: deborah },
   { type: 'dialog', id: 'deborah', npc: deborah },
 
-  { type: 'marker', id: 'rwanda-marker', numeral: 'II', npc: rwanda, folio: 61,
+  { type: 'marker', id: 'rwanda-marker', numeral: 'II', npc: rwanda, plateArt: plates.rwanda, folio: 61,
     plate: "PLATE II. BEHIND THE STRIP.",
     prose: "Half a sign still lit, a payphone with its cord cut clean, and a wall somebody painted carefully, for nobody, and then somebody painted over." },
   { type: 'minigame', id: 'rwanda-alley', load: () => import('./minigames/rwanda-alley.js'), npc: rwanda },
   { type: 'cutscene', id: 'rwanda-confront', beats: confrontRwanda.beats, opensDialog: 'rwanda', npc: rwanda },
   { type: 'dialog', id: 'rwanda', npc: rwanda },
 
-  { type: 'marker', id: 'samun-marker', numeral: 'III', npc: samun, folio: 97,
+  { type: 'marker', id: 'samun-marker', numeral: 'III', npc: samun, plateArt: plates.samun, folio: 97,
     plate: "PLATE III. THE GARAGE.",
     prose: "The bay door is up and nobody comes out. A radio plays to no station, and the calendar on the wall has been stuck on the same month for two years." },
   { type: 'minigame', id: 'samun-garage', load: () => import('./minigames/samun-garage.js'), npc: samun },
   { type: 'cutscene', id: 'samun-confront', beats: confrontSamun.beats, opensDialog: 'samun', npc: samun },
   { type: 'dialog', id: 'samun', npc: samun },
 
-  { type: 'marker', id: 'rick-marker', numeral: 'IV', npc: rick, folio: 131,
+  { type: 'marker', id: 'rick-marker', numeral: 'IV', npc: rick, plateArt: plates.rick, folio: 131,
     plate: "PLATE IV. THE LOT OUTSIDE THE BAR.",
     prose: "Gravel, six bikes, one door, and bass coming through the wall like a second heartbeat. Everyone inside already knows the sound of a stranger." },
   { type: 'minigame', id: 'rick-barlot', load: () => import('./minigames/rick-barlot.js'), npc: rick },

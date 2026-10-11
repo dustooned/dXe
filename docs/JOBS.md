@@ -12,18 +12,19 @@ Source assets live at `E:\2025\Games\BackUp\1_28_2025\` unless noted.
 Newest first; details in HANDOFF.md.
 
 1. **Listen and look (2026-10-10):** every new sound has only been tested muted: swipes (slow vs fast), room objects, door, quick beats, chapter-page loading bleeps and room ambience, confrontation openers, prologue and walk home. Tune by ear in `src/shell/audio.js` (SFX, playClassBleep, startOpenerAmbience, playOpenerTheme).
-2. **Character art (2026-10-10):** the Therapist's set is in. Next: Deborah, Rwanda, Samun, Rick sets per `docs/CHARACTER_ART.md` (idle, talk loop, 8 feeling faces, 5 reactions, connect, pushaway, 5 trauma images each), then wire `portrait.setState()` to MOOD, reactions and the story beats. Run `node scripts/import-character-gifs.mjs <folder> <npc>` for each batch.
-3. **Art drop-ins:** chapter plates (`plates/plate_<npc>.png`, 240x150 1-bit) and everything in `docs/ASSET_SIZES.md`.
-4. **Opening confrontations: built for all four (2026-10-09).** Look at them on screen as each class (art is still placeholder); the restore hints and secret lines are first drafts for the writer pass.
-5. **Later: interactive way in before each marker page** (skippable; the moment is highlighted and says exactly what to do; the page turns in only after it). Arcade "READY? START!" energy, but literary.
+2. **Plates:** Rwanda and Rick chapter plates (`Rwanda_ChapterOpen.gif`, `Rick_ChapterOpen.gif`; Deborah and Samun are in). Run `node scripts/import-chapter-plates.mjs <folder>`.
+3. **Character art (2026-10-10):** the Therapist's set is in, and placeholders for Deborah (idle, talk loop) and Samun (idle loop). Next: the full Deborah, Rwanda, Samun, Rick sets per `docs/CHARACTER_ART.md` (idle, talk loop, 8 feeling faces, 5 reactions, connect, pushaway, 5 trauma images each), then wire `portrait.setState()` to MOOD, reactions and the story beats. Run `node scripts/import-character-gifs.mjs <folder> <npc>` for each batch.
+4. **Art drop-ins:** chapter plates (`plates/plate_<npc>.png`, 240x150 1-bit) and everything in `docs/ASSET_SIZES.md`.
+5. **Opening confrontations: built for all four (2026-10-09).** Look at them on screen as each class (art is still placeholder); the restore hints and secret lines are first drafts for the writer pass.
+6. **Later: interactive way in before each marker page** (skippable; the moment is highlighted and says exactly what to do; the page turns in only after it). Arcade "READY? START!" energy, but literary.
    - **Deborah:** turn a bible page (or twist the hall lightbulb in).
    - **Rwanda:** brush a spray-paint mask across a wall to reveal it, spray SFX.
    - **Samun:** a crosswalk button. Hit it 3 times, impatient: "wait", "wait", "WAIT". The 4th: the chirp, WALK lights ON.
    - **Rick:** rev a loud motorcycle several times until the engine catches (the player presses twice).
-6. **Look at it on screen, muted, in a background tab:** the class-based tutorial, paced connections and class sounds, the guide drum, TIPS, lie-incentive visuals, the Reckoning rebalance, LARGE text.
-7. **Music:** Rwanda's FL stems arrive, then the stem player (`MUSIC_PIPELINE.md`).
-8. **Tester's crash:** need device and browser.
-9. **Later:** art pass (`ART_GUIDE.md`, `npm` artist kit via `node scripts/make-artist-kit.mjs`), writer pass (`writer-handoff/`), Therapist-gated features.
+7. **Look at it on screen, muted, in a background tab:** the class-based tutorial, paced connections and class sounds, the guide drum, TIPS, lie-incentive visuals, the Reckoning rebalance, LARGE text.
+8. **Music:** Rwanda's FL stems arrive, then the stem player (`MUSIC_PIPELINE.md`).
+9. **Tester's crash:** need device and browser.
+10. **Later:** art pass (`ART_GUIDE.md`, `npm` artist kit via `node scripts/make-artist-kit.mjs`), writer pass (`writer-handoff/`), Therapist-gated features.
 
 ## Ready to Build Now
 

@@ -107,7 +107,7 @@ warm fogged tint are all added in code.
 
 | Asset | Path | Draw at | Shown at | Format | Frames | Status | Template |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
-| Chapter plate × 4 (hallway, alley, garage, bar lot) | `public/assets/lake-ulysses/plates/plate_<npc>.png` (`plate_deborah`, `plate_rwanda`, `plate_samun`, `plate_rick`) | 240×150 exactly (true pixels; the game scales it up crisp) | width of the page, under the name | PNG, pure black and white only, no gray, no antialiasing, no effects | 1 | 🔲 (code placeholder until a file exists) | — |
+| Chapter plate × 4 (hallway, alley, garage, bar lot) | `public/assets/lake-ulysses/plates/<npc>/<npc>_0000.png` ... (from `<Npc>_ChapterOpen.gif`) | 240×150 true pixels; export a GIF at any whole multiple (2400×1500 works) | width of the page, under the name | GIF in, palette PNG frames out; 1-bit look, no effects. Plays at your timing, unchanged; the game adds the Spectrum-style interlaced load, scanlines aligned to your pixel rows, and the dot grid | 3–7, with per-frame delays | ✅ Deborah (3), Samun (7) · 🔲 Rwanda, Rick (code placeholder) | — |
 
 ---
 

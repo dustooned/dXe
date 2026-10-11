@@ -23,7 +23,7 @@ import { sharpen } from '../engine/itSharpen.js';
 import { createStatusBar } from '../ui/statusBar.js';
 import { CONTACTS, contactsFor, therapistReachable, voicemailFor, callFor } from '../engine/contacts.js';
 import { createNpcPortrait } from '../ui/npcPortrait.js';
-import { characterArt, hatForContext } from '../engine/characters.js';
+import { characterArt, hatForContext, TUTORIAL_HATS, tutorialHatForBeat } from '../engine/characters.js';
 import { createFeelzDartboard } from '../ui/feelzDartboard.js';
 import { EMOTIONS, emotionColor, emotionsForClass, getDominantEmotion, withClassMoods } from '../engine/loadout.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
@@ -148,6 +148,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // The kind of reaction their face plays when your answer lands (portrait.react).
   let pendingReact = null;
   let livePortrait = null;
+  // The Therapist's hat in his tutorial (engine/characters.js TUTORIAL_HATS): bare to start.
+  let tutorialHat = null;
+  const putOnHat = (hat) => { if (hat === undefined) return; tutorialHat = hat; livePortrait?.setHat(hat); };
   let wasBigFace = false;
   // Answers this encounter that neither met their mood nor turned toward a
   // bid — each pushes the oscilloscope's two lines a little further apart.
@@ -458,7 +461,14 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
     // render() rebuilds the portrait each time: put the old one's animation away.
     livePortrait?.destroy();
-    const portrait = createNpcPortrait(npc.npc, npc.accentColor, npc.portrait);
+    // His tutorial hat follows what he is explaining (the meters' own cues come
+    // in mid-line, below). Everyone else has none.
+    if (npc.npc === 'THERAPIST' && npc.reveal) {
+      if (stage === 'outro' && outroBeat) putOnHat(tutorialHatForBeat(outroBeat));
+      else if (stage === 'reaction') putOnHat(TUTORIAL_HATS.reactions[currentNodeId]);
+      else if (stage === 'prompt') putOnHat(TUTORIAL_HATS.nodes[currentNodeId]);
+    }
+    const portrait = createNpcPortrait(npc.npc, npc.accentColor, npc.portrait, { hat: npc.reveal ? tutorialHat : null });
     livePortrait = portrait;
     // While your answer lands and they react, the face is big (it covers the
     // scope behind it); when the battle UI is yours again it shrinks back, in
@@ -633,6 +643,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
             // flashes, lit alone while he explains it; {mark:allmeters}: the
             // whole bar again, all four together.
             fireCue(name);
+            if (npc.reveal) putOnHat(TUTORIAL_HATS.marks[name]);
             if (METERS.includes(name) || name === 'allmeters') {
               const target = name === 'allmeters' ? statusBar?.el : statusBar?.el.querySelector(`[data-meter="${name}"]`);
               if (target) {

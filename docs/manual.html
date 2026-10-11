@@ -1739,6 +1739,9 @@ last page with no opening one.</li>
 <li><strong>IT and SO icons (2026-10-10):</strong> the artist&#39;s <code>DX_IT_Icon.gif</code> and <code>DX_SO_Icon.gif</code> (32x32, in <code>art-import/it-so/</code>) are now <code>spr_it_icon.png</code> and <code>spr_so_icon.png</code>; <code>itPopup.js</code> picks by voice, and the CSS invert for SO is gone because the new SO art is already the inverse. The Drive also has a <code>Chapter Images</code> folder (<code>Deobrah_Chapter_Open.gif</code> 93 KB, <code>Samun_ChapterOpen.gif</code> 159 KB), not imported yet.</li>
 <li><strong>Character animation rules (2026-10-10):</strong> a character&#39;s face is a state machine (<code>ui/npcPortrait.js</code>) on one <code>&lt;img&gt;</code>, played by <code>ui/characterAnimator.js</code> (a clock from <code>performance.now</code>, stopped while paused, every frame its full time, frames preloaded; it stops itself when its picture leaves the page). <strong>Rest</strong> = frame 0 of the talk loop, held. <strong>Speaking</strong> = the talk loop (or <code>talk_&lt;feeling&gt;</code>), only while quoted speech draws: the typewriter now reports it (<code>createTypewriter(...).onSpeech(fn)</code>, from the <code>narr</code> flag: not narration, not <code>( )</code> or <code>[ ]</code>; a <code>{pause}</code> of 150 ms or more shuts the mouth; <code>MOUTH_GRACE_MS</code> 90 bridges the gaps between letters). <code>dialogScene.markSpeaking</code>, cutscene portraits and the trauma story bust all subscribe. <strong>Waiting</strong> = <code>portrait.setMood(feeling)</code> plays <code>wait_&lt;feeling&gt;</code> once and holds (dialog prompt stage, the shown mood, so a mask shows its mask). <strong>Reacting</strong> = <code>portrait.react(&#39;hit&#39;|&#39;warm&#39;|&#39;truth&#39;|&#39;lie&#39;|&#39;cold&#39;)</code> plays <code>react_&lt;kind&gt;</code> once when the reaction stage opens, before they speak (<code>pendingReact</code>: big swing = hit, a bid = warm, else the swipe). Undrawn states fall back, so only the Therapist (rest + talk + hats) shows any of this today. <code>characterArt()</code> returns the <code>key</code> it found, so a real <code>wait_anger</code> can be told from the idle it fell back to. The standard list changed: <code>feel_*</code> became <code>talk_*</code> and <code>wait_*</code> (about 30 pieces per NPC). Verified in the browser with stand-in frames: rest frame, 0 mouth moves during narration, frames flip every 100 ms, reaction frames at 0/104/205 and back to rest at 304 ms, pause freezes the face, destroyed portraits stop their loop. Also fixed: <code>render()</code> rebuilt the dialog portrait without destroying the old one.</li>
 <li><strong>Therapist on every call, and his hats (2026-10-10):</strong> <code>dialogScene.callAvatar(name, { hat })</code> puts a character&#39;s drawn face (talking only on quoted words, shut mouth at rest) in every phone call&#39;s picture slot (coach calls, your dock call to him, his voicemail, the tutorial echo call, contact calls; a letter when they have no art). <code>therapistHat(kind)</code> picks his hat from <code>HAT_RULES</code> (engine/characters.js; <code>hatForContext</code>, first match wins, never repeats <code>run.lastHat</code>, bare-headed if nothing fits): voicemail sombrero, fog sombrero, mask or lie streak jester, dirty lake pork pie, low battery old man, low Bars bunny, new friend fez, first battle derby, clean lake top; the repeat-playthrough call uses how you left the lake. A visual gag only, never mentioned. Table in <code>docs/CHARACTER_ART.md</code>. Also: rest face is now the shut-mouth idle (his <code>_3</code>; <code>_1</code> is the open mouth), the speaker is never dimmed by the tutorial spotlight, and the face grows to 150 px (stepped) while your answer lands and shrinks back when the battle UI returns (verified: 103, 117, 132, 146, 161 px at that zoom, then back).</li>
+<li><strong>Chapter plates, the artist&#39;s art (2026-10-10):</strong> <code>Deobrah_Chapter_Open.gif</code> (3 frames, 80/150/80 ms) and <code>Samun_ChapterOpen.gif</code> (7 frames, 100 ms), both 2400x1500 = an exact 10x upscale of 240x150 (verified 0 changed pixels), came from the Drive <code>Chapter Images</code> folder. <code>scripts/import-chapter-plates.mjs &lt;folder&gt;</code> stores them at true size as palette PNG frames (<code>public/assets/lake-ulysses/plates/&lt;npc&gt;/</code>, 44 KB for both vs 250 KB of GIF) with <code>src/chapters/lake-ulysses/plates.json</code> (frames, per-frame delays); <code>index.js</code> hands each marker scene its <code>plateArt</code>. The plate plays at the artist&#39;s own timing (frame delays untouched) from the first moment, on a canvas (<code>ui/plateCanvas.js</code>) drawn at the art&#39;s true 240x150 and scaled with hard pixels, and it loads interlaced like a ZX Spectrum screen: rows 0, 4, 2, 6, 1, 5, 3, 7 (mod 8), one pass per bleep, so the picture comes into focus instead of wiping down. CSS lays a scanline gap in every art pixel row and a faint dot grid in every art pixel column (<code>.dx-marker__crt::after</code>), so the screen&#39;s lines are the picture&#39;s own. No plate = the code-drawn placeholder with the old 12-band reveal (Rwanda, Rick). <code>characterAnimator.frameAt</code> now takes per-frame delays (art.delays), tested exactly. The art is dark ink on white, so it reads as a bright printed plate on the black page (scanlines go over it, the fog tint warms it); invert it in CSS if you would rather it match the series&#39; white-on-black. Rwanda&#39;s and Rick&#39;s plates are still needed (<code>Rwanda_ChapterOpen.gif</code>, <code>Rick_ChapterOpen.gif</code>).</li>
+<li><strong>Tutorial hats (2026-10-10):</strong> the hat gag starts in his tutorial, tied to what he is explaining (<code>TUTORIAL_HATS</code> and <code>tutorialHatForBeat</code> in engine/characters.js; <code>dialogScene</code> applies them; <code>portrait.setHat()</code> swaps live, even mid-line). Bare to start, then: battery old man, Bars bunny, Wi-Fi sombrero, clock derby, the meters page ends bare; &quot;thoughts that are not yours&quot; fez; the dream sombrero, his lake answer pork pie; homework top hat, the scope lesson derby, the mask exercise jester, the shape that holds still bare, practical stuff old man, &quot;tell them what they want to hear&quot; jester, the call to him fez, &quot;two of me&quot; derby; each watch-out its own (old man, bunny, sombrero, derby, pork pie, &quot;everything&#39;s holding&quot; top hat). All 8 hats appear (tested). The browser run confirmed the hat changes live (bare, fez, derby, old man).</li>
+<li><strong>Deborah and Samun placeholders, animated idle (2026-10-10):</strong> from the Drive <code>NPCs/Deborah</code> and <code>NPCs/Samun</code> folders. Deborah: <code>Profile_Deborah01</code> (idle, shut mouth), <code>02</code> (squint), <code>03</code> (open mouth), <code>_ANI</code> (talk loop, 3 frames: shut, squint, open, so frame 0 is her rest picture; tested byte-identical to the idle still). <code>02</code> and <code>03</code> are kept as extra pieces <code>squint</code> and <code>open</code>, not mapped to a state (a gasp for react_hit is the obvious use, left for the final art). Samun: <code>Samunneutral.gif</code>, 9 frames at 100 ms drawn at 1920x1920 (exact 10x, verified), a mouth-shut idle loop with wandering eyes and a blink; no talk loop. <code>scripts/import-character-gifs.mjs</code> now takes a <code>names.json</code> per folder (artist&#39;s file name to our state), accepts whole multiples of 192 and checks the downscale is exact, and stores per-frame <code>delays</code> when a GIF&#39;s frames are uneven (<code>characterArt</code> passes them through; even ones stay <code>fps</code>). New logic: an animated <code>idle</code> is a <strong>rest cycle</strong>: <code>restArt</code> marks it <code>cycle</code>, <code>npcPortrait</code> rests on frame 0 and every <code>idleGapMs()</code> (2.5 to 6.5 s, random, <code>IDLE_GAP_MS</code> in engine/characters.js) plays it once with exact timing, then settles; speech, a wait, a reaction or a held state cancel and re-arm it. Samun with no talk loop: <code>talk</code> falls back to <code>idle</code>, so his mouth never moves (the glance keeps playing). Friend calls from either now show their face too (<code>callAvatar</code> takes any NPC with an idle). Checked in the browser: harness page for the state machine (Deborah speak on/off, Samun&#39;s cycle) and the real dialog scenes (<code>#/chapter/lake-ulysses/deborah</code> and <code>/samun</code> both show the new portraits); the pane is throttled so the cycle&#39;s real-time gaps were not watched. Not wired anywhere yet: <code>react_cold</code>, <code>connect</code>, <code>pushaway</code>, <code>trauma_1..5</code> (no gameplay calls them; the story overlay <code>dx-connect is-story</code> is the place).</li>
 <li><strong>Repeat client (2026-10-10):</strong> the ending saves <code>save.lastRun</code> (class, ending, debt, baptism confessed/doubled from <code>run.reckoningChoices</code>). With a lastRun, <code>therapistReturn.js</code> (a cutscene) takes the &#39;therapist&#39; slot and the original tutorial follows as &#39;therapist-tutorial&#39;: he reads the file back (how wet you came out, the ppm, the baptism, same or new class), says you&#39;re doing it again, then asks two things: check in on you? (sets TIPS) and run the exercise again? (yes: the tutorial plays; no: <code>jumpTo</code> walk-home, after the class homework). <strong>TIPS</strong> (Settings, <code>guideHighlights</code>) now controls all of his tip calls in battles plus the lesson highlights; calls you make yourself are unaffected. Verified both paths in the browser.</li>
 <li><strong>Therapist is early-game only</strong> (<code>dialogScene.js</code> nodeCoach): the new-friend call is one call per run (key <code>friend</code>, was <code>friend:&lt;who&gt;</code>; old keys still count) and only in the first three encounters, so he never calls during Rick. A first friend who arrives later pulses quietly in the dock for that card instead. His other calls are the first battle (scope) and the first mask (Samun). Verified: Rick with a fresh contact gets no call; Rwanda with Deborah in the phone does.</li>
 <li><strong>Rooms</strong> (<code>minigames/*.js</code> via <code>engine/walkSequencer.js</code> <code>mountNpcWalk</code>; <code>ui/walkRoom.js</code>): each object names an opener; it glows in that opener&#39;s first feeling for your class, its close-up is washed in it with the NPC&#39;s class glyph in the corner, and each class&#39;s caption is its own perception with that feeling&#39;s word colored (tests check the color matches). One object per class can be restored: once all three are opened, yours calls in your class color; open it again for a hint in your class&#39;s voice, tap the picture to do it (class sigil sound, done line, stamp). That writes <code>run.secrets[npc]</code>.</li>
@@ -2957,10 +2960,10 @@ placeholder there now is replaced automatically).</li>
 </tr>
 </thead>
 <tbody><tr>
-<td align="left">Plate × 4</td>
-<td align="left"><strong>240 × 150</strong> (actual pixels)</td>
-<td align="left">PNG, <strong>pure black and white only</strong> (no gray, no antialiasing)</td>
-<td align="left"><code>plates/plate_deborah.png</code> · <code>plate_rwanda.png</code> · <code>plate_samun.png</code> · <code>plate_rick.png</code></td>
+<td align="left">Plate × 4, animated (3 to 7 frames)</td>
+<td align="left"><strong>240 × 150</strong> (actual pixels); export a GIF at any whole multiple, e.g. 2400 × 1500</td>
+<td align="left">GIF; 1-bit look (a dark ink and white is fine)</td>
+<td align="left">Send <code>&lt;Npc&gt;_ChapterOpen.gif</code>; <code>scripts/import-chapter-plates.mjs</code> writes <code>plates/&lt;npc&gt;/&lt;npc&gt;_0000.png</code> ... Deborah and Samun are done</td>
 </tr>
 </tbody></table>
 <p>Draw it flat. The loading bands, scanlines, tape border and fog tint are added in code.</p>
@@ -3115,7 +3118,7 @@ close-up (<strong>780 × 1440</strong>, see Full screen).</p>
     </article>
 <article class="doc" id="doc-character_art" data-title="Character Art (the standard set)" data-file="CHARACTER_ART.md" hidden>
       <p class="doc-source">Start here · <code>docs/CHARACTER_ART.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-character_art--how-characters-move-the-rules">How characters move (the rules)</a></li><li><a href="#doc-character_art--the-standard-per-npc">The standard (per NPC)</a></li><li><a href="#doc-character_art--the-therapist-done">The Therapist (done)</a></li><li><a href="#doc-character_art--the-hat-gags">The hat gags</a></li><li><a href="#doc-character_art--sending-art">Sending art</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-character_art--how-characters-move-the-rules">How characters move (the rules)</a></li><li><a href="#doc-character_art--the-standard-per-npc">The standard (per NPC)</a></li><li><a href="#doc-character_art--placeholders-in-deborah-and-samun">Placeholders in: Deborah and Samun</a></li><li><a href="#doc-character_art--the-therapist-done">The Therapist (done)</a></li><li><a href="#doc-character_art--the-hat-gags">The hat gags</a></li><li><a href="#doc-character_art--sending-art">Sending art</a></li></ul></nav>
       <h1 id="doc-character_art--character-art-the-standard-set"><a class="anchor" href="#doc-character_art--character-art-the-standard-set" aria-label="Link to this section">#</a>Character Art — the standard set</h1>
 <p>How every NPC avatar is drawn, named and played. One standard, so a new
 character is just a new set of files. The game side is
@@ -3132,7 +3135,7 @@ typed.</p>
 </thead>
 <tbody><tr>
 <td align="left">Nothing happening, narration, directions, a pause</td>
-<td align="left"><strong>Rest:</strong> the first frame of the talk loop, held still. Never animates.</td>
+<td align="left"><strong>Rest:</strong> their <code>idle</code> still, mouth shut (else frame 0 of the talk loop), held still. A character whose idle is a short loop (Samun) plays it once every 2.5 to 6.5 s, from frame 0, then settles. The mouth is shut in every frame of it.</td>
 </tr>
 <tr>
 <td align="left">Their quoted words are drawing</td>
@@ -3170,8 +3173,8 @@ of the loop).</p>
 </thead>
 <tbody><tr>
 <td align="left"><code>idle</code></td>
-<td align="left">optional: a neutral still if it differs from talk frame 0</td>
-<td align="left">1</td>
+<td align="left">the rest face: a neutral still (mouth shut), <strong>or a short loop</strong> (eyes drifting, a blink; mouth shut in every frame). A loop rests on frame 0 and plays once every 2.5 to 6.5 seconds, then settles</td>
+<td align="left">1, or a loop</td>
 <td align="left">0-1</td>
 </tr>
 <tr>
@@ -3247,6 +3250,29 @@ The Therapist is a voice first, so his set is optional beyond rest and talk
 <p><strong>Trauma / confession images (proposed size):</strong> 240 x 240, true pixels (the
 game scales it up crisp, like the chapter plates). Say if you would rather they
 match 192.</p>
+<h2 id="doc-character_art--placeholders-in-deborah-and-samun"><a class="anchor" href="#doc-character_art--placeholders-in-deborah-and-samun" aria-label="Link to this section">#</a>Placeholders in: Deborah and Samun</h2>
+<p>Temporary art, wired the same way the final art will be.</p>
+<table>
+<thead>
+<tr>
+<th align="left">NPC</th>
+<th align="left">Has</th>
+<th align="left">How it plays</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Deborah</strong></td>
+<td align="left"><code>idle</code> (shut mouth, eyes open), <code>talk</code> (3 frames: shut, squint, open; frame 0 is the idle picture), plus <code>squint</code> and <code>open</code> kept as extra pieces (not a state yet)</td>
+<td align="left">Rests on <code>idle</code>. The talk loop plays only while her quoted words draw.</td>
+</tr>
+<tr>
+<td align="left"><strong>Samun</strong></td>
+<td align="left"><code>idle</code>: a 9-frame loop (eyes wander, a blink), mouth shut throughout. No talk loop yet</td>
+<td align="left">Rests on frame 0, plays the whole loop every 2.5 to 6.5 s, settles. While he speaks his mouth does not move (no talk art), the glance keeps its own timing.</td>
+</tr>
+</tbody></table>
+<p>Both came as GIFs; Samun&#39;s was drawn at 1920 x 1920, an exact 10x of 192, which
+the importer verifies (nothing lost) and stores at the true 192 x 192.</p>
 <h2 id="doc-character_art--the-therapist-done"><a class="anchor" href="#doc-character_art--the-therapist-done" aria-label="Link to this section">#</a>The Therapist (done)</h2>
 <p>He wears a different hat on each call. Per hat: three stills (<code>_1</code>, <code>_2</code>,
 <code>_3</code>) and a talk loop. Hats: bunny, derby, fez, jester, old man, pork pie,
@@ -3316,7 +3342,7 @@ hat twice in a row, bare-headed when nothing fits, which is the baseline):</p>
 </tbody></table>
 <p>On his &quot;you again&quot; call, the hat is how you left the lake: clean = top hat,
 damp = derby, soaked = old man, &quot;a water-quality advisory&quot; = pork pie.</p>
-<p>The tutorial and the first-ever call are bare-headed (the baseline), and his
+<p>His tutorial is where the gag is established: he starts bare-headed (the baseline) and each thing he explains gets its hat (battery old man, Bars bunny, Wi-Fi sombrero, clock derby, the lake pork pie, masks and lies jester, contacts fez, homework top hat), rapid-fire on the meters page. See <code>TUTORIAL_HATS</code> in <code>src/engine/characters.js</code>. His
 face is on every phone call: coach calls, your calls to him, his voicemail, and
 the repeat-playthrough call. Add a hat rule by adding a line to <code>HAT_RULES</code>
 (and a test).</p>
@@ -3326,7 +3352,11 @@ the repeat-playthrough call. Add a hat rule by adding a line to <code>HAT_RULES<
 <code>Profile_Deborah_React_Lie.gif</code>, <code>Profile_Deborah_Trauma_3.gif</code>. The talk loop is
 <code>Profile_Deborah_Talk.gif</code> (or <code>Profile_Deborah_Ani.gif</code>).</li>
 <li>Put them in a folder, then run:
-<code>node scripts/import-character-gifs.mjs &lt;folder&gt; &lt;npc&gt;</code></li>
+<code>node scripts/import-character-gifs.mjs &lt;folder&gt; &lt;npc&gt;</code>
+Files with their own names (<code>Samunneutral.gif</code>, <code>Profile_Deborah01.gif</code>): put a
+<code>names.json</code> in the folder, <code>{&quot;Samunneutral.gif&quot;: &quot;idle&quot;}</code>, mapping each file to
+its state. Anything that is not a standard state name is kept as an extra piece.
+A GIF drawn at a whole multiple of 192 (1920 x 1920) is fine.</li>
 <li>It writes the frames to <code>public/assets/lake-ulysses/characters/&lt;npc&gt;/</code>,
 a manifest to <code>src/chapters/lake-ulysses/characters/&lt;npc&gt;.json</code>, and warns
 about any file that isn&#39;t 192 × 192. The game picks them up automatically.</li>
@@ -3588,12 +3618,12 @@ warm fogged tint are all added in code.</p>
 </thead>
 <tbody><tr>
 <td align="left">Chapter plate × 4 (hallway, alley, garage, bar lot)</td>
-<td align="left"><code>public/assets/lake-ulysses/plates/plate_&lt;npc&gt;.png</code> (<code>plate_deborah</code>, <code>plate_rwanda</code>, <code>plate_samun</code>, <code>plate_rick</code>)</td>
-<td align="left">240×150 exactly (true pixels; the game scales it up crisp)</td>
+<td align="left"><code>public/assets/lake-ulysses/plates/&lt;npc&gt;/&lt;npc&gt;_0000.png</code> ... (from <code>&lt;Npc&gt;_ChapterOpen.gif</code>)</td>
+<td align="left">240×150 true pixels; export a GIF at any whole multiple (2400×1500 works)</td>
 <td align="left">width of the page, under the name</td>
-<td align="left">PNG, pure black and white only, no gray, no antialiasing, no effects</td>
-<td align="left">1</td>
-<td align="left">🔲 (code placeholder until a file exists)</td>
+<td align="left">GIF in, palette PNG frames out; 1-bit look, no effects. Plays at your timing, unchanged; the game adds the Spectrum-style interlaced load, scanlines aligned to your pixel rows, and the dot grid</td>
+<td align="left">3–7, with per-frame delays</td>
+<td align="left">✅ Deborah (3), Samun (7) · 🔲 Rwanda, Rick (code placeholder)</td>
 <td align="left">—</td>
 </tr>
 </tbody></table>
@@ -6657,7 +6687,8 @@ atmosphere, not a score.</p>
 <p>Newest first; details in HANDOFF.md.</p>
 <ol>
 <li><strong>Listen and look (2026-10-10):</strong> every new sound has only been tested muted: swipes (slow vs fast), room objects, door, quick beats, chapter-page loading bleeps and room ambience, confrontation openers, prologue and walk home. Tune by ear in <code>src/shell/audio.js</code> (SFX, playClassBleep, startOpenerAmbience, playOpenerTheme).</li>
-<li><strong>Character art (2026-10-10):</strong> the Therapist&#39;s set is in. Next: Deborah, Rwanda, Samun, Rick sets per <code>docs/CHARACTER_ART.md</code> (idle, talk loop, 8 feeling faces, 5 reactions, connect, pushaway, 5 trauma images each), then wire <code>portrait.setState()</code> to MOOD, reactions and the story beats. Run <code>node scripts/import-character-gifs.mjs &lt;folder&gt; &lt;npc&gt;</code> for each batch.</li>
+<li><strong>Plates:</strong> Rwanda and Rick chapter plates (<code>Rwanda_ChapterOpen.gif</code>, <code>Rick_ChapterOpen.gif</code>; Deborah and Samun are in). Run <code>node scripts/import-chapter-plates.mjs &lt;folder&gt;</code>.</li>
+<li><strong>Character art (2026-10-10):</strong> the Therapist&#39;s set is in, and placeholders for Deborah (idle, talk loop) and Samun (idle loop). Next: the full Deborah, Rwanda, Samun, Rick sets per <code>docs/CHARACTER_ART.md</code> (idle, talk loop, 8 feeling faces, 5 reactions, connect, pushaway, 5 trauma images each), then wire <code>portrait.setState()</code> to MOOD, reactions and the story beats. Run <code>node scripts/import-character-gifs.mjs &lt;folder&gt; &lt;npc&gt;</code> for each batch.</li>
 <li><strong>Art drop-ins:</strong> chapter plates (<code>plates/plate_&lt;npc&gt;.png</code>, 240x150 1-bit) and everything in <code>docs/ASSET_SIZES.md</code>.</li>
 <li><strong>Opening confrontations: built for all four (2026-10-09).</strong> Look at them on screen as each class (art is still placeholder); the restore hints and secret lines are first drafts for the writer pass.</li>
 <li><strong>Later: interactive way in before each marker page</strong> (skippable; the moment is highlighted and says exactly what to do; the page turns in only after it). Arcade &quot;READY? START!&quot; energy, but literary.<ul>

@@ -2382,3 +2382,33 @@
 
 /* Fogged: real plate art takes the lamplight too (it's white on black). */
 .dx-marker.is-fogged .dx-marker__plate-art { filter: sepia(0.35) brightness(0.95); }
+
+/* The plate, as a CRT showed a picture: drawn at the art's true size and scaled
+   with hard pixels, with a scanline gap in every art pixel row and a faint dot
+   grid in every art pixel column, so the screen's lines are the picture's own.
+   (The roll bar and tape stripes are on the page itself.) Nothing moves. */
+.dx-marker__crt {
+  position: relative;
+  line-height: 0;
+}
+
+.dx-marker__crt::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, transparent 0 62%, rgba(0, 0, 0, 0.34) 62% 100%),
+    linear-gradient(to right, transparent 0 82%, rgba(0, 0, 0, 0.14) 82% 100%);
+  background-size: 100% calc(100% / 150), calc(100% / 240) 100%;
+}
+
+.dx-marker__plate-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 240 / 150;
+  image-rendering: pixelated;
+}
+
+.dx-marker.is-fogged .dx-marker__plate-canvas { filter: sepia(0.35) brightness(0.95); }

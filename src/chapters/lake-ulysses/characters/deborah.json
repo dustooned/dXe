@@ -1,0 +1,19 @@
+{
+  "npc": "deborah",
+  "size": 192,
+  "art": {
+    "idle": {
+      "frames": 1
+    },
+    "open": {
+      "frames": 1
+    },
+    "squint": {
+      "frames": 1
+    },
+    "talk": {
+      "frames": 3,
+      "fps": 10
+    }
+  }
+}

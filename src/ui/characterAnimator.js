@@ -17,6 +17,23 @@ import { isPaused, onPauseChange } from '../shell/pauseBus.js';
 const PAD = (n) => String(n).padStart(4, '0');
 const loaded = new Set();
 
+// Which frame is showing `elapsed` ms into an animation: the frames' own
+// delays if the art has them (art.delays, in ms, one per frame: an uneven
+// flicker), else an even fps. `loop` wraps; a one-shot clamps past the end and
+// reports `done` once every frame, the last included, has had its time.
+export function frameAt(art, elapsed, loop) {
+  const n = art.frames;
+  const delays = art.delays?.length === n ? art.delays : Array(n).fill(1000 / (art.fps ?? 10));
+  const total = delays.reduce((a, b) => a + b, 0);
+  const t = loop ? elapsed % total : Math.min(elapsed, total);
+  let acc = 0;
+  for (let i = 0; i < n; i++) {
+    acc += delays[i];
+    if (t < acc) return { frame: i, done: false };
+  }
+  return { frame: n - 1, done: elapsed >= total };
+}
+
 export function frameUrl(art, i) {
   if (art.kind === 'still') return art.url;
   return `${art.base}${PAD(i)}.${art.ext ?? 'png'}`;
@@ -36,7 +53,6 @@ export function createCharacterAnimator(img) {
   let raf = null;
   let art = null;
   let mode = 'hold';
-  let frameMs = 100;
   let elapsed = 0;       // ms of animation time (pauses excluded)
   let last = 0;          // performance.now() at the last tick
   let shown = -1;
@@ -59,17 +75,12 @@ export function createCharacterAnimator(img) {
     last = now;
     if (isPaused()) return;
     elapsed += Math.min(dt, 250); // a long stall (a hidden tab) doesn't skip ahead
-    const n = art.frames;
-    const f = Math.floor(elapsed / frameMs);
-    if (mode === 'loop') {
-      show(f % n);
-    } else if (mode === 'once') {
-      // Every frame, the last included, gets its full time before it ends.
-      show(Math.min(f, n - 1));
-      if (f >= n) {
-        stopRaf();
-        if (!ended) { ended = true; onEnd?.(); }
-      }
+    const at = frameAt(art, elapsed, mode === 'loop');
+    show(at.frame);
+    // A one-shot ends once every frame, the last included, has had its time.
+    if (mode === 'once' && at.done) {
+      stopRaf();
+      if (!ended) { ended = true; onEnd?.(); }
     }
   }
 
@@ -81,7 +92,6 @@ export function createCharacterAnimator(img) {
     ended = false;
     shown = -1;
     elapsed = 0;
-    frameMs = 1000 / (art.fps ?? 10);
     preload(art);
     show(0);
     last = performance.now();
@@ -115,5 +125,6 @@ export function createCharacterAnimator(img) {
 // How long a once() of this art takes, in ms (a still is a short beat).
 export function durationOf(art) {
   if (!art || art.kind === 'still') return art ? 220 : 0;
+  if (art.delays?.length === art.frames) return art.delays.reduce((a, b) => a + b, 0);
   return Math.round((art.frames / (art.fps ?? 10)) * 1000);
 }

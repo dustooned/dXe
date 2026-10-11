@@ -11,7 +11,7 @@ typed.
 
 | Moment | What you see |
 | :-- | :-- |
-| Nothing happening, narration, directions, a pause | **Rest:** the first frame of the talk loop, held still. Never animates. |
+| Nothing happening, narration, directions, a pause | **Rest:** their `idle` still, mouth shut (else frame 0 of the talk loop), held still. A character whose idle is a short loop (Samun) plays it once every 2.5 to 6.5 s, from frame 0, then settles. The mouth is shut in every frame of it. |
 | Their quoted words are drawing | **Talk loop**, from frame 0, 100 ms a frame. Closes about 90 ms after the last quoted letter, at once on a pause. |
 | Your turn to answer | **Wait:** their `wait_<feeling>` anticipation plays once and holds. |
 | Your answer lands | **React:** `react_<kind>` plays once, a moment before they speak, then back to rest. |
@@ -30,7 +30,7 @@ of the loop).
 
 | State | What it is | Frames | Per NPC |
 | :-- | :-- | :-- | :-- |
-| `idle` | optional: a neutral still if it differs from talk frame 0 | 1 | 0-1 |
+| `idle` | the rest face: a neutral still (mouth shut), **or a short loop** (eyes drifting, a blink; mouth shut in every frame). A loop rests on frame 0 and plays once every 2.5 to 6.5 seconds, then settles | 1, or a loop | 0-1 |
 | `talk` | mouth moving; **frame 0 is the rest pose** | 3 loop | 1 |
 | `talk_happy` `talk_trust` `talk_fear` `talk_surprise` `talk_sadness` `talk_disgust` `talk_anger` `talk_anxiety` | speaking in each feeling (falls back to `talk`) | 3 loop each | 8 |
 | `wait_happy` ... `wait_anxiety` | on your turn, in their feeling: a short anticipation that plays once and holds its last frame (a 1-frame still is just held) | 1-4 each | 8 |
@@ -50,6 +50,18 @@ The Therapist is a voice first, so his set is optional beyond rest and talk
 **Trauma / confession images (proposed size):** 240 x 240, true pixels (the
 game scales it up crisp, like the chapter plates). Say if you would rather they
 match 192.
+
+## Placeholders in: Deborah and Samun
+
+Temporary art, wired the same way the final art will be.
+
+| NPC | Has | How it plays |
+| :-- | :-- | :-- |
+| **Deborah** | `idle` (shut mouth, eyes open), `talk` (3 frames: shut, squint, open; frame 0 is the idle picture), plus `squint` and `open` kept as extra pieces (not a state yet) | Rests on `idle`. The talk loop plays only while her quoted words draw. |
+| **Samun** | `idle`: a 9-frame loop (eyes wander, a blink), mouth shut throughout. No talk loop yet | Rests on frame 0, plays the whole loop every 2.5 to 6.5 s, settles. While he speaks his mouth does not move (no talk art), the glance keeps its own timing. |
+
+Both came as GIFs; Samun's was drawn at 1920 x 1920, an exact 10x of 192, which
+the importer verifies (nothing lost) and stores at the true 192 x 192.
 
 ## The Therapist (done)
 
@@ -84,7 +96,7 @@ hat twice in a row, bare-headed when nothing fits, which is the baseline):
 On his "you again" call, the hat is how you left the lake: clean = top hat,
 damp = derby, soaked = old man, "a water-quality advisory" = pork pie.
 
-The tutorial and the first-ever call are bare-headed (the baseline), and his
+His tutorial is where the gag is established: he starts bare-headed (the baseline) and each thing he explains gets its hat (battery old man, Bars bunny, Wi-Fi sombrero, clock derby, the lake pork pie, masks and lies jester, contacts fez, homework top hat), rapid-fire on the meters page. See `TUTORIAL_HATS` in `src/engine/characters.js`. His
 face is on every phone call: coach calls, your calls to him, his voicemail, and
 the repeat-playthrough call. Add a hat rule by adding a line to `HAT_RULES`
 (and a test).
@@ -96,6 +108,10 @@ the repeat-playthrough call. Add a hat rule by adding a line to `HAT_RULES`
    `Profile_Deborah_Talk.gif` (or `Profile_Deborah_Ani.gif`).
 2. Put them in a folder, then run:
    `node scripts/import-character-gifs.mjs <folder> <npc>`
+   Files with their own names (`Samunneutral.gif`, `Profile_Deborah01.gif`): put a
+   `names.json` in the folder, `{"Samunneutral.gif": "idle"}`, mapping each file to
+   its state. Anything that is not a standard state name is kept as an extra piece.
+   A GIF drawn at a whole multiple of 192 (1920 x 1920) is fine.
 3. It writes the frames to `public/assets/lake-ulysses/characters/<npc>/`,
    a manifest to `src/chapters/lake-ulysses/characters/<npc>.json`, and warns
    about any file that isn't 192 × 192. The game picks them up automatically.
