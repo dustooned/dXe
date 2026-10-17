@@ -2506,16 +2506,64 @@
   font-size: calc(9 * var(--fs));
   cursor: pointer;
 }
-.dx-feed__left {
+/* Touch screens pull the stack instead; the arrows stay for a mouse, and
+   for Reduced Effects (no bounce to show there's more). */
+@media (pointer: coarse) {
+  .dx-feed__flip { display: none; }
+  .is-reduced-effects .dx-feed__flip { display: flex; }
+}
+/* The stack: the channel between peeks of the ones above and below. The
+   mover is what a drag, a slide or the hint bounce moves. */
+.dx-feed-view {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.dx-feed-mover {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+}
+.dx-feed-mover.is-hinting { animation: dx-feed-hint 1.1s ease-in-out; }
+@keyframes dx-feed-hint {
+  0% { transform: translateY(0); }
+  35%, 55% { transform: translateY(calc(-84 * var(--px))); }
+  78% { transform: translateY(calc(6 * var(--px))); }
+  100% { transform: translateY(0); }
+}
+.dx-feed__peek {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--color-black);
+  pointer-events: none;
+}
+.dx-feed__peek--next { top: 100%; border-top: 2px solid var(--color-white); }
+.dx-feed__peek--prev { bottom: 100%; border-bottom: 2px solid var(--color-white); }
+.dx-feed__peek-label {
   position: absolute;
   z-index: 4;
-  right: calc(6 * var(--px));
-  top: calc(40% + 90 * var(--px));
+  left: 0;
+  right: 0;
   margin: 0;
-  padding: calc(2 * var(--px)) calc(4 * var(--px));
+  padding: calc(14 * var(--px)) calc(16 * var(--px));
+  display: flex;
+  align-items: center;
+  gap: calc(8 * var(--px));
   background: var(--color-black);
-  font-size: calc(6 * var(--fs));
+  font-size: calc(7 * var(--fs));
+  letter-spacing: 0.08em;
 }
+.dx-feed__peek--next .dx-feed__peek-label { top: 0; }
+.dx-feed__peek--prev .dx-feed__peek-label { bottom: 0; }
+.dx-feed__peek-label .dx-feed__name { flex: 1; }
+.dx-feed__more { opacity: 0.6; }
 .dx-feed__comments {
   position: absolute;
   z-index: 4;

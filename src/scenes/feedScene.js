@@ -1,6 +1,10 @@
 // The FEELZ feed (Phase 11 step 5): the app's first screen is a stack of
-// live channels that all run at once on one clock. Swipe up/down (or the
-// arrows, or the keyboard) to flip; a channel you left kept going, so you
+// live channels that all run at once on one clock. Like a phone feed, the
+// channels are stacked: drag up and the next one follows your finger in from
+// below, and every few seconds the screen bounces up to show the top of the
+// next one, a hint to pull (on the first run until every channel is found,
+// after that until you've flipped once). The arrows (mouse only), the
+// keyboard and the mouse wheel flip too. A channel you left kept going, so you
 // come back to wherever it is now. Each channel has its own scrubber to drag
 // back to what you missed, or ahead. Comments scroll up the lower left; tap
 // one to heart it.
@@ -37,7 +41,12 @@ import { playSfx, playTypewriterTick, preloadTypewriterTick, startAmbient, stopA
 const TICK_MS = 100;
 const COMMENT_GAP_MS = 900;
 const COMMENTS_SHOWN = 5;
-const FLIP_PX = 50;
+const FLIP_PX = 70;       // a pull past this (or a quick flick) flips
+const FLICK_SPEED = 0.5;  // px per ms
+const SLIDE_MS = 220;
+const HINT_FIRST_MS = 1800;
+const HINT_EVERY_MS = 5200;
+const HINT_MS = 1100;     // the bounce (CSS dx-feed-hint)
 
 const ART = {
   feelzSilhouette: () => createFeelzSilhouette(),
@@ -65,8 +74,14 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
   const animFrames = {};
   let tickTimer = null;
   let toastTimer = null;
+  let hintTimer = null;
+  let slideTimer = null;
+  let sliding = false;
+  let flipped = false;
+  let wheelAt = 0;
   let dom = null;
   let unmounted = false;
+  const reduced = () => document.documentElement.classList.contains('is-reduced-effects');
 
   const posOf = (i) => Math.max(0, Math.min(channels[i].length, clock + offsets[i]));
   const allVisited = () => visited.size === channels.length;
@@ -83,15 +98,67 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
     animators.push({ key, animator: createSpriteAnimator(el, cfg, animFrames[key] ?? 0) });
   }
 
-  // The channel's frame: picture, header, comments, scrubber, flip arrows.
+  // The picture of a channel next door: a still of where its art is now,
+  // its header, and a label on the edge that shows.
+  function buildPeek(i, dir) {
+    const ch = channels[i];
+    const peek = document.createElement('div');
+    peek.className = `dx-feed__peek dx-feed__peek--${dir > 0 ? 'next' : 'prev'}`;
+    peek.setAttribute('aria-hidden', 'true');
+    const still = (key, cls) => {
+      const cfg = scene.anims?.[key];
+      if (!cfg) return;
+      const img = document.createElement('img');
+      img.className = cls;
+      img.alt = '';
+      // One frame and done: the animator sets the src as it starts.
+      createSpriteAnimator(img, cfg, animFrames[key] ?? 0).destroy();
+      peek.appendChild(img);
+    };
+    if (ch.bgAnim) still(ch.bgAnim, 'dx-cutscene-bg');
+    else if (ch.image) {
+      const bg = document.createElement('img');
+      bg.className = 'dx-cutscene-bg dx-feed__still';
+      bg.src = ch.image;
+      bg.alt = '';
+      peek.appendChild(bg);
+    } else {
+      const card = document.createElement('p');
+      card.className = 'dx-feed__card';
+      card.textContent = ch.name;
+      peek.appendChild(card);
+    }
+    if (ch.spriteAnim) still(ch.spriteAnim, 'dx-cutscene-sprite');
+    const label = document.createElement('p');
+    label.className = 'dx-feed__peek-label';
+    label.innerHTML = '<span class="dx-feed__tag"></span><span class="dx-feed__name"></span><span class="dx-feed__more"></span>';
+    label.querySelector('.dx-feed__tag').textContent = ch.tag;
+    label.querySelector('.dx-feed__name').textContent = ch.name;
+    peek.appendChild(label);
+    return peek;
+  }
+
+  // The channel's frame: picture, header, comments, scrubber, flip arrows,
+  // between the peeks of the channels above and below.
   function buildChannel() {
     destroyAnimators();
     typewriter?.destroy();
     typewriter = null;
+    cancelLater(hintTimer);
     stageEl.innerHTML = '';
     shownBeat = -1;
     shownComments = '';
+    sliding = false;
     const ch = channels[cur];
+
+    const view = document.createElement('div');
+    view.className = 'dx-feed-view';
+    const mover = document.createElement('div');
+    mover.className = 'dx-feed-mover';
+    const n = channels.length;
+    const nextPeek = buildPeek((cur + 1) % n, 1);
+    mover.append(buildPeek((cur - 1 + n) % n, -1), nextPeek);
+    view.appendChild(mover);
 
     const screen = document.createElement('div');
     screen.className = `dx-screen dx-cutscene-screen dx-feed dx-feed--${ch.id}`;
@@ -158,7 +225,10 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
     const flip = document.createElement('div');
     flip.className = 'dx-feed__flip';
     flip.innerHTML = '<button type="button" class="dx-feed__flip-btn" data-dir="-1" aria-label="Previous channel">▲</button><button type="button" class="dx-feed__flip-btn" data-dir="1" aria-label="Next channel">▼</button>';
-    flip.querySelectorAll('button').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); flipBy(Number(b.dataset.dir)); }));
+    flip.querySelectorAll('button').forEach((b) => {
+      b.addEventListener('pointerdown', (e) => e.stopPropagation());
+      b.addEventListener('click', (e) => { e.stopPropagation(); slide(Number(b.dataset.dir)); });
+    });
     screen.appendChild(flip);
 
     const close = document.createElement('button');
@@ -166,13 +236,12 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
     close.className = 'dx-btn dx-feed__close';
     close.textContent = 'CLOSE APP ▶';
     close.hidden = !canClose();
+    close.addEventListener('pointerdown', (e) => e.stopPropagation());
     close.addEventListener('click', (e) => { e.stopPropagation(); finish(); });
     screen.appendChild(close);
 
-    // Unvisited channels, the first time through: a small count by the arrows.
-    const left = document.createElement('p');
-    left.className = 'dx-feed__left';
-    screen.appendChild(left);
+    // Unvisited channels, the first time through: a count on the next peek.
+    const left = nextPeek.querySelector('.dx-feed__more');
 
     const textBox = document.createElement('div');
     textBox.className = 'dx-cutscene-textbox dx-feed__textbox';
@@ -188,31 +257,93 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
     toast.hidden = true;
     screen.appendChild(toast);
 
-    stageEl.appendChild(screen);
-    dom = { screen, scrub, comments, close, left, speaker, text, textBox, toast, beatEls: [] };
+    mover.insertBefore(screen, nextPeek);
+    stageEl.appendChild(view);
+    dom = { view, mover, screen, scrub, comments, close, left, speaker, text, textBox, toast, beatEls: [] };
     attachSwipe(screen);
     update({ jump: true });
+    hintTimer = later(hint, HINT_FIRST_MS);
   }
 
-  // Vertical swipe flips; a tap finishes the line being typed.
+  // The bounce: the screen lifts to show the top of the next channel and
+  // settles back. Until you've flipped (first run: until all are found).
+  function wantsHint() {
+    return firstRound ? !allVisited() : !flipped;
+  }
+  function hint() {
+    if (!dom || unmounted || !wantsHint()) return;
+    if (!sliding && !reduced()) {
+      dom.mover.classList.remove('is-hinting');
+      void dom.mover.offsetWidth; // restart the animation
+      dom.mover.classList.add('is-hinting');
+      later(() => dom?.mover.classList.remove('is-hinting'), HINT_MS);
+    }
+    hintTimer = later(hint, HINT_EVERY_MS);
+  }
+
+  // Slide to the channel above or below, then rebuild on it. From wherever
+  // a drag left the stack, or from rest (arrows, keys, the wheel, the skip).
+  function slide(dir) {
+    if (!dom || sliding) return;
+    if (reduced()) { flipBy(dir); return; }
+    sliding = true;
+    dom.mover.classList.remove('is-hinting');
+    dom.mover.style.transition = `transform ${SLIDE_MS}ms ease-in`;
+    dom.mover.style.transform = `translateY(${dir > 0 ? -100 : 100}%)`;
+    playSfx('flip');
+    cancelLater(slideTimer);
+    slideTimer = later(() => flipBy(dir, { quiet: true }), SLIDE_MS);
+  }
+
+  // The stack follows a vertical drag; let go past FLIP_PX (or flick) and it
+  // goes, short of it and it springs back. A tap finishes the line typing.
   function attachSwipe(el) {
     let start = null;
-    el.addEventListener('pointerdown', (e) => { start = { x: e.clientX, y: e.clientY }; });
-    el.addEventListener('pointerup', (e) => {
-      if (!start) return;
+    let dragging = false;
+    const move = (dy) => { dom.mover.style.transform = `translateY(${dy}px)`; };
+    el.addEventListener('pointerdown', (e) => {
+      if (sliding) return;
+      start = { x: e.clientX, y: e.clientY, t: performance.now() };
+      dragging = false;
+      el.setPointerCapture?.(e.pointerId);
+    });
+    el.addEventListener('pointermove', (e) => {
+      if (!start || !dom) return;
       const dx = e.clientX - start.x;
       const dy = e.clientY - start.y;
-      start = null;
-      if (Math.abs(dy) > FLIP_PX && Math.abs(dy) > Math.abs(dx)) flipBy(dy < 0 ? 1 : -1);
-      else if (typewriter && !typewriter.isDone()) typewriter.finish();
+      if (!dragging && Math.abs(dy) > 8 && Math.abs(dy) > Math.abs(dx)) {
+        dragging = true;
+        dom.mover.classList.remove('is-hinting');
+        dom.mover.style.transition = 'none';
+      }
+      if (dragging) move(dy);
     });
+    const end = (e, cancelled) => {
+      if (!start || !dom) return;
+      const dy = e.clientY - start.y;
+      const speed = dy / Math.max(1, performance.now() - start.t);
+      const wasDrag = dragging;
+      start = null;
+      dragging = false;
+      if (!wasDrag) {
+        if (!cancelled && typewriter && !typewriter.isDone()) typewriter.finish();
+        return;
+      }
+      if (!cancelled && (Math.abs(dy) > FLIP_PX || Math.abs(speed) > FLICK_SPEED)) { slide(dy < 0 ? 1 : -1); return; }
+      // Not far enough: back into place, with a little overshoot.
+      dom.mover.style.transition = 'transform 260ms cubic-bezier(0.2, 1.5, 0.4, 1)';
+      dom.mover.style.transform = '';
+    };
+    el.addEventListener('pointerup', (e) => end(e, false));
+    el.addEventListener('pointercancel', (e) => end(e, true));
   }
 
-  function flipBy(dir) {
+  function flipBy(dir, { quiet = false } = {}) {
+    flipped = true;
     cur = (cur + dir + channels.length) % channels.length;
     const fresh = !visited.has(cur);
     visited.add(cur);
-    playSfx('flip');
+    if (!quiet) playSfx('flip');
     buildChannel();
     if (fresh && firstRound && allVisited()) {
       showToast(`ALL ${channels.length} CHANNELS FOUND`);
@@ -298,7 +429,7 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
     dom.scrub.value = String(pos);
     dom.close.hidden = !canClose();
     const unseen = channels.length - visited.size;
-    dom.left.textContent = firstRound && unseen > 0 ? `${unseen} MORE ▼` : '';
+    dom.left.textContent = firstRound && unseen > 0 ? `${unseen} MORE` : '';
   }
 
   function tick() {
@@ -319,14 +450,26 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
   setSkipHandler?.(() => {
     if (canClose()) { finish(); return; }
     const next = channels.findIndex((_, i) => !visited.has(i));
-    flipBy((next - cur + channels.length) % channels.length);
+    const steps = (next - cur + channels.length) % channels.length;
+    if (steps === 1) slide(1);
+    else flipBy(steps);
   });
 
   const onKey = (e) => {
-    if (e.key === 'ArrowDown') flipBy(1);
-    else if (e.key === 'ArrowUp') flipBy(-1);
+    if (!dom) return;
+    if (e.key === 'ArrowDown') slide(1);
+    else if (e.key === 'ArrowUp') slide(-1);
   };
   window.addEventListener('keydown', onKey);
+  // A mouse wheel or trackpad: one flip per gesture.
+  const onWheel = (e) => {
+    if (!dom || Math.abs(e.deltaY) < 30) return;
+    const now = performance.now();
+    if (now - wheelAt < 600) return;
+    wheelAt = now;
+    slide(e.deltaY > 0 ? 1 : -1);
+  };
+  stageEl.addEventListener('wheel', onWheel, { passive: true });
 
   if (scene.ambient) startAmbient(scene.ambient);
   // An intro card (the morning feed's notification) waits for a tap; the
@@ -350,7 +493,10 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
     unmounted = true;
     cancelLater(tickTimer);
     cancelLater(toastTimer);
+    cancelLater(hintTimer);
+    cancelLater(slideTimer);
     window.removeEventListener('keydown', onKey);
+    stageEl.removeEventListener('wheel', onWheel);
     destroyAnimators();
     typewriter?.destroy();
     if (scene.ambient) stopAmbient();
