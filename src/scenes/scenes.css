@@ -2662,3 +2662,11 @@
   white-space: pre-line;
   line-height: 2;
 }
+
+/* The record's SAVE AS PNG and RUN CODE, side by side (endingScene.js). */
+.dx-ending-keep {
+  display: flex;
+  gap: calc(8 * var(--px));
+}
+.dx-ending-keep .dx-btn { flex: 1; min-width: 0; }
+.dx-feed__peek-label .dx-feed__ch { opacity: 0.6; }

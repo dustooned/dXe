@@ -5,6 +5,7 @@ import { onRouteChange, navigate, getCurrentRoute } from './shell/router.js';
 import { loadSave, loadCheckpoint, importSave } from './shell/save.js';
 import { decodeRunCode } from './engine/runCode.js';
 import { historyLine } from './ui/runCodePanel.js';
+import { createLakeGauge } from './ui/lakeGauge.js';
 import { queueRunState } from './shell/debug.js';
 import { initFx, fadeToBlack, flash, shake } from './shell/fx.js';
 import { initFeelzWord } from './shell/feelzWord.js';
@@ -487,11 +488,11 @@ function renderRunCard(code) {
   const title = document.createElement('h2');
   title.className = 'dx-title';
   screen.appendChild(title);
-  const line = (text, cls = '') => {
+  const line = (text, cls = '', host = screen) => {
     const p = document.createElement('p');
     p.className = `dx-text ${cls}`;
     p.textContent = text;
-    screen.appendChild(p);
+    host.appendChild(p);
     return p;
   };
   const btn = (text, fn) => {
@@ -512,11 +513,17 @@ function renderRunCard(code) {
   }
   const { history: runs, endingsSeen } = result.data;
   const last = runs[runs.length - 1];
-  title.textContent = 'A RUN';
+  title.textContent = 'RUN CARD';
   if (last) {
-    if (last.handle) line(`@${last.handle}`, 'dx-runcard__handle');
-    line(historyLine(last), 'dx-runcard__run');
-    if (last.heard?.length) line(`HEARD THE STORY OF ${last.heard.join(', ')}`);
+    // The run as a card: who, the lake it left, what happened.
+    const card = document.createElement('div');
+    card.className = 'dx-runcard__card';
+    screen.appendChild(card);
+    line('FEELZ · LAKE ULYSSES', 'dx-runcard__kicker', card);
+    if (last.handle) line(`@${last.handle}`, 'dx-runcard__handle', card);
+    card.appendChild(createLakeGauge(last.truthDebt ?? 0).el);
+    line(historyLine(last), 'dx-runcard__run', card);
+    if (last.heard?.length) line(`HEARD THE STORY OF ${last.heard.join(', ')}`, '', card);
   }
   line(`${endingsSeen.length} ${endingsSeen.length === 1 ? 'ENDING' : 'ENDINGS'} FOUND · ${runs.length} ${runs.length === 1 ? 'RUN' : 'RUNS'} ON THIS CODE`);
   const status = line('', 'dx-runcard__status');

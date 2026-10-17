@@ -1805,3 +1805,26 @@ svg .is-hinted path {
 
 /* A Therapist "try this" line written on the card (dialogScene.js placeTask). */
 .dx-swipe-card__text.is-task { color: #ffe27a; }
+
+/* Settings, in groups (hud.js): a small heading over each. */
+.dx-hud-panel__group {
+  margin: calc(6 * var(--px)) 0 calc(-4 * var(--px));
+  font-size: calc(6 * var(--fs));
+  letter-spacing: 0.12em;
+  opacity: 0.55;
+  border-bottom: 1px solid rgb(255 255 255 / 0.25);
+  padding-bottom: calc(3 * var(--px));
+}
+.dx-hud-panel__group:first-of-type { margin-top: 0; }
+
+/* The run card (main.js renderRunCard): a framed card with the run's lake. */
+.dx-runcard__card {
+  display: flex;
+  flex-direction: column;
+  gap: calc(10 * var(--px));
+  padding: calc(14 * var(--px));
+  border: 2px solid var(--color-white);
+  text-align: center;
+}
+.dx-runcard__card .dx-lake { align-self: stretch; }
+.dx-runcard__kicker { margin: 0; font-size: calc(7 * var(--fs)); letter-spacing: 0.15em; opacity: 0.6; }

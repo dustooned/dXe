@@ -217,12 +217,15 @@ export function mount(stageEl, scene, { run, exit, onComplete, recordEnding, cha
       save.disabled = false;
       save.textContent = 'SAVE AS PNG';
     });
-    actions.appendChild(save);
     const code = document.createElement('button');
     code.className = 'dx-btn';
     code.textContent = 'RUN CODE';
     code.addEventListener('click', (e) => { e.stopPropagation(); openRunCodePanel(); });
-    actions.appendChild(code);
+    // The record's two keep-it buttons share a row; the way on sits under them.
+    const keep = document.createElement('div');
+    keep.className = 'dx-ending-keep';
+    keep.append(save, code);
+    actions.appendChild(keep);
     fax = createFaxPrintout(record, {
       onDone: () => {
         if (!actions.hidden) return;

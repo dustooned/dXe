@@ -132,9 +132,12 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
     if (ch.spriteAnim) still(ch.spriteAnim, 'dx-cutscene-sprite');
     const label = document.createElement('p');
     label.className = 'dx-feed__peek-label';
-    label.innerHTML = '<span class="dx-feed__tag"></span><span class="dx-feed__name"></span><span class="dx-feed__more"></span>';
+    // The same pieces as the channel's header, so the peek reads as the top
+    // of that channel: its tag, its name, its number (and what's left to find).
+    label.innerHTML = '<span class="dx-feed__tag"></span><span class="dx-feed__name"></span><span class="dx-feed__more"></span><span class="dx-feed__ch"></span>';
     label.querySelector('.dx-feed__tag').textContent = ch.tag;
     label.querySelector('.dx-feed__name').textContent = ch.name;
+    label.querySelector('.dx-feed__ch').textContent = `CH ${i + 1}/${channels.length}`;
     peek.appendChild(label);
     return peek;
   }

@@ -301,18 +301,22 @@ function renderSettingsPanel() {
     <div class="dx-hud-panel__scrim"></div>
     <div class="dx-hud-panel__box">
       <h3 class="dx-hud-panel__title">SETTINGS</h3>
+      <p class="dx-hud-panel__group">SOUND</p>
       <label class="dx-hud-panel__row dx-hud-panel__volume-row">
         <span>VOLUME</span>
         <input type="range" min="0" max="1" step="0.05" class="dx-hud-volume">
       </label>
       <button type="button" class="dx-btn dx-hud-mute"></button>
+      <p class="dx-hud-panel__group">READING</p>
       <button type="button" class="dx-btn dx-hud-speed"></button>
       <button type="button" class="dx-btn dx-hud-effects"></button>
       <button type="button" class="dx-btn dx-hud-textsize"></button>
       <button type="button" class="dx-btn dx-hud-colorvision"></button>
       <button type="button" class="dx-btn dx-hud-hilite"></button>
+      <p class="dx-hud-panel__group">HELP &amp; SAVES</p>
       <button type="button" class="dx-btn dx-hud-guide">FEELZ GUIDE</button>
       <button type="button" class="dx-btn dx-hud-runcode">SAVE &amp; HISTORY</button>
+      <p class="dx-hud-panel__group">GAME</p>
       ${chapterActive ? '<button type="button" class="dx-btn dx-hud-restart">RESTART CHAPTER</button>' : ''}
       <button type="button" class="dx-btn dx-hud-chapters">QUIT TO TITLE</button>
       <button type="button" class="dx-btn dx-hud-debug">DEBUG</button>
