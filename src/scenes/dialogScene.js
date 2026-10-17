@@ -1243,6 +1243,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (name === 'wheel') return screen.querySelector('.dx-dartboard');
     if (name === 'card') return screen.querySelector('.dx-swipe-card');
     if (name === 'meters') return screen.querySelector('.dx-status');
+    if (name === 'bars') return screen.querySelector('.dx-status [data-meter="trust"]');
     if (name === 'lake') return screen.querySelector('.dx-lake');
     if (name.startsWith('who:')) return screen.querySelector(`.dx-dock__contact[data-who="${name.slice(4)}"]`);
     if (name === 'scope' || name === 'needle') {
@@ -1489,7 +1490,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
             Bible: "A soft truth is cheap on you. A harsh one costs more and gets further. Tough love, I think it's called.",
           }), target: 'card', label: 'SOFT · HARSH' },
           { say: "Lie side: a white lie relaxes him. Two's fine. A third lands heavy.", target: 'card', label: 'WHITE LIE' },
-          { say: "All the way is bait. A lie to make him blurt the truth. You need bars for it, or it bounces.", target: 'meters', label: 'YOUR BARS' },
+          { say: "All the way is bait. A lie to make him blurt the truth. You need bars for it, or it bounces.", target: 'bars', label: 'YOUR BARS' },
           { say: "Drag slow and FEELZ shows you the numbers. Unless you're not well. Then it can't. Okay. Bye.", target: 'card', label: 'DRAG SLOW' },
         ],
         task: { text: 'Drag slow. Read the numbers.', target: 'card', until: ['swipe'] },
