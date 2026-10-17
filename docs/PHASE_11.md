@@ -3,6 +3,11 @@
 Source: `dXe_Test_Review_JT&Sarina_10.11.2026.md`. Plan only, nothing built yet.
 Item numbers match the review. Ordered by dependency and size, not by review number.
 
+## Status (2026-10-16)
+- DONE: Toback outline, colorblind mode, Rwanda GIFs (Neutral + Neutral01 saved and verified; Neutral02-04 not yet: the Drive download returned data that didn't match their file sizes, re-download or drop them in by hand).
+- DONE (first pass): demo-as-tutorial. Opening call cut to the app basics; lesson calls on Deborah (battle), Rwanda (little screen), Samun (mask, then the lie trade), none on Rick.
+- NEXT: Samun delivery spectrum (step 7), then Bob Baiter / FEELZ install (5), first choices (6), QR save (8).
+
 ## Revision 1 (2026-10-16): your answers change steps 2, 4, 7, 8
 
 **Rwanda (step 2).** Drive has only her 5 neutral profile GIFs (`NPCs/Rwanda`, from Jules); no script or text. The repo's `rwanda.json` and her confrontation read clean to me, so the typo is still unlocated. Her GIFs are not in `art-import/` yet. Need: the typo's wording (or a screenshot) and a yes to download the 5 GIFs into `art-import/rwanda/`.

@@ -162,13 +162,14 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
 {
   const thr = JSON.parse(fs.readFileSync('src/chapters/lake-ulysses/content/therapist.json', 'utf8'));
   const applies = (b, cls) => !(b.when?.class && b.when.class !== cls) && !(b.when?.noClass && ['Guns', 'Bible', 'Crystals'].includes(cls));
-  const mechanic = (b) => ['trycall'].includes(b.kind) || b.watch || (b.kind === 'line' && /Practical stuff|Also\. Tell someone|There\. A circle|calling me while/.test(b.text ?? ''));
+  // Phase 11: the call teaches the app only (battery, his contact); the
+  // little screen, masks and the lie trade are taught in the rounds.
+  const mechanic = (b) => ['trycall'].includes(b.kind) || (b.kind === 'line' && /Practical stuff|calling me while/.test(b.text ?? ''));
   for (const cls of ['Guns', 'Bible', 'Crystals', undefined]) {
     const beats = thr.outro.filter((b) => mechanic(b) && applies(b, cls));
-    const watch = beats.filter((b) => b.watch);
-    check('tutorial: one watch-out per key for ' + (cls ?? 'no class'), ['stability', 'trust', 'lucidity', 'integrity', 'lake', 'steady'].every((k) => watch.filter((b) => b.watch === k).length === 1));
-    check('tutorial: one try-call and four mechanic lines for ' + (cls ?? 'no class'), beats.filter((b) => b.kind === 'trycall').length === 1 && beats.filter((b) => b.kind === 'line' && !b.watch).length === 4);
+    check('tutorial: one try-call and two mechanic lines for ' + (cls ?? 'no class'), beats.filter((b) => b.kind === 'trycall').length === 1 && beats.filter((b) => b.kind === 'line').length === 2);
   }
+  check('tutorial: the call is short (no exercise, no watch-outs, no lie trade)', !thr.outro.some((b) => b.kind === 'tryfeel' || b.watch || /Also\. Tell someone/.test(b.text ?? '')));
   const edges = Object.values(thr.nodes).flatMap((n) => Object.values(n.swipes ?? {})).filter((e) => e.reactByClass);
   check('tutorial: the meter and lake reactions have all three class versions', edges.length === 4 && edges.every((e) => ['Guns', 'Bible', 'Crystals'].every((c) => e.reactByClass[c])));
 }
@@ -271,7 +272,7 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
   const used = new Set([...Object.values(TUTORIAL_HATS.marks), ...Object.values(TUTORIAL_HATS.nodes), ...Object.values(TUTORIAL_HATS.reactions), ...Object.values(TUTORIAL_HATS.outroKinds), ...TUTORIAL_HATS.outroText.map(([, h]) => h), ...Object.values(TUTORIAL_HATS.watch)].filter(Boolean));
   check('tutorial hats: all 8 hats appear in his tutorial, and only real ones', THERAPIST_HATS.every((h) => used.has(h)) && [...used].every((h) => THERAPIST_HATS.includes(h)));
   const outroHats = thr0.outro.filter((b) => !b.when || b.when.class === 'Guns').map((b) => tutorialHatForBeat(b)).filter((h) => h !== undefined);
-  check('tutorial hats: his actual lines pick them (homework, mask exercise, practical stuff, the call, each watch-out)', thr0.outro.some((b) => /homework/.test(b.text ?? '') && tutorialHatForBeat(b) === 'top') && thr0.outro.some((b) => b.kind === 'tryfeel' && tutorialHatForBeat(b) === 'jester') && thr0.outro.some((b) => /Practical stuff/.test(b.text ?? '') && tutorialHatForBeat(b) === 'old_man') && thr0.outro.some((b) => b.kind === 'trycall' && tutorialHatForBeat(b) === 'fez') && thr0.outro.filter((b) => b.watch).every((b) => tutorialHatForBeat(b)) && outroHats.length >= 8);
+  check('tutorial hats: his actual lines pick them (homework, practical stuff, the try-call, two of me)', thr0.outro.some((b) => /homework/.test(b.text ?? '') && tutorialHatForBeat(b) === 'top') && thr0.outro.some((b) => /Practical stuff/.test(b.text ?? '') && tutorialHatForBeat(b) === 'old_man') && thr0.outro.some((b) => b.kind === 'trycall' && tutorialHatForBeat(b) === 'fez') && thr0.outro.some((b) => /calling me while/.test(b.text ?? '') && tutorialHatForBeat(b) === 'jester') && outroHats.length >= 4);
   check('tutorial hats: every cue he fires on the meters page has a hat, and the page ends bare', Object.keys(TUTORIAL_HATS.marks).every((m) => thr0.nodes.therapist_01.swipes.truth.npcReaction.includes(`{mark:${m}}`)) && TUTORIAL_HATS.marks.allmeters === null);
   const mid = { truthDebt: 4, stability: 5, lucidity: 5, trust: 5, lieStreak: 0 };
   check('hats: every rule uses a real hat, and every hat has a moment', HAT_RULES.every((r) => THERAPIST_HATS.includes(r.hat) && r.why) && THERAPIST_HATS.every((h) => HAT_RULES.some((r) => r.hat === h)));

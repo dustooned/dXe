@@ -482,6 +482,12 @@ been added, so the chapter now matches `DX Bible.md`'s full 4-NPC,
 
 ## What's next
 
+**Phase 11 (2026-10-16), from the JT & Sarina playtest.** Plan and open questions: `docs/PHASE_11.md`.
+- **Colorblind mode:** Settings > COLOR cycles NORMAL / RED-GREEN / BLUE-YELLOW (`settings.colorVision`, classes `is-colorblind` + `is-cvd-*` on `<html>`). Each set re-tints the eight `--color-feelz-*` tokens (worst-case simulated gap between two feelings goes from ~13 to 33 CIELAB dE), and every `{color:X}` word gets its feeling's symbol in front (`.dx-cb-mark`, from `loadout.js` EMOTIONS; always emitted, shown only in the mode, so pagination doesn't shift). **Rule from now on: color never carries meaning alone.**
+- **Toback quote:** narration over animated art (`dx-cutscene-screen--over-art`) gets a flat black stroke behind each glyph.
+- **The demo is the tutorial.** The opening call teaches only the app (FEELZ, the card, the four batteries, the lake, his contact): his find-my-feeling exercise, the lie trade and the parting watch-outs are cut from it. Each round teaches one thing on its first node, as a Therapist tip call (`dialogScene.js nodeCoach`): Deborah `battle` (wheel > card > batteries > lake), Rwanda `scope` (the little screen), Samun `mask` then `trade` (the lie trade, moved from the call), Rick none. Next: Samun's delivery spectrum (harsh/soft truth, white/harmful lie) becomes his lesson.
+- Rwanda's 5 neutral profile GIFs from Drive are in `art-import/rwanda/` (2 saved and checked so far, see PHASE_11).
+
 **Done in the 2026-10-03 QA session** (screen sizes, plus a bot that plays the game):
 - **Layout units, the rule:** every layout size in CSS (gap, padding, margin,
   width, height, top/left/right/bottom) is `calc(N * var(--px))`, never raw

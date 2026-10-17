@@ -161,16 +161,15 @@ export const TUTORIAL_HATS = {
   // when a node's answer comes up (the lake explanation)
   reactions: { therapist_02: 'pork_pie' },
   // after the questions: by the kind of beat, then the start of its words
-  outroKinds: { tryfeel: 'jester', trycall: 'fez' },
+  // (Phase 11 cut his little-screen exercise, the lie trade and the parting
+  // watch-outs from the call; the "two of me" line took the jester.)
+  outroKinds: { trycall: 'fez' },
   outroText: [
     [/^"?I give everyone homework/, 'top'],
-    [/^"?Last thing\. See the lines/, 'derby'],
-    [/^"?There\. A circle that holds still/, null],
     [/^"?Practical stuff/, 'old_man'],
-    [/^"?Also\. Tell someone what they want to hear/, 'jester'],
-    [/^"?Okay\. You're calling me while I'm on the phone/, 'derby'],
+    [/^"?Okay\. You're calling me while I'm on the phone/, 'jester'],
   ],
-  watch: { stability: 'old_man', trust: 'bunny', lucidity: 'sombrero', integrity: 'derby', lake: 'pork_pie', steady: 'top' },
+  watch: {},
 };
 
 // The hat for an outro beat of his tutorial: a hat name, null (bare), or

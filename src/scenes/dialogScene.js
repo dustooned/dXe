@@ -1204,6 +1204,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (name === 'trace') return screen.querySelector('.dx-scope-band');
     if (name === 'wheel') return screen.querySelector('.dx-dartboard');
     if (name === 'card') return screen.querySelector('.dx-swipe-card');
+    if (name === 'meters') return screen.querySelector('.dx-status');
+    if (name === 'lake') return screen.querySelector('.dx-lake');
     if (name.startsWith('who:')) return screen.querySelector(`.dx-dock__contact[data-who="${name.slice(4)}"]`);
     if (name === 'scope' || name === 'needle') {
       const r = oscilloscope?.rectOf?.(name);
@@ -1413,9 +1415,47 @@ export function mount(stageEl, scene, { run, onComplete }) {
     coachCheckedFor = currentNodeId;
     const node = currentNode();
     const facing = npc.npc.charAt(0) + npc.npc.slice(1).toLowerCase();
-    // The first real battle: the little screen again, now that it's real (his
-    // exercise taught it; this points at each piece in place).
-    if (isRevealed('instruments') && !(run.get().coachSeen ?? []).includes('scope')) {
+    const seenKeys = run.get().coachSeen ?? [];
+    // The demo is the tutorial (docs/PHASE_11.md): each round teaches one
+    // thing, on its first node, in the same shape (a short call, then one
+    // "try this"). Deborah: the battle itself. Rwanda: the little screen.
+    // Samun: masks, then the trade. Rick: nothing, you're on your own.
+    if (npc.npc === 'RICK') return;
+    if (npc.npc === 'DEBORAH' && !seenKeys.includes('battle')) {
+      startCoach('battle', {
+        steps: [
+          { say: inClass("It's me. This one's for real. I'll be quick, I'm double-booked.", { Guns: "It's me. Live fire now. I'll be quick, I'm double-booked." }) },
+          { say: `Same as with me. Pick how you feel about what ${facing} just said.`, target: 'wheel', label: 'YOUR WHEEL' },
+          { say: 'Then push the card. Truth left, lie right. Both are allowed. I checked the policy.', target: 'card', label: 'TRUTH · LIE' },
+          { say: 'Whatever you say, your batteries pay for it, up here.', target: 'meters', label: 'YOUR BATTERIES' },
+          { say: inClass("And the lake keeps count of the lies. It's not grading you. It's just counting. Okay. Bye.", {
+            Guns: "And the lake keeps count of the lies. Range log. It's not grading you. Okay. Bye.",
+            Bible: "And the lake keeps count of the lies. A ledger, not a judge. Okay. Bye.",
+            Crystals: "And the lake keeps count of the lies. It holds what you leave in it. Mom's words. Okay. Bye.",
+          }), target: 'lake', label: 'THE LAKE' },
+        ],
+        task: { text: 'Pick a feeling. Then push the card.', target: 'wheel', glow: null, until: ['swipe'] },
+      });
+      return;
+    }
+    if (npc.npc === 'SAMUN' && seenKeys.includes('mask') && !seenKeys.includes('trade')) {
+      startCoach('trade', {
+        steps: [
+          { say: "It's me again. One more thing and then I'll leave you alone. Probably." },
+          { say: inClass("Tell someone what they want to hear and they relax. Their next feeling shows right on your wheel.", {
+            Guns: "Tell someone what they want to hear and they lower their guard. Their next feeling shows right on your wheel.",
+            Bible: "Tell someone what they want to hear and they exhale. Some call it a small mercy. Their next feeling shows right on your wheel.",
+            Crystals: "Tell someone what they want to hear and their energy softens. Mom would say that. I'd say they relax. Their next feeling shows on your wheel.",
+          }), target: 'wheel', label: 'THEIR NEXT FEELING' },
+          { say: "And the lake takes the bill. That's the trade. I'm not telling you which to make. Professionally, I can't. Okay. Bye.", target: 'lake', label: 'THE LAKE' },
+        ],
+        task: null,
+      });
+      return;
+    }
+    // Rwanda's round: the little screen, now that it's for real (the opening
+    // call keeps it hidden; this points at each piece in place).
+    if (npc.npc !== 'DEBORAH' && isRevealed('instruments') && !seenKeys.includes('scope')) {
       startCoach('scope', {
         steps: [
           { say: inClass("It's me. Quick one, now that it's for real.", { Guns: "It's me. Radio check. Quick one, now that it's for real.", Bible: "It's me. A quick word, now that it's for real." }) },
