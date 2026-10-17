@@ -27,7 +27,7 @@ import { characterArt, hatForContext, TUTORIAL_HATS, tutorialHatForBeat } from '
 import { createFeelzDartboard } from '../ui/feelzDartboard.js';
 import { EMOTIONS, emotionColor, emotionsForClass, getDominantEmotion, withClassMoods } from '../engine/loadout.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
-import { hasDelivery, deliveryKind, buildDelivery, previewDelivery, previewText, hasAilment, MASK_SLIP_AT } from '../engine/delivery.js';
+import { hasDelivery, deliveryKind, buildDelivery, previewDelivery, previewText, hasAilment, tooTired, MASK_SLIP_AT } from '../engine/delivery.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
 import { lakeMarks } from '../engine/firstMarks.js';
 import { createOscilloscope, wheelSteps } from '../ui/oscilloscope.js';
@@ -962,10 +962,14 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // numbers unless a status ailment hides them.
   function deliveryPreview(side, hard) {
     const state = run.get();
-    const kind = deliveryKind(side === 'left' ? 'truth' : 'lie', hard);
+    // Too tired to push all the way: the full push is the short one.
+    const tired = hard && tooTired(state);
+    const kind = deliveryKind(side === 'left' ? 'truth' : 'lie', hard && !tired);
     const p = previewDelivery(state, currentNode(), kind, activeEmotion, { whiteUsed, baitFail: npc.baitFail });
     const shutOut = /(_shut_down|_closed|_hard)$/.test(currentNodeId ?? '');
-    return previewText(p, { hidden: hasAilment(state, { shutOut }) });
+    const text = previewText(p, { hidden: hasAilment(state, { shutOut }) });
+    if (tired) text.parts = ['TOO TIRED TO PUSH', ...text.parts];
+    return text;
   }
 
   function handleSwipe(sideKey, { hard = true } = {}) {
@@ -975,6 +979,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     let swipeKey = sideKey;
     let delivered = null;
     if (hasDelivery(currentNode())) {
+      if (tooTired(run.get())) hard = false; // no strength to push all the way
       delivered = buildDelivery(currentNode(), deliveryKind(sideKey, hard), { whiteUsed, trust: run.get().trust ?? 5, baitFail: npc.baitFail });
       swipeKey = delivered.swipeKey;
       if (delivered.kind === 'white') whiteUsed += 1;
@@ -1517,7 +1522,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
           }), target: 'card', label: 'SOFT · HARSH' },
           { say: "Lie side: a white lie relaxes him. Two's fine. A third lands heavy.", target: 'card', label: 'WHITE LIE' },
           { say: "All the way is bait. A lie to make him blurt the truth. You need bars for it, or it bounces.", target: 'bars', label: 'YOUR BARS' },
-          { say: "Drag slow and FEELZ shows you the numbers. Unless you're not well. Then it can't. Okay. Bye.", target: 'card', label: 'DRAG SLOW' },
+          { say: "Drag slow and FEELZ shows you the numbers. Unless you're not well. Then it can't. And when your battery's nearly gone, you can't push all the way. Okay. Bye.", target: 'card', label: 'DRAG SLOW' },
         ],
         task: { text: 'Drag slow. Read the numbers.', target: 'card', until: ['swipe'] },
       });

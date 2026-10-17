@@ -269,9 +269,9 @@ has all of: `-- TRUTH`, `-- LIE` (with a `WHITE REACT:`), `-- SOFT` and
 | Push | Answer | Words from | Numbers |
 |---|---|---|---|
 | left, a little | SOFT TRUTH | `-- SOFT` SAY/REACT | fixed: clock +1, Wi-Fi +1, bars +1, guard -1 |
-| left, all the way | HARSH TRUTH | `-- TRUTH` | as authored, guard -2 |
+| left, all the way | HARSH TRUTH | `-- TRUTH` | as authored plus battery -1, guard -2 |
 | right, a little | WHITE LIE | `-- LIE` SAY + `WHITE REACT:` | fixed: battery +1, bars +1, lake +1, no fog, guard -1 (2 per encounter; a 3rd plays the full LIE, guard +1) |
-| right, all the way | BAIT | `-- BAIT` SAY/REACT/LEDGER | fixed: bars -2, lake +3, guard -3; bars under 4 and it bounces (a `BAITFAIL:` line, guard +2, the LIE's NEXT) |
+| right, all the way | BAIT | `-- BAIT` SAY/REACT/LEDGER | fixed: bars -2, battery -1, lake +3, guard -3; bars under 4 and it bounces (a `BAITFAIL:` line, guard +2, the LIE's NEXT) |
 
 `-- SOFT` and `-- BAIT` take only SAY, REACT (and `REACT [Class]`) and, for
 BAIT, LEDGER. Everything else (NEXT, bids, contradictions) comes from the

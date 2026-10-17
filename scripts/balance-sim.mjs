@@ -9,6 +9,8 @@ import { resolveCard, resolveGatedNode, restAfter, EMPTY_BATTERY } from '../src/
 import { recordTrust, isTrusted } from '../src/engine/trust.js';
 import { giftFor } from '../src/engine/unlocks.js';
 import { emotionsForClass, withClassMoods } from '../src/engine/loadout.js';
+import * as Delivery from '../src/engine/delivery.js';
+const { hasDelivery, buildDelivery } = Delivery;
 
 const RUNS = Number(process.argv[2] ?? 2000);
 const R = new URL('../src/chapters/lake-ulysses/content/', import.meta.url);
@@ -22,8 +24,15 @@ const initial = (loadout) => ({
   loadout, unlocked: [], giftedBy: {}, bonds: {}, emotionCounts: {}, choices: {},
 });
 
-// One conversation. `p` = { lie, attune, exhaustion }.
+// One conversation. `p` = { lie, attune, exhaustion }. On a node with the
+// delivery spectrum (Samun, Rick) a truth is soft with chance SOFT_SHARE else
+// harsh, and a lie is a bait with chance BAIT_SHARE else a white lie; with a
+// battery too low to push (Delivery.tooTired, when the engine has it) the
+// hard pushes fall back to the short ones.
+const SOFT_SHARE = 0.5;
+const BAIT_SHARE = 0.25;
 function play(state, npcKey, p, stats) {
+  let whiteUsed = 0;
   // Moods as this class meets them (MOOD [Class] lines: kin / foe).
   const npc = withClassMoods(NPCS[npcKey], state.loadout);
   const openers = Object.keys(npc.nodes).filter((id) => /_01(_soft|_hard)?$/.test(id));
@@ -50,22 +59,39 @@ function play(state, npcKey, p, stats) {
     if (wants) stats.moods += 1;
     // Effort (a gifted feeling your class isn't used to) is charged inside
     // resolveCard when the pick is committed; switching on the wheel is free.
+    // How it is said: the delivery spectrum where the node has it.
+    let edgeNode = node;
+    let swipeKey = side;
+    let bidKey = side;
+    if (npcKey !== 'THERAPIST' && hasDelivery(node)) {
+      const tired = Delivery.tooTired?.(s) ?? false;
+      let kind;
+      if (side === 'truth') kind = Math.random() < SOFT_SHARE ? 'soft' : 'harsh';
+      else kind = Math.random() < BAIT_SHARE ? 'bait' : 'white';
+      if (tired && (kind === 'harsh' || kind === 'bait')) { stats.locked += 1; kind = kind === 'harsh' ? 'soft' : 'white'; }
+      stats['k_' + kind] += 1;
+      const d = buildDelivery(node, kind, { whiteUsed, trust: s.trust ?? 5, pick: 0 });
+      if (d.kind === 'white') whiteUsed += 1;
+      edgeNode = { ...node, swipes: { [d.swipeKey]: d.edge } };
+      swipeKey = d.swipeKey;
+      bidKey = d.bidKey;
+    }
     const synced = !!wants && pick === wants;
-    const turned = !!node.bid?.includes(side);
+    const turned = !!bidKey && !!node.bid?.includes(bidKey);
     if (synced || turned) s = { ...s, bonds: recordTrust(s.bonds, npcKey, { synced, turnedToward: turned }) };
     if (turned) {
       const gift = giftFor(npcKey, s);
       if (gift) s = { ...s, unlocked: [...s.unlocked, gift], giftedBy: { ...s.giftedBy, [npcKey]: gift } };
     }
-    const res = resolveCard(s, node, side, pick, { fog: npcKey !== 'THERAPIST' });
-    s = { ...s, ...res.patch, choices: { ...s.choices, [id]: side }, emotionCounts: { ...s.emotionCounts, [pick]: (s.emotionCounts[pick] ?? 0) + 1 } };
+    const res = resolveCard(s, edgeNode, swipeKey, pick, { fog: npcKey !== 'THERAPIST' });
+    s = { ...s, ...res.patch, choices: { ...s.choices, [id]: swipeKey }, emotionCounts: { ...s.emotionCounts, [pick]: (s.emotionCounts[pick] ?? 0) + 1 } };
     id = res.edge.nextNodeId;
   }
   return s;
 }
 
 function chapter(loadout, p, stats) {
-  let s = play(initial(loadout), 'THERAPIST', p, { drained: 0, blocked: 0, nodes: 0, moods: 0, dim1: 0, dim2: 0, dim3: 0 });
+  let s = play(initial(loadout), 'THERAPIST', p, { drained: 0, blocked: 0, nodes: 0, moods: 0, dim1: 0, dim2: 0, dim3: 0, locked: 0, k_soft: 0, k_harsh: 0, k_white: 0, k_bait: 0 });
   const trusted = {};
   let low = false;
   for (const key of ORDER) {
@@ -91,7 +117,7 @@ for (const [label, base] of SCENARIOS) {
     console.log(`  -- ${lieLabel}`);
     for (const cls of CLASSES) {
       const tally = { DEBORAH: 0, RWANDA: 0, SAMUN: 0, RICK: 0, any2: 0, low: 0 };
-      const stats = { drained: 0, blocked: 0, nodes: 0, moods: 0, dim1: 0, dim2: 0, dim3: 0 };
+      const stats = { drained: 0, blocked: 0, nodes: 0, moods: 0, dim1: 0, dim2: 0, dim3: 0, locked: 0, k_soft: 0, k_harsh: 0, k_white: 0, k_bait: 0 };
       for (let i = 0; i < RUNS; i++) {
         const r = chapter(cls, { ...base, lie }, stats);
         for (const k of ORDER) if (r.trusted[k]) tally[k] += 1;
@@ -99,7 +125,7 @@ for (const [label, base] of SCENARIOS) {
         if (r.low) tally.low += 1;
       }
       const blockedShare = stats.moods ? Math.round((stats.blocked / stats.moods) * 100) : 0;
-      console.log(`    ${cls.padEnd(8)} trust: DEB ${pct(tally.DEBORAH)} RWA ${pct(tally.RWANDA)} SAM ${pct(tally.SAMUN)} RIC ${pct(tally.RICK)}  | 2+ trusted ${pct(tally.any2)}  | hit empty battery ${pct(tally.low)}  | mood moments blocked by it ${blockedShare}%  | screen dim at <=3/<=2/<=1: ${[3, 2, 1].map((t) => Math.round((stats['dim' + t] / Math.max(1, stats.nodes)) * 100) + '%').join('/')}`);
+      console.log(`    ${cls.padEnd(8)} trust: DEB ${pct(tally.DEBORAH)} RWA ${pct(tally.RWANDA)} SAM ${pct(tally.SAMUN)} RIC ${pct(tally.RICK)}  | 2+ trusted ${pct(tally.any2)}  | hit empty battery ${pct(tally.low)}  | mood moments blocked by it ${blockedShare}%  | screen dim at <=3/<=2/<=1: ${[3, 2, 1].map((t) => Math.round((stats['dim' + t] / Math.max(1, stats.nodes)) * 100) + '%').join('/')}  | hard pushes locked ${(stats.locked / RUNS).toFixed(2)}/run`);
     }
   }
 }

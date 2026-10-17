@@ -24,6 +24,11 @@ export const FULL_LAKE_COST = -1;
 // 2, not 3: at 3 an honest player (the truth costs charge) spent a third of
 // the chapter with the little screen dark (scripts/balance-sim.mjs). At 2 it
 // is the end of a hard stretch, not the norm.
+// A lie recharges at most this much battery, whatever it was authored at and
+// whatever feeling leans on it (Phase 11 rebalance: lies used to refill +2,
+// which cancelled the truth's cost for anyone lying half the time). Not in
+// the tutorial.
+export const LIE_REFILL_MAX = 1;
 export const LOW_BATTERY = 2;
 export const EMPTY_BATTERY = 1;
 
@@ -84,8 +89,10 @@ export function applyStatDelta(state, effects = {}) {
 //   connected  being let in charges you: +REST_CONNECTED, past the middle too
 //              (soft-capped like any gain)
 //   otherwise  you walk it off: up to REST_WALK back toward 5, never down
-export const REST_WALK = 2;
-export const REST_CONNECTED = 3;
+// (Phase 11 rebalance: was 2 / 3, which reset every dip: an honest run now
+// carries a low battery into the next person.)
+export const REST_WALK = 1;
+export const REST_CONNECTED = 2;
 export function restAfter(state, { connected = false } = {}) {
   const v = state.stability ?? 5;
   const next = connected ? softStep(v, REST_CONNECTED) : v < 5 ? Math.min(5, v + REST_WALK) : v;
@@ -105,7 +112,9 @@ export function resolveCard(state, node, swipeKey, emotion, { fog = true } = {})
   if (fog && swipeKey === 'lie' && (state.truthDebt ?? 0) >= 10) {
     effects = { ...effects, lucidity: (effects.lucidity ?? 0) + FULL_LAKE_COST, integrity: (effects.integrity ?? 0) + FULL_LAKE_COST };
   }
-  const leaningEffects = applyEmotionalLean(effects, emotion);
+  const leaned = applyEmotionalLean(effects, emotion);
+  const leaningEffects = fog && swipeKey === 'lie' && (leaned.stability ?? 0) > LIE_REFILL_MAX
+    ? { ...leaned, stability: LIE_REFILL_MAX } : leaned;
   const statPatch = applyStatDelta(state, leaningEffects);
   // Effort: a feeling your class isn't used to costs battery when you commit
   // to it (loadout.js effortCost), straight off the top. Not in the tutorial.

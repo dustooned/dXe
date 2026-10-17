@@ -17,7 +17,7 @@
 // MASK_SLIP_AT their mask slips, at 0 the truth comes out (their STORY,
 // dialogScene.js). Numbers are shown while dragging, unless a status ailment
 // hides them (hasAilment). None of it is a verdict: every row is a trade.
-import { resolveCard, LOW_BATTERY } from './cardEngine.js';
+import { resolveCard, LOW_BATTERY, EMPTY_BATTERY } from './cardEngine.js';
 import { FOG_WIFI } from './contacts.js';
 
 export const WHITE_BUDGET = 2;     // white lies per encounter before one lands heavy
@@ -25,12 +25,22 @@ export const BAIT_MIN_BARS = 4;    // bars below this and a bait bounces off
 export const MASK_SLIP_AT = 3;     // guard at or under this: the mask slips
 export const CLOCK_GLITCH = 2;     // clock at or under this scrambles (statusBar.js)
 
+// Battery is the energy to say hard things (Phase 11 rebalance): a harsh truth
+// costs one more battery than authored, a bait costs one, and with the battery
+// at EMPTY_BATTERY or below you can't push all the way (tooTired): only the
+// short pushes, soft truth and white lie, are left.
+export const HARSH_EXTRA_COST = -1;
+export const BAIT_COST = -1;
+export function tooTired(state) {
+  return (state?.stability ?? 5) <= EMPTY_BATTERY;
+}
+
 export const GUARD_DELTA = { harsh: -2, soft: -1, white: -1, whiteOver: 1, bait: -3, baitFail: 2 };
 const SOFT_EFFECTS = { integrity: 1, lucidity: 1, trust: 1 };
 // lucidity: 0 on purpose: a white lie doesn't fog the Wi-Fi (cardEngine.js LIE_FOG).
 const WHITE_EFFECTS = { stability: 1, trust: 1, lucidity: 0 };
 const WHITE_DEBT = 1;
-const BAIT_EFFECTS = { trust: -2 };
+const BAIT_EFFECTS = { trust: -2, stability: BAIT_COST };
 const BAIT_DEBT = 3;
 
 export const DELIVERY_LABELS = { harsh: 'HARSH TRUTH', soft: 'SOFT TRUTH', white: 'WHITE LIE', bait: 'BAIT' };
@@ -61,7 +71,8 @@ export function buildDelivery(node, kind, { whiteUsed = 0, trust = 5, baitFail =
   const lie = node.swipes.lie;
   const d = node.delivery;
   if (kind === 'harsh') {
-    return { kind, swipeKey: 'truth', edge: truth, guardDelta: GUARD_DELTA.harsh, bidKey: 'truth' };
+    const edge = { ...truth, effects: { ...truth.effects, stability: (truth.effects?.stability ?? 0) + HARSH_EXTRA_COST } };
+    return { kind, swipeKey: 'truth', edge, guardDelta: GUARD_DELTA.harsh, bidKey: 'truth' };
   }
   if (kind === 'soft') {
     const edge = {

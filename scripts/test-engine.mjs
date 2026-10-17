@@ -12,7 +12,7 @@ import { moodFor, withClassMoods, effortCost } from '../src/engine/loadout.js';
 import { frameAt, durationOf } from '../src/ui/characterAnimator.js';
 import { registerCharacterArt, characterArt, restArt, missingStates, idleGapMs, IDLE_GAP_MS, hatFor, hatForContext, HAT_RULES, THERAPIST_HATS, STATE_NAMES, TUTORIAL_HATS, tutorialHatForBeat } from '../src/engine/characters.js';
 import { buildReckoningDeck, resolveReckoningCard } from '../src/engine/reckoning.js';
-import { hasDelivery, buildDelivery, previewDelivery, previewText, hasAilment, WHITE_BUDGET, BAIT_MIN_BARS } from '../src/engine/delivery.js';
+import { hasDelivery, buildDelivery, previewDelivery, previewText, hasAilment, tooTired, WHITE_BUDGET, BAIT_MIN_BARS } from '../src/engine/delivery.js';
 
 // A stand-in localStorage for the save checks below.
 const mem = new Map();
@@ -36,11 +36,11 @@ check('soft: back toward middle is free', softStep(9, -2) === 7);
 check('soft: -1 at 3 holds', softStep(3, -1) === 3);
 check('soft: clamps', softStep(9, 20) <= 10 && softStep(1, -20) >= 0);
 
-// Rest after an encounter: connected +3 (soft), otherwise up to +2 toward 5, never down.
-check('rest: walk', restAfter({ stability: 2 }).stability === 4);
+// Rest after an encounter: connected +2 (soft), otherwise up to +1 toward 5, never down.
+check('rest: walk', restAfter({ stability: 2 }).stability === 3);
 check('rest: walk stops at 5', restAfter({ stability: 4 }).stability === 5);
 check('rest: never down', restAfter({ stability: 8 }).stability === 8);
-check('rest: connected', restAfter({ stability: 2 }, { connected: true }).stability === 5);
+check('rest: connected', restAfter({ stability: 2 }, { connected: true }).stability === 4);
 check('rest: connected past 5', restAfter({ stability: 6 }, { connected: true }).stability > 6);
 
 // Lie fog: a lie with no authored lucidity costs LIE_FOG; not in the tutorial; authored wins.
@@ -312,15 +312,16 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
   const over = previewDelivery(st, n1, 'white', null, { whiteUsed: WHITE_BUDGET });
   const bait = previewDelivery(st, n1, 'bait', null);
   const bounce = previewDelivery({ ...st, trust: BAIT_MIN_BARS - 1 }, n1, 'bait', null);
-  check('delivery: harsh truth is the authored truth and opens the guard most among truths', harsh.meters.integrity === 2 && harsh.meters.stability === -1 && harsh.guard === -2 && soft.guard === -1, JSON.stringify(harsh));
+  check('delivery: harsh truth is the authored truth and opens the guard most among truths', harsh.meters.integrity === 2 && harsh.meters.stability === -2 && harsh.guard === -2 && soft.guard === -1, JSON.stringify(harsh));
   check('delivery: a soft truth costs no battery and builds bars', !soft.meters.stability && soft.meters.trust === 1 && soft.lake === -1, JSON.stringify(soft));
   check('delivery: a white lie is light (lake +1, no Wi-Fi fog) inside the budget', white.lake === 1 && !white.meters.lucidity && white.meters.trust === 1 && white.guard === -1 && !white.over, JSON.stringify(white));
   check('delivery: one white lie too many lands like the authored lie (lake +4, guard up)', over.over && over.lake === 4 && over.guard === 1, JSON.stringify(over));
-  check('delivery: bait opens the guard most but costs bars and the lake; it bounces with low bars', bait.guard === -3 && bait.meters.trust === -2 && bait.lake === 3 && bounce.bounced && bounce.guard === 2, JSON.stringify([bait, bounce]));
+  check('delivery: bait opens the guard most but costs bars and the lake; it bounces with low bars', bait.guard === -3 && bait.meters.trust === -2 && bait.meters.stability === -1 && bait.lake === 3 && bounce.bounced && bounce.guard === 2, JSON.stringify([bait, bounce]));
   const landed = buildDelivery(n1, 'bait', { trust: 5 });
   const bounced = buildDelivery(n1, 'bait', { trust: 2, baitFail: sam.baitFail, pick: 0 });
   check('delivery: a bait that lands takes the truth path; one that bounces takes the lie path with a bounce line', landed.edge.nextNodeId === n1.swipes.truth.nextNodeId && bounced.edge.nextNodeId === n1.swipes.lie.nextNodeId && bounced.edge.npcReaction === sam.baitFail[0] && landed.bidKey === null);
   check('delivery: white lies stay a bid (comfort), the soft truth keeps the truth side', buildDelivery(n1, 'white', {}).bidKey === 'lie' && buildDelivery(n1, 'soft', {}).swipeKey === 'truth');
+  check('delivery: with the battery at 1 or less you are too tired to push all the way (harsh and bait lock to soft and white)', tooTired({ stability: 1 }) && tooTired({ stability: 0 }) && !tooTired({ stability: 2 }) && !tooTired({}));
   const text = previewText(soft);
   const hidden = previewText(soft, { hidden: true });
   check('delivery: the strip shows numbers, and only the name under an ailment', text.head === 'SOFT TRUTH' && text.parts.includes('BARS +1') && text.parts.some((p) => p.startsWith('GUARD')) && hidden.parts.join() === '? ? ?' && hidden.head === 'SOFT TRUTH', JSON.stringify([text, hidden]));
