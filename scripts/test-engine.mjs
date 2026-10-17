@@ -12,6 +12,7 @@ import { moodFor, withClassMoods, effortCost } from '../src/engine/loadout.js';
 import { frameAt, durationOf } from '../src/ui/characterAnimator.js';
 import { registerCharacterArt, characterArt, restArt, missingStates, idleGapMs, IDLE_GAP_MS, hatFor, hatForContext, HAT_RULES, THERAPIST_HATS, STATE_NAMES, TUTORIAL_HATS, tutorialHatForBeat } from '../src/engine/characters.js';
 import { buildReckoningDeck, resolveReckoningCard } from '../src/engine/reckoning.js';
+import { hasDelivery, buildDelivery, previewDelivery, previewText, hasAilment, WHITE_BUDGET, BAIT_MIN_BARS } from '../src/engine/delivery.js';
 
 // A stand-in localStorage for the save checks below.
 const mem = new Map();
@@ -291,6 +292,34 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
     }
   }
   check('characters: every piece in every manifest exists on disk' + (missingFiles.length ? ` (${missingFiles.join(', ')})` : ''), !missingFiles.length);
+}
+
+// ── The delivery spectrum (Phase 11): Samun's four ways to say it ──
+{
+  const sam = JSON.parse(fs.readFileSync('src/chapters/lake-ulysses/content/samun.json', 'utf8'));
+  const n1 = sam.nodes.samun_01;
+  const st = { integrity: 5, stability: 5, lucidity: 5, trust: 5, truthDebt: 2, ledger: [], loadout: 'Guns', emotionCounts: {} };
+  check('delivery: every Samun node has soft, white and bait, and he has a guard, cracks and bounce lines', Object.values(sam.nodes).every(hasDelivery) && Object.values(sam.nodes).every((n) => n.delivery.white) && sam.guard === 6 && Object.keys(sam.crack).length === 3 && sam.baitFail.length >= 2);
+  check('delivery: nobody else has it yet (their cards stay two-way)', ['deborah', 'rwanda', 'rick'].every((f) => !Object.values(JSON.parse(fs.readFileSync(`src/chapters/lake-ulysses/content/${f}.json`, 'utf8')).nodes).some(hasDelivery)));
+  const harsh = previewDelivery(st, n1, 'harsh', null);
+  const soft = previewDelivery(st, n1, 'soft', null);
+  const white = previewDelivery(st, n1, 'white', null, { whiteUsed: 0 });
+  const over = previewDelivery(st, n1, 'white', null, { whiteUsed: WHITE_BUDGET });
+  const bait = previewDelivery(st, n1, 'bait', null);
+  const bounce = previewDelivery({ ...st, trust: BAIT_MIN_BARS - 1 }, n1, 'bait', null);
+  check('delivery: harsh truth is the authored truth and opens the guard most among truths', harsh.meters.integrity === 2 && harsh.meters.stability === -1 && harsh.guard === -2 && soft.guard === -1, JSON.stringify(harsh));
+  check('delivery: a soft truth costs no battery and builds bars', !soft.meters.stability && soft.meters.trust === 1 && soft.lake === -1, JSON.stringify(soft));
+  check('delivery: a white lie is light (lake +1, no Wi-Fi fog) inside the budget', white.lake === 1 && !white.meters.lucidity && white.meters.trust === 1 && white.guard === -1 && !white.over, JSON.stringify(white));
+  check('delivery: one white lie too many lands like the authored lie (lake +4, guard up)', over.over && over.lake === 4 && over.guard === 1, JSON.stringify(over));
+  check('delivery: bait opens the guard most but costs bars and the lake; it bounces with low bars', bait.guard === -3 && bait.meters.trust === -2 && bait.lake === 3 && bounce.bounced && bounce.guard === 2, JSON.stringify([bait, bounce]));
+  const landed = buildDelivery(n1, 'bait', { trust: 5 });
+  const bounced = buildDelivery(n1, 'bait', { trust: 2, baitFail: sam.baitFail, pick: 0 });
+  check('delivery: a bait that lands takes the truth path; one that bounces takes the lie path with a bounce line', landed.edge.nextNodeId === n1.swipes.truth.nextNodeId && bounced.edge.nextNodeId === n1.swipes.lie.nextNodeId && bounced.edge.npcReaction === sam.baitFail[0] && landed.bidKey === null);
+  check('delivery: white lies stay a bid (comfort), the soft truth keeps the truth side', buildDelivery(n1, 'white', {}).bidKey === 'lie' && buildDelivery(n1, 'soft', {}).swipeKey === 'truth');
+  const text = previewText(soft);
+  const hidden = previewText(soft, { hidden: true });
+  check('delivery: the strip shows numbers, and only the name under an ailment', text.head === 'SOFT TRUTH' && text.parts.includes('BARS +1') && text.parts.some((p) => p.startsWith('GUARD')) && hidden.parts.join() === '? ? ?' && hidden.head === 'SOFT TRUTH', JSON.stringify([text, hidden]));
+  check('delivery: ailments are low battery, fogged Wi-Fi, a scrambling clock, being shut out (not mild clock slip or low bars)', hasAilment({ ...st, stability: 2 }) && hasAilment({ ...st, lucidity: 3 }) && hasAilment({ ...st, integrity: 2 }) && hasAilment(st, { shutOut: true }) && !hasAilment({ ...st, integrity: 5, trust: 1 }) && !hasAilment(st));
 }
 
 console.log(failed ? `\n${failed} failed, ${passed} passed` : `\nall ${passed} passed`);

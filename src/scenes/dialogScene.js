@@ -27,6 +27,7 @@ import { characterArt, hatForContext, TUTORIAL_HATS, tutorialHatForBeat } from '
 import { createFeelzDartboard } from '../ui/feelzDartboard.js';
 import { EMOTIONS, emotionColor, emotionsForClass, getDominantEmotion, withClassMoods } from '../engine/loadout.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
+import { hasDelivery, deliveryKind, buildDelivery, previewDelivery, previewText, hasAilment, MASK_SLIP_AT } from '../engine/delivery.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
 import { createOscilloscope, wheelSteps } from '../ui/oscilloscope.js';
 import { createSpotlight } from '../ui/spotlight.js';
@@ -191,6 +192,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // plays after the reaction that tipped it (see showConnection).
   let pendingConnect = false;
   let connectionShown = false;
+  // The delivery spectrum (engine/delivery.js): white lies told this
+  // encounter, and their guard just broke (the truth comes out next).
+  let whiteUsed = 0;
+  let pendingCrack = false;
   // Pace pressure (engine/itPressure.js): the stall clock for the current
   // card, when the card appeared, and the rushing streaks.
   let stallTimers = [];
@@ -300,7 +305,13 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   // The feeling a node shows: its MASK if it wears one, else its MOOD.
   function shownMood(node) {
+    // Their guard low enough (engine/delivery.js): the mask slips.
+    if (node?.mask && npc.guard && guardNow() <= MASK_SLIP_AT) return node.mood;
     return node?.mask ?? node?.mood;
+  }
+  // Their guard (manuscript GUARD:), kept on the run so it survives a reload.
+  function guardNow() {
+    return run.get().guard?.[npc.npc] ?? npc.guard ?? 0;
   }
 
   // The encounter is shaped as a cadence: it opens in the predominant area,
@@ -718,7 +729,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
       const card = createSwipeCard({
         promptText: activeEmotion ? 'Swipe to respond.' : 'Pick a feeling first.',
-        onSwipe: (key) => {
+        delivery: activeEmotion && hasDelivery(currentNode()) ? deliveryPreview : null,
+        onSwipe: (key, how) => {
           if (!activeEmotion) {
             // A completed swipe with no feeling picked yet doesn't count as
             // a choice — snap the card back and give a clearly smaller jolt
@@ -729,7 +741,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
             audio.playHit('subtle');
             return;
           }
-          handleSwipe(key);
+          handleSwipe(key, how);
         },
       });
       interactive.appendChild(card.el);
@@ -945,8 +957,27 @@ export function mount(stageEl, scene, { run, onComplete }) {
     spotlight = createSpotlight(screen, [livePortrait?.el, ...targets]); // the speaker's face is never in the dark
   }
 
-  function handleSwipe(swipeKey) {
+  // While dragging a delivery card: the answer the drag is on, and its
+  // numbers unless a status ailment hides them.
+  function deliveryPreview(side, hard) {
+    const state = run.get();
+    const kind = deliveryKind(side === 'left' ? 'truth' : 'lie', hard);
+    const p = previewDelivery(state, currentNode(), kind, activeEmotion, { whiteUsed, baitFail: npc.baitFail });
+    const shutOut = /(_shut_down|_closed|_hard)$/.test(currentNodeId ?? '');
+    return previewText(p, { hidden: hasAilment(state, { shutOut }) });
+  }
+
+  function handleSwipe(sideKey, { hard = true } = {}) {
     clearStall();
+    // A delivery card: how far you pushed picks how you said it, built as an
+    // ordinary edge (engine/delivery.js) so everything below reads it as one.
+    let swipeKey = sideKey;
+    let delivered = null;
+    if (hasDelivery(currentNode())) {
+      delivered = buildDelivery(currentNode(), deliveryKind(sideKey, hard), { whiteUsed, trust: run.get().trust ?? 5, baitFail: npc.baitFail });
+      swipeKey = delivered.swipeKey;
+      if (delivered.kind === 'white') whiteUsed += 1;
+    }
     if (cardShownAt !== null) {
       fastStreak = performance.now() - cardShownAt < FAST_MS ? fastStreak + 1 : 0;
       if (fastStreak >= FAST_STREAK && pressureAllowed('fast')) pendingPressure = 'fast';
@@ -959,7 +990,14 @@ export function mount(stageEl, scene, { run, onComplete }) {
     audio.stopFeelzDrone();
 
     const before = run.get();
-    const { edge, patch } = resolveCard(before, currentNode(), swipeKey, activeEmotion, { fog: !npc.reveal }); // the tutorial doesn't fog the Wi-Fi
+    const cardNode = delivered ? { ...currentNode(), swipes: { [swipeKey]: delivered.edge } } : currentNode();
+    const { edge, patch } = resolveCard(before, cardNode, swipeKey, activeEmotion, { fog: !npc.reveal }); // the tutorial doesn't fog the Wi-Fi
+    if (delivered && npc.guard) {
+      const was = guardNow();
+      const guard = Math.max(0, Math.min(npc.guard, was + delivered.guardDelta));
+      patch.guard = { ...(before.guard ?? {}), [npc.npc]: guard };
+      if (was > 0 && guard === 0 && npc.story?.length && !(before.storiesHeard ?? []).includes(npc.npc) && !connectionShown) pendingCrack = true;
+    }
     run.set(patch);
     // Which way each node went, for anything later that reads it back —
     // today an outro beat's [node=truth|lie] condition.
@@ -992,7 +1030,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const node = currentNode();
     const synced = !!node.mood && activeEmotion === node.mood;
     // Caught contradicting yourself cancels the bid: it can't help and hurt.
-    const turnedToward = !seen && !!node.bid?.includes(swipeKey);
+    const turnedToward = !seen && !!node.bid?.includes(delivered ? delivered.bidKey : swipeKey);
     if (synced || turnedToward) {
       const wasTrusted = isTrusted(run.get().bonds?.[npc.npc]);
       run.set({ bonds: recordTrust(run.get().bonds ?? {}, npc.npc, { synced, turnedToward }) });
@@ -1419,7 +1457,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // The demo is the tutorial (docs/PHASE_11.md): each round teaches one
     // thing, on its first node, in the same shape (a short call, then one
     // "try this"). Deborah: the battle itself. Rwanda: the little screen.
-    // Samun: masks, then the trade. Rick: nothing, you're on your own.
+    // Samun: how you say it (delivery), then masks. Rick: nothing.
     if (npc.npc === 'RICK') return;
     if (npc.npc === 'DEBORAH' && !seenKeys.includes('battle')) {
       startCoach('battle', {
@@ -1438,18 +1476,23 @@ export function mount(stageEl, scene, { run, onComplete }) {
       });
       return;
     }
-    if (npc.npc === 'SAMUN' && seenKeys.includes('mask') && !seenKeys.includes('trade')) {
-      startCoach('trade', {
+    // Samun's round: the delivery spectrum (engine/delivery.js), on the first
+    // card that has it. It carries the old lie-trade lesson (a white lie
+    // relaxes them). His mask call follows on the next masked node.
+    if (hasDelivery(node) && !seenKeys.includes('delivery')) {
+      startCoach('delivery', {
         steps: [
-          { say: "It's me again. One more thing and then I'll leave you alone. Probably." },
-          { say: inClass("Tell someone what they want to hear and they relax. Their next feeling shows right on your wheel.", {
-            Guns: "Tell someone what they want to hear and they lower their guard. Their next feeling shows right on your wheel.",
-            Bible: "Tell someone what they want to hear and they exhale. Some call it a small mercy. Their next feeling shows right on your wheel.",
-            Crystals: "Tell someone what they want to hear and their energy softens. Mom would say that. I'd say they relax. Their next feeling shows on your wheel.",
-          }), target: 'wheel', label: 'THEIR NEXT FEELING' },
-          { say: "And the lake takes the bill. That's the trade. I'm not telling you which to make. Professionally, I can't. Okay. Bye.", target: 'lake', label: 'THE LAKE' },
+          { say: inClass("It's me. Samun's a talker. One new trick, then I'm gone.", { Guns: "It's me. Samun's a talker. One new move, then I'm gone." }) },
+          { say: 'How far you push the card is how you say it. A little: gentle. All the way: hard.', target: 'card', label: 'A LITTLE · ALL THE WAY' },
+          { say: inClass('A soft truth is cheap on you. A harsh one costs more and gets further.', {
+            Guns: 'A soft truth is a warning shot. A harsh one costs more rounds and gets further.',
+            Bible: "A soft truth is cheap on you. A harsh one costs more and gets further. Tough love, I think it's called.",
+          }), target: 'card', label: 'SOFT · HARSH' },
+          { say: "Lie side: a white lie relaxes him. Two's fine. A third lands heavy.", target: 'card', label: 'WHITE LIE' },
+          { say: "All the way is bait. A lie to make him blurt the truth. You need bars for it, or it bounces.", target: 'meters', label: 'YOUR BARS' },
+          { say: "Drag slow and FEELZ shows you the numbers. Unless you're not well. Then it can't. Okay. Bye.", target: 'card', label: 'DRAG SLOW' },
         ],
-        task: null,
+        task: { text: 'Drag slow. Read the numbers.', target: 'card', until: ['swipe'] },
       });
       return;
     }
@@ -1808,10 +1851,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // the end, and only then IT and SO. A tap finishes the line being typed
   // and moves to the next beat; it never skips a breath. Bracketed stage
   // directions stand alone first and turn themselves.
-  function showConnection(onDone) {
+  function showConnection(onDone, { crack = false } = {}) {
     connectionShown = true;
     const loadout = run.get().loadout;
-    const text = npc.connect[loadout] ?? Object.values(npc.connect)[0];
+    const lines = crack && npc.crack ? npc.crack : npc.connect;
+    const text = lines[loadout] ?? Object.values(lines)[0];
     const story = npc.story ?? [];
     const beats = [{ text }];
     for (const raw of story) {
@@ -2063,6 +2107,15 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   function continueAfterReaction() {
     if (stage !== 'reaction' || !pendingEdge) return;
+    if (pendingCrack) {
+      // Their guard broke: the truth comes out (their STORY), opened by their
+      // CRACK line instead of the connection's. Once; a later connection
+      // doesn't replay it.
+      pendingCrack = false;
+      pendingConnect = false;
+      showConnection(continueAfterReaction, { crack: true });
+      return;
+    }
     if (pendingConnect) {
       pendingConnect = false;
       showConnection(continueAfterReaction);

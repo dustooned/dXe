@@ -38,6 +38,20 @@ OPENER [Guns]: "Easy, soldier. I'm unarmed. Mostly."
 OPENER [Bible]: "Don't pray at me, man. I'm working."
 OPENER [Crystals]: "Ooh, good vibes. Sit, sit."
 
+# The delivery spectrum (engine/delivery.js, Phase 11): on his nodes, how far
+# you push the card is how you say it. -- SOFT is the true thing said kindly,
+# a LIE's WHITE REACT: is how it lands as a white lie (inside the budget), and
+# -- BAIT is a lie thrown to make him blurt the truth. GUARD: how closed he
+# starts; at 0 the truth comes out (his STORY, opened by his CRACK line).
+# BAITFAIL: a bait that bounced (your bars were too low to take the hit).
+GUARD: 6
+CRACK [Guns]: He sets both hands flat on the counter, like he's putting down a weapon. "Fine. You want it? You can have it."
+CRACK [Bible]: "You keep knocking." He sets the rag down. "Okay. Here's your confession."
+CRACK [Crystals]: The joke starts and dies in his mouth. "...Okay. Okay. Sit down."
+BAITFAIL: He doesn't even look up. "Sure, man." The rag keeps going.
+BAITFAIL: "Okay." He laughs, flat. "You're gonna have to try harder than that."
+BAITFAIL: He gives you a long look. Then he turns the radio up.
+
 === samun_01
 PROMPT: "Man, everyone's {color:Fear}hooked{/color} on something. Mine's just more honest."
 MOOD: Fear
@@ -57,11 +71,21 @@ NEXT: samun_02_confronted
 -- LIE
 SAY: Yeah. Could be worse. At least you know what it is.
 REACT: He grins. Relieved. You just gave him permission for another month.
+WHITE REACT: He grins, a little relieved. The rag keeps moving.
 EFFECTS: integrity-2 stability+2 trust+2
 DEBT: +4
 TAGS: Health, Addiction, Denial
 LEDGER: You cosigned Samun's denial about his addiction.
 NEXT: samun_02_enabled
+
+-- SOFT
+SAY: Honest's good. I'm still worried about what it's doing to you.
+REACT: "Worried." He tries the word out like it doesn't fit. Keeps wiping, slower.
+
+-- BAIT
+SAY: Funny. Guy at the bar told me you quit last month.
+REACT: The rag stops. "Who said that." It isn't a question. "...Nobody quit. I didn't quit." He's looking at you now. Really looking.
+LEDGER: You told Samun a stranger said he'd quit, to see what he'd do.
 
 === samun_02_enabled
 PROMPT: "See? You get it. Nobody else does. They all want me {color:Disgust}fixed{/color}."
@@ -80,11 +104,21 @@ NEXT: samun_03
 -- LIE
 SAY: They don't understand. You're holding it together fine.
 REACT: He nods hard, like he needed someone to say it. You said it.
+WHITE REACT: He nods, slower than he wants to. "Yeah. Fine."
 EFFECTS: integrity-2 stability+1 trust+2
 DEBT: +3
 TAGS: Addiction, Denial
 LEDGER: You told Samun that people wanting him to get better were wrong.
 NEXT: samun_03
+
+-- SOFT
+SAY: I don't want you fixed. I want you around.
+REACT: He laughs, but it catches halfway. "Around. Okay." He doesn't say anything else.
+
+-- BAIT
+SAY: Your mom called the shop earlier. Said to tell you she's done waiting.
+REACT: He goes still. "My mom doesn't call here." A beat. "...She doesn't call anywhere anymore."
+LEDGER: You told Samun his mother had called looking for him.
 
 === samun_02_confronted
 PROMPT: "Easy for you to say. You're not the one {color:Sadness}hurting{/color}."
@@ -101,11 +135,21 @@ NEXT: samun_03
 -- LIE
 SAY: Sorry. Forget I said anything. It's your call.
 REACT: "Yeah. It is." He turns back to the counter. Conversation over.
+WHITE REACT: "Yeah." He turns back to the counter, but he leaves the radio down.
 EFFECTS: integrity-1 stability+1 trust-1
 DEBT: +2
 TAGS: Denial
 LEDGER: You walked back the truth with Samun to avoid discomfort.
 NEXT: samun_03
+
+-- SOFT
+SAY: No. But I'd like to know what it's like for you.
+REACT: He snorts. Then, quieter: "Like being the only one awake in the house." He doesn't explain.
+
+-- BAIT
+SAY: Hurting? You look like you're having the time of your life.
+REACT: "You think this is fun?" It comes out loud, then lower. "Nothing about this is fun, man."
+LEDGER: You told Samun he looked like he was having fun, to make him say otherwise.
 
 === samun_01_soft
 PROMPT: "Business? Business is {color:Disgust}great{/color}, man. Look around. Everybody's real busy."
@@ -126,11 +170,21 @@ NEXT: samun_02_confronted
 -- LIE
 SAY: Place looks like it's holding up fine.
 REACT: "Right? That's what I keep saying." He settles into it like a chair.
+WHITE REACT: "Holding up. Yeah." He looks around like he's checking.
 EFFECTS: integrity-2 stability+1 trust+2
 DEBT: +3
 TAGS: Denial
 LEDGER: You agreed with Samun that the shop was doing fine.
 NEXT: samun_02_enabled
+
+-- SOFT
+SAY: It looks quiet. You doing okay in here?
+REACT: "Quiet's good. Quiet's..." He stops wiping. "Okay. It's quiet."
+
+-- BAIT
+SAY: Busy? I heard they're closing you down next month.
+REACT: "Who told you that?" He laughs, too fast. "Nobody's closing anything. It's just slow. It's been slow a while."
+LEDGER: You told Samun his shop was being closed down, to watch him defend it.
 
 === samun_01_hard
 PROMPT: (He puts the rag down.{sfx:rag}) "Ask it, then. Everybody who comes in here asks it {color:Anxiety}eventually{/color}."
@@ -148,11 +202,21 @@ NEXT: samun_02_confronted
 -- LIE
 SAY: I wasn't going to ask anything.
 REACT: "Course not." He picks the rag back up. "Nobody ever is."
+WHITE REACT: "Sure." He picks the rag back up, slower this time.
 EFFECTS: integrity-2 stability+1 trust-1
 DEBT: +2
 TAGS: Denial
 LEDGER: You backed off the question Samun had already braced himself to answer.
 NEXT: samun_02_enabled
+
+-- SOFT
+SAY: Only if you want to tell me. What are you taking?
+REACT: He lets out a breath. "Nobody ever says only if." He doesn't answer yet, but he doesn't pick the rag up either.
+
+-- BAIT
+SAY: Don't bother. Everybody on the street already knows what you're on.
+REACT: His face goes hot. "Then they know more than I do." A beat. "...It's pills, mostly. Since you all know."
+LEDGER: You told Samun the whole street knew what he was on.
 
 === samun_01_secret
 # The secret opener: you opened everything in his garage and restored what
@@ -177,11 +241,21 @@ NEXT: samun_02_confronted
 -- LIE
 SAY: Didn't touch anything. It was like that.
 REACT: "Huh. Ghosts." He laughs. The rag comes back out.
+WHITE REACT: "Ghosts, then." He laughs softly, and leaves it alone.
 EFFECTS: integrity-1 stability+1
 DEBT: +2
 TAGS: Denial
 LEDGER: You told Samun his garage cleaned itself.
 NEXT: samun_02_enabled
+
+-- SOFT
+SAY: It looked heavy. I figured you could use a hand.
+REACT: He looks at the curb, the wall, the radio. "Huh. Yeah. I could."
+
+-- BAIT
+SAY: Honestly? I was looking for your stash.
+REACT: He laughs, a real one. "Wrong drawer, man. It's behind the coffee can." Then his face falls. He heard himself.
+LEDGER: You told Samun you'd gone through his garage looking for his stash.
 
 === samun_01_lie
 # The white-lie opener: only offered while your Wi-Fi is fogged (under 4).
@@ -203,11 +277,21 @@ NEXT: samun_02_confronted
 -- LIE
 SAY: Looks fine. I'll sign off.
 REACT: "See? Nothing to see." He's grinning. His hands haven't stopped.
+WHITE REACT: "Appreciate it." He means it. His hands slow down a little.
 EFFECTS: stability+2 trust+1
 DEBT: +3
 TAGS: Denial
 LEDGER: You told Samun you were inspecting his garage.
 NEXT: samun_02_enabled
+
+-- SOFT
+SAY: No inspection. I just wanted to see how you were doing.
+REACT: "Oh." The grin stays a second too long. "...Doing. Okay. Mostly."
+
+-- BAIT
+SAY: Code says I test everyone on site. Starting with you.
+REACT: "Test me for what?" The grin's gone. "...Man, you'd find it. You'd find all of it."
+LEDGER: You told Samun you were there to drug test him.
 
 === samun_01_fake
 # The faked restore: offered while fogged to a player who restored nothing,
@@ -229,11 +313,21 @@ NEXT: samun_02_confronted
 -- LIE
 SAY: Must be hard to tell, in here.
 REACT: "Ha! Yeah. Yeah, it is." He laughs, and keeps wiping.
+WHITE REACT: "Ha. Yeah." He laughs, easier than before.
 EFFECTS: stability+1 trust+1
 DEBT: +2
 TAGS: Denial
 LEDGER: You told Samun you'd fixed something in his garage that you hadn't.
 NEXT: samun_02_enabled
+
+-- SOFT
+SAY: I didn't. But I'd have helped, if you wanted.
+REACT: He points the rag at you. "Nobody offers." He puts it down. "...Thanks."
+
+-- BAIT
+SAY: I moved your bottles. Took a while to find them all.
+REACT: "You..." He glances at the coffee can before he can stop himself. Then back at you. "There's not that many."
+LEDGER: You told Samun you'd found and moved his bottles.
 
 === samun_03
 PROMPT: (He sets two bottles on the counter, unopened, just to have something to look at instead of you.) "Tried quitting once. Four days. Everybody around me got {color:Disgust}worse{/color}, not me."
@@ -250,6 +344,7 @@ NEXT: samun_04
 -- LIE
 SAY: Then it's not really you that's the problem, is it.
 REACT: He nods slow, like you just handed him the last piece he needed. Cracks a bottle open.
+WHITE REACT: He nods, slow. He doesn't open the bottle. Not yet.
 EFFECTS: integrity-2 stability+2 trust+1
 DEBT: +3
 TAGS: Addiction, Denial
@@ -258,6 +353,15 @@ CONTRADICTS: rwanda_03=lie
 CONTRADICTS: samun_01=truth
 CAUGHT [samun_01]: "First I'm killing myself. Now it ain't me? Pick one, man."
 NEXT: samun_04
+
+-- SOFT
+SAY: Four days is real. What was the hardest part?
+REACT: "Day three." He doesn't have to think. "Day three, everybody wanted the old me back."
+
+-- BAIT
+SAY: Four days? Guy next door says it was four hours.
+REACT: "Four DAYS." He slaps the counter. "Ninety-six hours. I counted every one." He's breathing hard. He wanted you to hear that.
+LEDGER: You told Samun his neighbor said he'd only quit for four hours.
 
 === samun_04
 PROMPT: "Fifth day, my {color:Sadness}brother{/color} called asking for money. That's the whole story. That's all it ever takes."
@@ -274,6 +378,7 @@ NEXT: (end)
 -- LIE
 SAY: Can't control what your brother does. Not on you.
 REACT: He agrees fast, too fast, and reaches for the second bottle.
+WHITE REACT: He nods, and doesn't reach for the bottle. Not tonight, anyway.
 EFFECTS: integrity-2 stability+1 trust+2
 DEBT: +3
 TAGS: Addiction, Denial
@@ -281,3 +386,12 @@ LEDGER: You told Samun his brother's call, not his own choice, was why he drank 
 CONTRADICTS: samun_03=truth
 CAUGHT [samun_03]: "You just said it was me who changed. Now nothing's on me?"
 NEXT: (end)
+
+-- SOFT
+SAY: That sounds like it hurt. I'm glad you told me.
+REACT: He nods once. "Yeah. It did." That's all, and it's enough.
+
+-- BAIT
+SAY: Your brother says it was you who called him. For money.
+REACT: "That's a lie." It's out before he thinks. "I never called him. I never once." His voice breaks on once.
+LEDGER: You told Samun his brother said it was the other way around.

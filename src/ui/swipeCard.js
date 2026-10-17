@@ -40,7 +40,14 @@ function hintHtml(label) {
   return `${m[1] ? pixelArrow('left') : ''}<span>${escapeHtml(m[2])}</span>${m[3] ? pixelArrow('right') : ''}`;
 }
 
-export function createSwipeCard({ promptText, onSwipe, hints, stamps, colors, tapHints = false }) {
+// `delivery` (engine/delivery.js): the card has a short push and a full push
+// per side. delivery(side, hard) -> { head, parts } names the answer the
+// drag is on and its numbers (or "? ? ?"), shown in a strip under the card;
+// the stamp takes its name. onSwipe gets { hard } as a second argument.
+// The full push starts at HARD_SHARE of the card's width.
+const HARD_SHARE = 0.55;
+
+export function createSwipeCard({ promptText, onSwipe, hints, stamps, colors, tapHints = false, delivery = null }) {
   const leftLabel  = hints?.left  ?? '← TRUTH';
   const rightLabel = hints?.right ?? 'LIE →';
   const leftStamp  = stamps?.left  ?? 'TRUTH';
@@ -58,6 +65,7 @@ export function createSwipeCard({ promptText, onSwipe, hints, stamps, colors, ta
       <p class="dx-swipe-card__text"></p>
       <span class="dx-swipe-card__stamp" aria-hidden="true"></span>
     </div>
+    <div class="dx-swipe-card__delivery" hidden><span class="dx-swipe-card__delivery-head"></span><span class="dx-swipe-card__delivery-parts"></span></div>
   `;
   el.style.setProperty('--side-left', sideColors.left);
   el.style.setProperty('--side-right', sideColors.right);
@@ -70,13 +78,35 @@ export function createSwipeCard({ promptText, onSwipe, hints, stamps, colors, ta
   const card = el.querySelector('.dx-swipe-card');
   const stamp = el.querySelector('.dx-swipe-card__stamp');
 
+  const strip = el.querySelector('.dx-swipe-card__delivery');
+  const hardPx = () => Math.max(LEAN_PX + 40, card.offsetWidth * HARD_SHARE);
+  const isHard = (dx) => Math.abs(dx) >= hardPx();
+  let stripKey = '';
+  function showDelivery(dx) {
+    if (!delivery || Math.abs(dx) < 24) { strip.hidden = true; stripKey = ''; return null; }
+    const side = dx < 0 ? 'left' : 'right';
+    const hard = isHard(dx);
+    const key = `${side}${hard}`;
+    const info = delivery(side, hard);
+    if (key !== stripKey) {
+      stripKey = key;
+      strip.querySelector('.dx-swipe-card__delivery-head').textContent = info.head;
+      strip.querySelector('.dx-swipe-card__delivery-parts').textContent = info.parts.join(' · ');
+      strip.classList.toggle('is-hard', hard);
+      if (hard) playSfx('swipeFast');
+    }
+    strip.hidden = false;
+    return info;
+  }
+
   function lean(dx) {
     const side = dx < 0 ? 'left' : 'right';
     const t = Math.min(1, Math.abs(dx) / LEAN_PX);
     el.style.setProperty('--lean', t.toFixed(3));
     el.style.setProperty('--lean-color', sideColors[side]);
     el.dataset.side = dx === 0 ? '' : side;
-    stamp.textContent = side === 'left' ? leftStamp : rightStamp;
+    const info = showDelivery(dx);
+    stamp.textContent = info ? info.head.split(' · ')[0] : side === 'left' ? leftStamp : rightStamp;
     el.classList.toggle('is-truth', dx <= -40);
     el.classList.toggle('is-lie', dx >= 40);
   }
@@ -84,6 +114,8 @@ export function createSwipeCard({ promptText, onSwipe, hints, stamps, colors, ta
   function clearLean() {
     el.style.setProperty('--lean', '0');
     el.dataset.side = '';
+    strip.hidden = true;
+    stripKey = '';
   }
 
   // How the swipe was made: a fast flick cracks bright, a slow, decided drag
@@ -102,11 +134,12 @@ export function createSwipeCard({ promptText, onSwipe, hints, stamps, colors, ta
       card.style.transform = `translateX(${dx}px) rotate(${dx / 20}deg)`;
       lean(dx);
     },
-    onEnd(direction) {
+    onEnd(direction, dx) {
       if (direction === 'left' || direction === 'right') landSwipe();
       dragStart = 0;
-      if (direction === 'left') onSwipe?.('truth');
-      else if (direction === 'right') onSwipe?.('lie');
+      const hard = isHard(dx ?? 0);
+      if (direction === 'left') onSwipe?.('truth', { hard });
+      else if (direction === 'right') onSwipe?.('lie', { hard });
       else {
         card.style.transform = '';
         el.classList.remove('is-truth', 'is-lie');

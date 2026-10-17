@@ -49,7 +49,21 @@
       "mask": "Happy",
       "bid": [
         "lie"
-      ]
+      ],
+      "delivery": {
+        "white": {
+          "npcReaction": "He grins, a little relieved. The rag keeps moving."
+        },
+        "soft": {
+          "playerText": "Honest's good. I'm still worried about what it's doing to you.",
+          "npcReaction": "\"Worried.\" He tries the word out like it doesn't fit. Keeps wiping, slower."
+        },
+        "bait": {
+          "playerText": "Funny. Guy at the bar told me you quit last month.",
+          "npcReaction": "The rag stops. \"Who said that.\" It isn't a question. \"...Nobody quit. I didn't quit.\" He's looking at you now. Really looking.",
+          "ledgerEntry": "You told Samun a stranger said he'd quit, to see what he'd do."
+        }
+      }
     },
     "samun_02_enabled": {
       "id": "samun_02_enabled",
@@ -91,7 +105,21 @@
       "mask": "Happy",
       "bid": [
         "lie"
-      ]
+      ],
+      "delivery": {
+        "white": {
+          "npcReaction": "He nods, slower than he wants to. \"Yeah. Fine.\""
+        },
+        "soft": {
+          "playerText": "I don't want you fixed. I want you around.",
+          "npcReaction": "He laughs, but it catches halfway. \"Around. Okay.\" He doesn't say anything else."
+        },
+        "bait": {
+          "playerText": "Your mom called the shop earlier. Said to tell you she's done waiting.",
+          "npcReaction": "He goes still. \"My mom doesn't call here.\" A beat. \"...She doesn't call anywhere anymore.\"",
+          "ledgerEntry": "You told Samun his mother had called looking for him."
+        }
+      }
     },
     "samun_02_confronted": {
       "id": "samun_02_confronted",
@@ -129,7 +157,21 @@
         }
       },
       "mood": "Sadness",
-      "mask": "Anger"
+      "mask": "Anger",
+      "delivery": {
+        "white": {
+          "npcReaction": "\"Yeah.\" He turns back to the counter, but he leaves the radio down."
+        },
+        "soft": {
+          "playerText": "No. But I'd like to know what it's like for you.",
+          "npcReaction": "He snorts. Then, quieter: \"Like being the only one awake in the house.\" He doesn't explain."
+        },
+        "bait": {
+          "playerText": "Hurting? You look like you're having the time of your life.",
+          "npcReaction": "\"You think this is fun?\" It comes out loud, then lower. \"Nothing about this is fun, man.\"",
+          "ledgerEntry": "You told Samun he looked like he was having fun, to make him say otherwise."
+        }
+      }
     },
     "samun_01_soft": {
       "id": "samun_01_soft",
@@ -173,7 +215,21 @@
       "mask": "Happy",
       "bid": [
         "lie"
-      ]
+      ],
+      "delivery": {
+        "white": {
+          "npcReaction": "\"Holding up. Yeah.\" He looks around like he's checking."
+        },
+        "soft": {
+          "playerText": "It looks quiet. You doing okay in here?",
+          "npcReaction": "\"Quiet's good. Quiet's...\" He stops wiping. \"Okay. It's quiet.\""
+        },
+        "bait": {
+          "playerText": "Busy? I heard they're closing you down next month.",
+          "npcReaction": "\"Who told you that?\" He laughs, too fast. \"Nobody's closing anything. It's just slow. It's been slow a while.\"",
+          "ledgerEntry": "You told Samun his shop was being closed down, to watch him defend it."
+        }
+      }
     },
     "samun_01_hard": {
       "id": "samun_01_hard",
@@ -214,6 +270,20 @@
       "mood": "Fear",
       "moodByClass": {
         "Guns": "Anger"
+      },
+      "delivery": {
+        "white": {
+          "npcReaction": "\"Sure.\" He picks the rag back up, slower this time."
+        },
+        "soft": {
+          "playerText": "Only if you want to tell me. What are you taking?",
+          "npcReaction": "He lets out a breath. \"Nobody ever says only if.\" He doesn't answer yet, but he doesn't pick the rag up either."
+        },
+        "bait": {
+          "playerText": "Don't bother. Everybody on the street already knows what you're on.",
+          "npcReaction": "His face goes hot. \"Then they know more than I do.\" A beat. \"...It's pills, mostly. Since you all know.\"",
+          "ledgerEntry": "You told Samun the whole street knew what he was on."
+        }
       }
     },
     "samun_01_secret": {
@@ -263,7 +333,21 @@
       "bid": [
         "truth"
       ],
-      "glow": true
+      "glow": true,
+      "delivery": {
+        "white": {
+          "npcReaction": "\"Ghosts, then.\" He laughs softly, and leaves it alone."
+        },
+        "soft": {
+          "playerText": "It looked heavy. I figured you could use a hand.",
+          "npcReaction": "He looks at the curb, the wall, the radio. \"Huh. Yeah. I could.\""
+        },
+        "bait": {
+          "playerText": "Honestly? I was looking for your stash.",
+          "npcReaction": "He laughs, a real one. \"Wrong drawer, man. It's behind the coffee can.\" Then his face falls. He heard himself.",
+          "ledgerEntry": "You told Samun you'd gone through his garage looking for his stash."
+        }
+      }
     },
     "samun_01_lie": {
       "id": "samun_01_lie",
@@ -307,7 +391,21 @@
       "bid": [
         "lie"
       ],
-      "glow": true
+      "glow": true,
+      "delivery": {
+        "white": {
+          "npcReaction": "\"Appreciate it.\" He means it. His hands slow down a little."
+        },
+        "soft": {
+          "playerText": "No inspection. I just wanted to see how you were doing.",
+          "npcReaction": "\"Oh.\" The grin stays a second too long. \"...Doing. Okay. Mostly.\""
+        },
+        "bait": {
+          "playerText": "Code says I test everyone on site. Starting with you.",
+          "npcReaction": "\"Test me for what?\" The grin's gone. \"...Man, you'd find it. You'd find all of it.\"",
+          "ledgerEntry": "You told Samun you were there to drug test him."
+        }
+      }
     },
     "samun_01_fake": {
       "id": "samun_01_fake",
@@ -351,7 +449,21 @@
       "bid": [
         "lie"
       ],
-      "glow": true
+      "glow": true,
+      "delivery": {
+        "white": {
+          "npcReaction": "\"Ha. Yeah.\" He laughs, easier than before."
+        },
+        "soft": {
+          "playerText": "I didn't. But I'd have helped, if you wanted.",
+          "npcReaction": "He points the rag at you. \"Nobody offers.\" He puts it down. \"...Thanks.\""
+        },
+        "bait": {
+          "playerText": "I moved your bottles. Took a while to find them all.",
+          "npcReaction": "\"You...\" He glances at the coffee can before he can stop himself. Then back at you. \"There's not that many.\"",
+          "ledgerEntry": "You told Samun you'd found and moved his bottles."
+        }
+      }
     },
     "samun_03": {
       "id": "samun_03",
@@ -405,7 +517,21 @@
       "mood": "Sadness",
       "bid": [
         "truth"
-      ]
+      ],
+      "delivery": {
+        "white": {
+          "npcReaction": "He nods, slow. He doesn't open the bottle. Not yet."
+        },
+        "soft": {
+          "playerText": "Four days is real. What was the hardest part?",
+          "npcReaction": "\"Day three.\" He doesn't have to think. \"Day three, everybody wanted the old me back.\""
+        },
+        "bait": {
+          "playerText": "Four days? Guy next door says it was four hours.",
+          "npcReaction": "\"Four DAYS.\" He slaps the counter. \"Ninety-six hours. I counted every one.\" He's breathing hard. He wanted you to hear that.",
+          "ledgerEntry": "You told Samun his neighbor said he'd only quit for four hours."
+        }
+      }
     },
     "samun_04": {
       "id": "samun_04",
@@ -456,7 +582,21 @@
       "bid": [
         "truth",
         "lie"
-      ]
+      ],
+      "delivery": {
+        "white": {
+          "npcReaction": "He nods, and doesn't reach for the bottle. Not tonight, anyway."
+        },
+        "soft": {
+          "playerText": "That sounds like it hurt. I'm glad you told me.",
+          "npcReaction": "He nods once. \"Yeah. It did.\" That's all, and it's enough."
+        },
+        "bait": {
+          "playerText": "Your brother says it was you who called him. For money.",
+          "npcReaction": "\"That's a lie.\" It's out before he thinks. \"I never called him. I never once.\" His voice breaks on once.",
+          "ledgerEntry": "You told Samun his brother said it was the other way around."
+        }
+      }
     }
   },
   "npcClass": "Bible",
@@ -488,5 +628,16 @@
     "Guns": "\"Easy, soldier. I'm unarmed. Mostly.\"",
     "Bible": "\"Don't pray at me, man. I'm working.\"",
     "Crystals": "\"Ooh, good vibes. Sit, sit.\""
-  }
+  },
+  "guard": 6,
+  "crack": {
+    "Guns": "He sets both hands flat on the counter, like he's putting down a weapon. \"Fine. You want it? You can have it.\"",
+    "Bible": "\"You keep knocking.\" He sets the rag down. \"Okay. Here's your confession.\"",
+    "Crystals": "The joke starts and dies in his mouth. \"...Okay. Okay. Sit down.\""
+  },
+  "baitFail": [
+    "He doesn't even look up. \"Sure, man.\" The rag keeps going.",
+    "\"Okay.\" He laughs, flat. \"You're gonna have to try harder than that.\"",
+    "He gives you a long look. Then he turns the radio up."
+  ]
 }

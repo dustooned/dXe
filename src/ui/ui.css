@@ -1627,3 +1627,36 @@ svg .is-hinted path {
   margin: 0;
   font-size: calc(24 * var(--px));
 }
+
+/* The delivery strip (engine/delivery.js): while dragging a card that has a
+   short and a full push, it names the answer the drag is on and what it
+   moves. Floats over the space under the card so nothing below it shifts.
+   The full push gets the side's color and a heavier border. */
+.dx-swipe-card-wrap { position: relative; }
+.dx-swipe-card__delivery {
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6 * var(--px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(4 * var(--px));
+  padding: calc(6 * var(--px)) calc(8 * var(--px));
+  border: 1px solid var(--lean-color);
+  background: var(--color-black);
+  color: var(--color-white);
+  text-align: center;
+  pointer-events: none;
+}
+.dx-swipe-card__delivery.is-hard { border-width: 2px; }
+.dx-swipe-card__delivery-head {
+  font-size: calc(8 * var(--fs));
+  letter-spacing: 0.1em;
+  color: var(--lean-color);
+}
+.dx-swipe-card__delivery-parts {
+  font-size: calc(6 * var(--fs));
+  line-height: 1.6;
+}

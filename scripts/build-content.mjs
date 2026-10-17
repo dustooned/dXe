@@ -99,6 +99,11 @@ function parseManuscript(text, fileName) {
   const opener = {};
   const outro = [];
   let inOutro = false;
+  // The delivery spectrum (engine/delivery.js): GUARD: their starting guard,
+  // CRACK [class]: what they say as it breaks, BAITFAIL: a bait that bounced.
+  let guard = null;
+  const crack = {};
+  const baitFail = [];
 
   let currentNodeId = null;
   let currentNode = null;
@@ -107,7 +112,21 @@ function parseManuscript(text, fileName) {
 
   function commitEdge() {
     if (currentNodeId && currentEdgeKey && currentEdge) {
-      currentNode.swipes[currentEdgeKey] = currentEdge;
+      // -- SOFT / -- BAIT are deliveries, not swipes: their words only. The
+      // numbers come from engine/delivery.js. A LIE's WHITE REACT: is how it
+      // lands as a white lie (inside the budget).
+      if (currentEdgeKey === 'soft' || currentEdgeKey === 'bait') {
+        const d = { playerText: currentEdge.playerText, npcReaction: currentEdge.npcReaction };
+        if (currentEdge.reactByClass) d.reactByClass = currentEdge.reactByClass;
+        if (currentEdge.ledgerEntry) d.ledgerEntry = currentEdge.ledgerEntry;
+        currentNode.delivery = { ...currentNode.delivery, [currentEdgeKey]: d };
+      } else {
+        if (currentEdge.whiteReaction) {
+          currentNode.delivery = { ...currentNode.delivery, white: { npcReaction: currentEdge.whiteReaction } };
+          delete currentEdge.whiteReaction;
+        }
+        currentNode.swipes[currentEdgeKey] = currentEdge;
+      }
     }
     currentEdgeKey = null;
     currentEdge = null;
@@ -164,6 +183,17 @@ function parseManuscript(text, fileName) {
       const m = line.match(/^PUSHAWAY \[(Guns|Bible|Crystals)\]:\s*(.*)$/);
       if (!m) throw new Error(`${fileName}:${lineNumber}: bad PUSHAWAY line "${raw}" (PUSHAWAY [Guns|Bible|Crystals]: text)`);
       pushAway[m[1]] = parseText(m[2]);
+    } else if (line.startsWith('GUARD:')) {
+      guard = Number(line.slice(6).trim());
+      if (!(guard > 0)) throw new Error(`${fileName}:${lineNumber}: bad GUARD "${raw}" (a number above 0)`);
+    } else if (line.startsWith('CRACK')) {
+      const m = line.match(/^CRACK \[(Guns|Bible|Crystals)\]:\s*(.*)$/);
+      if (!m) throw new Error(`${fileName}:${lineNumber}: bad CRACK line "${raw}" (CRACK [Guns|Bible|Crystals]: text)`);
+      crack[m[1]] = parseText(m[2]);
+    } else if (line.startsWith('BAITFAIL:')) {
+      baitFail.push(parseText(line.slice(9)));
+    } else if (line.startsWith('WHITE REACT:')) {
+      currentEdge.whiteReaction = parseText(line.slice(12));
     } else if (line.startsWith('STORYIT:')) {
       // After their STORY, in the silence: IT weighs how true it rings.
       storyIt = parseText(line.slice(8));
@@ -258,8 +288,8 @@ function parseManuscript(text, fileName) {
     } else if (line.startsWith('--')) {
       commitEdge();
       const label = line.replace(/^-+/, '').trim().toLowerCase();
-      if (label !== 'truth' && label !== 'lie') {
-        throw new Error(`${fileName}:${lineNumber}: expected "-- TRUTH" or "-- LIE", got "${raw}"`);
+      if (!['truth', 'lie', 'soft', 'bait'].includes(label)) {
+        throw new Error(`${fileName}:${lineNumber}: expected "-- TRUTH", "-- LIE", "-- SOFT" or "-- BAIT", got "${raw}"`);
       }
       currentEdgeKey = label;
       currentEdge = {
@@ -354,6 +384,9 @@ function parseManuscript(text, fileName) {
   if (storySo) result.storySo = storySo;
   if (Object.keys(opener).length) result.opener = opener;
   if (outro.length) result.outro = outro;
+  if (guard) result.guard = guard;
+  if (Object.keys(crack).length) result.crack = crack;
+  if (baitFail.length) result.baitFail = baitFail;
   return result;
 }
 

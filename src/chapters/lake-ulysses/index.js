@@ -186,6 +186,9 @@ const initialRunState = {
   // The FEELZ evaluation's read on the player (questionnaireScene.js), said
   // by the therapist as he looks over the intake (therapist_01 {intake}).
   intakeRead: null,
+  // { [npc]: guard } for an NPC with a delivery spectrum (engine/delivery.js):
+  // how closed they still are; at 0 the truth comes out.
+  guard: {},
   // NPCs whose story (their STORY cutscene) the player has heard.
   storiesHeard: [],
   // Each baptism card's answer, in order ('confess' | 'down'), for the
