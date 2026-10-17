@@ -49,6 +49,12 @@ const HINT_FIRST_MS = 1800;
 const HINT_EVERY_MS = 5200;
 const HINT_MS = 1100;     // the bounce (CSS dx-feed-hint)
 
+// The rail's numbers: a channel's likes are made up but steady (from its id).
+const baseLikes = (id) => [...String(id)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 9000, 7) + 140;
+const countText = (n) => (n >= 1000 ? `${(n / 1000).toFixed(1)}K` : String(n));
+// A speech bubble in pixels for the chat button.
+const CHAT_ICON = '<svg viewBox="0 0 8 7" shape-rendering="crispEdges" aria-hidden="true"><rect x="1" y="0" width="6" height="1"/><rect x="0" y="1" width="8" height="3"/><rect x="1" y="4" width="6" height="1"/><rect x="2" y="5" width="1" height="1"/><rect x="1" y="6" width="1" height="1"/></svg>';
+
 const ART = {
   feelzSilhouette: () => createFeelzSilhouette(),
   lakeGauge: ({ run }) => createLakeGauge(run.get().truthDebt ?? 0, { marks: lakeMarks(run.get()) }),
@@ -66,6 +72,7 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
   const visited = new Set([0]);
   const offsets = channels.map(() => 0);
   const hearts = new Set();
+  const liked = new Set();
   let clock = 0;
   let cur = 0;
   let shownBeat = -1;
@@ -226,26 +233,52 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
     comments.className = 'dx-feed__comments';
     screen.appendChild(comments);
 
-    // The chat can be hidden (and stays hidden, settings.feedChat): just the
-    // channel and its words.
-    const chat = document.createElement('button');
-    chat.type = 'button';
-    chat.className = 'dx-btn dx-feed__chat';
+    // The rail, right side like a feed's: like the channel (♥ and its count),
+    // and the chat button, which hides or shows the comments (remembered,
+    // settings.feedChat) and shows how many there are.
+    const rail = document.createElement('div');
+    rail.className = 'dx-feed__rail';
+    const railBtn = (cls, label) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = `dx-feed__rail-btn ${cls}`;
+      b.setAttribute('aria-label', label);
+      b.innerHTML = '<span class="dx-feed__rail-icon"></span><span class="dx-feed__rail-n"></span>';
+      b.addEventListener('pointerdown', (e) => e.stopPropagation());
+      rail.appendChild(b);
+      return b;
+    };
+    const like = railBtn('dx-feed__like', `Like ${ch.name}`);
+    like.querySelector('.dx-feed__rail-icon').textContent = '♥';
+    const syncLike = () => {
+      const on = liked.has(ch.id);
+      like.classList.toggle('is-on', on);
+      like.querySelector('.dx-feed__rail-n').textContent = countText(baseLikes(ch.id) + (on ? 1 : 0));
+    };
+    like.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (liked.has(ch.id)) liked.delete(ch.id); else liked.add(ch.id);
+      syncLike();
+      playSfx('tap');
+    });
+    syncLike();
+    const chat = railBtn('dx-feed__chat', 'Show or hide the chat');
+    chat.querySelector('.dx-feed__rail-icon').innerHTML = CHAT_ICON;
+    chat.querySelector('.dx-feed__rail-n').textContent = String(ch.beats.reduce((n, b) => n + (b.comments?.length ?? 0), 0));
     const syncChat = () => {
       const on = loadSettings().feedChat !== false;
       screen.classList.toggle('is-chat-off', !on);
-      chat.textContent = on ? 'HIDE CHAT' : 'SHOW CHAT';
-      chat.setAttribute('aria-pressed', String(!on));
+      chat.classList.toggle('is-on', on);
+      chat.setAttribute('aria-pressed', String(on));
     };
-    chat.addEventListener('pointerdown', (e) => e.stopPropagation());
     chat.addEventListener('click', (e) => {
       e.stopPropagation();
       updateSettings({ feedChat: loadSettings().feedChat === false });
       syncChat();
       playSfx('tap');
     });
-    screen.appendChild(chat);
     syncChat();
+    screen.appendChild(rail);
 
     const flip = document.createElement('div');
     flip.className = 'dx-feed__flip';
@@ -396,7 +429,8 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
     if (i !== shownBeat) {
       shownBeat = i;
       typewriter?.destroy();
-      dom.speaker.textContent = beat.speaker ?? '';
+      // Who's posting, as a handle: BOB BAITER -> @bob_baiter.
+      dom.speaker.textContent = beat.speaker ? `@${beat.speaker.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')}` : '';
       dom.speaker.hidden = !beat.speaker;
       const said = beat.speaker ? quoteSpeech(fill(beat.text)) : fill(beat.text);
       typewriter = createTypewriter(dom.text, said, { onChar: playTypewriterTick });

@@ -2458,8 +2458,9 @@
   top: calc(56 * var(--px));
   left: 0;
   right: 0;
-  padding: calc(6 * var(--px)) calc(16 * var(--px)) calc(26 * var(--px));
-  background: var(--color-black);
+  /* Slim, like a feed's top line: the picture shows right under it. */
+  padding: calc(6 * var(--px)) calc(16 * var(--px));
+  background: rgb(0 0 0 / 0.82);
   display: flex;
   align-items: center;
   gap: calc(8 * var(--px));
@@ -2474,19 +2475,38 @@
 .dx-feed__name { flex: 1; }
 .dx-feed__ch { opacity: 0.6; }
 .dx-feed__scrub {
+  /* The timeline, along the bottom edge like a feed's progress bar, with a
+     tall touch strip so it's easy to grab and drag. */
   position: absolute;
   z-index: 4;
-  top: calc(80 * var(--px));
-  left: calc(16 * var(--px));
-  right: calc(16 * var(--px));
-  width: calc(100% - 32 * var(--px));
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: calc(22 * var(--px));
   margin: 0;
-  accent-color: var(--color-white);
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: pointer;
 }
+.dx-feed__scrub::-webkit-slider-runnable-track { height: calc(3 * var(--px)); background: rgb(255 255 255 / 0.35); }
+.dx-feed__scrub::-moz-range-track { height: calc(3 * var(--px)); background: rgb(255 255 255 / 0.35); }
+.dx-feed__scrub::-moz-range-progress { height: calc(3 * var(--px)); background: var(--color-white); }
+.dx-feed__scrub::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: calc(10 * var(--px));
+  height: calc(10 * var(--px));
+  margin-top: calc(-3.5 * var(--px));
+  background: var(--color-white);
+  border: none;
+}
+.dx-feed__scrub::-moz-range-thumb { width: calc(10 * var(--px)); height: calc(10 * var(--px)); background: var(--color-white); border: none; border-radius: 0; }
+/* Under the top line: CLOSE APP right, HIDE CHAT left. */
 .dx-feed__close {
   position: absolute;
   z-index: 5;
-  top: calc(108 * var(--px));
+  top: calc(92 * var(--px));
   right: calc(16 * var(--px));
   font-size: calc(7 * var(--fs));
 }
@@ -2568,11 +2588,12 @@
 .dx-feed__peek-label .dx-feed__name { flex: 1; }
 .dx-feed__more { opacity: 0.6; }
 .dx-feed__comments {
-  position: absolute;
+  /* Live chat sits just above the caption, newest at the bottom, like a
+     live stream's (in the flow: the screen stacks from the bottom). */
+  position: relative;
   z-index: 4;
-  left: calc(10 * var(--px));
+  margin: 0 0 calc(6 * var(--px)) calc(10 * var(--px));
   width: 66%;
-  top: 34%;
   display: flex;
   flex-direction: column;
   gap: calc(4 * var(--px));
@@ -2671,12 +2692,58 @@
 .dx-ending-keep .dx-btn { flex: 1; min-width: 0; }
 .dx-feed__peek-label .dx-feed__ch { opacity: 0.6; }
 
-/* The feed's chat toggle (feedScene.js), top left across from CLOSE APP. */
-.dx-feed__chat {
-  position: absolute;
-  z-index: 5;
-  top: calc(108 * var(--px));
-  left: calc(16 * var(--px));
-  font-size: calc(7 * var(--fs));
-}
 .dx-feed.is-chat-off .dx-feed__comments { display: none; }
+
+/* The caption: who's posting and what they say, bottom left, leaving room
+   for the rail on the right and the timeline under it. */
+.dx-feed .dx-feed__textbox {
+  margin: 0 calc(64 * var(--px)) calc(24 * var(--px)) calc(10 * var(--px));
+  min-height: 0;
+  padding: calc(9 * var(--px)) calc(11 * var(--px));
+  border: none;
+  background: rgb(0 0 0 / 0.82);
+  text-align: left;
+}
+.dx-feed.is-ended .dx-feed__textbox::after { text-align: left; }
+
+/* The rail: likes and the chat count, right side above the caption. */
+.dx-feed__rail {
+  position: absolute;
+  z-index: 4;
+  right: calc(8 * var(--px));
+  bottom: calc(40 * var(--px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(12 * var(--px));
+}
+.dx-feed__rail-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(3 * var(--px));
+  width: calc(48 * var(--px));
+  padding: calc(6 * var(--px)) 0;
+  border: none;
+  background: rgb(0 0 0 / 0.82);
+  color: var(--color-white);
+  font-family: var(--font-pixel);
+  font-size: calc(6 * var(--fs));
+  cursor: pointer;
+}
+.dx-feed__rail-icon { font-size: calc(14 * var(--px)); line-height: 1; }
+.dx-feed__rail-btn.is-on .dx-feed__rail-icon { color: var(--color-feelz-surprise); }
+.dx-feed__rail-icon svg { width: calc(16 * var(--px)); height: calc(14 * var(--px)); display: block; fill: currentColor; }
+.dx-feed .dx-feed__textbox .dx-cutscene-text { text-align: left; }
+.dx-feed__chat.is-on .dx-feed__rail-icon { color: var(--color-white); }
+.dx-feed__chat:not(.is-on) .dx-feed__rail-icon { opacity: 0.4; }
+/* One line for a channel's name, header and peek alike. */
+.dx-feed__head .dx-feed__name,
+.dx-feed__peek-label .dx-feed__name {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dx-feed__peek-label .dx-feed__more,
+.dx-feed__peek-label .dx-feed__ch { white-space: nowrap; }
