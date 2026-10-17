@@ -253,11 +253,46 @@ changes.
 - Every `EFFECTS:` token must be one of the four stat names above,
   immediately followed by a signed number, no spaces (`integrity+2`, not
   `integrity + 2`).
-- Every swipe block must be `-- TRUTH` or `-- LIE`, spelled exactly that
-  way (case-insensitive).
+- Every swipe block must be `-- TRUTH`, `-- LIE`, `-- SOFT` or `-- BAIT`,
+  spelled exactly that way (case-insensitive).
 - Unrecognized lines throw an error naming the file and line number —
   it's telling you it doesn't understand that line, not that something
   is broken elsewhere.
+
+## The delivery spectrum (optional, per NPC)
+
+How far the player pushes the card picks how they say it
+(`src/engine/delivery.js`). A node gets four answers instead of two when it
+has all of: `-- TRUTH`, `-- LIE` (with a `WHITE REACT:`), `-- SOFT` and
+`-- BAIT`. Only Samun uses it so far.
+
+| Push | Answer | Words from | Numbers |
+|---|---|---|---|
+| left, a little | SOFT TRUTH | `-- SOFT` SAY/REACT | fixed: clock +1, Wi-Fi +1, bars +1, guard -1 |
+| left, all the way | HARSH TRUTH | `-- TRUTH` | as authored, guard -2 |
+| right, a little | WHITE LIE | `-- LIE` SAY + `WHITE REACT:` | fixed: battery +1, bars +1, lake +1, no fog, guard -1 (2 per encounter; a 3rd plays the full LIE, guard +1) |
+| right, all the way | BAIT | `-- BAIT` SAY/REACT/LEDGER | fixed: bars -2, lake +3, guard -3; bars under 4 and it bounces (a `BAITFAIL:` line, guard +2, the LIE's NEXT) |
+
+`-- SOFT` and `-- BAIT` take only SAY, REACT (and `REACT [Class]`) and, for
+BAIT, LEDGER. Everything else (NEXT, bids, contradictions) comes from the
+TRUTH and LIE blocks: a soft truth goes where the truth goes, a white lie
+where the lie goes, a bait that lands where the truth goes.
+
+Header lines for an NPC that uses it:
+
+```
+GUARD: 6
+CRACK [Guns]: what they say as the guard breaks, before their STORY
+CRACK [Bible]: ...
+CRACK [Crystals]: ...
+BAITFAIL: a bait that bounced (one or more; one is picked)
+```
+
+GUARD is how closed they start. At 3 their MASK slips (the real MOOD shows);
+at 0 their STORY plays, opened by the CRACK line, even if they don't trust
+you yet. While dragging, a strip under the card shows the answer and its
+numbers; low battery, fogged Wi-Fi, a clock at 2 or under, or being shut out
+hide the numbers.
 
 ## What this format doesn't cover yet
 

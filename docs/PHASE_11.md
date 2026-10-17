@@ -6,7 +6,8 @@ Item numbers match the review. Ordered by dependency and size, not by review num
 ## Status (2026-10-16)
 - DONE: Toback outline, colorblind mode, Rwanda GIFs (Neutral + Neutral01 saved and verified; Neutral02-04 not yet: the Drive download returned data that didn't match their file sizes, re-download or drop them in by hand).
 - DONE (first pass): demo-as-tutorial. Opening call cut to the app basics; lesson calls on Deborah (battle), Rwanda (little screen), Samun (mask, then the lie trade), none on Rick.
-- NEXT: Samun delivery spectrum (step 7), then Bob Baiter / FEELZ install (5), first choices (6), QR save (8).
+- DONE: Samun delivery spectrum (step 7): soft/harsh truth, white lie, BAIT (the combative full-push lie, chosen 2026-10-16); numbers strip hidden by status ailments; guard meter.
+- NEXT: Bob Baiter / FEELZ install (5), first choices (6), QR save (8). Later: author the spectrum for Rick.
 
 ## Revision 1 (2026-10-16): your answers change steps 2, 4, 7, 8
 
