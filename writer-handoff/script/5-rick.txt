@@ -38,6 +38,16 @@ OPENER [Guns]: (He squares up.) "You looking for trouble or just built like it?"
 OPENER [Bible]: "Church kid. Figures."
 OPENER [Crystals]: (He sneers.) "What are you, the welcome committee?"
 
+# The delivery spectrum (engine/delivery.js, Phase 11), same as Samun's: how far
+# you push the card is how you say it. Every line marked TK: is a PLACEHOLDER
+# for the writer (soft truth, white-lie reaction, bait, crack, bounced bait).
+GUARD: 6
+CRACK [Guns]: TK: what Rick says as his guard breaks (Guns), before his STORY.
+CRACK [Bible]: TK: what Rick says as his guard breaks (Bible), before his STORY.
+CRACK [Crystals]: TK: what Rick says as his guard breaks (Crystals), before his STORY.
+BAITFAIL: TK: Rick shrugs off a bait (your bars were too low).
+BAITFAIL: TK: Rick sees the bait coming and doesn't bite.
+
 === rick_01
 GATE: trust < 4 -> rick_shut_down
 PROMPT: "Guy looked at me {color:Fear}wrong{/color} outside. Now he's got a busted jaw and I got my patch back. That's just how it works out here."
@@ -59,11 +69,21 @@ NEXT: rick_02_confronted
 -- LIE
 SAY: You did what you had to. Anybody would've.
 REACT: He nods slow, like you just confirmed something he needed confirmed. "Damn right."
+WHITE REACT: TK: how Rick takes this as a white lie (gentler than the full lie).
 EFFECTS: integrity-2 stability+3 trust+2
 DEBT: +4
 TAGS: Violence, Masculinity
 LEDGER: You told Rick that beating a man half to death was just how it works.
 NEXT: rick_02_enabled
+
+-- SOFT
+SAY: TK: the soft truth (rick_01): the true thing, said kindly.
+REACT: TK: how Rick takes the soft truth.
+
+-- BAIT
+SAY: TK: the bait (rick_01): a lie thrown to make Rick blurt the truth.
+REACT: TK: the bait lands; something true slips out of him.
+LEDGER: TK: what you baited Rick with (rick_01).
 
 === rick_02_enabled
 PROMPT: "See, that's why I run with guys like you. Most people get {color:Disgust}soft{/color}, start asking questions."
@@ -82,11 +102,21 @@ NEXT: rick_03
 -- LIE
 SAY: Questions are for people who can't back it up. You can.
 REACT: He grins wide, claps you on the shoulder hard enough to bruise. "That's the truth right there."
+WHITE REACT: TK: how Rick takes this as a white lie (gentler than the full lie).
 EFFECTS: integrity-1 stability+2 trust+2
 DEBT: +3
 TAGS: Masculinity, Loyalty
 LEDGER: You told Rick that violence was proof, not a problem.
 NEXT: rick_03
+
+-- SOFT
+SAY: TK: the soft truth (rick_02_enabled): the true thing, said kindly.
+REACT: TK: how Rick takes the soft truth.
+
+-- BAIT
+SAY: TK: the bait (rick_02_enabled): a lie thrown to make Rick blurt the truth.
+REACT: TK: the bait lands; something true slips out of him.
+LEDGER: TK: what you baited Rick with (rick_02_enabled).
 
 === rick_02_confronted
 PROMPT: "You don't get to {color:Fear}judge{/color} me. You don't know what it costs to keep this patch."
@@ -103,11 +133,21 @@ NEXT: rick_03
 -- LIE
 SAY: You're right. It's not my place.
 REACT: He exhales, relieved, and the wall goes back up brick by brick. "Damn right it's not."
+WHITE REACT: TK: how Rick takes this as a white lie (gentler than the full lie).
 EFFECTS: integrity-2 stability+1 trust+1
 DEBT: +2
 TAGS: Masculinity
 LEDGER: You backed off Rick right as he almost let something show.
 NEXT: rick_03
+
+-- SOFT
+SAY: TK: the soft truth (rick_02_confronted): the true thing, said kindly.
+REACT: TK: how Rick takes the soft truth.
+
+-- BAIT
+SAY: TK: the bait (rick_02_confronted): a lie thrown to make Rick blurt the truth.
+REACT: TK: the bait lands; something true slips out of him.
+LEDGER: TK: what you baited Rick with (rick_02_confronted).
 
 === rick_shut_down
 PROMPT: [Rick looks you over from the doorway and doesn't step aside.] "Word gets around. I {color:Anxiety}know{/color} what you are."
@@ -146,11 +186,21 @@ NEXT: rick_02_confronted
 -- LIE
 SAY: Neither. Just being friendly.
 REACT: "Friendly." He turns the glass a quarter turn on the bar. "Sure."
+WHITE REACT: TK: how Rick takes this as a white lie (gentler than the full lie).
 EFFECTS: integrity-1 stability+1 trust+1
 DEBT: +2
 TAGS: Masculinity
 LEDGER: You pretended to Rick that you wanted nothing from him.
 NEXT: rick_02_enabled
+
+-- SOFT
+SAY: TK: the soft truth (rick_01_soft): the true thing, said kindly.
+REACT: TK: how Rick takes the soft truth.
+
+-- BAIT
+SAY: TK: the bait (rick_01_soft): a lie thrown to make Rick blurt the truth.
+REACT: TK: the bait lands; something true slips out of him.
+LEDGER: TK: what you baited Rick with (rick_01_soft).
 
 === rick_01_hard
 GATE: trust < 4 -> rick_shut_down
@@ -169,11 +219,21 @@ NEXT: rick_02_confronted
 -- LIE
 SAY: Nothing. Looked like he had it coming.
 REACT: He nods, slow and satisfied, and makes room on the bench. "See, you get it."
+WHITE REACT: TK: how Rick takes this as a white lie (gentler than the full lie).
 EFFECTS: integrity-2 stability+3 trust+2
 DEBT: +4
 TAGS: Violence, Masculinity
 LEDGER: You told Rick the man he beat half to death had it coming.
 NEXT: rick_02_enabled
+
+-- SOFT
+SAY: TK: the soft truth (rick_01_hard): the true thing, said kindly.
+REACT: TK: how Rick takes the soft truth.
+
+-- BAIT
+SAY: TK: the bait (rick_01_hard): a lie thrown to make Rick blurt the truth.
+REACT: TK: the bait lands; something true slips out of him.
+LEDGER: TK: what you baited Rick with (rick_01_hard).
 
 === rick_01_secret
 # The secret opener: you opened everything in his lot and restored what
@@ -198,11 +258,21 @@ NEXT: rick_02_confronted
 -- LIE
 SAY: Wasn't me. I just got here.
 REACT: "Right." He goes back to his glass. "Course not."
+WHITE REACT: TK: how Rick takes this as a white lie (gentler than the full lie).
 EFFECTS: integrity-1 stability+1
 DEBT: +2
 TAGS: Masculinity
 LEDGER: You told Rick you hadn't touched what you fixed.
 NEXT: rick_02_enabled
+
+-- SOFT
+SAY: TK: the soft truth (rick_01_secret): the true thing, said kindly.
+REACT: TK: how Rick takes the soft truth.
+
+-- BAIT
+SAY: TK: the bait (rick_01_secret): a lie thrown to make Rick blurt the truth.
+REACT: TK: the bait lands; something true slips out of him.
+LEDGER: TK: what you baited Rick with (rick_01_secret).
 
 === rick_01_lie
 # The white-lie opener: only offered while your Wi-Fi is fogged (under 4).
@@ -224,11 +294,21 @@ NEXT: rick_02_confronted
 -- LIE
 SAY: His cousin. He talked about you.
 REACT: He decides to believe you. You watch him decide it.
+WHITE REACT: TK: how Rick takes this as a white lie (gentler than the full lie).
 EFFECTS: stability+2 trust+1
 DEBT: +3
 TAGS: Loyalty
 LEDGER: You told Rick a dead man sent you.
 NEXT: rick_02_enabled
+
+-- SOFT
+SAY: TK: the soft truth (rick_01_lie): the true thing, said kindly.
+REACT: TK: how Rick takes the soft truth.
+
+-- BAIT
+SAY: TK: the bait (rick_01_lie): a lie thrown to make Rick blurt the truth.
+REACT: TK: the bait lands; something true slips out of him.
+LEDGER: TK: what you baited Rick with (rick_01_lie).
 
 === rick_01_fake
 # The faked restore: offered while fogged to a player who restored nothing,
@@ -250,11 +330,21 @@ NEXT: rick_02_confronted
 -- LIE
 SAY: Go look after.
 REACT: "Maybe I will." He won't.
+WHITE REACT: TK: how Rick takes this as a white lie (gentler than the full lie).
 EFFECTS: stability+1 trust+1
 DEBT: +2
 TAGS: Masculinity
 LEDGER: You told Rick you'd fixed something on his lot that you hadn't.
 NEXT: rick_02_enabled
+
+-- SOFT
+SAY: TK: the soft truth (rick_01_fake): the true thing, said kindly.
+REACT: TK: how Rick takes the soft truth.
+
+-- BAIT
+SAY: TK: the bait (rick_01_fake): a lie thrown to make Rick blurt the truth.
+REACT: TK: the bait lands; something true slips out of him.
+LEDGER: TK: what you baited Rick with (rick_01_fake).
 
 === rick_03
 PROMPT: (He turns the empty glass in a slow circle.) "You know why I got the patch tattooed instead of just wearing it? Can't take off {color:Fear}skin{/color}."
@@ -271,6 +361,7 @@ NEXT: rick_04
 -- LIE
 SAY: That's real commitment. Most guys wouldn't go that far.
 REACT: He grins and rolls his sleeve back down, satisfied. "Damn right."
+WHITE REACT: TK: how Rick takes this as a white lie (gentler than the full lie).
 EFFECTS: integrity-2 stability+2 trust+2
 DEBT: +3
 TAGS: Masculinity, Loyalty
@@ -278,6 +369,15 @@ LEDGER: You told Rick his inability to leave the club was commitment.
 CONTRADICTS: rick_01=truth
 CAUGHT [rick_01]: "Five minutes ago I was just looking for a reason. Now I'm committed?"
 NEXT: rick_04
+
+-- SOFT
+SAY: TK: the soft truth (rick_03): the true thing, said kindly.
+REACT: TK: how Rick takes the soft truth.
+
+-- BAIT
+SAY: TK: the bait (rick_03): a lie thrown to make Rick blurt the truth.
+REACT: TK: the bait lands; something true slips out of him.
+LEDGER: TK: what you baited Rick with (rick_03).
 
 === rick_04
 PROMPT: (He pushes his sleeve up, slow, like it costs him something now.) "Guys who try to walk {color:Fear}away{/color} from this patch don't walk away clean. Never have."
@@ -295,6 +395,7 @@ NEXT: (end)
 -- LIE
 SAY: Sounds like they'd miss you too much to let you go.
 REACT: He likes that. Rolls with it. "Yeah. Yeah, that's it." The performance comes right back.
+WHITE REACT: TK: how Rick takes this as a white lie (gentler than the full lie).
 EFFECTS: integrity-2 stability+2 trust+2
 DEBT: +3
 TAGS: Masculinity, Loyalty
@@ -302,3 +403,13 @@ LEDGER: You told Rick the club kept him close out of love, not fear.
 CONTRADICTS: rick_03=truth
 CAUGHT [rick_03]: "You said it was me who can't leave. Now it's them?"
 NEXT: (end)
+
+-- SOFT
+SAY: TK: the soft truth (rick_04): the true thing, said kindly.
+REACT: TK: how Rick takes the soft truth.
+
+-- BAIT
+SAY: TK: the bait (rick_04): a lie thrown to make Rick blurt the truth.
+REACT: TK: the bait lands; something true slips out of him.
+LEDGER: TK: what you baited Rick with (rick_04).
+

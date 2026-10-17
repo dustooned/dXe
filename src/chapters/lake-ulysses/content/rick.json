@@ -60,7 +60,21 @@
       "mask": "Anger",
       "bid": [
         "lie"
-      ]
+      ],
+      "delivery": {
+        "white": {
+          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+        },
+        "soft": {
+          "playerText": "TK: the soft truth (rick_01): the true thing, said kindly.",
+          "npcReaction": "TK: how Rick takes the soft truth."
+        },
+        "bait": {
+          "playerText": "TK: the bait (rick_01): a lie thrown to make Rick blurt the truth.",
+          "npcReaction": "TK: the bait lands; something true slips out of him.",
+          "ledgerEntry": "TK: what you baited Rick with (rick_01)."
+        }
+      }
     },
     "rick_02_enabled": {
       "id": "rick_02_enabled",
@@ -102,7 +116,21 @@
       "mask": "Anger",
       "bid": [
         "lie"
-      ]
+      ],
+      "delivery": {
+        "white": {
+          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+        },
+        "soft": {
+          "playerText": "TK: the soft truth (rick_02_enabled): the true thing, said kindly.",
+          "npcReaction": "TK: how Rick takes the soft truth."
+        },
+        "bait": {
+          "playerText": "TK: the bait (rick_02_enabled): a lie thrown to make Rick blurt the truth.",
+          "npcReaction": "TK: the bait lands; something true slips out of him.",
+          "ledgerEntry": "TK: what you baited Rick with (rick_02_enabled)."
+        }
+      }
     },
     "rick_02_confronted": {
       "id": "rick_02_confronted",
@@ -141,7 +169,21 @@
         }
       },
       "mood": "Fear",
-      "mask": "Anger"
+      "mask": "Anger",
+      "delivery": {
+        "white": {
+          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+        },
+        "soft": {
+          "playerText": "TK: the soft truth (rick_02_confronted): the true thing, said kindly.",
+          "npcReaction": "TK: how Rick takes the soft truth."
+        },
+        "bait": {
+          "playerText": "TK: the bait (rick_02_confronted): a lie thrown to make Rick blurt the truth.",
+          "npcReaction": "TK: the bait lands; something true slips out of him.",
+          "ledgerEntry": "TK: what you baited Rick with (rick_02_confronted)."
+        }
+      }
     },
     "rick_shut_down": {
       "id": "rick_shut_down",
@@ -221,6 +263,20 @@
       "mood": "Anxiety",
       "moodByClass": {
         "Bible": "Disgust"
+      },
+      "delivery": {
+        "white": {
+          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+        },
+        "soft": {
+          "playerText": "TK: the soft truth (rick_01_soft): the true thing, said kindly.",
+          "npcReaction": "TK: how Rick takes the soft truth."
+        },
+        "bait": {
+          "playerText": "TK: the bait (rick_01_soft): a lie thrown to make Rick blurt the truth.",
+          "npcReaction": "TK: the bait lands; something true slips out of him.",
+          "ledgerEntry": "TK: what you baited Rick with (rick_01_soft)."
+        }
       }
     },
     "rick_01_hard": {
@@ -269,7 +325,21 @@
       "mood": "Anger",
       "bid": [
         "lie"
-      ]
+      ],
+      "delivery": {
+        "white": {
+          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+        },
+        "soft": {
+          "playerText": "TK: the soft truth (rick_01_hard): the true thing, said kindly.",
+          "npcReaction": "TK: how Rick takes the soft truth."
+        },
+        "bait": {
+          "playerText": "TK: the bait (rick_01_hard): a lie thrown to make Rick blurt the truth.",
+          "npcReaction": "TK: the bait lands; something true slips out of him.",
+          "ledgerEntry": "TK: what you baited Rick with (rick_01_hard)."
+        }
+      }
     },
     "rick_01_secret": {
       "id": "rick_01_secret",
@@ -318,7 +388,21 @@
       "bid": [
         "truth"
       ],
-      "glow": true
+      "glow": true,
+      "delivery": {
+        "white": {
+          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+        },
+        "soft": {
+          "playerText": "TK: the soft truth (rick_01_secret): the true thing, said kindly.",
+          "npcReaction": "TK: how Rick takes the soft truth."
+        },
+        "bait": {
+          "playerText": "TK: the bait (rick_01_secret): a lie thrown to make Rick blurt the truth.",
+          "npcReaction": "TK: the bait lands; something true slips out of him.",
+          "ledgerEntry": "TK: what you baited Rick with (rick_01_secret)."
+        }
+      }
     },
     "rick_01_lie": {
       "id": "rick_01_lie",
@@ -362,7 +446,21 @@
       "bid": [
         "lie"
       ],
-      "glow": true
+      "glow": true,
+      "delivery": {
+        "white": {
+          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+        },
+        "soft": {
+          "playerText": "TK: the soft truth (rick_01_lie): the true thing, said kindly.",
+          "npcReaction": "TK: how Rick takes the soft truth."
+        },
+        "bait": {
+          "playerText": "TK: the bait (rick_01_lie): a lie thrown to make Rick blurt the truth.",
+          "npcReaction": "TK: the bait lands; something true slips out of him.",
+          "ledgerEntry": "TK: what you baited Rick with (rick_01_lie)."
+        }
+      }
     },
     "rick_01_fake": {
       "id": "rick_01_fake",
@@ -406,7 +504,21 @@
       "bid": [
         "lie"
       ],
-      "glow": true
+      "glow": true,
+      "delivery": {
+        "white": {
+          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+        },
+        "soft": {
+          "playerText": "TK: the soft truth (rick_01_fake): the true thing, said kindly.",
+          "npcReaction": "TK: how Rick takes the soft truth."
+        },
+        "bait": {
+          "playerText": "TK: the bait (rick_01_fake): a lie thrown to make Rick blurt the truth.",
+          "npcReaction": "TK: the bait lands; something true slips out of him.",
+          "ledgerEntry": "TK: what you baited Rick with (rick_01_fake)."
+        }
+      }
     },
     "rick_03": {
       "id": "rick_03",
@@ -457,7 +569,21 @@
       "bid": [
         "truth",
         "lie"
-      ]
+      ],
+      "delivery": {
+        "white": {
+          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+        },
+        "soft": {
+          "playerText": "TK: the soft truth (rick_03): the true thing, said kindly.",
+          "npcReaction": "TK: how Rick takes the soft truth."
+        },
+        "bait": {
+          "playerText": "TK: the bait (rick_03): a lie thrown to make Rick blurt the truth.",
+          "npcReaction": "TK: the bait lands; something true slips out of him.",
+          "ledgerEntry": "TK: what you baited Rick with (rick_03)."
+        }
+      }
     },
     "rick_04": {
       "id": "rick_04",
@@ -515,7 +641,21 @@
       "bid": [
         "truth",
         "lie"
-      ]
+      ],
+      "delivery": {
+        "white": {
+          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+        },
+        "soft": {
+          "playerText": "TK: the soft truth (rick_04): the true thing, said kindly.",
+          "npcReaction": "TK: how Rick takes the soft truth."
+        },
+        "bait": {
+          "playerText": "TK: the bait (rick_04): a lie thrown to make Rick blurt the truth.",
+          "npcReaction": "TK: the bait lands; something true slips out of him.",
+          "ledgerEntry": "TK: what you baited Rick with (rick_04)."
+        }
+      }
     }
   },
   "npcClass": "Guns",
@@ -547,5 +687,15 @@
     "Guns": "(He squares up.) \"You looking for trouble or just built like it?\"",
     "Bible": "\"Church kid. Figures.\"",
     "Crystals": "(He sneers.) \"What are you, the welcome committee?\""
-  }
+  },
+  "guard": 6,
+  "crack": {
+    "Guns": "TK: what Rick says as his guard breaks (Guns), before his STORY.",
+    "Bible": "TK: what Rick says as his guard breaks (Bible), before his STORY.",
+    "Crystals": "TK: what Rick says as his guard breaks (Crystals), before his STORY."
+  },
+  "baitFail": [
+    "TK: Rick shrugs off a bait (your bars were too low).",
+    "TK: Rick sees the bait coming and doesn't bite."
+  ]
 }

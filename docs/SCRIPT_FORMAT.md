@@ -264,7 +264,7 @@ changes.
 How far the player pushes the card picks how they say it
 (`src/engine/delivery.js`). A node gets four answers instead of two when it
 has all of: `-- TRUTH`, `-- LIE` (with a `WHITE REACT:`), `-- SOFT` and
-`-- BAIT`. Only Samun uses it so far.
+`-- BAIT`. Samun and Rick use it (Rick's new lines are `TK:` placeholders for the writer).
 
 | Push | Answer | Words from | Numbers |
 |---|---|---|---|

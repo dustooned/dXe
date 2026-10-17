@@ -142,51 +142,25 @@ TAGS: Denial
 LEDGER: You told your therapist you didn't remember the dream.
 NEXT: (end)
 
-# After the last reaction: homework, one hands-on exercise with the little
-# screen, his contact, a parting watch-out, the hangup, then IT and SO. Short
-# on purpose (playtest 2026-10-09: too much talk, not enough doing). What he
-# used to explain here is now taught in the battles as it first happens
-# (coach lines and meter tags, dialogScene.js), and the science of the
-# screen waits for the first time you call him (engine/contacts.js explain).
+# After the last reaction: homework, the battery, his contact, the hangup,
+# then IT and SO. The demo is the tutorial (docs/PHASE_11.md, playtest
+# 2026-10-11): this call teaches only the app itself (FEELZ, the card, the
+# batteries, the lake). Each round then teaches one thing on its first node
+# (dialogScene.js nodeCoach): Deborah the battle, Rwanda the little screen
+# (his find-my-feeling exercise and the parting watch-outs were cut from
+# here), Samun masks and the lie trade (moved from here), Rick nothing. The
+# science of the screen still waits for the first time you call him.
 === OUTRO
 LINE [Guns]: "I give everyone homework. Almost nobody does it. Here's yours anyway. You're good at bracing. This week, ask one person about their day, then wait for the answer. You don't have to fix anything. Just listen."
 LINE [Bible]: "I give everyone homework. Almost nobody does it. Here's yours anyway. You're good at showing up for people. Let someone show up for you. Ask how they're doing, then ask a follow-up. People can tell when you mean it."
 LINE [Crystals]: "I give everyone homework. Almost nobody does it. Here's yours anyway. You feel everything in a room. Pick one person and stay with them. Notice what they care about and ask about it."
-LINE [Guns]: "{cue:scope}{cue:instruments}Last thing. See the lines across my picture, and the little screen beside me? That's you and me. I don't own a gun. You're within your rights to, and I respect that. But think of it like sighting in: the closer we line up, the stiller it holds. Let's practice."
-LINE [Bible]: "{cue:scope}{cue:instruments}Last thing. See the lines across my picture, and the little screen beside me? That's you and me. I'm not religious. I don't hold that against anyone, I want that on the record. But bear with me, I'm driven by data. Think of it like two people saying the same prayer: the closer we line up, the stiller it holds. Let's practice."
-LINE [Crystals]: "{cue:scope}{cue:instruments}Last thing. See the lines across my picture, and the little screen beside me? That's you and me. My mom was into all that. Crystals, energy, the whole shelf. I didn't inherit it. But think of it like two tuning forks: the closer we line up, the stiller it holds. Let's practice."
-# His exercise: the wheel comes back, no card. His line wears "fine"
-# ({mask:Happy}) while his real feeling ({feel:X}, on that class's wheel)
-# flickers underneath. Each pick is explained by the hint under his line
-# (busy shape: close; needle left: pulling apart) until the shape closes
-# into a still circle.
-TRYFEEL [Guns]: {feel:Anger}{mask:Happy}"I've told you I'm fine all call. Watch my line. Another color flickers under it. Find that one on your wheel."
-TRYFEEL [Bible]: {feel:Anxiety}{mask:Happy}"I've told you I'm fine all call. Watch my line. Another color flickers under it. Find that one on your wheel."
-TRYFEEL [Crystals]: {feel:Anxiety}{mask:Happy}"I've told you I'm fine all call. Watch my line. Another color flickers under it. Find that one on your wheel."
-# While you look: his class metaphor on a close pick (a busy shape), his
-# needle joke on a far one (the needle leaning left). He hates doing this.
-TRYNEAR [Guns]: "Close. It's like rifling. Almost the same twist in the barrel, and the grooves still don't line up. That's the knot."
-TRYFAR [Guns]: "Needle's leaning left. We're aiming at each other. Please don't take that literally."
-TRYNEAR [Bible]: "Close. This is Jacob and the angel on graph paper. Still wrestling. No blessing yet."
-TRYFAR [Bible]: "Needle's leaning left. We're praying for opposite things. Monks called that the devil's interval. I call it Thursday."
-TRYNEAR [Crystals]: "Close. Two tuning forks, almost the same pitch. Hear the wobble? That's the knot. Waveforms. Not energies."
-TRYFAR [Crystals]: "Needle's leaning left. Two auras out of phase. My mother would be thrilled I said that. I need to stop talking."
-LINE [Default]: "There. A circle that holds still. My line said fine. The shape doesn't lie. People wear their weather on the outside. Listen for the word that doesn't match the face."
-LINE [Guns]: "There. A circle that holds still. That's a tight group on the target. My line said fine. The shape doesn't lie. People wear their weather on the outside. Listen for the word that doesn't match the face."
-LINE [Bible]: "There. A circle that holds still. Call it a halo; I won't. My line said fine. The shape doesn't lie. People wear their weather on the outside. Listen for the word that doesn't match the face."
-LINE [Crystals]: "There. A circle that holds still. Quartz holds one frequency; that's why your watch trusts it. My line said fine. The shape doesn't lie. People wear their weather on the outside. Listen for the word that doesn't match the face."
-# The trade, plainly: the battery is what you have left (truth costs, lies
-# refill, low battery dims the little screen, the first answer with a gift that clashes with
-# your class costs: loadout.js effortCost), and a
-# comforting lie relaxes people so their next feeling shows on your wheel.
+# The battery, plainly: what you have left (truth costs, lies refill, low
+# battery dims the little screen, the first answer with a gift that clashes
+# with your class costs: loadout.js effortCost).
 LINE [Default]: "Practical stuff. Your battery is what you've got left. The truth usually costs some. A lie puts some back. Run it low and FEELZ dims to save power, so the little screen goes dark. Later, people may give you new feelings. Trying them on the wheel is always free. But the first time you answer with one that's the opposite of one of yours, it costs a little battery. After that you're used to it. Ask me how I know."
 LINE [Guns]: "Practical stuff. Battery's your magazine. The truth usually spends a round. A lie loads one back. Run it low and FEELZ goes dark to save power, so the little screen goes with it. Later, people may hand you new feelings. Aiming with them is always free. But the first time you fire one that's the opposite of one of yours, it costs a round. After that it's broken in. Ask me how I know."
 LINE [Bible]: "Practical stuff. Battery's your grace, what's left to give. The truth usually costs some. A lie puts some back. Run low and FEELZ dims to save power, so the little screen goes dark. Later, people may give you new feelings. Holding them up to the light is always free. But the first time you answer with one that's the opposite of one of yours, it costs a little grace. After that it's familiar. Ask me how I know."
 LINE [Crystals]: "Practical stuff. Battery's your charge. The truth usually drains some. A lie tops it up. Run low and FEELZ dims to save power, so the little screen goes dark. Later, people may give you new feelings. Touching them on the wheel is always free. But the first time you answer with one that's the opposite of one of yours, it drains a little charge. After that you're attuned. Ask me how I know."
-LINE [Default]: "Also. Tell someone what they want to hear and they relax. Next thing they feel, you'll see it right on your wheel. That's the trade. I'm not telling you which to make. Professionally, I'm not allowed to. Personally, I'd also rather not."
-LINE [Guns]: "Also. Tell someone what they want to hear and they lower their guard. Their next feeling shows right on your wheel. That's the trade. I'm not telling you which to make. Professionally, I can't. Personally, I'd also rather not."
-LINE [Bible]: "Also. Tell someone what they want to hear and they exhale. Some call it a small mercy. FEELZ calls it a trade: their next feeling shows right on your wheel. I'm not telling you which to make. Professionally, I can't. Personally, I'd also rather not."
-LINE [Crystals]: "Also. Tell someone what they want to hear and their energy softens. Mom would say that. I'd say they relax. Their next feeling shows right on your wheel. That's the trade. I'm not telling you which to make. Professionally, I can't. Personally, I'd also rather not."
 # TRYCALL: his own contact pops into the dock and waits for a tap. Calling
 # him while he's on the line echoes his "Hello?" back twice (dialogScene.js).
 TRYCALL [Default]: "That's me at the bottom. Tap it."
@@ -197,32 +171,6 @@ LINE [Default]: "Okay. You're calling me while I'm on the phone with you. Now th
 LINE [Guns]: "Okay. You're calling me while I'm on the phone with you. Now there's two of me. Nobody needs two of me. Radio check, loud and clear. Call when you're stuck out there. I'll explain the little screen properly then. I'll have FEELZ send you a reminder, so you can't pretend you forgot."
 LINE [Bible]: "Okay. You're calling me while I'm on the phone with you. Now there's two of me. Nobody needs two of me. Call when you're stuck out there. Think of it as a prayer line with worse hold music. I'll explain the little screen properly then. I'll have FEELZ send you a reminder, so you can't pretend you forgot."
 LINE [Crystals]: "Okay. You're calling me while I'm on the phone with you. Now there's two of me. Nobody needs two of me. Mom says I'm always available to the universe. I'm available to you. Slightly different bandwidth. Call when you're stuck out there. I'll explain the little screen properly then. I'll have FEELZ send you a reminder, so you can't pretend you forgot."
-# A parting watch-out, picked by how the readings ended this session: the
-# lake if it moved, else the weakest meter at 4 or below, else "steady".
-WATCH [stability, Default]: "Before you go. Your battery's low, and honesty did that. The truth costs charge. Rest between people, or your calls get heavy. That's not a metaphor. Okay, it's a little bit a metaphor."
-WATCH [stability, Guns]: "Before you go. Your magazine's low, and honesty spent it. The truth costs charge. Rest between people, or your calls get heavy. Cleaning the rifle isn't optional. Neither is this."
-WATCH [stability, Bible]: "Before you go. Your grace is running low, and honesty spent it. The truth costs charge. Rest between people, or your calls get heavy. Even the seventh day was a day off. I'm told."
-WATCH [stability, Crystals]: "Before you go. Your charge is low, and honesty drained it. The truth costs charge. Rest between people, or your calls get heavy. Even stones need a night in the moonlight. Mom's words."
-WATCH [trust, Default]: "Before you go. Your bars are low. People aren't sure about you yet, and some doors stay shut below a certain number. Mine too, technically. Turn toward what they offer you."
-WATCH [trust, Guns]: "Before you go. Your bars are low. Your range is short: people aren't sure about you yet, and some doors stay shut below a certain number. Turn toward what they offer you."
-WATCH [trust, Bible]: "Before you go. Your bars are low. People aren't sure about you yet; fellowship takes time. Some doors stay shut below a certain number. Mine too, technically. Turn toward what they offer you."
-WATCH [trust, Crystals]: "Before you go. Your bars are low. You're not ringing with people yet, and some doors stay shut below a certain number. Mine too, technically. Turn toward what they offer you."
-WATCH [lucidity, Default]: "Before you go. Your Wi-Fi's weak. You're not seeing clearly, and FEELZ goes quiet when you can't. So do I. One true thing clears it a little."
-WATCH [lucidity, Guns]: "Before you go. Your Wi-Fi's weak. Fog on the scope. You're not seeing clearly, and FEELZ goes quiet when you can't. So do I. One true thing clears it a little."
-WATCH [lucidity, Bible]: "Before you go. Your Wi-Fi's weak. A glass, darkly, remember? FEELZ goes quiet when you can't see. So do I. One true thing clears it a little."
-WATCH [lucidity, Crystals]: "Before you go. Your Wi-Fi's weak. Cloudy quartz. FEELZ goes quiet when you can't see clearly. So do I. One true thing clears it a little. Mom would say cleanse it. I'd say rest."
-WATCH [integrity, Default]: "Before you go. Your clock's slipping. When the minutes start skipping, that's you, not the phone. I checked. I check things."
-WATCH [integrity, Guns]: "Before you go. Your clock's slipping. Watch discipline: when the minutes skip, that's you, not the phone. I checked. I check things."
-WATCH [integrity, Bible]: "Before you go. Your clock's slipping. Yes be yes, remember. When the minutes skip, that's you, not the phone. I checked. I check things."
-WATCH [integrity, Crystals]: "Before you go. Your clock's slipping. Not Mercury this time. When the minutes skip, that's you, not the phone. I checked. I check things."
-WATCH [lake, Default]: "Before you go. The lake moved while we talked. I'm not grading you, I'm reading a sensor. And I'll be straight with you: out there, lying is going to feel good. Warm. Easy. I won't pretend it doesn't. Sensors don't round down."
-WATCH [lake, Guns]: "Before you go. The lake moved while we talked. I'm not grading you, I'm reading a range log. And I'll be straight with you: out there, lying is going to feel good. Warm. Easy. I won't pretend it doesn't. Logs don't round down."
-WATCH [lake, Bible]: "Before you go. The lake moved while we talked. I'm not grading you; I'm reading a sensor, not a judge. And I'll be straight with you: out there, lying is going to feel good. Warm. Easy. A small mercy, some would say. I won't pretend it doesn't. Sensors don't round down."
-WATCH [lake, Crystals]: "Before you go. The lake moved while we talked. I'm not grading you, I'm reading a sensor. It holds whatever you leave in it. And I'll be straight with you: out there, lying is going to feel good. Warm. Easy. I won't pretend it doesn't. Sensors don't round down."
-WATCH [steady, Default]: "Before you go. Everything's holding. Statistically, that's when people get careless. I would know. I'm people."
-WATCH [steady, Guns]: "Before you go. Everything's holding. Statistically, that's when people get careless. Stay sharp on a quiet range. I would know. I'm people."
-WATCH [steady, Bible]: "Before you go. Everything's holding. Statistically, that's when people get careless. Watch and pray, as they say. I would know. I'm people."
-WATCH [steady, Crystals]: "Before you go. Everything's holding. Statistically, that's when people get careless. Mom would say the energy's balanced. I'd say watch it anyway. I'm people."
 HANGUP: The call ends mid-sentence, the way his calls do. FEELZ goes dark in your hand, and the lake is very quiet.
 NOTIFY: FEELZ · HOMEWORK\nToday's practice: reach out\nSay hello to one neighbor.\nNotice what they care about. Ask about it.\nListen a little longer than feels comfortable.\nYou don't have to fix anything.
 IT [therapist_02=truth]: He's writing it down. Everything you said. Somewhere a file with your name on it just got thicker.
