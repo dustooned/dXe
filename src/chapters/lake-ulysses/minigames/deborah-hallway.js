@@ -27,6 +27,8 @@ const ROOMS = {
       Bible:    'Third floor. Somebody swept this hallway recently. Somebody up here is still trying.',
       Crystals: 'Third floor. The air is thick with something that has been sitting here a long time.',
     },
+    // Calls back to the install's permissions (engine/firstMarks.js).
+    echo: true,
     // The first room teaches the colors (walkRoom.js, only with TIPS on).
     tip: {
       clear: 'Everything in here is tinted by how she will feel when you knock. Look closely. Then look twice.',

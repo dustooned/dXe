@@ -547,6 +547,82 @@
   to   { transform: translateY(calc(-56 * var(--px))); opacity: 0; }
 }
 
+/* The run's first choices (engine/firstMarks.js), while the fish are well
+   (stages 0-2; sick and dead fish look the same for everyone). Only the
+   animation name changes, so the stage keeps setting the speed. */
+.dx-lake.is-swim-dart  .dx-lake__tank:is([data-stage="0"], [data-stage="1"], [data-stage="2"]) .dx-fish { animation-name: dx-fish-dart; }
+.dx-lake.is-swim-drift .dx-lake__tank:is([data-stage="0"], [data-stage="1"], [data-stage="2"]) .dx-fish { animation-name: dx-fish-drift; }
+.dx-lake.is-swim-halt  .dx-lake__tank:is([data-stage="0"], [data-stage="1"], [data-stage="2"]) .dx-fish { animation-name: dx-fish-halt; }
+/* Face refused: they keep to the bottom. */
+.dx-lake.is-shy .dx-lake__tank:is([data-stage="0"], [data-stage="1"], [data-stage="2"]) .dx-fish--0 { top: calc(30 * var(--px)); }
+.dx-lake.is-shy .dx-lake__tank:is([data-stage="0"], [data-stage="1"], [data-stage="2"]) .dx-fish--1 { top: calc(36 * var(--px)); }
+.dx-lake.is-shy .dx-lake__tank:is([data-stage="0"], [data-stage="1"], [data-stage="2"]) .dx-fish--2 { top: calc(40 * var(--px)); }
+/* Voice refused: a quiet tank. */
+.dx-lake.is-hushed .dx-bubble { display: none; }
+@keyframes dx-fish-dart {
+  0%, 30%   { transform: translateX(0) scaleX(1); }
+  40%, 46%  { transform: translateX(calc(26 * var(--px))) scaleX(1); }
+  50%, 80%  { transform: translateX(calc(26 * var(--px))) scaleX(-1); }
+  90%, 100% { transform: translateX(0) scaleX(-1); }
+}
+@keyframes dx-fish-drift {
+  0%   { transform: translateX(0) translateY(0) scaleX(1); }
+  25%  { transform: translateX(calc(8 * var(--px))) translateY(calc(2 * var(--px))) scaleX(1); }
+  48%  { transform: translateX(calc(16 * var(--px))) translateY(0) scaleX(1); }
+  52%  { transform: translateX(calc(16 * var(--px))) translateY(0) scaleX(-1); }
+  75%  { transform: translateX(calc(8 * var(--px))) translateY(calc(-2 * var(--px))) scaleX(-1); }
+  100% { transform: translateX(0) translateY(0) scaleX(-1); }
+}
+@keyframes dx-fish-halt {
+  0%        { transform: translateX(0) scaleX(1); }
+  20%, 34%  { transform: translateX(calc(12 * var(--px))) scaleX(1); }
+  48%       { transform: translateX(calc(26 * var(--px))) scaleX(1); }
+  52%       { transform: translateX(calc(26 * var(--px))) scaleX(-1); }
+  70%, 84%  { transform: translateX(calc(12 * var(--px))) scaleX(-1); }
+  100%      { transform: translateX(0) scaleX(-1); }
+}
+/* The surface, from the intake: still water a flat line, choppy water a
+   stepped one that keeps shifting. */
+.dx-lake__surface {
+  position: absolute;
+  top: calc(3 * var(--px));
+  left: 0;
+  right: 0;
+  height: calc(2 * var(--px));
+  pointer-events: none;
+  display: none;
+}
+.dx-lake.is-surface-still .dx-lake__surface,
+.dx-lake.is-surface-choppy .dx-lake__surface { display: block; }
+.dx-lake.is-surface-still .dx-lake__surface { background: rgb(255 255 255 / 0.55); }
+.dx-lake.is-surface-choppy .dx-lake__surface {
+  background: repeating-linear-gradient(90deg, rgb(255 255 255 / 0.7) 0 calc(4 * var(--px)), transparent calc(4 * var(--px)) calc(8 * var(--px)));
+  animation: dx-lake-chop 0.8s steps(2) infinite;
+}
+@keyframes dx-lake-chop {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(calc(8 * var(--px)), calc(-1 * var(--px))); }
+}
+.is-reduced-effects .dx-lake.is-surface-choppy .dx-lake__surface { animation: none; }
+
+/* A first choice landing (ui/ripple.js): a ring of pixel dots, stepped. */
+.dx-ripple {
+  position: absolute;
+  z-index: 20;
+  width: calc(12 * var(--px));
+  height: calc(12 * var(--px));
+  border: calc(2 * var(--px)) dotted var(--color-white);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  animation: dx-ripple 0.9s steps(6) both;
+}
+@keyframes dx-ripple {
+  from { width: calc(12 * var(--px)); height: calc(12 * var(--px)); opacity: 1; }
+  to   { width: calc(170 * var(--px)); height: calc(170 * var(--px)); opacity: 0; }
+}
+
 .dx-lake__chart {
   flex: 1;
   min-width: 0;

@@ -285,7 +285,9 @@ export function createWalkRoom(room, { loadout, onAdvance, restored = false, onR
 
     // The first room's tip (TIPS on): what the colors mean, said once, plainly.
     const tip = room.tip && loadSettings().guideHighlights !== false ? forClass(fogged ? room.tip.fogged : room.tip.clear, loadout) : '';
-    introTypewriter = createTypewriter(p, tip ? `${forClass(room.intro, loadout)} {pause:300}${tip}` : forClass(room.intro, loadout), {
+    // Then, in the first room, what you told FEELZ at the start (room.echoText).
+    const said = [forClass(room.intro, loadout), tip, room.echoText].filter(Boolean).join(' {pause:300}');
+    introTypewriter = createTypewriter(p, said, {
       onChar: playTypewriterTick,
     });
 

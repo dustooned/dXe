@@ -241,6 +241,12 @@ const initialRunState = {
   guard: {},
   // The FEELZ username picked at install (feelz_install.json), used by the feed.
   handle: null,
+  // First choices that matter (engine/firstMarks.js): the install's two
+  // permission answers ('ALLOW' | "DON'T ALLOW") and the intake's lean
+  // ({ still, move }: left vs right answers). They mark the lake and the hallway.
+  permFace: null,
+  permVoice: null,
+  intakeLean: null,
   // NPCs whose story (their STORY cutscene) the player has heard.
   storiesHeard: [],
   // Each baptism card's answer, in order ('confess' | 'down'), for the

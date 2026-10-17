@@ -21,6 +21,7 @@ import { colorFor, fishStageFor, LAKE_MAX_DEBT } from '../engine/lake.js';
 import { createItPopup } from '../ui/itPopup.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
+import { lakeMarks } from '../engine/firstMarks.js';
 import { createPastorBust } from '../ui/pastorBust.js';
 import { createNpcPortrait } from '../ui/npcPortrait.js';
 import { emotionColor, emotionsForClass } from '../engine/loadout.js';
@@ -77,7 +78,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     screen.appendChild(line.speaker ? createNpcPortrait(line.speaker, `var(--color-${line.speaker.toLowerCase()})`).el : createPastorBust());
     screen.appendChild(nameplate);
 
-    if (showLake) screen.appendChild(createLakeGauge(debt).el);
+    if (showLake) screen.appendChild(createLakeGauge(debt, { marks: lakeMarks(run.get()) }).el);
 
     if (line.underwater) {
       const water = document.createElement('div');

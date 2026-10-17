@@ -29,6 +29,7 @@ import { EMOTIONS, emotionColor, emotionsForClass, getDominantEmotion, withClass
 import { createSwipeCard } from '../ui/swipeCard.js';
 import { hasDelivery, deliveryKind, buildDelivery, previewDelivery, previewText, hasAilment, MASK_SLIP_AT } from '../engine/delivery.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
+import { lakeMarks } from '../engine/firstMarks.js';
 import { createOscilloscope, wheelSteps } from '../ui/oscilloscope.js';
 import { createSpotlight } from '../ui/spotlight.js';
 import { loadSettings } from '../shell/settings.js';
@@ -870,7 +871,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
 
     // Truth Debt, shown as the lake's water quality (ui/lakeGauge.js).
-    const lake = createLakeGauge(runState.truthDebt).el;
+    const lake = createLakeGauge(runState.truthDebt, { marks: lakeMarks(runState) }).el;
     if (applyReveal(lake, 'debt')) spotlitHud.push(lake);
     // The contacts dock sits just above the lake gauge; the lake stays the
     // floor of the screen.

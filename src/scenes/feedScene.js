@@ -32,6 +32,7 @@ import { createTypewriter } from '../ui/typewriterText.js';
 import { createSpriteAnimator } from '../ui/spriteAnimator.js';
 import { createFeelzSilhouette } from '../ui/feelzSilhouette.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
+import { lakeMarks } from '../engine/firstMarks.js';
 import { quoteSpeech } from '../ui/speech.js';
 import { loadSettings } from '../shell/settings.js';
 import { later, cancelLater } from '../shell/pauseBus.js';
@@ -50,7 +51,7 @@ const HINT_MS = 1100;     // the bounce (CSS dx-feed-hint)
 
 const ART = {
   feelzSilhouette: () => createFeelzSilhouette(),
-  lakeGauge: ({ run }) => createLakeGauge(run.get().truthDebt ?? 0),
+  lakeGauge: ({ run }) => createLakeGauge(run.get().truthDebt ?? 0, { marks: lakeMarks(run.get()) }),
 };
 
 export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler }) {

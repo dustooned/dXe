@@ -59,12 +59,14 @@ import * as encounterMusic from '../shell/encounterMusic.js';
 import { preloadTypewriterTick, playTypewriterTick, startAmbient, stopAmbient, startLeitmotif, playFeelzBoot, playSfx } from '../shell/audio.js';
 import { createFeelzSilhouette } from '../ui/feelzSilhouette.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
+import { ripple, centerOf } from '../ui/ripple.js';
+import { lakeMarks } from '../engine/firstMarks.js';
 
 // Built-in visuals and sounds a beat can name by key (`art:` / `sound:`),
 // so content JSON can ask for them without holding code.
 const ART = {
   feelzSilhouette: createFeelzSilhouette,
-  lakeGauge: ({ run }) => createLakeGauge(run.get().truthDebt ?? 0),
+  lakeGauge: ({ run }) => createLakeGauge(run.get().truthDebt ?? 0, { marks: lakeMarks(run.get()) }),
 };
 const SOUNDS = { feelzBoot: playFeelzBoot };
 import { createSpriteAnimator } from '../ui/spriteAnimator.js';
@@ -311,6 +313,13 @@ export function mount(stageEl, scene, { run, onComplete }) {
       }
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
+        // A choice the run remembers (the install's permissions and username,
+        // engine/firstMarks.js) lands like a stone in the lake.
+        if (option.store) {
+          const [x, y] = e.clientX || e.clientY ? [e.clientX, e.clientY] : centerOf(btn);
+          ripple(x, y);
+          playSfx(option.reply ? 'static' : 'slosh');
+        }
         resolveChoice(option);
       });
       choices.appendChild(btn);

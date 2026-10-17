@@ -356,5 +356,18 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
   check('morning feed: the ad counts your lies ({lies} filled), and zero gets its own line', /told 1 lies/.test(quiet.ad.beats[0].text) && /zero lies/.test(pick({ truthDebt: 0, choices: { a_1: 'truth' } }).ad.beats[0].text));
 }
 
+// First choices that matter (engine/firstMarks.js).
+{
+  const { lakeMarks, hallwayEcho, SWIM } = await import('../src/engine/firstMarks.js');
+  const install = JSON.parse(fs.readFileSync('src/chapters/lake-ulysses/content/feelz_install.json', 'utf8'));
+  const names = install.beats.flatMap((b) => b.interactive?.options ?? []).filter((o) => o.store === 'handle').map((o) => o.label);
+  check('first marks: every install username has a swim style', names.length > 0 && names.every((n) => SWIM[n]));
+  check('first marks: the install stores both permission answers', ['permFace', 'permVoice'].every((k) => install.beats.some((b) => (b.interactive?.options ?? []).filter((o) => o.store === k).length === 2)));
+  check('first marks: a fresh run leaves no marks and no hallway line', lakeMarks({}).length === 0 && hallwayEcho({}) === '');
+  const m = lakeMarks({ handle: 'STILL_RINGING', permFace: "DON'T ALLOW", permVoice: 'ALLOW', intakeLean: { still: 1, move: 2 } });
+  check('first marks: username, refused face, intake lean all show on the lake', m.includes('is-swim-halt') && m.includes('is-shy') && !m.includes('is-hushed') && m.includes('is-surface-choppy'));
+  check('first marks: the hallway line follows what you refused', /face/.test(hallwayEcho({ permFace: "DON'T ALLOW", permVoice: 'ALLOW' })) && /listen/.test(hallwayEcho({ permFace: 'ALLOW', permVoice: "DON'T ALLOW" })) && /everything/.test(hallwayEcho({ permFace: 'ALLOW', permVoice: 'ALLOW' })));
+}
+
 console.log(failed ? `\n${failed} failed, ${passed} passed` : `\nall ${passed} passed`);
 process.exit(failed ? 1 : 0);

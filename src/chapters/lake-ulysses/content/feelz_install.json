@@ -9,16 +9,16 @@
       "style": "feelz",
       "text": "Allow FEELZ to see your face?",
       "interactive": { "options": [
-        { "label": "ALLOW" },
-        { "label": "DON'T ALLOW", "reply": "FEELZ works best with everything." }
+        { "label": "ALLOW", "store": "permFace" },
+        { "label": "DON'T ALLOW", "store": "permFace", "reply": "FEELZ works best with everything." }
       ] }
     },
     {
       "style": "feelz",
       "text": "Allow FEELZ to hear what you say?",
       "interactive": { "options": [
-        { "label": "ALLOW" },
-        { "label": "DON'T ALLOW", "reply": "FEELZ works best with everything." }
+        { "label": "ALLOW", "store": "permVoice" },
+        { "label": "DON'T ALLOW", "store": "permVoice", "reply": "FEELZ works best with everything." }
       ] }
     },
     {

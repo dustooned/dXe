@@ -42,9 +42,11 @@ function fishSvg(body, eye) {
   return `<svg class="dx-fish__svg" viewBox="0 0 8 5" shape-rendering="crispEdges">${rects.join('')}</svg>`;
 }
 
-export function createLakeGauge(initialDebt = 0, { large = false } = {}) {
+// marks: the run's first choices (engine/firstMarks.js lakeMarks): how the
+// fish swim, whether they hide or bubble, the water's surface.
+export function createLakeGauge(initialDebt = 0, { large = false, marks = [] } = {}) {
   const el = document.createElement('div');
-  el.className = `dx-lake${large ? ' dx-lake--large' : ''}`;
+  el.className = ['dx-lake', large && 'dx-lake--large', ...marks].filter(Boolean).join(' ');
   el.setAttribute('role', 'img');
 
   const tank = document.createElement('div');
@@ -87,7 +89,7 @@ export function createLakeGauge(initialDebt = 0, { large = false } = {}) {
     if (stage.bubbles) {
       parts.push('<span class="dx-bubble dx-bubble--0"></span><span class="dx-bubble dx-bubble--1"></span>');
     }
-    parts.push('<span class="dx-lake__murk"></span>');
+    parts.push('<span class="dx-lake__surface"></span>', '<span class="dx-lake__murk"></span>');
     tank.innerHTML = parts.join('');
   }
 

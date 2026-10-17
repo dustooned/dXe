@@ -9,7 +9,8 @@ import { CLASSES, emotionsForClass } from '../engine/loadout.js';
 import { later, cancelLater } from '../shell/pauseBus.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
 import { createFeelzSilhouette } from '../ui/feelzSilhouette.js';
-import { startAmbient, stopAmbient, playFeelzPing, strikeEmotionVoice, playClassSigil } from '../shell/audio.js';
+import { startAmbient, stopAmbient, playFeelzPing, strikeEmotionVoice, playClassSigil, playSfx } from '../shell/audio.js';
+import { ripple, centerOf } from '../ui/ripple.js';
 
 // The intake is part 2 of FEELZ's check-in (content/feelz_launch.json is
 // part 1), so it wears the app: header, progress, fine print. After the
@@ -273,6 +274,13 @@ export function mount(stageEl, _scene, { run, onComplete }) {
         const answer = side.scores;
         answers.push(answer);
         answerLabels.push(stripArrow(side.label));
+        // First choices that matter (engine/firstMarks.js): each answer lands
+        // like a stone in the lake, and the lean (left: feel it, sit with it;
+        // right: handle it, do something) sets the lake's surface.
+        const lean = run.get().intakeLean ?? { still: 0, move: 0 };
+        run.set({ intakeLean: direction === 'truth' ? { ...lean, still: lean.still + 1 } : { ...lean, move: lean.move + 1 } });
+        ripple(...centerOf(activeCard.el.querySelector('.dx-swipe-card') ?? activeCard.el));
+        playSfx('slosh');
         questionIndex++;
         if (questionIndex < questions.length) {
           renderQuestion();

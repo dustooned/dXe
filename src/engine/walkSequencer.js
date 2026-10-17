@@ -17,6 +17,7 @@ import { createWalkRoom } from '../ui/walkRoom.js';
 import { createQuickBeat } from '../ui/quickBeat.js';
 import { moodFor } from './loadout.js';
 import { isFogged } from './contacts.js';
+import { hallwayEcho } from './firstMarks.js';
 
 // isRestored/onRestore: whether this player's class has already restored
 // something in these rooms, and what to do when they do (walkRoom.js).
@@ -92,6 +93,9 @@ export function mountNpcWalk(stageEl, scene, { run, onComplete }, { steps, secre
     npcClass: room.npcClass ?? scene.npc?.npcClass,
     // Fogged: the liar's lens (walkRoom.js): comfort, not feelings.
     fogged: isFogged(run.get()),
+    // A room with `echo: true` calls back to the run's first choices after its
+    // intro (engine/firstMarks.js hallwayEcho).
+    echoText: room.echo ? hallwayEcho(run.get()) : '',
     hotspots: room.hotspots.map((spot) => ({
       ...spot,
       mood: spot.opener ? moodFor(nodes[spot.opener], loadout) : null,

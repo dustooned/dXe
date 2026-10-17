@@ -11,6 +11,7 @@ import { drawEmotionPattern } from '../ui/emotionPattern.js';
 import { createTypewriter } from '../ui/typewriterText.js';
 import { createItPopup } from '../ui/itPopup.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
+import { lakeMarks } from '../engine/firstMarks.js';
 import { ENDING_IT_TEXT, ENDING_SO_TEXT } from '../engine/itEndgame.js';
 import { buildRecord, createFaxPrintout, downloadRecordPng } from '../ui/feelzRecord.js';
 import * as fx from '../shell/fx.js';
@@ -101,7 +102,7 @@ export function mount(stageEl, scene, { run, exit, onComplete, recordEnding, cha
     label.className = 'dx-text dx-ending-reading-label';
     label.textContent = 'FINAL READING';
     screen.appendChild(label);
-    screen.appendChild(createLakeGauge(finalDebt, { large: true }).el);
+    screen.appendChild(createLakeGauge(finalDebt, { large: true, marks: lakeMarks(run.get()) }).el);
     audio.playLakeSplash(finalDebt);
     tapHint(screen);
     screen.addEventListener('click', () => showSlide(0), { once: true });
