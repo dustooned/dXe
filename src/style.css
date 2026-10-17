@@ -93,6 +93,9 @@ body {
   min-height: 100vh;
   min-height: 100dvh;
   padding: 0;
+  /* The screen shake (shell/fx.js) moves the whole canvas a few px sideways;
+     clip it so the page never grows a sideways scroll for those 220 ms. */
+  overflow-x: clip;
 }
 
 /* Paused sideways (shell/orientationPause.js). IT's screen lives outside the

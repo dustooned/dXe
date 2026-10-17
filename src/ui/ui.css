@@ -817,10 +817,15 @@
   position: relative;
 }
 
+/* Over the portrait, on black: the tutorial names all four at once, and the
+   middle words sat behind the Therapist's face. */
 .dx-status__words {
   position: absolute;
+  z-index: 3;
   right: 2px;
   top: 100%;
+  background: var(--color-black);
+  padding: 0 calc(3 * var(--px));
   display: flex;
   gap: calc(8 * var(--px));
   font-size: calc(7 * var(--fs));
@@ -1797,3 +1802,6 @@ svg .is-hinted path {
 .dx-runcard__handle { font-size: calc(9 * var(--fs)); }
 .dx-runcard__run { line-height: 1.8; }
 .dx-runcard__status { min-height: 1.2em; }
+
+/* A Therapist "try this" line written on the card (dialogScene.js placeTask). */
+.dx-swipe-card__text.is-task { color: #ffe27a; }

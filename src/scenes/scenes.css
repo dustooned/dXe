@@ -2071,7 +2071,7 @@
    something, the call's own dim steps aside for the spotlight, the box
    moves to the top if the target is low, and a label points at it. */
 .dx-call.is-incoming.is-guiding { background: transparent; }
-.dx-call.is-incoming.is-top { justify-content: flex-start; padding-top: calc(70 * var(--px)) !important; }
+.dx-call.is-incoming.is-top { justify-content: flex-start; padding-top: calc(96 * var(--px)) !important; } /* below the status bar, so his name never prints over the clock */
 .dx-guide-ghost {
   position: absolute;
   pointer-events: none;
@@ -2137,8 +2137,11 @@
   --speaker: var(--color-white);
   margin-left: calc(12 * var(--px));
 }
+/* The tag sits above the portrait and its speaking glow (a long name like
+   THERAPIST reaches the picture's edge). */
 .dx-speech__name {
   position: absolute;
+  z-index: 3;
   top: calc(-8 * var(--px));
   left: calc(10 * var(--px));
   padding: calc(1 * var(--px)) calc(6 * var(--px));

@@ -688,7 +688,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
               const target = name === 'allmeters' ? statusBar?.el : statusBar?.el.querySelector(`[data-meter="${name}"]`);
               if (target) {
                 spotlight?.destroy();
-                spotlight = createSpotlight(screen, [livePortrait?.el, target, reaction]);
+                spotlight = createSpotlight(screen, [livePortrait?.el, target, bubbleOf(reaction)]);
               }
             }
           },
@@ -902,7 +902,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // introducing it (her reaction), for as long as that beat lasts.
     if (spotlitHud.length) {
       const words = content.querySelector('.dx-reaction');
-      spotlight = createSpotlight(screen, [livePortrait?.el, ...spotlitHud, words]);
+      spotlight = createSpotlight(screen, [livePortrait?.el, ...spotlitHud, bubbleOf(words)]);
     }
     if (stage === 'prompt' && promptRevealed) spotlightInteractive();
   }
@@ -933,7 +933,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     lake.classList.add('is-revealing');
     audio.playLakeSplash(run.get().truthDebt);
     spotlight?.destroy();
-    spotlight = createSpotlight(screen, [livePortrait?.el, lake, words]);
+    spotlight = createSpotlight(screen, [livePortrait?.el, lake, bubbleOf(words)]);
   }
 
   // SPOTLIGHT: on a node — before a pick, the wheel (plus her prompt, so
@@ -955,7 +955,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
     if (!targets) return;
     spotlight?.destroy();
-    spotlight = createSpotlight(screen, [livePortrait?.el, ...targets]); // the speaker's face is never in the dark
+    spotlight = createSpotlight(screen, [livePortrait?.el, ...targets.map(bubbleOf)]); // the speaker's face is never in the dark
   }
 
   // While dragging a delivery card: the answer the drag is on, and its
@@ -1261,6 +1261,12 @@ export function mount(stageEl, scene, { run, onComplete }) {
     return null;
   }
 
+  // Words in the dark are lit with their whole speech bubble: the frame and
+  // the name tag on it, not just the letters (the tag sat in the vignette).
+  function bubbleOf(el) {
+    return el?.closest?.('.dx-speech') ?? el;
+  }
+
   // A label with a pixel arrow, just above (or below) a target, inside host.
   function guideLabel(host, target, text, cls = 'dx-guide-label') {
     const label = document.createElement('div');
@@ -1290,6 +1296,15 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (!coach?.task || stage !== 'prompt' || itPopup || unmounted) return;
     const target = guideTarget(coach.task.target);
     if (!target || target.closest('[hidden]')) return;
+    // Aimed at the card or the wheel: the line goes on the card itself. A
+    // floating label above them sat on the card's words or the TRUTH / LIE
+    // hints (playtest check 2026-10-17).
+    const cardText = (coach.task.target === 'card' || coach.task.target === 'wheel') && stageEl.querySelector('.dx-swipe-card__text');
+    if (cardText) {
+      cardText.textContent = coach.task.text;
+      cardText.classList.add('is-task');
+      return;
+    }
     guideLabel(stageEl, target, coach.task.text, 'dx-guide-task');
   }
 
@@ -1304,6 +1319,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // not on the next redraw (a friend's call doesn't redraw).
   function clearCoachVisuals() {
     stageEl.querySelector('.dx-guide-task')?.remove();
+    const cardText = stageEl.querySelector('.dx-swipe-card__text.is-task');
+    if (cardText) {
+      cardText.classList.remove('is-task');
+      cardText.textContent = activeEmotion ? 'Swipe to respond.' : 'Pick a feeling first.';
+    }
     stageEl.querySelector('.dx-guide-ghost')?.remove();
     stageEl.querySelectorAll('.dx-dock__contact.is-coached').forEach((b) => b.classList.remove('is-coached'));
   }
@@ -1389,8 +1409,13 @@ export function mount(stageEl, scene, { run, onComplete }) {
       overlay.classList.toggle('is-guiding', !!target);
       if (coach) coach.highlight = ['trace', 'scope', 'needle'].includes(step.target) ? step.target : null;
       if (target && screen) {
-        spot = createSpotlight(screen, [livePortrait?.el, target]);
-        if (step.label) label = guideLabel(overlay, target, step.label);
+        // He's the one talking (his face is in the call box), so the person
+        // in front of you dims with everything else unless he means their line.
+        spot = createSpotlight(screen, step.target === 'trace' ? [livePortrait?.el, target] : [target]);
+        // The four meters: the label points at the icons on the right, not
+        // the middle of the bar (where it sat on their portrait).
+        const anchor = step.target === 'meters' ? screen.querySelector('.dx-status__right') ?? target : target;
+        if (step.label) label = guideLabel(overlay, anchor, step.label);
         const ov = overlay.getBoundingClientRect();
         const r = target.getBoundingClientRect();
         overlay.classList.toggle('is-top', r.top + r.height / 2 > ov.top + ov.height * 0.5);
