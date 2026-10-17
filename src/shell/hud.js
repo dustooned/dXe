@@ -421,7 +421,7 @@ function renderSettingsPanel() {
 // that state (shell/debug.js). Same box, so BACK returns to settings.
 const DEBUG_CHAPTER = 'lake-ulysses';
 const DEBUG_GROUPS = [
-  ['OPENING', ['it-intro', 'opening-quote', 'bob-baiter', 'prologue', 'feelz-launch', 'questionnaire']],
+  ['OPENING', ['it-intro', 'opening-quote', 'prologue', 'feelz-install', 'feed', 'feelz-launch', 'questionnaire']],
   ['THERAPIST', ['therapist', 'walk-home']],
   ['DEBORAH', ['deborah-hallway', 'deborah-confront', 'deborah']],
   ['RWANDA', ['rwanda-alley', 'rwanda-confront', 'rwanda']],

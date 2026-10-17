@@ -322,5 +322,19 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
   check('delivery: ailments are low battery, fogged Wi-Fi, a scrambling clock, being shut out (not mild clock slip or low bars)', hasAilment({ ...st, stability: 2 }) && hasAilment({ ...st, lucidity: 3 }) && hasAilment({ ...st, integrity: 2 }) && hasAilment(st, { shutOut: true }) && !hasAilment({ ...st, integrity: 5, trust: 1 }) && !hasAilment(st));
 }
 
+// ── The FEELZ feed (Phase 11 step 5): channels on one clock ──
+{
+  const { readingMs, timeline, beatAt } = await import('../src/engine/feedClock.js');
+  const feed = JSON.parse(fs.readFileSync('src/chapters/lake-ulysses/content/feed.json', 'utf8'));
+  const bob = JSON.parse(fs.readFileSync('src/chapters/lake-ulysses/content/bob_baiter.json', 'utf8'));
+  const ch = { beats: [{ text: 'abc' }, { text: 'a longer line here', holdMs: 5000 }, { text: 'x', autoAdvanceMs: 2500 }] };
+  const tl = timeline(ch, 'normal');
+  check('feed: a beat lasts its reading time (hold or auto-advance win), and the timeline adds up', readingMs({ text: 'abc' }) === 1800 + 3 * 55 && tl.starts.join() === `0,${1800 + 165},${1965 + 5000}` && tl.length === 1965 + 5000 + 2500);
+  check('feed: faster text speed shortens a beat', readingMs({ text: 'abcdef' }, 'fast') < readingMs({ text: 'abcdef' }, 'normal'));
+  check('feed: the beat at a time is the last one started', beatAt(tl.starts, 0) === 0 && beatAt(tl.starts, 1964) === 0 && beatAt(tl.starts, 1965) === 1 && beatAt(tl.starts, 99999) === 2);
+  check('feed: Bob keeps all 30 original beats, and every comment track points at a real beat', bob.beats.length === 30 && Object.keys(feed.bobComments).every((k) => Number(k) < bob.beats.length));
+  check('feed: every channel has an id, a name, a tag and beats with words', feed.channels.every((c) => c.id && c.name && c.tag && c.beats.length && c.beats.every((b) => b.text)));
+}
+
 console.log(failed ? `\n${failed} failed, ${passed} passed` : `\nall ${passed} passed`);
 process.exit(failed ? 1 : 0);

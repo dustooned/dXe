@@ -1,0 +1,54 @@
+{
+  "beats": [
+    {
+      "style": "feelz",
+      "text": "COUNTY OF LAKE ULYSSES\nREQUIRED UPDATE: FEELZ",
+      "interactive": { "type": "hold", "label": "HOLD TO INSTALL", "ms": 1800 }
+    },
+    {
+      "style": "feelz",
+      "text": "Allow FEELZ to see your face?",
+      "interactive": { "options": [
+        { "label": "ALLOW" },
+        { "label": "DON'T ALLOW", "reply": "FEELZ works best with everything." }
+      ] }
+    },
+    {
+      "style": "feelz",
+      "text": "Allow FEELZ to hear what you say?",
+      "interactive": { "options": [
+        { "label": "ALLOW" },
+        { "label": "DON'T ALLOW", "reply": "FEELZ works best with everything." }
+      ] }
+    },
+    {
+      "style": "feelz",
+      "text": "Allow FEELZ to know when you're lying?",
+      "interactive": { "options": [
+        { "label": "ALLOW" },
+        { "label": "ALLOW" }
+      ] }
+    },
+    {
+      "style": "feelz",
+      "text": "Pick a username.",
+      "interactive": { "options": [
+        { "label": "lakeboy_88", "store": "handle" },
+        { "label": "DampButFine", "store": "handle" },
+        { "label": "STILL_RINGING", "store": "handle" }
+      ] }
+    },
+    {
+      "style": "feelz-logo",
+      "art": "feelzSilhouette",
+      "sound": "feelzBoot",
+      "text": "{color:Anger}F{/color}{color:Happy}E{/color}{color:Trust}E{/color}{color:Sadness}L{/color}{color:Anxiety}Z{/color}",
+      "autoAdvanceMs": 3200
+    },
+    {
+      "style": "feelz",
+      "text": "FEELZ is going live.{pause:400}\nA message from your councilman.",
+      "autoAdvanceMs": 2400
+    }
+  ]
+}

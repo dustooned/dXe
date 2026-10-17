@@ -16,6 +16,7 @@ import { forgetMeters } from '../../ui/statusBar.js';
 import * as endingScene from '../../scenes/endingScene.js';
 import * as minigameScene from '../../scenes/minigameScene.js';
 import * as markerScene from '../../scenes/markerScene.js';
+import * as feedScene from '../../scenes/feedScene.js';
 import { ANIMS } from './anims.js';
 import { playStaticTransition } from '../../ui/staticTransition.js';
 
@@ -26,6 +27,8 @@ import walkHome from './content/walk_home.json';
 import prologue from './content/prologue.json';
 import pastor from './content/pastor.json';
 import feelzLaunch from './content/feelz_launch.json';
+import feelzInstall from './content/feelz_install.json';
+import feed from './content/feed.json';
 import therapist from './content/therapist.json';
 import deborah from './content/deborah.json';
 import rwanda from './content/rwanda.json';
@@ -76,11 +79,15 @@ export const title = 'Truth Debt: Lake Ulysses';
 const SCENES = [
   { type: 'cutscene', id: 'it-intro', beats: itIntro.beats },
   { type: 'cutscene', id: 'opening-quote', beats: openingQuote.beats, anims: ANIMS },
-  { type: 'cutscene', id: 'bob-baiter', beats: bobBaiter.beats, anims: ANIMS, ambient: '/assets/lake-ulysses/audio/lk_01.mp3' },
   { type: 'cutscene', id: 'prologue', beats: prologue.beats },
-  // The buzz from the prologue's last beat, answered: the FEELZ app opens,
-  // and everything after it (intake quiz, Therapist, the HUD itself) is
-  // happening inside that app.
+  // The buzz from the prologue's last beat, answered: FEELZ installs itself
+  // (hold to install, permissions, a username), boots, and goes straight to
+  // its feed: live channels all running at once, Bob Baiter's broadcast
+  // (his original script, word for word) among them (scenes/feedScene.js,
+  // Phase 11 step 5). Then the check-in, and everything after it (intake
+  // quiz, Therapist, the HUD itself) happens inside the app.
+  { type: 'cutscene', id: 'feelz-install', beats: feelzInstall.beats },
+  { type: 'feed', id: 'feed', anims: ANIMS, ambient: '/assets/lake-ulysses/audio/lk_01.mp3', channels: feedChannels() },
   { type: 'cutscene', id: 'feelz-launch', beats: feelzLaunch.beats, unskippable: true },
   { type: 'questionnaire', id: 'questionnaire' },
   { type: 'dialog', id: 'therapist', npc: therapist },
@@ -120,6 +127,20 @@ const SCENES = [
   { type: 'ending', id: 'ending', endings },
 ];
 
+// The feed's channels: Bob's broadcast first (bob_baiter.json as written,
+// with its comment track), then the rest of feed.json.
+function feedChannels() {
+  const bob = {
+    id: 'bob',
+    name: 'BOB BAITER',
+    tag: '● LIVE',
+    bgAnim: 'lake_bg',
+    spriteAnim: 'bob_baiter',
+    beats: bobBaiter.beats.map(({ bgAnim, spriteAnim, ...beat }, i) => ({ ...beat, comments: feed.bobComments[i] ?? [] })),
+  };
+  return [bob, ...feed.channels];
+}
+
 const HANDLERS = {
   questionnaire: questionnaireScene,
   cutscene: cutsceneScene,
@@ -128,6 +149,7 @@ const HANDLERS = {
   ending: endingScene,
   minigame: minigameScene,
   marker: markerScene,
+  feed: feedScene,
 };
 
 const initialRunState = {
@@ -189,6 +211,8 @@ const initialRunState = {
   // { [npc]: guard } for an NPC with a delivery spectrum (engine/delivery.js):
   // how closed they still are; at 0 the truth comes out.
   guard: {},
+  // The FEELZ username picked at install (feelz_install.json), used by the feed.
+  handle: null,
   // NPCs whose story (their STORY cutscene) the player has heard.
   storiesHeard: [],
   // Each baptism card's answer, in order ('confess' | 'down'), for the

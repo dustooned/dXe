@@ -19,7 +19,10 @@
 // end means nothing but that" — no stat effect exists to skip past. Dialog
 // (the actual FEELZ/swipe encounter), questionnaire, reckoning and ending
 // are excluded on purpose: those are the game.
-const SKIPPABLE_TYPES = new Set(['cutscene', 'minigame']);
+const SKIPPABLE_TYPES = new Set(['cutscene', 'minigame', 'feed']);
+// A scene can take over its own skip (context.setSkipHandler): the FEELZ
+// feed's first-run rule turns a skip into "flip to a channel you haven't
+// seen" until every channel has been visited.
 
 export function createSceneSequencer({ scenes, handlers, context, transitionFn, startSceneId, onSceneChange }) {
   let index = 0;
@@ -29,6 +32,7 @@ export function createSceneSequencer({ scenes, handlers, context, transitionFn, 
   }
   let stageEl = null;
   let unmountCurrent = null;
+  let skipHandler = null;
 
   function findIndexById(id) {
     return scenes.findIndex((s) => s.id === id);
@@ -47,7 +51,8 @@ export function createSceneSequencer({ scenes, handlers, context, transitionFn, 
       throw new Error(`No scene handler registered for type "${scene.type}"`);
     }
 
-    unmountCurrent = handler.mount(stageEl, scene, { ...context, onComplete: handleComplete });
+    skipHandler = null;
+    unmountCurrent = handler.mount(stageEl, scene, { ...context, onComplete: handleComplete, setSkipHandler: (fn) => { skipHandler = fn; } });
   }
 
   function handleComplete(result) {
@@ -85,7 +90,9 @@ export function createSceneSequencer({ scenes, handlers, context, transitionFn, 
     },
     isSkippable,
     skip() {
-      if (isSkippable()) handleComplete();
+      if (!isSkippable()) return;
+      if (skipHandler) skipHandler();
+      else handleComplete();
     },
   };
 }

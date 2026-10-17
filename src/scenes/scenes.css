@@ -2424,3 +2424,158 @@
 }
 
 .dx-marker.is-fogged .dx-marker__plate-canvas { filter: sepia(0.35) brightness(0.95); }
+
+/* ── FEELZ install: hold to install (cutsceneScene.js showHold) ── */
+.dx-hold {
+  flex-direction: column;
+  align-items: stretch;
+  gap: calc(10 * var(--px));
+  user-select: none;
+  touch-action: none;
+}
+.dx-hold__bar {
+  height: calc(12 * var(--px));
+  border: 2px solid var(--color-white);
+}
+.dx-hold__fill {
+  height: 100%;
+  width: 0;
+  background: var(--color-white);
+}
+.dx-hold.is-glitch .dx-hold__fill {
+  background: repeating-linear-gradient(90deg, var(--color-white) 0 calc(3 * var(--px)), transparent calc(3 * var(--px)) calc(6 * var(--px)));
+  transform: translateX(calc(3 * var(--px)));
+}
+
+/* ── The FEELZ feed (feedScene.js): channels over the cutscene frame ── */
+.dx-feed { touch-action: none; }
+.dx-feed__head {
+  position: absolute;
+  z-index: 4;
+  top: calc(56 * var(--px));
+  left: 0;
+  right: 0;
+  padding: calc(6 * var(--px)) calc(16 * var(--px)) calc(26 * var(--px));
+  background: var(--color-black);
+  display: flex;
+  align-items: center;
+  gap: calc(8 * var(--px));
+  font-size: calc(7 * var(--fs));
+  letter-spacing: 0.08em;
+}
+.dx-feed__tag {
+  background: var(--color-white);
+  color: var(--color-black);
+  padding: calc(2 * var(--px)) calc(5 * var(--px));
+}
+.dx-feed__name { flex: 1; }
+.dx-feed__ch { opacity: 0.6; }
+.dx-feed__scrub {
+  position: absolute;
+  z-index: 4;
+  top: calc(80 * var(--px));
+  left: calc(16 * var(--px));
+  right: calc(16 * var(--px));
+  width: calc(100% - 32 * var(--px));
+  margin: 0;
+  accent-color: var(--color-white);
+}
+.dx-feed__close {
+  position: absolute;
+  z-index: 5;
+  top: calc(108 * var(--px));
+  right: calc(16 * var(--px));
+  font-size: calc(7 * var(--fs));
+}
+.dx-feed__flip {
+  position: absolute;
+  z-index: 4;
+  right: calc(8 * var(--px));
+  top: 40%;
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--px));
+}
+.dx-feed__flip-btn {
+  width: calc(36 * var(--px));
+  height: calc(36 * var(--px));
+  border: 2px solid var(--color-white);
+  background: var(--color-black);
+  color: var(--color-white);
+  font-family: var(--font-pixel);
+  font-size: calc(9 * var(--fs));
+  cursor: pointer;
+}
+.dx-feed__left {
+  position: absolute;
+  z-index: 4;
+  right: calc(6 * var(--px));
+  top: calc(40% + 90 * var(--px));
+  margin: 0;
+  padding: calc(2 * var(--px)) calc(4 * var(--px));
+  background: var(--color-black);
+  font-size: calc(6 * var(--fs));
+}
+.dx-feed__comments {
+  position: absolute;
+  z-index: 4;
+  left: calc(10 * var(--px));
+  width: 66%;
+  top: 34%;
+  display: flex;
+  flex-direction: column;
+  gap: calc(4 * var(--px));
+  pointer-events: auto;
+}
+.dx-feed__comment {
+  display: block;
+  text-align: left;
+  border: none;
+  background: rgb(0 0 0 / 0.88);
+  color: var(--color-white);
+  font-family: var(--font-pixel);
+  font-size: calc(6 * var(--fs));
+  line-height: 1.6;
+  padding: calc(3 * var(--px)) calc(6 * var(--px));
+  cursor: pointer;
+}
+.dx-feed__who { color: #a9a9b3; }
+.dx-feed__heart {
+  margin-left: calc(6 * var(--px));
+  opacity: 0.25;
+}
+.dx-feed__comment.is-hearted .dx-feed__heart {
+  opacity: 1;
+  color: var(--color-feelz-surprise);
+}
+.dx-feed .dx-feed__art {
+  position: absolute;
+  z-index: 1;
+  top: 16%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
+.dx-feed__still { opacity: 0.55; }
+.dx-feed__toast {
+  position: absolute;
+  z-index: 6;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: calc(8 * var(--px)) calc(12 * var(--px));
+  background: var(--color-white);
+  color: var(--color-black);
+  font-size: calc(8 * var(--fs));
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+.dx-feed.is-ended .dx-feed__textbox::after {
+  content: 'ENDED · DRAG THE BAR BACK TO REWATCH';
+  display: block;
+  margin-top: calc(8 * var(--px));
+  font-size: calc(6 * var(--fs));
+  opacity: 0.6;
+  text-align: center;
+}

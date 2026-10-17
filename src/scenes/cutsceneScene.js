@@ -35,7 +35,11 @@
 // }
 // An interactive option can carry `record: 'key'` — the chosen label is
 // saved to run.checkIn[key] (the FEELZ check-in answers, read back at the
-// ending; see endingScene.js).
+// ending; see endingScene.js). `store: 'key'` saves the label to run[key]
+// instead (the FEELZ username, run.handle). `reply: 'text'` swaps the beat's
+// words for that line a moment before moving on (a permission you refused).
+// `interactive: { type: 'hold', label, ms }` is one button you hold down
+// while a bar fills (the FEELZ install); letting go early drains it.
 //
 // Confrontations (opensDialog + npc): each option shows its first feeling's
 // color as this player's class meets the NPC (the same color its room object
@@ -122,6 +126,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
   function render() {
+    holdCleanup?.();
+    holdCleanup = null;
     destroyAnimators();
     cancelLater(autoAdvanceTimer);
     itPopup?.destroy();
@@ -261,7 +267,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   function handleBeatReady() {
     const beat = currentBeat();
-    if (beat.interactive) {
+    if (beat.interactive?.type === 'hold') {
+      showHold(currentTextBox, beat.interactive);
+    } else if (beat.interactive) {
       showChoices(currentTextBox, beat.interactive);
     } else {
       showContinueArrow(currentTextBox);
@@ -310,6 +318,48 @@ export function mount(stageEl, scene, { run, onComplete }) {
     textBox.appendChild(choices);
   }
 
+  // Hold to install: the bar fills while the button is held and drains when
+  // it isn't; it stutters once around two thirds, then finishes and moves on.
+  function showHold(textBox, { label = 'HOLD', ms = 1800 }) {
+    const wrap = document.createElement('div');
+    wrap.className = 'dx-cutscene-choices dx-hold';
+    const btn = document.createElement('button');
+    btn.className = 'dx-btn dx-hold__btn';
+    btn.textContent = label;
+    const bar = document.createElement('div');
+    bar.className = 'dx-hold__bar';
+    const fill = document.createElement('div');
+    fill.className = 'dx-hold__fill';
+    bar.appendChild(fill);
+    wrap.append(btn, bar);
+    textBox.appendChild(wrap);
+    let held = false;
+    let done = false;
+    let p = 0;
+    let stutter = 0;
+    let timer = null;
+    const step = () => {
+      if (done) return;
+      if (stutter > 0) stutter -= 1;
+      else p = Math.max(0, Math.min(1, p + (held ? 50 / ms : -50 / (ms / 2))));
+      if (held && p > 0.64 && p < 0.7 && !wrap.dataset.stuttered) { wrap.dataset.stuttered = '1'; stutter = 9; wrap.classList.add('is-glitch'); playSfx('static'); }
+      if (stutter === 0) wrap.classList.remove('is-glitch');
+      fill.style.width = `${Math.round(p * 100)}%`;
+      if (p >= 1) { done = true; playSfx('ping'); later(advance, 350); return; }
+      timer = later(step, 50);
+    };
+    const down = (e) => { e.preventDefault(); e.stopPropagation(); held = true; };
+    const up = (e) => { e?.stopPropagation(); held = false; };
+    btn.addEventListener('pointerdown', down);
+    btn.addEventListener('pointerup', up);
+    btn.addEventListener('pointerleave', up);
+    btn.addEventListener('pointercancel', up);
+    btn.addEventListener('click', (e) => e.stopPropagation());
+    timer = later(step, 50);
+    holdCleanup = () => cancelLater(timer);
+  }
+  let holdCleanup = null;
+
   // A confrontation is just a cutscene that shapes what comes next: with
   // `opensDialog` naming a later dialog scene, an option's `opener` picks which
   // node that NPC opens on. Everything else — sprite, speaker, branching
@@ -336,6 +386,15 @@ export function mount(stageEl, scene, { run, onComplete }) {
     applyOpener(option);
     if (option.record) {
       run.set({ checkIn: { ...run.get().checkIn, [option.record]: inClass(option.label) } });
+    }
+    if (option.store) run.set({ [option.store]: inClass(option.label) });
+    if (option.reply) {
+      // A refused permission: the app answers, then carries on regardless.
+      currentTextBox.querySelector('.dx-cutscene-choices')?.remove();
+      const textEl = currentTextBox.querySelector('.dx-cutscene-text');
+      if (textEl) { typewriter?.destroy(); typewriter = createTypewriter(textEl, option.reply, { onChar: playTypewriterTick }); }
+      autoAdvanceTimer = later(advance, 1500);
+      return;
     }
     if (option.jumpTo) {
       onComplete({ jumpTo: option.jumpTo });
@@ -398,6 +457,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   render();
 
   return function unmount() {
+    holdCleanup?.();
     destroyAnimators();
     cancelLater(autoAdvanceTimer);
     typewriter?.destroy();
