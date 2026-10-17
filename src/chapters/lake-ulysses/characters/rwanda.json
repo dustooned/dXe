@@ -1,0 +1,16 @@
+{
+  "npc": "rwanda",
+  "size": 192,
+  "art": {
+    "idle": {
+      "frames": 1
+    },
+    "squint": {
+      "frames": 1
+    },
+    "talk": {
+      "frames": 4,
+      "fps": 10
+    }
+  }
+}
