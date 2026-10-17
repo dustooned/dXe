@@ -105,6 +105,13 @@ export function mount(stageEl, scene, { run, onComplete, setSkipHandler }) {
       bg.alt = '';
       screen.appendChild(bg);
     }
+    if (!ch.bgAnim && !ch.image && !ch.art) {
+      // No picture yet: the channel's name on black (PLACEHOLDER until art).
+      const card = document.createElement('p');
+      card.className = 'dx-feed__card';
+      card.textContent = ch.name;
+      screen.appendChild(card);
+    }
     if (ch.art && ART[ch.art]) {
       const el = ART[ch.art]({ run }).el;
       el.classList.add('dx-feed__art');

@@ -2579,3 +2579,17 @@
   opacity: 0.6;
   text-align: center;
 }
+/* A channel with no art yet: its name, dim, where the picture would be. */
+.dx-feed__card {
+  position: absolute;
+  z-index: 1;
+  top: 24%;
+  left: calc(24 * var(--px));
+  right: calc(24 * var(--px));
+  margin: 0;
+  text-align: center;
+  font-size: calc(12 * var(--fs));
+  line-height: 1.6;
+  letter-spacing: 0.1em;
+  opacity: 0.35;
+}

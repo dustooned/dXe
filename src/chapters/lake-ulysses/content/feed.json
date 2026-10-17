@@ -1,36 +1,230 @@
 {
-  "_note": "The FEELZ feed (scenes/feedScene.js). Bob's channel plays bob_baiter.json word for word; bobComments are its comments by beat number (0 = his first line). {handle} is the player's username.",
+  "_note": "The FEELZ feed (scenes/feedScene.js). Bob's channel plays bob_baiter.json word for word; bobComments are its comments by beat number (0 = his first line). {handle} is the player's username. A channel with no picture shows its name as a placeholder card; `plate: <npc>` plays that NPC's chapter plate (plates.json).",
   "bobComments": {
-    "0": [{ "who": "trout_dad", "text": "first" }, { "who": "FEELZ", "text": "@{handle} joined" }, { "who": "lakelady", "text": "is this app mandatory" }],
-    "1": [{ "who": "dusty_ray", "text": "bob ur mic is wet" }],
-    "2": [{ "who": "lakelady", "text": "a DECADE??" }, { "who": "nightcrawler", "text": "my uncle never stopped fishing it lol" }],
-    "3": [{ "who": "jessrn", "text": "monitoring how" }],
-    "4": [{ "who": "trout_dad", "text": "it rained twice" }],
-    "5": [{ "who": "dusty_ray", "text": "acceptable" }, { "who": "nightcrawler", "text": "ACCEPTABLE" }, { "who": "jessrn", "text": "thats what they call cafeteria food" }],
-    "6": [{ "who": "lakelady", "text": "acceptable to WHO" }],
-    "7": [{ "who": "trout_dad", "text": "pride and joy" }],
-    "8": [{ "who": "jessrn", "text": "so its open but dont drink it" }],
-    "9": [{ "who": "dusty_ray", "text": "my dog is already in there" }, { "who": "lakelady", "text": "BOB" }],
-    "10": [{ "who": "jessrn", "text": "AT ALL TIMES??" }],
-    "11": [{ "who": "nightcrawler", "text": "here it comes" }],
-    "12": [{ "who": "trout_dad", "text": "scrub a fish with water to clean it from the water" }],
-    "13": [{ "who": "dusty_ray", "text": "there it is" }, { "who": "nightcrawler", "text": "ad break" }],
-    "14": [{ "who": "lakelady", "text": "how much is the water bob" }],
-    "15": [{ "who": "jessrn", "text": "lol" }],
-    "16": [{ "who": "nightcrawler", "text": "wait why is it on my phone" }],
-    "17": [{ "who": "lakelady", "text": "who asked for this" }],
-    "18": [{ "who": "dusty_ray", "text": "sure you are" }],
-    "19": [{ "who": "jessrn", "text": "the fish are cute ngl" }, { "who": "trout_dad", "text": "my fish already look sick??" }],
-    "20": [{ "who": "nightcrawler", "text": "sunday school was not simple" }],
-    "21": [{ "who": "lakelady", "text": "what does that mean" }],
-    "22": [{ "who": "dusty_ray", "text": "ok that's kind of messed up" }],
-    "23": [{ "who": "jessrn", "text": "@{handle} you good? ur fish are swimming weird" }],
-    "24": [{ "who": "trout_dad", "text": "we just measure" }, { "who": "nightcrawler", "text": "that's worse bob" }],
-    "25": [{ "who": "lakelady", "text": "the baptism thing again" }, { "who": "dusty_ray", "text": "my grandma still goes every sunday" }],
-    "26": [{ "who": "jessrn", "text": "AT HIS SHOP" }, { "who": "trout_dad", "text": "unsubscribe" }],
-    "27": [{ "who": "nightcrawler", "text": "passin by is right" }],
-    "28": [{ "who": "FEELZ", "text": "@{handle} has entered the lake" }],
-    "29": [{ "who": "lakelady", "text": "LIVE ENDED" }]
+    "0": [
+      {
+        "who": "trout_dad",
+        "text": "first"
+      },
+      {
+        "who": "FEELZ",
+        "text": "@{handle} joined"
+      },
+      {
+        "who": "lakelady",
+        "text": "is this app mandatory"
+      }
+    ],
+    "1": [
+      {
+        "who": "dusty_ray",
+        "text": "bob ur mic is wet"
+      }
+    ],
+    "2": [
+      {
+        "who": "lakelady",
+        "text": "a DECADE??"
+      },
+      {
+        "who": "nightcrawler",
+        "text": "my uncle never stopped fishing it lol"
+      }
+    ],
+    "3": [
+      {
+        "who": "jessrn",
+        "text": "monitoring how"
+      }
+    ],
+    "4": [
+      {
+        "who": "trout_dad",
+        "text": "it rained twice"
+      }
+    ],
+    "5": [
+      {
+        "who": "dusty_ray",
+        "text": "acceptable"
+      },
+      {
+        "who": "nightcrawler",
+        "text": "ACCEPTABLE"
+      },
+      {
+        "who": "jessrn",
+        "text": "thats what they call cafeteria food"
+      }
+    ],
+    "6": [
+      {
+        "who": "lakelady",
+        "text": "acceptable to WHO"
+      }
+    ],
+    "7": [
+      {
+        "who": "trout_dad",
+        "text": "pride and joy"
+      }
+    ],
+    "8": [
+      {
+        "who": "jessrn",
+        "text": "so its open but dont drink it"
+      }
+    ],
+    "9": [
+      {
+        "who": "dusty_ray",
+        "text": "my dog is already in there"
+      },
+      {
+        "who": "lakelady",
+        "text": "BOB"
+      }
+    ],
+    "10": [
+      {
+        "who": "jessrn",
+        "text": "AT ALL TIMES??"
+      }
+    ],
+    "11": [
+      {
+        "who": "nightcrawler",
+        "text": "here it comes"
+      }
+    ],
+    "12": [
+      {
+        "who": "trout_dad",
+        "text": "scrub a fish with water to clean it from the water"
+      }
+    ],
+    "13": [
+      {
+        "who": "dusty_ray",
+        "text": "there it is"
+      },
+      {
+        "who": "nightcrawler",
+        "text": "ad break"
+      }
+    ],
+    "14": [
+      {
+        "who": "lakelady",
+        "text": "how much is the water bob"
+      }
+    ],
+    "15": [
+      {
+        "who": "jessrn",
+        "text": "lol"
+      }
+    ],
+    "16": [
+      {
+        "who": "nightcrawler",
+        "text": "wait why is it on my phone"
+      }
+    ],
+    "17": [
+      {
+        "who": "lakelady",
+        "text": "who asked for this"
+      }
+    ],
+    "18": [
+      {
+        "who": "dusty_ray",
+        "text": "sure you are"
+      }
+    ],
+    "19": [
+      {
+        "who": "jessrn",
+        "text": "the fish are cute ngl"
+      },
+      {
+        "who": "trout_dad",
+        "text": "my fish already look sick??"
+      }
+    ],
+    "20": [
+      {
+        "who": "nightcrawler",
+        "text": "sunday school was not simple"
+      }
+    ],
+    "21": [
+      {
+        "who": "lakelady",
+        "text": "what does that mean"
+      }
+    ],
+    "22": [
+      {
+        "who": "dusty_ray",
+        "text": "ok that's kind of messed up"
+      }
+    ],
+    "23": [
+      {
+        "who": "jessrn",
+        "text": "@{handle} you good? ur fish are swimming weird"
+      }
+    ],
+    "24": [
+      {
+        "who": "trout_dad",
+        "text": "we just measure"
+      },
+      {
+        "who": "nightcrawler",
+        "text": "that's worse bob"
+      }
+    ],
+    "25": [
+      {
+        "who": "lakelady",
+        "text": "the baptism thing again"
+      },
+      {
+        "who": "dusty_ray",
+        "text": "my grandma still goes every sunday"
+      }
+    ],
+    "26": [
+      {
+        "who": "jessrn",
+        "text": "AT HIS SHOP"
+      },
+      {
+        "who": "trout_dad",
+        "text": "unsubscribe"
+      }
+    ],
+    "27": [
+      {
+        "who": "nightcrawler",
+        "text": "passin by is right"
+      }
+    ],
+    "28": [
+      {
+        "who": "FEELZ",
+        "text": "@{handle} has entered the lake"
+      }
+    ],
+    "29": [
+      {
+        "who": "lakelady",
+        "text": "LIVE ENDED"
+      }
+    ]
   },
   "channels": [
     {
@@ -39,14 +233,110 @@
       "tag": "AD",
       "art": "feelzSilhouette",
       "beats": [
-        { "speaker": "FEELZ", "text": "Meet FEELZ. The county's free emotional wellness companion.", "comments": [{ "who": "dusty_ray", "text": "free??" }, { "who": "jessrn", "text": "it installed itself on my moms phone" }] },
-        { "speaker": "FEELZ", "text": "Eight feelings. One wheel. Spin it, and find yourself.", "comments": [{ "who": "nightcrawler", "text": "i only have like three" }] },
-        { "speaker": "FEELZ", "text": "Four little batteries, right up top. FEELZ keeps them charged, so you can keep showing up.", "comments": [{ "who": "lakelady", "text": "mine is at 2 rn" }, { "who": "trout_dad", "text": "relatable" }] },
-        { "speaker": "FEELZ", "text": "Talk to a licensed provider in minutes. Real people. Real-ish hours.", "comments": [{ "who": "jessrn", "text": "my therapist hung up on me mid sentence" }, { "who": "dusty_ray", "text": "@{handle} same" }] },
-        { "speaker": "FEELZ", "text": "Your lake, live in your pocket. Clear water. Happy fish.", "comments": [{ "who": "nightcrawler", "text": "why do they keep saying lake" }] },
-        { "speaker": "FEELZ", "text": "FEELZ never judges. FEELZ just {slow}measures.{/slow}", "comments": [{ "who": "lakelady", "text": "thats what bob said" }, { "who": "trout_dad", "text": "ok that's a little creepy" }] },
-        { "speaker": "FEELZ", "text": "FEELZ. Because how you feel is everyone's business.", "comments": [{ "who": "jessrn", "text": "wait what" }, { "who": "dusty_ray", "text": "read that again" }] },
-        { "text": "FEELZ is provided by the County of Lake Ulysses. Your data may be shared with county partners, sponsors, and the Lord.", "holdMs": 6000, "comments": [{ "who": "nightcrawler", "text": "AND THE LORD??" }, { "who": "lakelady", "text": "lmao" }] }
+        {
+          "speaker": "FEELZ",
+          "text": "Meet FEELZ. The county's free emotional wellness companion.",
+          "comments": [
+            {
+              "who": "dusty_ray",
+              "text": "free??"
+            },
+            {
+              "who": "jessrn",
+              "text": "it installed itself on my moms phone"
+            }
+          ]
+        },
+        {
+          "speaker": "FEELZ",
+          "text": "Eight feelings. One wheel. Spin it, and find yourself.",
+          "comments": [
+            {
+              "who": "nightcrawler",
+              "text": "i only have like three"
+            }
+          ]
+        },
+        {
+          "speaker": "FEELZ",
+          "text": "Four little batteries, right up top. FEELZ keeps them charged, so you can keep showing up.",
+          "comments": [
+            {
+              "who": "lakelady",
+              "text": "mine is at 2 rn"
+            },
+            {
+              "who": "trout_dad",
+              "text": "relatable"
+            }
+          ]
+        },
+        {
+          "speaker": "FEELZ",
+          "text": "Talk to a licensed provider in minutes. Real people. Real-ish hours.",
+          "comments": [
+            {
+              "who": "jessrn",
+              "text": "my therapist hung up on me mid sentence"
+            },
+            {
+              "who": "dusty_ray",
+              "text": "@{handle} same"
+            }
+          ]
+        },
+        {
+          "speaker": "FEELZ",
+          "text": "Your lake, live in your pocket. Clear water. Happy fish.",
+          "comments": [
+            {
+              "who": "nightcrawler",
+              "text": "why do they keep saying lake"
+            }
+          ]
+        },
+        {
+          "speaker": "FEELZ",
+          "text": "FEELZ never judges. FEELZ just {slow}measures.{/slow}",
+          "comments": [
+            {
+              "who": "lakelady",
+              "text": "thats what bob said"
+            },
+            {
+              "who": "trout_dad",
+              "text": "ok that's a little creepy"
+            }
+          ]
+        },
+        {
+          "speaker": "FEELZ",
+          "text": "FEELZ. Because how you feel is everyone's business.",
+          "comments": [
+            {
+              "who": "jessrn",
+              "text": "wait what"
+            },
+            {
+              "who": "dusty_ray",
+              "text": "read that again"
+            }
+          ]
+        },
+        {
+          "text": "FEELZ is provided by the County of Lake Ulysses. Your data may be shared with county partners, sponsors, and the Lord.",
+          "holdMs": 6000,
+          "comments": [
+            {
+              "who": "nightcrawler",
+              "text": "AND THE LORD??"
+            },
+            {
+              "who": "lakelady",
+              "text": "lmao"
+            }
+          ]
+        }
       ]
     },
     {
@@ -55,14 +345,567 @@
       "tag": "DOC",
       "image": "/assets/lake-ulysses/backgrounds/prologue-lake.svg",
       "beats": [
-        { "text": "WIDOW'S GRADE.\nEleven miles of two-lane between the high desert and the lake. Locals just call it the lake road.", "comments": [{ "who": "trout_dad", "text": "my dad wont drive it at night" }] },
-        { "text": "No guardrail on the cliff side until 2009. The county called it a budget priority.", "comments": [{ "who": "jessrn", "text": "budget priority lmaooo" }, { "who": "nightcrawler", "text": "bob voted no on that btw" }] },
-        { "speaker": "TRUCKER (RET.)", "text": "You see lights down there sometimes. Down in the wash. Nobody's car is down there anymore.", "comments": [{ "who": "lakelady", "text": "chills" }, { "who": "dusty_ray", "text": "its the reflectors from the old wrecks" }, { "who": "jessrn", "text": "no its not" }] },
-        { "text": "Since 1974, the Grade has taken thirty-one lives. Most of them were young. Most of them were leaving.", "comments": [{ "who": "nightcrawler", "text": "leaving where" }, { "who": "trout_dad", "text": "everybody leaves this town eventually" }] },
-        { "text": "Caleb, nineteen. His car was found in the morning, past the third switchback.", "comments": [{ "who": "jessrn", "text": "i went to school with him" }, { "who": "lakelady", "text": "his mom still goes to every service" }, { "who": "dusty_ray", "text": "rip" }] },
-        { "speaker": "DEPUTY (RET.)", "text": "The kids who go off up there, they're never driving toward anything. You learn that.", "comments": [{ "who": "nightcrawler", "text": "..." }] },
-        { "text": "Some families put up crosses. The county takes them down every spring. Somebody always puts them back.", "comments": [{ "who": "trout_dad", "text": "my aunt puts one up every year" }, { "who": "jessrn", "text": "the one with the church ribbon is still there" }] },
-        { "text": "Next time: the lights in the wash. Who's driving?", "holdMs": 4000, "comments": [{ "who": "lakelady", "text": "NEXT TIME??" }, { "who": "dusty_ray", "text": "@{handle} you ever seen the lights?" }] }
+        {
+          "text": "WIDOW'S GRADE.\nEleven miles of two-lane between the high desert and the lake. Locals just call it the lake road.",
+          "comments": [
+            {
+              "who": "trout_dad",
+              "text": "my dad wont drive it at night"
+            }
+          ]
+        },
+        {
+          "text": "No guardrail on the cliff side until 2009. The county called it a budget priority.",
+          "comments": [
+            {
+              "who": "jessrn",
+              "text": "budget priority lmaooo"
+            },
+            {
+              "who": "nightcrawler",
+              "text": "bob voted no on that btw"
+            }
+          ]
+        },
+        {
+          "speaker": "TRUCKER (RET.)",
+          "text": "You see lights down there sometimes. Down in the wash. Nobody's car is down there anymore.",
+          "comments": [
+            {
+              "who": "lakelady",
+              "text": "chills"
+            },
+            {
+              "who": "dusty_ray",
+              "text": "its the reflectors from the old wrecks"
+            },
+            {
+              "who": "jessrn",
+              "text": "no its not"
+            }
+          ]
+        },
+        {
+          "text": "Since 1974, the Grade has taken thirty-one lives. Most of them were young. Most of them were leaving.",
+          "comments": [
+            {
+              "who": "nightcrawler",
+              "text": "leaving where"
+            },
+            {
+              "who": "trout_dad",
+              "text": "everybody leaves this town eventually"
+            }
+          ]
+        },
+        {
+          "text": "Caleb, nineteen. His car was found in the morning, past the third switchback.",
+          "comments": [
+            {
+              "who": "jessrn",
+              "text": "i went to school with him"
+            },
+            {
+              "who": "lakelady",
+              "text": "his mom still goes to every service"
+            },
+            {
+              "who": "dusty_ray",
+              "text": "rip"
+            }
+          ]
+        },
+        {
+          "speaker": "DEPUTY (RET.)",
+          "text": "The kids who go off up there, they're never driving toward anything. You learn that.",
+          "comments": [
+            {
+              "who": "nightcrawler",
+              "text": "..."
+            }
+          ]
+        },
+        {
+          "text": "Some families put up crosses. The county takes them down every spring. Somebody always puts them back.",
+          "comments": [
+            {
+              "who": "trout_dad",
+              "text": "my aunt puts one up every year"
+            },
+            {
+              "who": "jessrn",
+              "text": "the one with the church ribbon is still there"
+            }
+          ]
+        },
+        {
+          "text": "Next time: the lights in the wash. Who's driving?",
+          "holdMs": 4000,
+          "comments": [
+            {
+              "who": "lakelady",
+              "text": "NEXT TIME??"
+            },
+            {
+              "who": "dusty_ray",
+              "text": "@{handle} you ever seen the lights?"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pastor",
+      "name": "THE LIVING WATER HOUR",
+      "tag": "PUBLIC ACCESS",
+      "beats": [
+        {
+          "speaker": "PASTOR GABRIEL",
+          "text": "Good evening, Lake Ulysses, and welcome to The Living Water Hour! Brought to you by Baiter's Bait & Tackle.",
+          "comments": [
+            {
+              "who": "lakelady",
+              "text": "the same bob??"
+            },
+            {
+              "who": "trout_dad",
+              "text": "sam has a show now"
+            }
+          ]
+        },
+        {
+          "speaker": "PASTOR GABRIEL",
+          "text": "Tonight's word is {slow}soak.{/slow} Not rinse. Not splash. Soak.",
+          "comments": [
+            {
+              "who": "jessrn",
+              "text": "why is he whispering"
+            }
+          ]
+        },
+        {
+          "text": "(A sock puppet with button eyes rises over the pulpit. It does not say hello.)",
+          "comments": [
+            {
+              "who": "nightcrawler",
+              "text": "BROTHER BUBBLES"
+            },
+            {
+              "who": "dusty_ray",
+              "text": "this puppet has seen things"
+            }
+          ]
+        },
+        {
+          "speaker": "PASTOR GABRIEL",
+          "text": "Brother Bubbles asks: Pastor, why do we go under the water? Well, Bubbles, because everything that floats is lying.",
+          "comments": [
+            {
+              "who": "lakelady",
+              "text": "WHAT"
+            },
+            {
+              "who": "jessrn",
+              "text": "@{handle} explain this"
+            }
+          ]
+        },
+        {
+          "speaker": "CALLER",
+          "text": "Hi Sam, love the show. Is it safe to swim yet?",
+          "comments": [
+            {
+              "who": "trout_dad",
+              "text": "good question"
+            }
+          ]
+        },
+        {
+          "speaker": "PASTOR GABRIEL",
+          "text": "Gabriel, child. And safety is a feeling.",
+          "comments": [
+            {
+              "who": "dusty_ray",
+              "text": "he didnt answer"
+            }
+          ]
+        },
+        {
+          "speaker": "PASTOR GABRIEL",
+          "text": "Baptisms every Sunday at the lake. Everyone's welcome. Everyone. We don't keep a list.{pause:800} The county does.",
+          "comments": [
+            {
+              "who": "nightcrawler",
+              "text": "my grandma goes every week"
+            },
+            {
+              "who": "lakelady",
+              "text": "he blinked weird"
+            }
+          ]
+        },
+        {
+          "text": "(The puppet sways. The organ plays one note, and holds it a little too long.)",
+          "comments": [
+            {
+              "who": "jessrn",
+              "text": "turn it off turn it off"
+            }
+          ]
+        },
+        {
+          "speaker": "PASTOR GABRIEL",
+          "text": "Remember, Lake Ulysses: what goes down clean comes up {slow}clean.{/slow} Goodnight.",
+          "holdMs": 5000,
+          "comments": [
+            {
+              "who": "trout_dad",
+              "text": "comes up how"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "barlot",
+      "name": "BAR LOT",
+      "tag": "● LIVE",
+      "beats": [
+        {
+          "text": "(Phone video. Gravel, six bikes, bass through a wall. Someone's breathing hard behind the camera.)",
+          "comments": [
+            {
+              "who": "jessrn",
+              "text": "where is this"
+            },
+            {
+              "who": "trout_dad",
+              "text": "thats the lot by the lake"
+            }
+          ]
+        },
+        {
+          "speaker": "SOMEBODY",
+          "text": "Yo, it's going down, it's going down.",
+          "comments": [
+            {
+              "who": "dusty_ray",
+              "text": "here we go"
+            }
+          ]
+        },
+        {
+          "text": "(A big man in a vest steps out the door. A patch on the back. He doesn't hurry.)",
+          "comments": [
+            {
+              "who": "lakelady",
+              "text": "thats rick"
+            },
+            {
+              "who": "nightcrawler",
+              "text": "dont film rick"
+            }
+          ]
+        },
+        {
+          "speaker": "STRANGER",
+          "text": "I didn't say nothing, man, I was just looking!",
+          "comments": [
+            {
+              "who": "jessrn",
+              "text": "wrong answer"
+            }
+          ]
+        },
+        {
+          "speaker": "RICK",
+          "text": "Then look somewhere else.",
+          "comments": [
+            {
+              "who": "dusty_ray",
+              "text": "@{handle} you seeing this"
+            }
+          ]
+        },
+        {
+          "text": "(The camera jerks. Somebody yells. When it finds them again, the stranger is on the gravel holding his jaw.)",
+          "comments": [
+            {
+              "who": "lakelady",
+              "text": "call someone"
+            },
+            {
+              "who": "trout_dad",
+              "text": "nobody's calling anyone"
+            }
+          ]
+        },
+        {
+          "text": "(Rick picks a patch up off the ground, brushes the gravel off, and puts it back on. He looks right at the camera.)",
+          "comments": [
+            {
+              "who": "nightcrawler",
+              "text": "he sees you"
+            },
+            {
+              "who": "jessrn",
+              "text": "STOP FILMING"
+            }
+          ]
+        },
+        {
+          "speaker": "RICK",
+          "text": "You want to post that? Go ahead. Everybody already knows.",
+          "comments": [
+            {
+              "who": "dusty_ray",
+              "text": "deleted"
+            }
+          ]
+        },
+        {
+          "text": "(The video cuts out.)",
+          "holdMs": 4000,
+          "comments": [
+            {
+              "who": "lakelady",
+              "text": "it's still up on mine"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wall",
+      "name": "WALL WORK",
+      "tag": "● LIVE",
+      "beats": [
+        {
+          "text": "(A phone propped on a paint can. A brick wall, half primed. A woman in a sequined top, her back to the camera.)",
+          "comments": [
+            {
+              "who": "jessrn",
+              "text": "shes back"
+            },
+            {
+              "who": "lakelady",
+              "text": "the wall girl!!"
+            }
+          ]
+        },
+        {
+          "speaker": "RWANDA",
+          "text": "Okay. Chat. If anybody from the city is watching, this is a community beautification project.",
+          "comments": [
+            {
+              "who": "dusty_ray",
+              "text": "it is now"
+            }
+          ]
+        },
+        {
+          "speaker": "RWANDA",
+          "text": "If you're not from the city, it's a wall. And I'm painting it.",
+          "comments": [
+            {
+              "who": "trout_dad",
+              "text": "paint the lake"
+            }
+          ]
+        },
+        {
+          "speaker": "RWANDA",
+          "text": "No, I'm not painting the lake. Everybody wants the lake.",
+          "comments": [
+            {
+              "who": "nightcrawler",
+              "text": "paint bob"
+            },
+            {
+              "who": "jessrn",
+              "text": "@{handle} tell her to paint bob"
+            }
+          ]
+        },
+        {
+          "text": "(She works a long time without talking. A face starts coming up out of the brick. Not smiling.)",
+          "comments": [
+            {
+              "who": "lakelady",
+              "text": "whoa"
+            },
+            {
+              "who": "dusty_ray",
+              "text": "why isnt she smiling"
+            }
+          ]
+        },
+        {
+          "speaker": "RWANDA",
+          "text": "She doesn't have to smile. That's kind of the point.",
+          "comments": [
+            {
+              "who": "jessrn",
+              "text": "valid"
+            },
+            {
+              "who": "trout_dad",
+              "text": "she looks tired"
+            }
+          ]
+        },
+        {
+          "speaker": "RWANDA",
+          "text": "Real talk. Primer's forty a can. If you like it, the link's in my bio. If you don't, keep scrolling. It's fine.",
+          "comments": [
+            {
+              "who": "nightcrawler",
+              "text": "sent 5"
+            },
+            {
+              "who": "lakelady",
+              "text": "it's not fine is it"
+            }
+          ]
+        },
+        {
+          "text": "(Headlights sweep the alley. She grabs the phone. The stream ends on brick.)",
+          "holdMs": 4500,
+          "comments": [
+            {
+              "who": "dusty_ray",
+              "text": "COPS??"
+            },
+            {
+              "who": "jessrn",
+              "text": "she'll be back"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fixes",
+      "name": "SAMUN FIXES ANYTHING",
+      "tag": "● LIVE",
+      "plate": "samun",
+      "beats": [
+        {
+          "speaker": "SAMUN",
+          "text": "Wassup wassup! Samun Fixes Anything, episode... uh. Episode.",
+          "comments": [
+            {
+              "who": "trout_dad",
+              "text": "episode"
+            },
+            {
+              "who": "lakelady",
+              "text": "is he ok"
+            }
+          ]
+        },
+        {
+          "text": "(He's wearing at least three shirts. A hoodie over those. Two pairs of pants, maybe. It's August.)",
+          "comments": [
+            {
+              "who": "jessrn",
+              "text": "how many shirts is that"
+            },
+            {
+              "who": "dusty_ray",
+              "text": "bro its 100 degrees"
+            }
+          ]
+        },
+        {
+          "speaker": "SAMUN",
+          "text": "Today we're fixing this radio. Customer says it only plays one station.",
+          "comments": [
+            {
+              "who": "nightcrawler",
+              "text": "the radio from the garage??"
+            }
+          ]
+        },
+        {
+          "text": "(He opens the back of the radio. He looks at the inside for a long time.)",
+          "comments": [
+            {
+              "who": "lakelady",
+              "text": "samun"
+            },
+            {
+              "who": "trout_dad",
+              "text": "SAMUN"
+            }
+          ]
+        },
+        {
+          "speaker": "SAMUN",
+          "text": "Sorry. Sorry. I was listening. It's actually a good station.",
+          "comments": [
+            {
+              "who": "dusty_ray",
+              "text": "it's static bro"
+            }
+          ]
+        },
+        {
+          "speaker": "SAMUN",
+          "text": "Okay, you know what, the radio's fine. Let's fix the calendar.",
+          "comments": [
+            {
+              "who": "jessrn",
+              "text": "bro what year is it"
+            },
+            {
+              "who": "nightcrawler",
+              "text": "the calendar is two years behind"
+            }
+          ]
+        },
+        {
+          "speaker": "SAMUN",
+          "text": "Some stuff you don't fix. You just keep it running.",
+          "comments": [
+            {
+              "who": "lakelady",
+              "text": "deep"
+            },
+            {
+              "who": "trout_dad",
+              "text": "@{handle} is he talking about the radio"
+            }
+          ]
+        },
+        {
+          "text": "(He tugs at the collar of the top shirt. There's another collar under it. And another. He laughs at something off camera. Nobody else is there.)",
+          "comments": [
+            {
+              "who": "dusty_ray",
+              "text": "who's he laughing at"
+            },
+            {
+              "who": "jessrn",
+              "text": "i'm worried"
+            }
+          ]
+        },
+        {
+          "speaker": "SAMUN",
+          "text": "Like and subscribe! Or don't. Either way I'll be here. I'm always here.",
+          "holdMs": 5000,
+          "comments": [
+            {
+              "who": "nightcrawler",
+              "text": "always here"
+            },
+            {
+              "who": "lakelady",
+              "text": "he's been live 9 hours"
+            }
+          ]
+        }
       ]
     }
   ]

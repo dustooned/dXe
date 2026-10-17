@@ -87,7 +87,7 @@ const SCENES = [
   // Phase 11 step 5). Then the check-in, and everything after it (intake
   // quiz, Therapist, the HUD itself) happens inside the app.
   { type: 'cutscene', id: 'feelz-install', beats: feelzInstall.beats },
-  { type: 'feed', id: 'feed', anims: ANIMS, ambient: '/assets/lake-ulysses/audio/lk_01.mp3', channels: feedChannels() },
+  { type: 'feed', id: 'feed', anims: feedAnims(), ambient: '/assets/lake-ulysses/audio/lk_01.mp3', channels: feedChannels() },
   { type: 'cutscene', id: 'feelz-launch', beats: feelzLaunch.beats, unskippable: true },
   { type: 'questionnaire', id: 'questionnaire' },
   { type: 'dialog', id: 'therapist', npc: therapist },
@@ -138,7 +138,21 @@ function feedChannels() {
     spriteAnim: 'bob_baiter',
     beats: bobBaiter.beats.map(({ bgAnim, spriteAnim, ...beat }, i) => ({ ...beat, comments: feed.bobComments[i] ?? [] })),
   };
-  return [bob, ...feed.channels];
+  // `plate: <npc>`: that NPC's chapter plate as the channel's picture (a
+  // feed anim built from plates.json; the frames are already on disk).
+  return [bob, ...feed.channels.map((ch) => (ch.plate && plates[ch.plate] ? { ...ch, bgAnim: `plate_${ch.plate}` } : ch))];
+}
+// A function, not a const: SCENES (above) calls it while the module loads.
+function feedAnims() {
+  return {
+    ...ANIMS,
+    ...Object.fromEntries(Object.entries(plates).map(([npc, p]) => [`plate_${npc}`, {
+      base: `/assets/lake-ulysses/plates/${npc}/${npc}_`,
+      frames: p.frames,
+      fps: 1000 / (p.delays.reduce((a, b) => a + b, 0) / p.delays.length),
+      ext: 'png',
+    }])),
+  };
 }
 
 const HANDLERS = {
