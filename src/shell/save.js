@@ -1,8 +1,11 @@
+import { mergeSave, HISTORY_MAX } from '../engine/runCode.js';
+
 const KEY = 'dreamxtreme:save';
 
 const defaultSave = {
   endingsSeen: [], // e.g. ['CLEAN_CUT', 'LIVING_LIE']
   chaptersCompleted: [], // e.g. ['lake-ulysses']
+  history: [], // finished runs on this device (engine/runCode.js runEntry), oldest first
 };
 
 export function loadSave() {
@@ -32,6 +35,20 @@ export function recordEnding(chapterId, endingKey) {
     ? save.chaptersCompleted
     : [...save.chaptersCompleted, chapterId];
   return updateSave({ endingsSeen, chaptersCompleted });
+}
+
+// A finished run joins this device's history (the SAVE & HISTORY page, the
+// run code). Once per run: the record's file number is its id.
+export function recordRun(entry) {
+  const history = loadSave().history.filter((r) => r.id !== entry.id);
+  return updateSave({ history: [...history, entry].slice(-HISTORY_MAX) });
+}
+
+// A run code or save file brought in (engine/runCode.js decodeRunCode data):
+// merged, never replacing what's here.
+export function importSave(data) {
+  const next = mergeSave(loadSave(), data);
+  return updateSave(next);
 }
 
 // The checkpoint: where a chapter run is and its whole state, written at the

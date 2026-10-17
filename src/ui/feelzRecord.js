@@ -7,6 +7,7 @@ import { EMOTIONS, EMOTION_ORDER } from '../engine/loadout.js';
 import { ppmFor, statusFor } from '../engine/lake.js';
 import { isTrusted } from '../engine/trust.js';
 import { buildReport } from './feelzReport.js';
+import { drawQr, qrModules } from './qrCode.js';
 import { iconHtml } from './feelingIcons.js';
 import { playFaxHandshake, playFaxLine, playFaxJam } from '../shell/audio.js';
 
@@ -386,12 +387,28 @@ export async function renderRecordPng(rec) {
   ctx.restore();
   ctx.textAlign = 'left';
 
+  // The run code (engine/runCode.js): its QR bottom right, the small print
+  // narrowed beside it. Scan it to see this run, or to import it.
+  let loreW = W - 160;
+  if (rec.link) {
+    const modules = qrModules(rec.link).size + 8; // with the quiet zone
+    const px = Math.max(3, Math.floor(220 / modules));
+    const size = modules * px;
+    drawQr(ctx, rec.link, W - 80 - size, y + 70, px);
+    ctx.fillStyle = INK;
+    ctx.font = '22px "VT323", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('SCAN FOR YOUR RUN', W - 80 - size / 2, y + 70 + size + 24);
+    ctx.textAlign = 'left';
+    loreW = W - 160 - size - 30;
+  }
+
   // Lore, small print.
   ctx.fillStyle = '#4a4740';
   ctx.font = '24px "VT323", monospace';
   let ly = y + 90;
   for (const para of LORE) {
-    for (const l of wrap(ctx, para, W - 160)) { ctx.fillText(l, 80, ly); ly += 26; }
+    for (const l of wrap(ctx, para, loreW)) { ctx.fillText(l, 80, ly); ly += 26; }
     ly += 6;
   }
   ctx.fillText(`DOCUMENT ${rec.file}-LU77 · PAGE 1 OF 1 · DO NOT IMMERSE`, 80, H - 50);

@@ -10,7 +10,11 @@ Item numbers match the review. Ordered by dependency and size, not by review num
 - DONE (phase 1 of 3): FEELZ install + the feed (step 5): install scene, feed engine, Bob (original script), FEELZ ad, Widow's Grade doc. First run must visit every channel to close.
 - DONE: feed phase 2: Pastor, Rick, Rwanda, Samun channels (7 in all), placeholder pictures.
 - DONE: feed phase 3: the morning-after feed reflects the run.
-- NEXT: channel art; first choices (6); QR save (8); the spectrum for Rick.
+- DONE (2026-10-17): the feed stacks like a phone feed (pull, bounce hint).
+- DONE (2026-10-17): Rick's delivery spectrum (lines are TK: placeholders for the writer).
+- DONE (2026-10-17): first choices (6): install + intake mark the lake and the hallway (engine/firstMarks.js).
+- DONE (2026-10-17): QR save (8): run code link/QR/save file, history, run card (engine/runCode.js).
+- NEXT: channel art; Rick's real lines; art for the new pieces (see HANDOFF).
 
 ## Revision 1 (2026-10-16): your answers change steps 2, 4, 7, 8
 

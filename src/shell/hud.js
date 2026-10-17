@@ -10,6 +10,7 @@ import { applyPerfClass } from './perf.js';
 import { meterGlyph } from '../ui/statusBar.js';
 import { setMasterVolume, playTypewriterTick } from './audio.js';
 import { jumpTo } from './debug.js';
+import { openRunCodePanel } from '../ui/runCodePanel.js';
 
 let hostEl = null;
 let gearBtn = null;
@@ -311,6 +312,7 @@ function renderSettingsPanel() {
       <button type="button" class="dx-btn dx-hud-colorvision"></button>
       <button type="button" class="dx-btn dx-hud-hilite"></button>
       <button type="button" class="dx-btn dx-hud-guide">FEELZ GUIDE</button>
+      <button type="button" class="dx-btn dx-hud-runcode">SAVE &amp; HISTORY</button>
       ${chapterActive ? '<button type="button" class="dx-btn dx-hud-restart">RESTART CHAPTER</button>' : ''}
       <button type="button" class="dx-btn dx-hud-chapters">QUIT TO TITLE</button>
       <button type="button" class="dx-btn dx-hud-debug">DEBUG</button>
@@ -350,6 +352,8 @@ function renderSettingsPanel() {
     syncSize(next);
   });
   panelEl.querySelector('.dx-hud-guide').addEventListener('click', renderGuidePage);
+  // The run code, save file and history (ui/runCodePanel.js).
+  panelEl.querySelector('.dx-hud-runcode').addEventListener('click', () => { closePanel(); openRunCodePanel(); });
 
   // Color vision (settings.js colorVision): cycles NORMAL > RED-GREEN > BLUE-YELLOW.
   const cvBtn = panelEl.querySelector('.dx-hud-colorvision');

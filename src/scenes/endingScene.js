@@ -5,7 +5,9 @@
 //
 // scene shape: { type: 'ending', id: string, endings: <endings.json> }
 import { getEndingKey, getEpilogueLine } from '../engine/endingEngine.js';
-import { updateSave } from '../shell/save.js';
+import { updateSave, recordRun, loadSave } from '../shell/save.js';
+import { runEntry, encodeRunCode, runLink } from '../engine/runCode.js';
+import { openRunCodePanel } from '../ui/runCodePanel.js';
 import { later, cancelLater } from '../shell/pauseBus.js';
 import { drawEmotionPattern } from '../ui/emotionPattern.js';
 import { createTypewriter } from '../ui/typewriterText.js';
@@ -44,6 +46,10 @@ export function mount(stageEl, scene, { run, exit, onComplete, recordEnding, cha
     // How many rooms you restored something in (run.secrets).
     restored: Object.keys(run.get().secrets ?? {}).length,
   } });
+
+  // This run joins the device's history (SAVE & HISTORY, the run code): its
+  // id is the record's file number plus the moment, so replays don't merge.
+  recordRun(runEntry(run.get(), { endingKey, chapterId, file: `${buildRecord(run.get(), ending).file}-${Date.now().toString(36)}` }));
 
   const finalDebt = run.get().truthDebt;
   const epilogueLine = getEpilogueLine(run.get(), scene.endings.epilogues);
@@ -195,6 +201,8 @@ export function mount(stageEl, scene, { run, exit, onComplete, recordEnding, cha
   function showRecord() {
     const screen = newPage('dx-ending-page--record');
     const record = buildRecord(run.get(), ending);
+    // The record carries the run code's QR (ui/feelzRecord.js).
+    record.link = runLink(encodeRunCode(loadSave()));
     const actions = document.createElement('div');
     actions.className = 'dx-ending-actions';
     actions.hidden = true;
@@ -210,6 +218,11 @@ export function mount(stageEl, scene, { run, exit, onComplete, recordEnding, cha
       save.textContent = 'SAVE AS PNG';
     });
     actions.appendChild(save);
+    const code = document.createElement('button');
+    code.className = 'dx-btn';
+    code.textContent = 'RUN CODE';
+    code.addEventListener('click', (e) => { e.stopPropagation(); openRunCodePanel(); });
+    actions.appendChild(code);
     fax = createFaxPrintout(record, {
       onDone: () => {
         if (!actions.hidden) return;

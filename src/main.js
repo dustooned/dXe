@@ -2,7 +2,9 @@ import './style.css';
 import './ui/ui.css';
 import './scenes/scenes.css';
 import { onRouteChange, navigate, getCurrentRoute } from './shell/router.js';
-import { loadSave, loadCheckpoint } from './shell/save.js';
+import { loadSave, loadCheckpoint, importSave } from './shell/save.js';
+import { decodeRunCode } from './engine/runCode.js';
+import { historyLine } from './ui/runCodePanel.js';
 import { queueRunState } from './shell/debug.js';
 import { initFx, fadeToBlack, flash, shake } from './shell/fx.js';
 import { initFeelzWord } from './shell/feelzWord.js';
@@ -121,6 +123,12 @@ function afterLogo() {
   // to that chapter: if there's a checkpoint for it, pick up there with the
   // saved state instead of starting the chapter over. An explicit link to a
   // different scene (a debug jump) is still honored as-is.
+  // A run link (<site>/#r=<code>, engine/runCode.js): the run card.
+  if (route && route.screen?.startsWith('r=')) {
+    dispatch(route);
+    return;
+  }
+
   if (route && route.screen === 'chapter') {
     const cp = loadCheckpoint();
     if (cp && cp.chapterId === route.param && (!route.startAt || route.startAt === cp.sceneId)) {
@@ -468,6 +476,59 @@ function renderMenu() {
 
 // ─── About ────────────────────────────────────────────────────────────────────
 
+// A run link opened (a scanned QR, a shared link): a read-only card of the
+// run, and the choice to bring it into this device's save or start your own.
+// Importing merges (engine/runCode.js mergeSave); nothing here is lost.
+function renderRunCard(code) {
+  teardown();
+  const result = decodeRunCode(code);
+  const screen = document.createElement('div');
+  screen.className = 'dx-screen dx-runcard';
+  const title = document.createElement('h2');
+  title.className = 'dx-title';
+  screen.appendChild(title);
+  const line = (text, cls = '') => {
+    const p = document.createElement('p');
+    p.className = `dx-text ${cls}`;
+    p.textContent = text;
+    screen.appendChild(p);
+    return p;
+  };
+  const btn = (text, fn) => {
+    const b = document.createElement('button');
+    b.className = 'dx-btn';
+    b.textContent = text;
+    b.addEventListener('click', fn);
+    screen.appendChild(b);
+    return b;
+  };
+  const toTitle = () => { history.replaceState(null, '', location.pathname); goto('title'); };
+  if (!result.ok) {
+    title.textContent = 'RUN CODE';
+    line("This code didn't come through right. Try scanning it again, or ask for the link.");
+    btn('TITLE SCREEN', toTitle);
+    stage.appendChild(screen);
+    return;
+  }
+  const { history: runs, endingsSeen } = result.data;
+  const last = runs[runs.length - 1];
+  title.textContent = 'A RUN';
+  if (last) {
+    if (last.handle) line(`@${last.handle}`, 'dx-runcard__handle');
+    line(historyLine(last), 'dx-runcard__run');
+    if (last.heard?.length) line(`HEARD THE STORY OF ${last.heard.join(', ')}`);
+  }
+  line(`${endingsSeen.length} ${endingsSeen.length === 1 ? 'ENDING' : 'ENDINGS'} FOUND · ${runs.length} ${runs.length === 1 ? 'RUN' : 'RUNS'} ON THIS CODE`);
+  const status = line('', 'dx-runcard__status');
+  const imp = btn('IMPORT TO THIS DEVICE', () => {
+    importSave(result.data);
+    status.textContent = 'IMPORTED. YOUR ENDINGS AND RUNS ARE HERE NOW.';
+    imp.disabled = true;
+  });
+  btn('START YOUR OWN', toTitle);
+  stage.appendChild(screen);
+}
+
 function renderAbout() {
   teardown();
   const screen = document.createElement('div');
@@ -521,7 +582,8 @@ setJumpHandler((chapterId, sceneId) => {
 // ─── Router ───────────────────────────────────────────────────────────────────
 
 function dispatch({ screen, param, startAt }) {
-  if (screen === 'menu')         renderMenu();
+  if (screen?.startsWith('r='))  renderRunCard(screen.slice(2));
+  else if (screen === 'menu')    renderMenu();
   else if (screen === 'about')   renderAbout();
   else if (screen === 'chapter') renderChapter(param, startAt);
   else                           renderTitle();

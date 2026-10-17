@@ -369,5 +369,20 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
   check('first marks: the hallway line follows what you refused', /face/.test(hallwayEcho({ permFace: "DON'T ALLOW", permVoice: 'ALLOW' })) && /listen/.test(hallwayEcho({ permFace: 'ALLOW', permVoice: "DON'T ALLOW" })) && /everything/.test(hallwayEcho({ permFace: 'ALLOW', permVoice: 'ALLOW' })));
 }
 
+// The run code (engine/runCode.js): the QR link, the save file.
+{
+  const { encodeRunCode, decodeRunCode, mergeSave, runEntry, runLink, RUNS_IN_CODE } = await import('../src/engine/runCode.js');
+  const runs = Array.from({ length: 7 }, (_, i) => runEntry({ loadout: ['Guns', 'Bible', 'Crystals'][i % 3], truthDebt: i, choices: { a: 'lie', b: 'truth', c: i ? 'lie' : 'truth' }, bonds: {}, storiesHeard: i ? ['SAMUN'] : [], handle: 'DampButFine' }, { endingKey: 'FUNCTIONAL_MASK', chapterId: 'lake-ulysses', file: `FP-00000${i}-x`, at: new Date(Date.UTC(2026, 9, 10 + i)) }));
+  const save = { endingsSeen: ['FUNCTIONAL_MASK', 'CLEAN_CUT'], chaptersCompleted: ['lake-ulysses'], history: runs };
+  const code = encodeRunCode(save);
+  const back = decodeRunCode(code);
+  check('run code: round trip keeps endings and the last runs', back.ok && back.data.endingsSeen.length === 2 && back.data.history.length === RUNS_IN_CODE && back.data.history.at(-1).id === 'FP-000006-x' && back.data.history.at(-1).loadout === 'Guns' && back.data.history.at(-1).lies === 2 && back.data.history.at(-1).heard[0] === 'SAMUN' && back.data.history.at(-1).at === '2026-10-16');
+  const broken = code.slice(0, 10) + (code[10] === 'A' ? 'B' : 'A') + code.slice(11);
+  check('run code: a damaged code is caught, not half-read', !decodeRunCode(broken).ok && !decodeRunCode('').ok && !decodeRunCode('hello').ok);
+  const merged = mergeSave({ endingsSeen: ['CLEAN_CUT'], chaptersCompleted: [], history: [runs[0]] }, back.data);
+  check('run code: import merges (union of endings, runs by id, nothing lost)', merged.endingsSeen.length === 2 && merged.history.length === 1 + RUNS_IN_CODE && merged.history[0].id === runs[0].id);
+  check('run code: the link is short enough to scan off a screen', runLink(code, 'https://dreamxtre.me').length < 700);
+}
+
 console.log(failed ? `\n${failed} failed, ${passed} passed` : `\nall ${passed} passed`);
 process.exit(failed ? 1 : 0);

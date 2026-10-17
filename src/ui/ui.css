@@ -1736,3 +1736,64 @@ svg .is-hinted path {
   font-size: calc(6 * var(--fs));
   line-height: 1.6;
 }
+
+/* ── SAVE & HISTORY (ui/runCodePanel.js): the run code as a QR, the save
+   file, the runs on this device. Over everything, like the settings panel. */
+.dx-runcode {
+  position: absolute;
+  inset: 0;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(0 0 0 / 0.86);
+}
+.dx-runcode__box {
+  width: calc(100% - 32 * var(--px));
+  max-width: calc(320 * var(--px));
+  max-height: calc(100% - 24 * var(--px));
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: calc(10 * var(--px));
+  padding: calc(16 * var(--px));
+  background: var(--color-black);
+  border: 2px solid var(--color-white);
+}
+.dx-runcode__title,
+.dx-runcode__sub {
+  margin: 0;
+  font-size: calc(9 * var(--fs));
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+.dx-runcode__sub { font-size: calc(7 * var(--fs)); opacity: 0.7; margin-top: calc(6 * var(--px)); }
+.dx-runcode__qr { display: flex; justify-content: center; }
+/* The QR keeps its hard pixels at any size. */
+.dx-qr {
+  width: calc(180 * var(--px));
+  height: calc(180 * var(--px));
+  image-rendering: pixelated;
+}
+.dx-runcode__note { margin: 0; font-size: calc(6 * var(--fs)); line-height: 1.6; opacity: 0.8; }
+.dx-runcode__actions { display: flex; flex-direction: column; gap: calc(8 * var(--px)); }
+.dx-runcode__import { text-align: center; cursor: pointer; }
+.dx-runcode__status { margin: 0; min-height: 1.2em; font-size: calc(6 * var(--fs)); text-align: center; }
+.dx-runcode__history {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: calc(6 * var(--px));
+  font-size: calc(6 * var(--fs));
+  line-height: 1.6;
+}
+.dx-runcode__history li { border-left: 2px solid var(--color-white); padding-left: calc(6 * var(--px)); }
+
+/* A run link opened (main.js renderRunCard). */
+.dx-runcard { justify-content: center; text-align: center; }
+.dx-runcard__handle { font-size: calc(9 * var(--fs)); }
+.dx-runcard__run { line-height: 1.8; }
+.dx-runcard__status { min-height: 1.2em; }
