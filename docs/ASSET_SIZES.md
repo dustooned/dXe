@@ -67,13 +67,21 @@ its name on black.
 
 Bob Baiter (`bob`) and the FEELZ ad (`ad`) already have their pictures.
 
-Mostly covered (at 2×): the **top 380 px** (the buttons, channel bar,
-scrubber and CLOSE APP), the **bottom 330 px** (the caption box), and the
-**right 90 px** between 40% and 60% down (the flip arrows on a computer).
-Comments scroll over the middle left. **The top 170 px is the preview:** when
+Mostly covered (at 2×): the **top 240 px** (the buttons, the channel's top
+line, CLOSE APP), the **bottom 330 px** (the live chat, the caption and the
+timeline bar along the bottom edge), and the **right 130 px** in the lower
+half (the rail: likes and the chat button). The flip arrows sit right, 40%
+to 60% down, on a computer only. **The top 170 px is the preview:** when
 the feed bounces or you pull, the next channel shows only its top edge under
 its name, so let the art's top edge say which channel it is. Tell Claude the frame count and fps when
 the frames are in; each channel is one line in `anims.js` + `feed.json`.
+
+**Music:** every channel but Bob's has PLACEHOLDER synth music
+(`shell/feedMusic.js`): Samun's 60s soul on a crappy radio, the documentary's
+icy bells, Rwanda's MIDI pop on a little Bluetooth speaker, the Pastor's
+organ on TV, the bar's bass through the wall, the FEELZ ad jingle. Real
+tracks replace them per channel (an mp3 loop each, mixed already sounding
+like its device).
 
 ## Room objects
 
