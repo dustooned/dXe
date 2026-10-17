@@ -34,7 +34,7 @@ import { createFeelzSilhouette } from '../ui/feelzSilhouette.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
 import { lakeMarks } from '../engine/firstMarks.js';
 import { quoteSpeech } from '../ui/speech.js';
-import { loadSettings } from '../shell/settings.js';
+import { loadSettings, updateSettings } from '../shell/settings.js';
 import { later, cancelLater } from '../shell/pauseBus.js';
 import { timeline, beatAt } from '../engine/feedClock.js';
 import { playSfx, playTypewriterTick, preloadTypewriterTick, startAmbient, stopAmbient } from '../shell/audio.js';
@@ -225,6 +225,27 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
     const comments = document.createElement('div');
     comments.className = 'dx-feed__comments';
     screen.appendChild(comments);
+
+    // The chat can be hidden (and stays hidden, settings.feedChat): just the
+    // channel and its words.
+    const chat = document.createElement('button');
+    chat.type = 'button';
+    chat.className = 'dx-btn dx-feed__chat';
+    const syncChat = () => {
+      const on = loadSettings().feedChat !== false;
+      screen.classList.toggle('is-chat-off', !on);
+      chat.textContent = on ? 'HIDE CHAT' : 'SHOW CHAT';
+      chat.setAttribute('aria-pressed', String(!on));
+    };
+    chat.addEventListener('pointerdown', (e) => e.stopPropagation());
+    chat.addEventListener('click', (e) => {
+      e.stopPropagation();
+      updateSettings({ feedChat: loadSettings().feedChat === false });
+      syncChat();
+      playSfx('tap');
+    });
+    screen.appendChild(chat);
+    syncChat();
 
     const flip = document.createElement('div');
     flip.className = 'dx-feed__flip';

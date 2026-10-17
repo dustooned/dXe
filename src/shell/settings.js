@@ -22,6 +22,8 @@ const defaultSettings = {
   // eight feeling colors for a set that stays apart under that kind of color
   // blindness, and puts each feeling's symbol before its colored words.
   colorVision: 'normal',
+  // The FEELZ feed's comment chat (feedScene.js CHAT button): off hides it.
+  feedChat: true,
 };
 
 export const COLOR_VISION_MODES = ['normal', 'redgreen', 'blueyellow'];

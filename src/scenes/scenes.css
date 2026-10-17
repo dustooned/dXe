@@ -2670,3 +2670,13 @@
 }
 .dx-ending-keep .dx-btn { flex: 1; min-width: 0; }
 .dx-feed__peek-label .dx-feed__ch { opacity: 0.6; }
+
+/* The feed's chat toggle (feedScene.js), top left across from CLOSE APP. */
+.dx-feed__chat {
+  position: absolute;
+  z-index: 5;
+  top: calc(108 * var(--px));
+  left: calc(16 * var(--px));
+  font-size: calc(7 * var(--fs));
+}
+.dx-feed.is-chat-off .dx-feed__comments { display: none; }
