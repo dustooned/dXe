@@ -144,7 +144,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
 
     const screen = document.createElement('div');
-    screen.className = `dx-screen dx-cutscene-screen${beat.style ? ` dx-cutscene-screen--${beat.style}` : ''}`;
+    screen.className = `dx-screen dx-cutscene-screen${beat.style ? ` dx-cutscene-screen--${beat.style}` : ''}${beat.bgAnim && beat.style === 'narration' ? ' dx-cutscene-screen--over-art' : ''}`;
     screen.addEventListener('click', handleTap);
 
     // Background — animated or static

@@ -5,7 +5,7 @@
 // wholesale on every one of its own re-renders, so neither has to be
 // rebuilt — or even known about — by any scene handler.
 import { navigate } from './router.js';
-import { loadSettings, updateSettings, applyEffectsSetting } from './settings.js';
+import { loadSettings, updateSettings, applyEffectsSetting, COLOR_VISION_MODES } from './settings.js';
 import { applyPerfClass } from './perf.js';
 import { meterGlyph } from '../ui/statusBar.js';
 import { setMasterVolume, playTypewriterTick } from './audio.js';
@@ -308,6 +308,7 @@ function renderSettingsPanel() {
       <button type="button" class="dx-btn dx-hud-speed"></button>
       <button type="button" class="dx-btn dx-hud-effects"></button>
       <button type="button" class="dx-btn dx-hud-textsize"></button>
+      <button type="button" class="dx-btn dx-hud-colorvision"></button>
       <button type="button" class="dx-btn dx-hud-hilite"></button>
       <button type="button" class="dx-btn dx-hud-guide">FEELZ GUIDE</button>
       ${chapterActive ? '<button type="button" class="dx-btn dx-hud-restart">RESTART CHAPTER</button>' : ''}
@@ -349,6 +350,18 @@ function renderSettingsPanel() {
     syncSize(next);
   });
   panelEl.querySelector('.dx-hud-guide').addEventListener('click', renderGuidePage);
+
+  // Color vision (settings.js colorVision): cycles NORMAL > RED-GREEN > BLUE-YELLOW.
+  const cvBtn = panelEl.querySelector('.dx-hud-colorvision');
+  const CV_LABEL = { normal: 'NORMAL', redgreen: 'RED-GREEN', blueyellow: 'BLUE-YELLOW' };
+  const syncCv = (s) => { cvBtn.textContent = `COLOR: ${CV_LABEL[s.colorVision] || 'NORMAL'}`; cvBtn.classList.toggle('is-active', s.colorVision !== 'normal'); };
+  syncCv(settings);
+  cvBtn.addEventListener('click', () => {
+    const i = COLOR_VISION_MODES.indexOf(loadSettings().colorVision);
+    const next = updateSettings({ colorVision: COLOR_VISION_MODES[(i + 1) % COLOR_VISION_MODES.length] });
+    applyEffectsSetting(next);
+    syncCv(next);
+  });
 
   // Tips: the Therapist's tip calls and the highlights on his lessons
   // (settings.js guideHighlights). Calls you make yourself aren't affected.

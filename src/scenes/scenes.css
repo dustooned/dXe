@@ -573,6 +573,18 @@
   animation: dx-bob 0.9s ease-in-out infinite;
 }
 
+/* Narration set directly over animated art (the Toback quote): a flat black
+   outline behind each glyph so the white text stays readable over the bright
+   halftone frames. Stroke is painted under the fill; the shadow ring covers
+   engines without paint-order. */
+.dx-cutscene-screen--over-art .dx-cutscene-text {
+  -webkit-text-stroke: calc(4 * var(--px)) var(--color-black);
+  paint-order: stroke fill;
+  text-shadow:
+    calc(2 * var(--px)) 0 var(--color-black), calc(-2 * var(--px)) 0 var(--color-black),
+    0 calc(2 * var(--px)) var(--color-black), 0 calc(-2 * var(--px)) var(--color-black);
+}
+
 .dx-cutscene-bg {
   position: absolute;
   inset: 0;

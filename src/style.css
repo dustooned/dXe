@@ -37,6 +37,35 @@
   --canvas-h: 844px;
 }
 
+/* Color vision aids (Settings > COLOR, shell/settings.js colorVision).
+   Each set keeps every feeling near its usual hue but pushed apart for that
+   kind of color blindness: smallest gap between any two feelings, simulated
+   (Machado 2009, full severity, CIELAB dE), goes from ~13 to 33. Canvases
+   read these tokens at draw time, so they follow too. Color is never the only
+   signal: .dx-cb-mark shows the feeling's symbol before its colored words. */
+:root.is-cvd-redgreen {
+  --color-feelz-anger: #b86f40;
+  --color-feelz-fear: #8259ff;
+  --color-feelz-anxiety: #d0a000;
+  --color-feelz-trust: #42fffa;
+  --color-feelz-disgust: #59ff9f;
+  --color-feelz-happy: #ffff01;
+  --color-feelz-sadness: #59b1ff;
+  --color-feelz-surprise: #e8518e;
+}
+:root.is-cvd-blueyellow {
+  --color-feelz-anger: #ef0b3c;
+  --color-feelz-fear: #af31ff;
+  --color-feelz-anxiety: #e69200;
+  --color-feelz-trust: #00ffb6;
+  --color-feelz-disgust: #7eca46;
+  --color-feelz-happy: #fff415;
+  --color-feelz-sadness: #4d68fd;
+  --color-feelz-surprise: #fd00c2;
+}
+html:not(.is-colorblind) .dx-cb-mark { display: none !important; }
+.is-colorblind .dx-typewriter-char.dx-cb-mark { margin-right: 0.25em; }
+
 * {
   box-sizing: border-box;
 }

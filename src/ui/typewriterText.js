@@ -26,7 +26,7 @@
 // drawn fresh in the same box, so nothing ever becomes a wall of text.
 // Callers don't change: finish() on a finished page turns to the next one,
 // and isDone()/onDone only report true after the last page.
-import { emotionColor } from '../engine/loadout.js';
+import { emotionColor, EMOTIONS } from '../engine/loadout.js';
 import { FEELZ_COLORS } from '../shell/feelzWord.js';
 import { loadSettings } from '../shell/settings.js';
 import { playSfx } from '../shell/audio.js';
@@ -59,7 +59,7 @@ const TAG_PATTERN = /\{(\/?)(slow|fast)\}|\{color:(\w+)\}|\{(\/)color\}|\{pause:
 // NPC prompts are bare speech with bracketed directions, so only the
 // bracket rule touches them.
 function markNarration(segments, mode) {
-  const chars = segments.filter((s) => s.type === 'char');
+  const chars = segments.filter((s) => s.type === 'char' && !s.cbMark);
   const hasQuotes = chars.some((s) => s.char === '"' || s.char === '\u201c' || s.char === '\u201d');
   if (mode === 'reaction' && !hasQuotes) {
     chars.forEach((s) => { s.narr = true; });
@@ -81,7 +81,7 @@ function markNarration(segments, mode) {
 // Which characters of this text are quoted speech (a mouth moves for these)
 // and which are narration. Used by tests; the typewriter does the same live.
 export function speechFlags(text, narration = 'auto') {
-  return markNarration(parseSegments(text), narration).filter((s) => s.type === 'char').map((s) => ({ char: s.char, speech: !s.narr }));
+  return markNarration(parseSegments(text), narration).filter((s) => s.type === 'char' && !s.cbMark).map((s) => ({ char: s.char, speech: !s.narr }));
 }
 
 export function parseSegments(raw) {
@@ -127,6 +127,11 @@ export function parseSegments(raw) {
       segments.push({ type: 'pause', delayMs: Number(match[5]) });
     } else if (match[3] != null) {
       colorStack.push(match[3]);
+      // Colorblind aid: the feeling's symbol leads the colored word. Always
+      // emitted, shown only under html.is-colorblind (CSS), so the line's
+      // pagination doesn't change when the setting does.
+      const symbol = EMOTIONS[match[3]]?.symbol;
+      if (symbol) segments.push({ type: 'char', char: symbol, delayMs: 0, color: match[3], cbMark: true });
     } else if (match[4] === '/') {
       if (colorStack.length > 1) colorStack.pop();
     } else if (match[1] === '/') {
@@ -340,6 +345,7 @@ function drawPage(container, segments, { onDone, onChar, onSpeech, onCue, startR
 
     const span = document.createElement('span');
     span.className = seg.narr ? 'dx-typewriter-char is-narration' : 'dx-typewriter-char';
+    if (seg.cbMark) span.classList.add('dx-cb-mark');
     span.textContent = seg.char;
     if (seg.color) span.style.color = emotionColor(seg.color);
     wordSpan.appendChild(span);
