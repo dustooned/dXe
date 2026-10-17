@@ -38,6 +38,7 @@ import { loadSettings, updateSettings } from '../shell/settings.js';
 import { later, cancelLater } from '../shell/pauseBus.js';
 import { timeline, beatAt } from '../engine/feedClock.js';
 import { playSfx, playTypewriterTick, preloadTypewriterTick, startAmbient, stopAmbient } from '../shell/audio.js';
+import { playChannelMusic, stopChannelMusic } from '../shell/feedMusic.js';
 
 const TICK_MS = 100;
 const COMMENT_GAP_MS = 900;
@@ -317,6 +318,10 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
 
     mover.insertBefore(screen, nextPeek);
     stageEl.appendChild(view);
+    // The channel's music (shell/feedMusic.js, PLACEHOLDER synth until real
+    // tracks): `music` names another channel's loop, false for none.
+    if (ch.music !== false) playChannelMusic(ch.music ?? ch.id);
+    else stopChannelMusic();
     dom = { view, mover, screen, scrub, comments, close, left, speaker, text, textBox, toast, beatEls: [] };
     attachSwipe(screen);
     update({ jump: true });
@@ -559,6 +564,7 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
     destroyAnimators();
     typewriter?.destroy();
     if (scene.ambient) stopAmbient();
+    stopChannelMusic();
     stageEl.innerHTML = '';
     dom = null;
   };
