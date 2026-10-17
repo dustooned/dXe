@@ -463,8 +463,8 @@ One thing per screen, then the record:
 7. **SAVE AS PNG**: a letter-size "certified copy": FEELZ letterhead (the
    wheel with your collected slices, the rainbow wordmark), the record,
    signature lines for C. Browning, LCSW and B. Baiter, City Council, a red
-   City of Lake Ulysses APPROVED seal, and lore small print about Halberd &
-   Lowe Affective Systems and Municipal Wellness Agreement LU-77 ("The lake
+   City of Lake Ulysses APPROVED seal, and lore small print about Metatron
+   (the corporation that builds FEELZ for the city) and Municipal Wellness Agreement LU-77 ("The lake
    remembers."). Then IT and SO get the last word.
 
 ### The closing line after each reaction

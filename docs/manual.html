@@ -135,7 +135,7 @@ mark { background: var(--mark); color: var(--fg); }
 <nav class="sidebar" id="sidebar">
   <div class="brand">
     <h1>Dream Xtreme</h1>
-    <p>Project manual · 22 documents</p>
+    <p>Project manual · 23 documents</p>
   </div>
   <button class="menu-toggle" id="menuToggle" aria-expanded="true">Menu</button>
   <div class="search-wrap">
@@ -163,6 +163,10 @@ mark { background: var(--mark); color: var(--fg); }
         <h2>Reference</h2>
         <p class="nav-blurb">Code removed from the build, kept in case a decision needs reversing.</p>
         <ul><li><a class="nav-doc" href="#doc-attic" data-doc="doc-attic">Attic</a></li></ul>
+      </div><div class="nav-group">
+        <h2>Unsorted</h2>
+        <p class="nav-blurb">Not yet placed in a group in scripts/build-manual.mjs.</p>
+        <ul><li><a class="nav-doc" href="#doc-phase_11" data-doc="doc-phase_11">PHASE_11</a></li></ul>
       </div></div>
 </nav>
 <main id="main"><article class="doc" id="doc-game_manual" data-title="Game Manual" data-file="GAME_MANUAL.md" hidden>
@@ -710,8 +714,8 @@ to the next section (at the end it flips and takes you back up).</li>
 <li><strong>SAVE AS PNG</strong>: a letter-size &quot;certified copy&quot;: FEELZ letterhead (the
 wheel with your collected slices, the rainbow wordmark), the record,
 signature lines for C. Browning, LCSW and B. Baiter, City Council, a red
-City of Lake Ulysses APPROVED seal, and lore small print about Halberd &amp;
-Lowe Affective Systems and Municipal Wellness Agreement LU-77 (&quot;The lake
+City of Lake Ulysses APPROVED seal, and lore small print about Metatron
+(the corporation that builds FEELZ for the city) and Municipal Wellness Agreement LU-77 (&quot;The lake
 remembers.&quot;). Then IT and SO get the last word.</li>
 </ol>
 <h3 id="doc-game_manual--the-closing-line-after-each-reaction"><a class="anchor" href="#doc-game_manual--the-closing-line-after-each-reaction" aria-label="Link to this section">#</a>The closing line after each reaction</h3>
@@ -1624,6 +1628,18 @@ needs to be a new opt-in field that intersects with the class set and
 falls back when the intersection is empty.</li>
 </ul>
 <h2 id="doc-handoff--what39s-next"><a class="anchor" href="#doc-handoff--what39s-next" aria-label="Link to this section">#</a>What&#39;s next</h2>
+<p><strong>Phase 11 (2026-10-16), from the JT &amp; Sarina playtest.</strong> Plan and open questions: <code>docs/PHASE_11.md</code>.</p>
+<ul>
+<li><strong>Colorblind mode:</strong> Settings &gt; COLOR cycles NORMAL / RED-GREEN / BLUE-YELLOW (<code>settings.colorVision</code>, classes <code>is-colorblind</code> + <code>is-cvd-*</code> on <code>&lt;html&gt;</code>). Each set re-tints the eight <code>--color-feelz-*</code> tokens (worst-case simulated gap between two feelings goes from ~13 to 33 CIELAB dE), and every <code>{color:X}</code> word gets its feeling&#39;s symbol in front (<code>.dx-cb-mark</code>, from <code>loadout.js</code> EMOTIONS; always emitted, shown only in the mode, so pagination doesn&#39;t shift). <strong>Rule from now on: color never carries meaning alone.</strong></li>
+<li><strong>Toback quote:</strong> narration over animated art (<code>dx-cutscene-screen--over-art</code>) gets a flat black stroke behind each glyph.</li>
+<li><strong>The demo is the tutorial.</strong> The opening call teaches only the app (FEELZ, the card, the four batteries, the lake, his contact): his find-my-feeling exercise, the lie trade and the parting watch-outs are cut from it. Each round teaches one thing on its first node, as a Therapist tip call (<code>dialogScene.js nodeCoach</code>): Deborah <code>battle</code> (wheel &gt; card &gt; batteries &gt; lake), Rwanda <code>scope</code> (the little screen), Samun <code>delivery</code> then <code>mask</code>, Rick none.</li>
+<li><strong>FEELZ install + the feed (step 5, phase 1).</strong> After the prologue&#39;s buzz: <code>feelz-install</code> (a cutscene: HOLD TO INSTALL, three permission screens, pick a username into <code>run.handle</code>, the FEELZ boot logo, moved here from <code>feelz_launch.json</code>), then <code>feed</code> (<code>scenes/feedScene.js</code>, new scene type): live channels on one shared clock, stacked like a phone feed (2026-10-17): drag and the next channel follows your finger in from below, a short pull springs back, and every ~5 s the screen bounces up to show the top of the next one with its name (and &quot;N MORE&quot; on the first run) until you have flipped once / found them all; arrows only for a mouse (and Reduced Effects, which drops the bounce), keys and the mouse wheel flip too, a scrubber per channel, comments that arrive with each beat (tap to heart). Channels: Bob Baiter LIVE (<code>bob_baiter.json</code> word for word, comments in <code>feed.json</code> bobComments), a FEELZ ad, and the Widow&#39;s Grade documentary (fictional road; Caleb named, nothing from Deborah&#39;s STORY). First run: CLOSE APP appears once every channel has been visited (&quot;ALL 3 CHANNELS FOUND&quot;), and the HUD skip flips to an unseen channel until then; repeat runs skip as usual (<code>sceneSequencer</code> <code>setSkipHandler</code>). Beat timing: <code>engine/feedClock.js</code>. Rule for new channels: show the surface of an NPC&#39;s world, never their STORY. Phase 2 added four more (7 in all): THE LIVING WATER HOUR (Pastor Gabriel&#39;s public-access show with Brother Bubbles), BAR LOT (a stranger&#39;s phone video of Rick&#39;s fight in the lot), WALL WORK (Rwanda painting her mural), SAMUN FIXES ANYTHING (his repair stream; his layers of shirts and pants, from the original design doc). Pictures are PLACEHOLDER: a channel with no art shows its name on black; <code>plate: samun</code> plays his chapter plate. Phase 3, the morning after: the ending&#39;s button is THE NEXT MORNING, then a FEELZ notification card, then the same channels (<code>morning-feed</code>), each in the variant the run earned (<code>content/feed_epilogue.json</code>, picked by <code>engine/feedEpilogue.js</code>: the ending, who trusted you, whose story you heard, Rick shutting you out, Samun&#39;s guard breaking, your baptism answers, your lie count). No visit-all rule; CLOSE APP goes to the title; no checkpoint is saved there.</li>
+<li><strong>Samun&#39;s delivery spectrum</strong> (<code>engine/delivery.js</code>, format in <code>docs/SCRIPT_FORMAT.md</code>): push distance picks SOFT TRUTH / HARSH TRUTH / WHITE LIE / BAIT (full push starts at 55% of the card&#39;s width). Each is built as an ordinary card edge, so bids, contradictions, the lake and the ledger work unchanged; bait is never a bid. A strip under the card shows the answer and its real numbers (after soft caps, lean and effort) and his GUARD; low battery, fogged Wi-Fi, clock &lt;= 2 or being shut out show &quot;? ? ?&quot; instead. White lies: 2 an encounter, the 3rd is the full authored lie. Bait bounces with bars under 4. GUARD 6: mask slips at 3, STORY at 0 (opened by CRACK, once; a later connection doesn&#39;t replay it). His tip call <code>delivery</code> replaced <code>trade</code>. Checked: engine tests, balance check, a headless Samun run (harsh, bait, soft strips and numbers; guard 6 &gt; 0 played the story). Not yet seen live: the 3rd white lie, the hidden strip.</li>
+<li><strong>Rick&#39;s delivery spectrum (2026-10-17):</strong> same system as Samun (GUARD 6, CRACK per class, BAITFAIL) on every node but <code>rick_shut_down</code>. Every new line is <code>TK:</code> in <code>manuscript/rick.txt</code> (placeholders, user&#39;s call); no tip call on Rick (on your own).</li>
+<li><strong>First choices that matter (step 6, 2026-10-17, <code>engine/firstMarks.js</code>):</strong> the install stores <code>permFace</code> / <code>permVoice</code> (ALLOW / DON&#39;T ALLOW) and the username; the intake counts <code>intakeLean</code> { still, move } (left vs right answers). They mark the run: the lake gauge gets classes (<code>lakeMarks</code>): username sets the swim (lakeboy_88 dart, DampButFine drift, STILL_RINGING halt), face refused = shy fish low in the tank, voice refused = no bubbles, the lean = a still or choppy surface line; only while the fish are well (stages 0-2). Deborah&#39;s hallway intro adds a callback line (<code>hallwayEcho</code>, room <code>echo: true</code>). Each choice lands with a dotted pixel ripple (<code>ui/ripple.js</code>, on the canvas) and a slosh (static on a refusal). Meters untouched: atmosphere only.</li>
+<li><strong>QR save (step 8, 2026-10-17, <code>engine/runCode.js</code>):</strong> every ending adds the run to <code>save.history</code> (id = record file + time). The run code packs endings seen, chapters and the last 5 runs into base64url JSON + a 4-hex checksum; the link is <code>&lt;origin&gt;/#r=&lt;code&gt;</code> (never sent anywhere). Shown as a QR (<code>ui/qrCode.js</code>, qrcode-generator 2.0.4, MIT, dark on white for scanners) in SAVE &amp; HISTORY (<code>ui/runCodePanel.js</code>: QR, COPY LINK, DOWNLOAD SAVE (.json), IMPORT SAVE, runs on this device), opened from the ending&#39;s RUN CODE button and Settings; also printed bottom right on the PNG record (SCAN FOR YOUR RUN). Opening a link shows a read-only run card (<code>main.js renderRunCard</code>): IMPORT TO THIS DEVICE (merges, never replaces) or START YOUR OWN; a bad code says so.</li>
+<li><strong>Rwanda&#39;s art is in (2026-10-16, placeholder-grade).</strong> Drive has 5 neutral GIFs; only 3 are imported (the artist&#39;s folder; the connector garbles 03 and 04, so they are not here: drop <code>Profile_Rwanda_Neutral03/04.gif</code> into <code>art-import/rwanda/</code> and re-run). <code>art-import/rwanda/names.json</code>: <code>Neutral</code> = <code>talk</code> (4 frames), <code>Neutral01</code> = <code>idle</code>, <code>Neutral02</code> = <code>squint</code> (extra, not a state). Imported with <code>node scripts/import-character-gifs.mjs art-import/rwanda rwanda</code>; seen in a headless Edge battle (idle portrait loads). Her idle is not byte-identical to talk frame 0 (dither differences), so there may be a faint pop when she starts speaking.</li>
+</ul>
 <p><strong>Done in the 2026-10-03 QA session</strong> (screen sizes, plus a bot that plays the game):</p>
 <ul>
 <li><strong>Layout units, the rule:</strong> every layout size in CSS (gap, padding, margin,
@@ -1761,7 +1777,7 @@ last page with no opening one.</li>
 <li><strong>Title is the front door</strong> (2026-10-02): boot always lands on the title (chapter deep links still honored). ENTER: first time → straight into the story; played before → chapter select. Finishing or quitting a chapter returns to the title (settings button is now QUIT TO TITLE); chapter select has a TITLE SCREEN button. A returning player picking a chapter (mouse or touch) is asked SKIP STORY / FROM THE START; the old skip dialog on the title is gone.</li>
 <li><strong>Chapter cards</strong> (<code>main.js</code> renderMenu, <code>CHAPTERS[id].banner</code>): each chapter is a banner card whose art pans forever and boils, tinted, under a wash for the title, with NEW / PLAYED ✓. Hovering a card with a mouse fills the screen behind with the same art, black and white, magnified, panning slowly, with a fainter, larger echo drifting the other way, a few soft notes of the chapter&#39;s motif ring first, then its ambience crossfades in low under the last echo; everything (scheduled notes too) fades out on leave or entering the chapter (<code>CHAPTERS[id].ambience</code>: <code>src</code> loop + <code>motif</code> notes; Lake Ulysses: lk_01 lake ambience, E4 G4 B4 A4). On touch, tapping a card shows the art and plays the preview, then asks &quot;Ready to play?&quot; (played before: SKIP STORY / FROM THE START, via <code>skipTo</code>). Lake Ulysses uses the title lake tinted teal as a PLACEHOLDER until it has its own art. Banner art = a vertical sheet of seamless tiles (same format as the title lake): give <code>src</code>, <code>frames</code>, <code>tile</code> [w, h], <code>tint</code>.</li>
 <li><strong>Title intro</strong> (<code>main.js</code> renderTitleMenu, art via <code>scripts/import-gm-title.mjs</code> from the GameMaker beta): the dithered Lake Ulysses panorama (spr_title_bg, 7 frames) fades in and pans forever (each frame made a seamless tile at import: its right edge dissolves into its left with a Bayer-dither crossfade; a two-tile strip slides one tile per 60 s while the frames still boil); the DREAM XTREME logo (spr_game_title, still boiling, 13 of its 73 frames) arrives split, top half from the left, bottom from the right, in NES steps; they slam with a clang (<code>playLogoSweep</code>/<code>playLogoSlam</code>), a white flash and shake; the logo strobes; then ENTER (no subtitle). Tap skips. Art as palette PNG sprite sheets in public/assets/shared/title (~330 KB).</li>
-<li><strong>Ending rebuilt</strong> (<code>endingScene.js</code>, <code>ui/feelzRecord.js</code>): final reading → story slides with image placeholders (endings.json <code>images</code> for art) → epilogue → closing quote (endings.json <code>quote</code>/<code>quoteBy</code>) → ending card → the record printed by a pixel fax (handshake, per-line print head and chirp; tap rushes it with a jam sound and a smear scratch) → SAVE AS PNG, an official FEELZ certified copy with letterhead, seal, signatures and company lore (Halberd &amp; Lowe Affective Systems, Agreement LU-77; PLACEHOLDER lore). The old water/report pages are folded into the record.</li>
+<li><strong>Ending rebuilt</strong> (<code>endingScene.js</code>, <code>ui/feelzRecord.js</code>): final reading → story slides with image placeholders (endings.json <code>images</code> for art) → epilogue → closing quote (endings.json <code>quote</code>/<code>quoteBy</code>) → ending card → the record printed by a pixel fax (handshake, per-line print head and chirp; tap rushes it with a jam sound and a smear scratch) → SAVE AS PNG, an official FEELZ certified copy with letterhead, seal, signatures and company lore (Metatron, the corporation that builds FEELZ for the city, Agreement LU-77; PLACEHOLDER lore). The old water/report pages are folded into the record.</li>
 <li><strong>Masks</strong> (MASK lines; Samun ×4, Rick ×3, first two questions): the shown feeling differs from the real MOOD; tells are the prompt&#39;s colored word, a blink of the real color on the oscilloscope, the grind on picking the mask, and contacts&#39; reads. Therapist outro plants it. Difficulty is now reading, not reachability (balance script still shows every route possible).</li>
 <li><strong>Earned stories</strong> (STORY lines, <code>showConnection</code>): connecting plays a five-beat first-person cutscene of each NPC&#39;s trauma (one per character). Rick&#39;s ties to Gabriel; hearing it puts Rick on the bank at the Reckoning&#39;s gate (<code>run.storiesHeard</code>).</li>
 <li><strong>Dialogue always in quotes</strong> (2026-10-02): every NPC PROMPT (58 lines across manuscript + handoff copies), every speaker cutscene beat (Bob Baiter, the confrontations), the epigraph; calls, the player&#39;s SAY and future speaker beats are quoted at render (<code>ui/speech.js</code>). IT/SO stay unquoted (thoughts).</li>
@@ -2870,7 +2886,7 @@ new scene type.</p>
     </article>
 <article class="doc" id="doc-asset_sizes" data-title="Asset Sizes (quick reference)" data-file="ASSET_SIZES.md" hidden>
       <p class="doc-source">Start here · <code>docs/ASSET_SIZES.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-asset_sizes--three-rules">Three rules</a></li><li><a href="#doc-asset_sizes--full-screen">Full screen</a></li><li><a href="#doc-asset_sizes--characters">Characters</a></li><li><a href="#doc-asset_sizes--chapter-pages-the-novel-page-before-each-room">Chapter pages (the novel page before each room)</a></li><li><a href="#doc-asset_sizes--room-objects">Room objects</a></li><li><a href="#doc-asset_sizes--title-menus-and-ending">Title, menus and ending</a></li><li><a href="#doc-asset_sizes--animated-art">Animated art</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-asset_sizes--three-rules">Three rules</a></li><li><a href="#doc-asset_sizes--full-screen">Full screen</a></li><li><a href="#doc-asset_sizes--characters">Characters</a></li><li><a href="#doc-asset_sizes--chapter-pages-the-novel-page-before-each-room">Chapter pages (the novel page before each room)</a></li><li><a href="#doc-asset_sizes--feelz-feed-channels-the-phone-feed-after-the-install">FEELZ feed channels (the phone feed after the install)</a></li><li><a href="#doc-asset_sizes--room-objects">Room objects</a></li><li><a href="#doc-asset_sizes--title-menus-and-ending">Title, menus and ending</a></li><li><a href="#doc-asset_sizes--animated-art">Animated art</a></li></ul></nav>
       <h1 id="doc-asset_sizes--asset-sizes-quick-reference"><a class="anchor" href="#doc-asset_sizes--asset-sizes-quick-reference" aria-label="Link to this section">#</a>Asset Sizes — quick reference</h1>
 <p>Every image the game takes, with the size to draw it at and where it goes.
 <strong>Visual version:</strong> open <a href="ASSET_REFERENCE.html"><code>ASSET_REFERENCE.html</code></a> in a browser for every asset drawn to scale, with blank PNG templates at the exact size and a CSV checklist (no zip needed).</p>
@@ -2973,6 +2989,64 @@ placeholder there now is replaced automatically).</li>
 </tr>
 </tbody></table>
 <p>Draw it flat. The loading bands, scanlines, tape border and fog tint are added in code.</p>
+<h2 id="doc-asset_sizes--feelz-feed-channels-the-phone-feed-after-the-install"><a class="anchor" href="#doc-asset_sizes--feelz-feed-channels-the-phone-feed-after-the-install" aria-label="Link to this section">#</a>FEELZ feed channels (the phone feed after the install)</h2>
+<p>One picture per channel, full screen, looping (like a room background). The
+same picture plays in the morning-after feed. Until a channel has art it shows
+its name on black.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Channel</th>
+<th align="left">What&#39;s on it</th>
+<th align="left">Draw at</th>
+<th align="left">Format</th>
+<th align="left">Put it in</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">THE LIVING WATER HOUR (<code>pastor</code>)</td>
+<td align="left">Pastor Gabriel&#39;s public-access show, Brother Bubbles</td>
+<td align="left"><strong>780 × 1688</strong>, 4 to 12 frames</td>
+<td align="left">WebP</td>
+<td align="left"><code>sprites/spr_feed_pastor/spr_feed_pastor_0000</code> …</td>
+</tr>
+<tr>
+<td align="left">BAR LOT (<code>barlot</code>)</td>
+<td align="left">A stranger&#39;s phone video of Rick&#39;s fight in the lot</td>
+<td align="left"><strong>780 × 1688</strong>, 4 to 12 frames</td>
+<td align="left">WebP</td>
+<td align="left"><code>sprites/spr_feed_barlot/spr_feed_barlot_0000</code> …</td>
+</tr>
+<tr>
+<td align="left">WALL WORK (<code>wall</code>)</td>
+<td align="left">Rwanda painting her mural</td>
+<td align="left"><strong>780 × 1688</strong>, 4 to 12 frames</td>
+<td align="left">WebP</td>
+<td align="left"><code>sprites/spr_feed_wall/spr_feed_wall_0000</code> …</td>
+</tr>
+<tr>
+<td align="left">WIDOW&#39;S GRADE (<code>grade</code>)</td>
+<td align="left">The documentary&#39;s road (fictional; nothing from Deborah&#39;s story)</td>
+<td align="left"><strong>780 × 1688</strong>, 4 to 12 frames</td>
+<td align="left">WebP</td>
+<td align="left"><code>sprites/spr_feed_grade/spr_feed_grade_0000</code> …</td>
+</tr>
+<tr>
+<td align="left">SAMUN FIXES ANYTHING (<code>fixes</code>)</td>
+<td align="left">His repair stream, layers of shirts and pants (now his chapter plate)</td>
+<td align="left"><strong>780 × 1688</strong>, 4 to 12 frames</td>
+<td align="left">WebP</td>
+<td align="left"><code>sprites/spr_feed_fixes/spr_feed_fixes_0000</code> …</td>
+</tr>
+</tbody></table>
+<p>Bob Baiter (<code>bob</code>) and the FEELZ ad (<code>ad</code>) already have their pictures.</p>
+<p>Mostly covered (at 2×): the <strong>top 380 px</strong> (the buttons, channel bar,
+scrubber and CLOSE APP), the <strong>bottom 330 px</strong> (the caption box), and the
+<strong>right 90 px</strong> between 40% and 60% down (the flip arrows on a computer).
+Comments scroll over the middle left. <strong>The top 170 px is the preview:</strong> when
+the feed bounces or you pull, the next channel shows only its top edge under
+its name, so let the art&#39;s top edge say which channel it is. Tell Claude the frame count and fps when
+the frames are in; each channel is one line in <code>anims.js</code> + <code>feed.json</code>.</p>
 <h2 id="doc-asset_sizes--room-objects"><a class="anchor" href="#doc-asset_sizes--room-objects" aria-label="Link to this section">#</a>Room objects</h2>
 <p>Draw at the <strong>2×</strong> size. Clean <strong>white-line art on transparent</strong>: the game tints
 it with the feeling color, so don&#39;t bake color in. Each object also needs a
@@ -5251,7 +5325,7 @@ mini-games are structured, if you&#39;re writing one of those.</li>
     </article>
 <article class="doc" id="doc-script_format" data-title="Script Format" data-file="SCRIPT_FORMAT.md" hidden>
       <p class="doc-source">Authoring · <code>docs/SCRIPT_FORMAT.md</code></p>
-      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-script_format--where-files-go">Where files go</a></li><li><a href="#doc-script_format--building-it">Building it</a></li><li><a href="#doc-script_format--the-format">The format</a></li><li><a href="#doc-script_format--rules-that-will-make-the-build-fail-on-purpose">Rules that will make the build fail (on purpose)</a></li><li><a href="#doc-script_format--what-this-format-doesn39t-cover-yet">What this format doesn&amp;#39;t cover yet</a></li><li><a href="#doc-script_format--cues-inside-text-cuename">Cues inside text: {cue:name}</a></li><li><a href="#doc-script_format--cues-inside-text-markname">Cues inside text: {mark:name}</a></li><li><a href="#doc-script_format--mask-node">MASK (node)</a></li><li><a href="#doc-script_format--story-header">STORY (header)</a></li><li><a href="#doc-script_format--storyit-storyso-header">STORYIT / STORYSO (header)</a></li><li><a href="#doc-script_format--pushaway-header">PUSHAWAY (header)</a></li><li><a href="#doc-script_format--trycall-outro">TRYCALL (outro)</a></li><li><a href="#doc-script_format--watch-outro">WATCH (outro)</a></li><li><a href="#doc-script_format--trynear-tryfar-outro">TRYNEAR / TRYFAR (outro)</a></li><li><a href="#doc-script_format--tryfeel-outro">TRYFEEL (outro)</a></li><li><a href="#doc-script_format--the-intake-read">The intake read</a></li><li><a href="#doc-script_format--default-outro-condition">[Default] (outro condition)</a></li></ul></nav>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-script_format--where-files-go">Where files go</a></li><li><a href="#doc-script_format--building-it">Building it</a></li><li><a href="#doc-script_format--the-format">The format</a></li><li><a href="#doc-script_format--rules-that-will-make-the-build-fail-on-purpose">Rules that will make the build fail (on purpose)</a></li><li><a href="#doc-script_format--the-delivery-spectrum-optional-per-npc">The delivery spectrum (optional, per NPC)</a></li><li><a href="#doc-script_format--what-this-format-doesn39t-cover-yet">What this format doesn&amp;#39;t cover yet</a></li><li><a href="#doc-script_format--cues-inside-text-cuename">Cues inside text: {cue:name}</a></li><li><a href="#doc-script_format--cues-inside-text-markname">Cues inside text: {mark:name}</a></li><li><a href="#doc-script_format--mask-node">MASK (node)</a></li><li><a href="#doc-script_format--story-header">STORY (header)</a></li><li><a href="#doc-script_format--storyit-storyso-header">STORYIT / STORYSO (header)</a></li><li><a href="#doc-script_format--pushaway-header">PUSHAWAY (header)</a></li><li><a href="#doc-script_format--trycall-outro">TRYCALL (outro)</a></li><li><a href="#doc-script_format--watch-outro">WATCH (outro)</a></li><li><a href="#doc-script_format--trynear-tryfar-outro">TRYNEAR / TRYFAR (outro)</a></li><li><a href="#doc-script_format--tryfeel-outro">TRYFEEL (outro)</a></li><li><a href="#doc-script_format--the-intake-read">The intake read</a></li><li><a href="#doc-script_format--default-outro-condition">[Default] (outro condition)</a></li></ul></nav>
       <h1 id="doc-script_format--script-format-for-writers"><a class="anchor" href="#doc-script_format--script-format-for-writers" aria-label="Link to this section">#</a>Script Format (for writers)</h1>
 <p>This is for anyone writing dialog content who doesn&#39;t want to touch JSON —
 a collaborator, a co-writer, anyone. Write a plain <code>.txt</code> file in this
@@ -5495,12 +5569,67 @@ end-of-encounter IT read, since the outro is its closing IT moment.</p>
 <li>Every <code>EFFECTS:</code> token must be one of the four stat names above,
 immediately followed by a signed number, no spaces (<code>integrity+2</code>, not
 <code>integrity + 2</code>).</li>
-<li>Every swipe block must be <code>-- TRUTH</code> or <code>-- LIE</code>, spelled exactly that
-way (case-insensitive).</li>
+<li>Every swipe block must be <code>-- TRUTH</code>, <code>-- LIE</code>, <code>-- SOFT</code> or <code>-- BAIT</code>,
+spelled exactly that way (case-insensitive).</li>
 <li>Unrecognized lines throw an error naming the file and line number —
 it&#39;s telling you it doesn&#39;t understand that line, not that something
 is broken elsewhere.</li>
 </ul>
+<h2 id="doc-script_format--the-delivery-spectrum-optional-per-npc"><a class="anchor" href="#doc-script_format--the-delivery-spectrum-optional-per-npc" aria-label="Link to this section">#</a>The delivery spectrum (optional, per NPC)</h2>
+<p>How far the player pushes the card picks how they say it
+(<code>src/engine/delivery.js</code>). A node gets four answers instead of two when it
+has all of: <code>-- TRUTH</code>, <code>-- LIE</code> (with a <code>WHITE REACT:</code>), <code>-- SOFT</code> and
+<code>-- BAIT</code>. Samun and Rick use it (Rick&#39;s new lines are <code>TK:</code> placeholders for the writer).</p>
+<table>
+<thead>
+<tr>
+<th>Push</th>
+<th>Answer</th>
+<th>Words from</th>
+<th>Numbers</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>left, a little</td>
+<td>SOFT TRUTH</td>
+<td><code>-- SOFT</code> SAY/REACT</td>
+<td>fixed: clock +1, Wi-Fi +1, bars +1, guard -1</td>
+</tr>
+<tr>
+<td>left, all the way</td>
+<td>HARSH TRUTH</td>
+<td><code>-- TRUTH</code></td>
+<td>as authored, guard -2</td>
+</tr>
+<tr>
+<td>right, a little</td>
+<td>WHITE LIE</td>
+<td><code>-- LIE</code> SAY + <code>WHITE REACT:</code></td>
+<td>fixed: battery +1, bars +1, lake +1, no fog, guard -1 (2 per encounter; a 3rd plays the full LIE, guard +1)</td>
+</tr>
+<tr>
+<td>right, all the way</td>
+<td>BAIT</td>
+<td><code>-- BAIT</code> SAY/REACT/LEDGER</td>
+<td>fixed: bars -2, lake +3, guard -3; bars under 4 and it bounces (a <code>BAITFAIL:</code> line, guard +2, the LIE&#39;s NEXT)</td>
+</tr>
+</tbody></table>
+<p><code>-- SOFT</code> and <code>-- BAIT</code> take only SAY, REACT (and <code>REACT [Class]</code>) and, for
+BAIT, LEDGER. Everything else (NEXT, bids, contradictions) comes from the
+TRUTH and LIE blocks: a soft truth goes where the truth goes, a white lie
+where the lie goes, a bait that lands where the truth goes.</p>
+<p>Header lines for an NPC that uses it:</p>
+<pre><code>GUARD: 6
+CRACK [Guns]: what they say as the guard breaks, before their STORY
+CRACK [Bible]: ...
+CRACK [Crystals]: ...
+BAITFAIL: a bait that bounced (one or more; one is picked)
+</code></pre>
+<p>GUARD is how closed they start. At 3 their MASK slips (the real MOOD shows);
+at 0 their STORY plays, opened by the CRACK line, even if they don&#39;t trust
+you yet. While dragging, a strip under the card shows the answer and its
+numbers; low battery, fogged Wi-Fi, a clock at 2 or under, or being shut out
+hide the numbers.</p>
 <h2 id="doc-script_format--what-this-format-doesn39t-cover-yet"><a class="anchor" href="#doc-script_format--what-this-format-doesn39t-cover-yet" aria-label="Link to this section">#</a>What this format doesn&#39;t cover yet</h2>
 <p>Endings (<code>content/endings.json</code>) aren&#39;t part of this pipeline — that
 file&#39;s shape is different (ending name → title/text), and small enough
@@ -9805,13 +9934,255 @@ change to shell/chapter responsibilities and deserves its own decision.</p>
 
       <nav class="pager">
         <a href="#doc-dreamxtreme-game-development-demo-doc" data-doc="doc-dreamxtreme-game-development-demo-doc"><span>Previous</span>Game Development Demo Doc</a>
+        <a class="next" href="#doc-phase_11" data-doc="doc-phase_11"><span>Next</span>PHASE_11</a>
+      </nav>
+    </article>
+<article class="doc" id="doc-phase_11" data-title="PHASE_11" data-file="PHASE_11.md" hidden>
+      <p class="doc-source">Unsorted · <code>docs/PHASE_11.md</code></p>
+      <nav class="doc-toc"><p class="doc-toc-label">On this page</p><ul><li><a href="#doc-phase_11--status-2026-10-16">Status (2026-10-16)</a></li><li><a href="#doc-phase_11--revision-1-2026-10-16-your-answers-change-steps-2-4-7-8">Revision 1 (2026-10-16): your answers change steps 2, 4, 7, 8</a></li><li><a href="#doc-phase_11--order-of-work-original-see-revision-above-for-merges">Order of work (original; see revision above for merges)</a></li><li><a href="#doc-phase_11--1-toback-quote-outline-behind-the-text-item-2">1. Toback quote: outline behind the text (item 2)</a></li><li><a href="#doc-phase_11--2-rwanda-item-6">2. Rwanda (item 6)</a></li><li><a href="#doc-phase_11--3-colorblind-mode-item-1">3. Colorblind mode (item 1)</a></li><li><a href="#doc-phase_11--4-therapist-tutorial-rework-item-5">4. Therapist tutorial rework (item 5)</a></li><li><a href="#doc-phase_11--5-bob-baiter-interactive-not-an-infodump-item-3">5. Bob Baiter: interactive, not an infodump (item 3)</a></li><li><a href="#doc-phase_11--6-first-choices-matter-item-4">6. First choices matter (item 4)</a></li><li><a href="#doc-phase_11--7-samun-white-lies-and-soft-vs-harsh-truth-item-7">7. Samun: white lies and soft vs harsh truth (item 7)</a></li><li><a href="#doc-phase_11--8-ending-unique-qr-history-item-8">8. Ending: unique QR + history (item 8)</a></li><li><a href="#doc-phase_11--cross-cutting">Cross-cutting</a></li><li><a href="#doc-phase_11--still-open-after-your-answers">Still open after your answers</a></li></ul></nav>
+      <h1 id="doc-phase_11--phase-11-plan-jt-amp-sarina-playtest-2026-10-11"><a class="anchor" href="#doc-phase_11--phase-11-plan-jt-amp-sarina-playtest-2026-10-11" aria-label="Link to this section">#</a>Phase 11 plan: JT &amp; Sarina playtest (2026-10-11)</h1>
+<p>Source: <code>dXe_Test_Review_JT&amp;Sarina_10.11.2026.md</code>. Plan only, nothing built yet.
+Item numbers match the review. Ordered by dependency and size, not by review number.</p>
+<h2 id="doc-phase_11--status-2026-10-16"><a class="anchor" href="#doc-phase_11--status-2026-10-16" aria-label="Link to this section">#</a>Status (2026-10-16)</h2>
+<ul>
+<li>DONE: Toback outline, colorblind mode, Rwanda GIFs (Neutral + Neutral01 saved and verified; Neutral02-04 not yet: the Drive download returned data that didn&#39;t match their file sizes, re-download or drop them in by hand).</li>
+<li>DONE (first pass): demo-as-tutorial. Opening call cut to the app basics; lesson calls on Deborah (battle), Rwanda (little screen), Samun (mask, then the lie trade), none on Rick.</li>
+<li>DONE: Samun delivery spectrum (step 7): soft/harsh truth, white lie, BAIT (the combative full-push lie, chosen 2026-10-16); numbers strip hidden by status ailments; guard meter.</li>
+<li>DONE (phase 1 of 3): FEELZ install + the feed (step 5): install scene, feed engine, Bob (original script), FEELZ ad, Widow&#39;s Grade doc. First run must visit every channel to close.</li>
+<li>DONE: feed phase 2: Pastor, Rick, Rwanda, Samun channels (7 in all), placeholder pictures.</li>
+<li>DONE: feed phase 3: the morning-after feed reflects the run.</li>
+<li>DONE (2026-10-17): the feed stacks like a phone feed (pull, bounce hint).</li>
+<li>DONE (2026-10-17): Rick&#39;s delivery spectrum (lines are TK: placeholders for the writer).</li>
+<li>DONE (2026-10-17): first choices (6): install + intake mark the lake and the hallway (engine/firstMarks.js).</li>
+<li>DONE (2026-10-17): QR save (8): run code link/QR/save file, history, run card (engine/runCode.js).</li>
+<li>NEXT: channel art; Rick&#39;s real lines; art for the new pieces (see HANDOFF).</li>
+</ul>
+<h2 id="doc-phase_11--revision-1-2026-10-16-your-answers-change-steps-2-4-7-8"><a class="anchor" href="#doc-phase_11--revision-1-2026-10-16-your-answers-change-steps-2-4-7-8" aria-label="Link to this section">#</a>Revision 1 (2026-10-16): your answers change steps 2, 4, 7, 8</h2>
+<p><strong>Rwanda (step 2).</strong> Drive has only her 5 neutral profile GIFs (<code>NPCs/Rwanda</code>, from Jules); no script or text. The repo&#39;s <code>rwanda.json</code> and her confrontation read clean to me, so the typo is still unlocated. Her GIFs are not in <code>art-import/</code> yet. Need: the typo&#39;s wording (or a screenshot) and a yes to download the 5 GIFs into <code>art-import/rwanda/</code>.</p>
+<p><strong>Steps 4 + 7 merge into one: the demo IS the tutorial.</strong> Each NPC round teaches exactly one mechanic, in the same rhythm every time, so the first playthrough is the full lesson and nothing else is needed (the Therapist&#39;s long spotlight tutorial goes away).</p>
+<table>
+<thead>
+<tr>
+<th>Round</th>
+<th>Teaches</th>
+<th>Bob/Therapist role</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Deborah</td>
+<td>Swipe truth/lie, the four batteries (integrity, lucidity, stability, trust), the lake gauge</td>
+<td>Therapist call, 1-2 lines; replaces the old battle tutorial</td>
+</tr>
+<tr>
+<td>Rwanda</td>
+<td>The FEELZ wheel + scope: feel with someone, stillness/attunement; truth warms her</td>
+<td>Therapist 1 line</td>
+</tr>
+<tr>
+<td>Samun</td>
+<td><strong>Delivery spectrum</strong> (harsh truth, soft truth, white lie, harmful lie) + goal &quot;get the truth out of him&quot;</td>
+<td>Therapist 1 line</td>
+</tr>
+<tr>
+<td>Rick</td>
+<td>Everything at once; meter gates (shut down below trust 3)</td>
+<td>none, you&#39;re on your own</td>
+</tr>
+</tbody></table>
+<p>Round rhythm (identical each time, predictable on purpose):</p>
+<ol>
+<li><strong>Setup:</strong> one-line Therapist call naming the new tool.</li>
+<li><strong>Guided node:</strong> the new mechanic is highlighted, one clear option, no penalty for experimenting (non-judgmental feedback).</li>
+<li><strong>Free nodes:</strong> you use it against the NPC, previous tools still live.</li>
+<li><strong>Debrief:</strong> lake and fish react; a one-line &quot;what just changed&quot;.</li>
+</ol>
+<p>Replay incentive (keeps it a fast second run): different class (3 starts), 4 endings shown as ??? chips, secret music layer, unlock history in the QR record (step 8), and each NPC&#39;s second route (e.g. Samun answers differently to soft truth vs white lie).</p>
+<p>Consequence: step 5 (Bob Baiter) shrinks to the FEELZ install moment before the Deborah round, and step 6 (first choices) is the intake plus Deborah&#39;s guided node. The Samun system is no longer a prototype: it is built in full, with Samun as its teaching round, and the delivery spectrum can then be authored for Rick too.</p>
+<p><strong>QR / save (step 8), proposal.</strong> The QR is a link: <code>dreamxtre.me/#r=&lt;compact run data&gt;</code>. The data lives after the <code>#</code>, so it never reaches a server, needs no backend, and works offline as a save code.</p>
+<ul>
+<li><strong>Lost your save:</strong> open the link or scan the QR, or paste/import the downloaded save file, and the game restores unlocks, endings seen and run history.</li>
+<li><strong>Share:</strong> the same link opens a read-only &quot;run card&quot; for a friend (class, ending, the stats that moved) with an optional &quot;start your own&quot;. They do not inherit your unlocks unless they choose import.</li>
+<li>Size: unlocks + history packed as bytes is a few hundred bytes, well inside one QR.</li>
+<li>No personal data; a checksum catches typos/corruption, not cheating (cheating a local single-player demo is acceptable).</li>
+<li>Needs: vendored QR encoder (small), a decoder path via the link (no camera needed; phone cameras open the link natively).</li>
+</ul>
+<h2 id="doc-phase_11--order-of-work-original-see-revision-above-for-merges"><a class="anchor" href="#doc-phase_11--order-of-work-original-see-revision-above-for-merges" aria-label="Link to this section">#</a>Order of work (original; see revision above for merges)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Step</th>
+<th>Review item</th>
+<th>Size</th>
+<th>Why here</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Toback quote outline</td>
+<td>2</td>
+<td>XS</td>
+<td>Pure CSS, ships immediately</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Rwanda typo + lie-still incentive</td>
+<td>6</td>
+<td>S</td>
+<td>Small content pass, needs your input on the typo</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Colorblind mode</td>
+<td>1</td>
+<td>M</td>
+<td>Settings + a rule every later feature must follow</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Tutorial rework (shorter, UI/FEELZ focus, battle tutorial moves to Deborah)</td>
+<td>5</td>
+<td>L</td>
+<td>Everything after this assumes the new onboarding</td>
+</tr>
+<tr>
+<td>5</td>
+<td>FEELZ install cutscene + Bob Baiter live feed</td>
+<td>3</td>
+<td>L</td>
+<td>Replaces the infodump; sits right after the tutorial&#39;s FEELZ intro</td>
+</tr>
+<tr>
+<td>6</td>
+<td>First choices that matter + sensory layer</td>
+<td>4</td>
+<td>M</td>
+<td>Needs the new opening flow from 4-5 to place the choices</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Samun: white lie / soft truth system</td>
+<td>7</td>
+<td>XL</td>
+<td>Biggest design item; new mechanic. Prototype on Samun only</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Ending: unique QR per run + local history</td>
+<td>8</td>
+<td>L</td>
+<td>Independent; last because it reads the final state of everything</td>
+</tr>
+</tbody></table>
+<p>Steps 1-3 are independent and can run in parallel. 4 before 5 before 6. 7 and 8 are independent of each other.</p>
+<hr>
+<h2 id="doc-phase_11--1-toback-quote-outline-behind-the-text-item-2"><a class="anchor" href="#doc-phase_11--1-toback-quote-outline-behind-the-text-item-2" aria-label="Link to this section">#</a>1. Toback quote: outline behind the text (item 2)</h2>
+<ul>
+<li>Where: <code>content/opening_quote.json</code> beats use <code>bgAnim: quote_bg</code>; text styled in <code>cutsceneScene.js</code> / <code>scenes.css</code>.</li>
+<li>Do: black stroke/halo behind the narration text on these beats (stacked <code>text-shadow</code> or <code>-webkit-text-stroke</code> + <code>paint-order: stroke</code>). Calc-unit rule applies to sizes. Match series style: no glows, flat black outline on white text.</li>
+<li>Done when: readable over every frame of the 5-frame BG at 320 and 1920 wide, REDUCE EFFECTS unaffected.</li>
+<li><strong>Open:</strong> is the problem contrast over the bright frames, or the BG art being too busy? (If busy, also dim the BG ~30%.)</li>
+</ul>
+<h2 id="doc-phase_11--2-rwanda-item-6"><a class="anchor" href="#doc-phase_11--2-rwanda-item-6" aria-label="Link to this section">#</a>2. Rwanda (item 6)</h2>
+<ul>
+<li><strong>Typo:</strong> need the location. Plan: grep <code>rwanda.json</code>, <code>confront_rwanda.json</code>, <code>rwanda-alley.js</code>, her marker/plate and manuscript for misspellings, and list candidates.</li>
+<li><strong>No incentive to lie still:</strong> I read this as the alley minigame (and/or her battle) giving no reason to stay still. Proposal: staying still builds a visible &quot;calm&quot; reading (scope settles, her weather clears a little, small trust gain on a held beat), and moving costs nothing but forfeits that. Must stay non-judgmental per [feedback: atmospheric, never right/wrong]: reward as atmosphere, not a score.</li>
+<li><strong>Open:</strong><ol>
+<li>Where exactly is the typo?</li>
+<li>Is &quot;lie still&quot; the alley minigame, or a dialog where you could lie to her? (Rwanda only warms to truth by design, so a lie incentive would contradict that.)</li>
+<li>What should staying still earn: trust, a secret-track layer, a line from her, or just feel?</li>
+</ol>
+</li>
+</ul>
+<h2 id="doc-phase_11--3-colorblind-mode-item-1"><a class="anchor" href="#doc-phase_11--3-colorblind-mode-item-1" aria-label="Link to this section">#</a>3. Colorblind mode (item 1)</h2>
+<ul>
+<li>The game leans on feeling colors (<code>{color:Fear}</code>), the wheel, class colors, lake gauge, meters. Color is often the only signal.</li>
+<li>Do: Settings &gt; COLORBLIND with three palettes (protanopia/deuteranopia, tritanopia, off) swapping the CSS color tokens; plus a non-color channel: feeling icons already exist (<code>feelingIcons.js</code>), so ensure every colored feeling word, wheel slice and meter also shows its icon or a pattern/label. Add a rule to HANDOFF: color never carries meaning alone.</li>
+<li>Verify with a CVD simulation screenshot pass of the wheel, dialog, lake and ending.</li>
+<li><strong>Open:</strong> palette swap, patterns/icons, or both? Is a full-screen filter (cheap, imprecise) acceptable as v1?</li>
+</ul>
+<h2 id="doc-phase_11--4-therapist-tutorial-rework-item-5"><a class="anchor" href="#doc-phase_11--4-therapist-tutorial-rework-item-5" aria-label="Link to this section">#</a>4. Therapist tutorial rework (item 5)</h2>
+<ul>
+<li>Current: long spotlight tutorial + science of the scope + class metaphors (~5 extra taps) + intake read. Content in <code>therapist.json</code>, <code>therapist_01</code>.</li>
+<li>Do:<ul>
+<li><strong>Cut length.</strong> Move the science-of-the-scope and class metaphor to an optional &quot;tell me more&quot; (or to a later call).</li>
+<li><strong>Refocus on UI:</strong> FEELZ app, Truth vs Lie card, and the four battery statuses (meters). Short, one idea per screen, interactive (player does the thing) rather than told.</li>
+<li><strong>Move the battle tutorial</strong> (wheel + scope as a fight) into Deborah&#39;s first encounter: the Therapist coaches by phone call during her first node, so the lesson lands when it matters. Keeps &quot;Therapist early only&quot; (this is early game).</li>
+</ul>
+</li>
+<li>Done when: first-time player reaches Deborah in a target of N taps (set after measuring the current count).</li>
+<li><strong>Open:</strong> target tap count/time? Keep the class metaphors anywhere, or cut? What does &quot;Truth and Lie, Battery Statuses&quot; mean precisely: the card swipe plus the four meters (integrity, lucidity, stability, trust)?</li>
+</ul>
+<h2 id="doc-phase_11--5-bob-baiter-interactive-not-an-infodump-item-3"><a class="anchor" href="#doc-phase_11--5-bob-baiter-interactive-not-an-infodump-item-3" aria-label="Link to this section">#</a>5. Bob Baiter: interactive, not an infodump (item 3)</h2>
+<ul>
+<li>Current: <code>bob_baiter.json</code> is a 10-frame animated cutscene of announcements, ~6.5KB of text.</li>
+<li><strong>5a. Pre-cut scene on FEELZ install</strong> (<code>feelz_launch.json</code> leads to Bob): the player does something: the install is a short interactive bit (hold to install, tap permission toggles the app jokes about, pick a username) ending as the app hijacks to Bob Baiter. The player&#39;s input changes Bob&#39;s lines a little (e.g. his greeting uses the name).</li>
+<li><strong>5b. TikTok-style live comment feed during Bob&#39;s broadcast:</strong> comments scroll up the side, fake viewers react to what Bob says; the player can tap a comment to react/heart/pin one. Drops the long announcement into short beats with comments carrying the humor and the information (bait shop, biohazard, pets, exposure, fish symbols).</li>
+<li>Data: new <code>bob_comments.json</code> (writer-friendly, same manuscript pipeline), comments timed to beats; a few reactive to the player&#39;s choices.</li>
+<li><strong>Open:</strong> do comments affect anything (e.g. the lake, trust in FEELZ) or only engagement? Tap-to-react a free action, or does it cost something? Writer needed for ~40-60 comments: first drafts by me?</li>
+</ul>
+<h2 id="doc-phase_11--6-first-choices-matter-item-4"><a class="anchor" href="#doc-phase_11--6-first-choices-matter-item-4" aria-label="Link to this section">#</a>6. First choices matter (item 4)</h2>
+<ul>
+<li>Today the first choices (questionnaire, class pick, early FEELZ choices) feel inert. Do:<ul>
+<li>Make the first 2-3 choices set a visible, persistent state: a starting Emotional Lean/line in Deborah&#39;s dialog, a starting lake tint, a fish behavior, and an &quot;echo&quot; line later that references it.</li>
+<li><strong>Sensory eye candy:</strong> each first choice triggers an interactive visual/sound moment (ripple on the lake, the fish reacting, dithered particle bloom, a tone from the player&#39;s leitmotif). Series style: 1-bit dither, no glows or page flips. Respects REDUCE EFFECTS.</li>
+</ul>
+</li>
+<li><strong>Open:</strong> which choices count as &quot;first&quot;: the intake questionnaire only, or the Prologue too? Should the impact be mechanical (stats), narrative (callbacks) or both?</li>
+</ul>
+<h2 id="doc-phase_11--7-samun-white-lies-and-soft-vs-harsh-truth-item-7"><a class="anchor" href="#doc-phase_11--7-samun-white-lies-and-soft-vs-harsh-truth-item-7" aria-label="Link to this section">#</a>7. Samun: white lies and soft vs harsh truth (item 7)</h2>
+<p>Design is the main work. Proposal for discussion:</p>
+<ul>
+<li><strong>Four-way delivery instead of two:</strong> per node, a swipe still picks truth/lie, but a second gesture/tone picks delivery: <strong>Harsh truth, Soft truth, White lie, Harmful lie</strong>. Soft truth and white lie are the new middle options. (Existing <code>sayTone.js</code> is the likely hook; check what it already does before adding a new input.)</li>
+<li><strong>Core rule:</strong> a white lie is a true thing said in a kind way, so it should lower friction without opening Truth Debt much; a harmful lie pays now and costs later. Examples with Samun&#39;s node 1: Harsh &quot;you&#39;re killing yourself&quot;; Soft &quot;I&#39;m worried about what it&#39;s doing to you&quot;; White lie &quot;I get why you need it&quot;; Harmful &quot;At least you know what it is&quot; (current lie).</li>
+<li><strong>Balance:</strong> white lie costs small debt (e.g. +1) and gives small trust; capped per NPC by a &quot;white lie budget&quot; so stacking them tips into harmful (the irresponsible case). Harmful lie keeps current numbers. Truth keeps stability cost. Tune in STAT_MATH.</li>
+<li><strong>Goal:</strong> extract the truth from Samun, &quot;one way or another&quot;: a Samun-specific &quot;truth meter&quot; (his guard) that every delivery moves by a different amount; reaching it unlocks his secret/the confession. Harsh is fast and risky, soft is steady, white lies are slow but cheap on you, harmful lies stall or backfire.</li>
+<li><strong>Visual cues of the math:</strong> delivery chips preview effect arrows on the meters (up/down only, no numbers by default, numbers in a tap-to-reveal), like the live color preview on drag. Must remain non-judgmental: show consequence in the lake/scope, not &quot;good/bad&quot;.</li>
+<li><strong>Open (needs your call):</strong><ol>
+<li>Samun-only prototype, or build the 4-way delivery for all NPCs (Rwanda deliberately has no lie bids)?</li>
+<li>Is the &quot;truth meter&quot; visible, or shown atmospherically (his mask slipping)?</li>
+<li>How does the QA bot/balance check (&quot;every class can reach every NPC&quot;) cover a 4-way system?</li>
+<li>Writer pass: ~4 lines per Samun node (about 2x current Samun content).</li>
+</ol>
+</li>
+</ul>
+<h2 id="doc-phase_11--8-ending-unique-qr-history-item-8"><a class="anchor" href="#doc-phase_11--8-ending-unique-qr-history-item-8" aria-label="Link to this section">#</a>8. Ending: unique QR + history (item 8)</h2>
+<ul>
+<li>Current: ending produces a pixel fax record that saves as an official FEELZ PNG (<code>ui/feelzRecord.js</code>).</li>
+<li>Do:<ul>
+<li>Encode a compact run summary (chapter, class, ending, stats, key choices, version, seed/run id) into a QR printed on the record PNG. No server needed: QR carries the data (or a short code + hash).</li>
+<li><strong>Digital copy:</strong> &quot;download unique save file&quot; containing the same data (JSON) the QR encodes; importing it restores unlocks/history.</li>
+<li><strong>Local history:</strong> every finished run saved locally with its QR; a History screen lists runs and shows each QR; unlocks accumulate and each update&#39;s QR can include the history so far.</li>
+</ul>
+</li>
+<li>Needs a vendored QR encoder (small MIT lib or ~300 lines of our own, vanilla JS).</li>
+<li><strong>Open:</strong> what must the QR do: just show a code, or open a URL on dreamxtre.me that loads the run (needs a read-only page, still no server)? Should importing a QR/file change game state (unlocks), and does that invite cheating (is that fine)? Privacy: no personal data in the QR.</li>
+</ul>
+<hr>
+<h2 id="doc-phase_11--cross-cutting"><a class="anchor" href="#doc-phase_11--cross-cutting" aria-label="Link to this section">#</a>Cross-cutting</h2>
+<ul>
+<li>Every step: calc(N * var(--px)) units, REDUCE EFFECTS, silent browser tests (mute before bot playthroughs), block mp3/mp4 in the test browser (IDM).</li>
+<li>Update <a class="doc-ref" href="#doc-handoff" data-doc="doc-handoff"><code>HANDOFF.md</code></a> &quot;What&#39;s next&quot; per step; manuscript sources for new text so the writer pipeline stays the source of truth.</li>
+<li>Bot playthrough + overflow sweep after steps 4-7 (onboarding and dialog input changes are the highest regression risk).</li>
+<li>Commit directly to main per step; hold pushes until you confirm the URL.</li>
+</ul>
+<h2 id="doc-phase_11--still-open-after-your-answers"><a class="anchor" href="#doc-phase_11--still-open-after-your-answers" aria-label="Link to this section">#</a>Still open after your answers</h2>
+<ol>
+<li>Rwanda typo: wording or screenshot? And what is &quot;lie still&quot; (alley minigame or dialog) and what should it earn?</li>
+<li>OK to download Rwanda&#39;s 5 GIFs from Drive into <code>art-import/rwanda/</code>?</li>
+<li>Round mapping above (Deborah=swipe+batteries, Rwanda=wheel/scope, Samun=delivery spectrum, Rick=all): right, or does a mechanic belong elsewhere?</li>
+<li>QR as a link with data after <code>#</code> (above): OK?</li>
+</ol>
+
+      <nav class="pager">
+        <a href="#doc-attic" data-doc="doc-attic"><span>Previous</span>Attic</a>
         <span></span>
       </nav>
     </article></main>
 
 <script>
 (function () {
-  var ORDER = ["doc-game_manual","doc-handoff","doc-architecture","doc-scene_types","doc-asset_sizes","doc-character_art","doc-art_guide","doc-asset_guidelines","doc-asset_manifest","doc-script_key","doc-script_format","doc-content_schema","doc-stat_math","doc-music_pipeline","doc-jobs","doc-it_design","doc-gm_build","doc-dx-bible","doc-dx_demo_build_spec","doc-dx-mechanics","doc-dreamxtreme-game-development-demo-doc","doc-attic"];
+  var ORDER = ["doc-game_manual","doc-handoff","doc-architecture","doc-scene_types","doc-asset_sizes","doc-character_art","doc-art_guide","doc-asset_guidelines","doc-asset_manifest","doc-script_key","doc-script_format","doc-content_schema","doc-stat_math","doc-music_pipeline","doc-jobs","doc-it_design","doc-gm_build","doc-dx-bible","doc-dx_demo_build_spec","doc-dx-mechanics","doc-dreamxtreme-game-development-demo-doc","doc-attic","doc-phase_11"];
   var docs = ORDER.map(function (id) { return document.getElementById(id); }).filter(Boolean);
   var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-doc'));
   var search = document.getElementById('search');

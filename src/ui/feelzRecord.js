@@ -11,7 +11,10 @@ import { drawQr, qrModules } from './qrCode.js';
 import { iconHtml } from './feelingIcons.js';
 import { playFaxHandshake, playFaxLine, playFaxJam } from '../shell/audio.js';
 
-export const COMPANY = 'Halberd & Lowe Affective Systems';
+// Metatron: the corporation that builds FEELZ for the city, named for the
+// angel of Jewish mysticism who is heaven's scribe, the one who writes
+// everything down.
+export const COMPANY = 'Metatron';
 export const LORE = [
   `FEELZ is provided to residents of Lake Ulysses at no cost by ${COMPANY}, under Municipal Wellness Agreement LU-77, ratified by the Lake Ulysses City Council (Councilman B. Baiter, presiding).`,
   'Readings are drawn from county lake sensors, and from you.',
