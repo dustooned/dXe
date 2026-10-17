@@ -9,7 +9,8 @@ Item numbers match the review. Ordered by dependency and size, not by review num
 - DONE: Samun delivery spectrum (step 7): soft/harsh truth, white lie, BAIT (the combative full-push lie, chosen 2026-10-16); numbers strip hidden by status ailments; guard meter.
 - DONE (phase 1 of 3): FEELZ install + the feed (step 5): install scene, feed engine, Bob (original script), FEELZ ad, Widow's Grade doc. First run must visit every channel to close.
 - DONE: feed phase 2: Pastor, Rick, Rwanda, Samun channels (7 in all), placeholder pictures.
-- NEXT: feed phase 3 (epilogue rerun that reflects the run); channel art; first choices (6); QR save (8); the spectrum for Rick.
+- DONE: feed phase 3: the morning-after feed reflects the run.
+- NEXT: channel art; first choices (6); QR save (8); the spectrum for Rick.
 
 ## Revision 1 (2026-10-16): your answers change steps 2, 4, 7, 8
 

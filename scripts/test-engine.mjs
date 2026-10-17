@@ -336,5 +336,20 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
   check('feed: every channel has an id, a name, a tag and beats with words', feed.channels.every((c) => c.id && c.name && c.tag && c.beats.length && c.beats.every((b) => b.text)));
 }
 
+// ── The morning-after feed (Phase 11 feed phase 3): each channel reflects the run ──
+{
+  const { epilogueFacts, pickEpilogue } = await import('../src/engine/feedEpilogue.js');
+  const epi = JSON.parse(fs.readFileSync('src/chapters/lake-ulysses/content/feed_epilogue.json', 'utf8'));
+  const open = JSON.parse(fs.readFileSync('src/chapters/lake-ulysses/content/feed.json', 'utf8'));
+  const ids = new Set(['bob', ...open.channels.map((c) => c.id)]);
+  const pick = (state) => Object.fromEntries(pickEpilogue(epi.channels, epilogueFacts(state)).map((c) => [c.id, c]));
+  const quiet = pick({ truthDebt: 9, choices: { deborah_01: 'lie', rick_shut_down: 'truth' }, bonds: {}, storiesHeard: [], guard: { SAMUN: 3 }, reckoningChoices: ['down', 'down'] });
+  const warm = pick({ truthDebt: 1, choices: { deborah_01: 'truth' }, bonds: { DEBORAH: { syncs: 2, bids: 1 }, RWANDA: { syncs: 2, bids: 1 }, RICK: { syncs: 2, bids: 1 } }, storiesHeard: ['DEBORAH'], guard: { SAMUN: 0 }, reckoningChoices: ['confess', 'down'] });
+  check('morning feed: every epilogue channel is one of the opening channels, and every one has a fallback', epi.channels.every((c) => ids.has(c.id) && c.variants.some((v) => !v.when)) && epi.channels.length === ids.size);
+  check('morning feed: a murky lake, no trust, Rick shut out, quiet baptism', quiet.bob.variant === 2 && quiet.grade.variant === 1 && quiet.barlot.variant === 1 && quiet.wall.variant === 1 && quiet.fixes.variant === 2 && quiet.pastor.variant === 1);
+  check('morning feed: a clear lake, Deborah\'s story, Rwanda and Rick trusted, Samun\'s guard broken, a confession', warm.bob.variant === 0 && warm.grade.variant === 0 && warm.barlot.variant === 0 && warm.wall.variant === 0 && warm.fixes.variant === 0 && warm.pastor.variant === 0);
+  check('morning feed: the ad counts your lies ({lies} filled), and zero gets its own line', /told 1 lies/.test(quiet.ad.beats[0].text) && /zero lies/.test(pick({ truthDebt: 0, choices: { a_1: 'truth' } }).ad.beats[0].text));
+}
+
 console.log(failed ? `\n${failed} failed, ${passed} passed` : `\nall ${passed} passed`);
 process.exit(failed ? 1 : 0);

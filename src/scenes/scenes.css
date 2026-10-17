@@ -2593,3 +2593,21 @@
   letter-spacing: 0.1em;
   opacity: 0.35;
 }
+/* The morning feed's notification card, before the channels open. */
+.dx-feed-intro {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: calc(14 * var(--px));
+  cursor: pointer;
+}
+.dx-feed-intro__app {
+  margin: 0;
+  font-size: calc(12 * var(--fs));
+  letter-spacing: 0.15em;
+}
+.dx-feed-intro__text {
+  margin: 0;
+  white-space: pre-line;
+  line-height: 2;
+}

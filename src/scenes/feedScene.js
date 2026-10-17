@@ -44,11 +44,14 @@ const ART = {
   lakeGauge: ({ run }) => createLakeGauge(run.get().truthDebt ?? 0),
 };
 
-export function mount(stageEl, scene, { run, onComplete, setSkipHandler }) {
+export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler }) {
   preloadTypewriterTick();
   const speed = loadSettings().textSpeed ?? 'normal';
-  const channels = scene.channels.map((ch) => ({ ...ch, ...timeline(ch, speed) }));
-  const firstRound = !run.get().repeat;
+  // The morning-after feed (scene.epilogue) picks its channels from the run.
+  const list = typeof scene.channels === 'function' ? scene.channels(run.get()) : scene.channels;
+  const channels = list.map((ch) => ({ ...ch, ...timeline(ch, speed) }));
+  // Visiting every channel is the opening's first-run rule only.
+  const firstRound = !run.get().repeat && !scene.epilogue;
   const handle = run.get().handle ?? 'you';
   const visited = new Set([0]);
   const offsets = channels.map(() => 0);
@@ -307,7 +310,8 @@ export function mount(stageEl, scene, { run, onComplete, setSkipHandler }) {
   function finish() {
     if (unmounted) return;
     run.set({ feedHearts: hearts.size });
-    onComplete();
+    if (scene.exitOnClose) exit();
+    else onComplete();
   }
 
   // The HUD skip: first time through, it flips to a channel you haven't seen;
@@ -325,8 +329,22 @@ export function mount(stageEl, scene, { run, onComplete, setSkipHandler }) {
   window.addEventListener('keydown', onKey);
 
   if (scene.ambient) startAmbient(scene.ambient);
-  buildChannel();
-  tickTimer = later(tick, TICK_MS);
+  // An intro card (the morning feed's notification) waits for a tap; the
+  // channels' clock starts when it's dismissed.
+  if (scene.intro) {
+    const card = document.createElement('div');
+    card.className = 'dx-screen dx-feed-intro';
+    card.innerHTML = '<p class="dx-feed-intro__app"></p><p class="dx-text dx-feed-intro__text"></p><p class="dx-text dx-tap-hint">(tap to open)</p>';
+    card.querySelector('.dx-feed-intro__app').textContent = 'FEELZ';
+    card.querySelector('.dx-feed-intro__text').textContent = scene.intro;
+    card.addEventListener('click', () => { playSfx('ping'); buildChannel(); tickTimer = later(tick, TICK_MS); }, { once: true });
+    stageEl.innerHTML = '';
+    stageEl.appendChild(card);
+    playSfx('vibrate');
+  } else {
+    buildChannel();
+    tickTimer = later(tick, TICK_MS);
+  }
 
   return function unmount() {
     unmounted = true;

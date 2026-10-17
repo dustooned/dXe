@@ -27,7 +27,7 @@ const ENDING_INTENSITY = {
 
 const JUDGMENT_BEAT_MS = 900;
 
-export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
+export function mount(stageEl, scene, { run, exit, onComplete, recordEnding, chapterId }) {
   const endingKey = getEndingKey(run.get().truthDebt);
   const ending = scene.endings[endingKey];
   recordEnding?.(chapterId, endingKey);
@@ -248,10 +248,13 @@ export function mount(stageEl, scene, { run, exit, recordEnding, chapterId }) {
   function appendMenuButton(screen) {
     const btn = document.createElement('button');
     btn.className = 'dx-btn';
-    btn.textContent = 'BACK TO TITLE';
+    // A chapter with a morning-after feed (scene.then) plays it first; the
+    // feed's CLOSE APP goes back to the title.
+    btn.textContent = scene.then ? 'THE NEXT MORNING ▶' : 'BACK TO TITLE';
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      exit();
+      if (scene.then) onComplete();
+      else exit();
     });
     screen.appendChild(btn);
   }

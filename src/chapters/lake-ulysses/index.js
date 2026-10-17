@@ -29,6 +29,8 @@ import pastor from './content/pastor.json';
 import feelzLaunch from './content/feelz_launch.json';
 import feelzInstall from './content/feelz_install.json';
 import feed from './content/feed.json';
+import feedEpilogue from './content/feed_epilogue.json';
+import { epilogueFacts, pickEpilogue } from '../../engine/feedEpilogue.js';
 import therapist from './content/therapist.json';
 import deborah from './content/deborah.json';
 import rwanda from './content/rwanda.json';
@@ -124,7 +126,10 @@ const SCENES = [
   { type: 'dialog', id: 'rick', npc: rick },
 
   { type: 'reckoning', id: 'reckoning', pastor },
-  { type: 'ending', id: 'ending', endings },
+  { type: 'ending', id: 'ending', endings, then: 'morning-feed' },
+  // The morning after (Phase 11 feed phase 3): the same channels, each in the
+  // version this run earned (engine/feedEpilogue.js). CLOSE APP goes home.
+  { type: 'feed', id: 'morning-feed', epilogue: true, exitOnClose: true, intro: '1 NEW NOTIFICATION\nTHE NEXT MORNING', anims: feedAnims(), ambient: '/assets/lake-ulysses/audio/lk_01.mp3', channels: morningChannels },
 ];
 
 // The feed's channels: Bob's broadcast first (bob_baiter.json as written,
@@ -142,6 +147,15 @@ function feedChannels() {
   // feed anim built from plates.json; the frames are already on disk).
   return [bob, ...feed.channels.map((ch) => (ch.plate && plates[ch.plate] ? { ...ch, bgAnim: `plate_${ch.plate}` } : ch))];
 }
+// The morning feed's channels for this run: each channel's picture from the
+// opening feed, its beats from the variant the run earned.
+function morningChannels(state) {
+  const shells = Object.fromEntries(feedChannels().map((ch) => [ch.id, ch]));
+  return pickEpilogue(feedEpilogue.channels, epilogueFacts(state))
+    .filter((ch) => shells[ch.id])
+    .map((ch) => ({ ...shells[ch.id], beats: ch.beats }));
+}
+
 // A function, not a const: SCENES (above) calls it while the module loads.
 function feedAnims() {
   return {
@@ -267,7 +281,7 @@ export function mount(stageEl, { exit, restart, startSceneId }) {
       hud.setSkip(sequencer.isSkippable() ? sequencer.skip : null);
       // Checkpoint at the start of every scene (shell/save.js): a crash loses
       // at most the scene in progress. An ending means the run is done.
-      if (scene.type === 'ending') clearCheckpoint();
+      if (scene.type === 'ending' || scene.epilogue) clearCheckpoint();
       else if (saveCheckpoint({ chapterId: id, sceneId: scene.id, state: run.get() })) hud.showSaving();
     },
   });

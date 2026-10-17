@@ -1,0 +1,102 @@
+{
+  "_note": "The morning-after feed (engine/feedEpilogue.js). Per channel id (the same channels as feed.json, same pictures), variants in order; the first whose `when` holds plays. {handle} is the player's username, {lies} how many lies they told.",
+  "channels": [
+    {
+      "id": "bob",
+      "variants": [
+        { "when": { "ending": ["CLEAN_CUT"] }, "beats": [
+          { "speaker": "BOB BAITER", "text": "Folks, the numbers are in. Clearest water this county's seen in years!", "comments": [{ "who": "lakelady", "text": "who did this" }, { "who": "jessrn", "text": "@{handle} was this you" }] },
+          { "speaker": "BOB BAITER", "text": "Which is why water filters are now fifty percent off. At my shop.", "comments": [{ "who": "trout_dad", "text": "of course" }] }
+        ] },
+        { "when": { "ending": ["FUNCTIONAL_MASK"] }, "beats": [
+          { "speaker": "BOB BAITER", "text": "Water's holding steady, folks! {slow}Acceptable,{/slow} as they say.", "comments": [{ "who": "dusty_ray", "text": "still acceptable" }, { "who": "nightcrawler", "text": "acceptable forever" }] }
+        ] },
+        { "beats": [
+          { "speaker": "BOB BAITER", "text": "Now, there's been some talk about the color.", "comments": [{ "who": "jessrn", "text": "the fish are upside down bob" }] },
+          { "speaker": "BOB BAITER", "text": "The county sensors are... being serviced.", "comments": [{ "who": "lakelady", "text": "serviced" }, { "who": "trout_dad", "text": "@{handle} you seeing this" }] }
+        ] }
+      ]
+    },
+    {
+      "id": "ad",
+      "variants": [
+        { "when": { "liesZero": true }, "beats": [
+          { "speaker": "FEELZ", "text": "Meet @{handle}. This week, @{handle} told zero lies. FEELZ was there for all of it.", "comments": [{ "who": "dusty_ray", "text": "zero?? teach me" }] },
+          { "speaker": "FEELZ", "text": "FEELZ. We remember, so you don't have to.", "comments": [{ "who": "jessrn", "text": "wait what" }] }
+        ] },
+        { "beats": [
+          { "speaker": "FEELZ", "text": "Meet @{handle}. This week, @{handle} told {lies} lies. FEELZ was there for every one.", "comments": [{ "who": "nightcrawler", "text": "thats a lot of lies" }, { "who": "lakelady", "text": "everybody lies tho" }] },
+          { "speaker": "FEELZ", "text": "FEELZ. We remember, so you don't have to.", "comments": [{ "who": "jessrn", "text": "wait what" }] }
+        ] }
+      ]
+    },
+    {
+      "id": "grade",
+      "variants": [
+        { "when": { "trusted": "DEBORAH", "story": "DEBORAH" }, "beats": [
+          { "text": "WIDOW'S GRADE, PART TWO.\nThis week, a mother came to the county meeting. She asked for a guardrail at the third switchback.", "comments": [{ "who": "lakelady", "text": "that's Deborah" }, { "who": "trout_dad", "text": "she never talks at meetings" }] },
+          { "text": "She didn't say why it mattered. She didn't have to.", "holdMs": 5000, "comments": [{ "who": "jessrn", "text": "good for her" }] }
+        ] },
+        { "beats": [
+          { "text": "WIDOW'S GRADE, PART TWO.\nWe reached out to the families. Most said no. One sent us a scripture.", "comments": [{ "who": "dusty_ray", "text": "typical" }] }
+        ] }
+      ]
+    },
+    {
+      "id": "pastor",
+      "variants": [
+        { "when": { "baptism": "confess" }, "beats": [
+          { "speaker": "PASTOR GABRIEL", "text": "Brother Bubbles has a question. Pastor, why did our newest member come up {slow}talking?{/slow}", "comments": [{ "who": "nightcrawler", "text": "@{handle} what did you say down there" }] }
+        ] },
+        { "beats": [
+          { "speaker": "PASTOR GABRIEL", "text": "Our newest member came up clean. Quiet as a stone. That's how we like 'em.", "comments": [{ "who": "lakelady", "text": "that's worse" }] }
+        ] }
+      ]
+    },
+    {
+      "id": "barlot",
+      "variants": [
+        { "when": { "trusted": "RICK" }, "beats": [
+          { "text": "(Same lot. Same bikes. Rick is sitting on the curb, his vest over the bike seat, not on him. Someone calls his name. He doesn't get up.)", "comments": [{ "who": "jessrn", "text": "is rick ok" }] },
+          { "speaker": "RICK", "text": "Nah. Not tonight.", "comments": [{ "who": "dusty_ray", "text": "he looks... fine?" }] }
+        ] },
+        { "when": { "shutDown": "RICK" }, "beats": [
+          { "text": "(Same lot. Two guys on the gravel this time.)", "comments": [{ "who": "trout_dad", "text": "again??" }, { "who": "lakelady", "text": "somebody call somebody" }] }
+        ] },
+        { "beats": [
+          { "text": "(The lot is empty. One bike. The door's open, and nobody comes out.)", "comments": [{ "who": "nightcrawler", "text": "where is everybody" }] }
+        ] }
+      ]
+    },
+    {
+      "id": "wall",
+      "variants": [
+        { "when": { "trusted": "RWANDA" }, "beats": [
+          { "text": "(The face on the wall is finished. Rwanda turns around and looks at the camera instead.)", "comments": [{ "who": "lakelady", "text": "she's smiling??" }] },
+          { "speaker": "RWANDA", "text": "Somebody told me the truth this week. I'm keeping her face how it is.", "comments": [{ "who": "nightcrawler", "text": "sent 20" }, { "who": "jessrn", "text": "@{handle} was it you" }] }
+        ] },
+        { "beats": [
+          { "text": "(The wall is painted over. Beige.)", "comments": [{ "who": "dusty_ray", "text": "nooo" }] },
+          { "text": "STREAM OFFLINE", "holdMs": 4000, "comments": [{ "who": "trout_dad", "text": "they painted over it" }] }
+        ] }
+      ]
+    },
+    {
+      "id": "fixes",
+      "variants": [
+        { "when": { "guardBroken": "SAMUN" }, "beats": [
+          { "text": "(One shirt. Just the one.)", "comments": [{ "who": "jessrn", "text": "ONE SHIRT" }] },
+          { "speaker": "SAMUN", "text": "Day two. Not fixing anything today. Just checking in.", "comments": [{ "who": "lakelady", "text": "proud of you man" }] }
+        ] },
+        { "when": { "trusted": "SAMUN" }, "beats": [
+          { "text": "(Two shirts.)", "comments": [{ "who": "trout_dad", "text": "progress" }] },
+          { "speaker": "SAMUN", "text": "We fixed the radio! It plays a different station now.", "comments": [{ "who": "nightcrawler", "text": "what station" }] }
+        ] },
+        { "beats": [
+          { "text": "(More shirts than last time.)", "comments": [{ "who": "dusty_ray", "text": "he's been live 31 hours" }] },
+          { "speaker": "SAMUN", "text": "Still live! Still here!", "comments": [{ "who": "jessrn", "text": "samun go to sleep" }] }
+        ] }
+      ]
+    }
+  ]
+}
