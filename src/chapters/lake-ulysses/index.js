@@ -247,6 +247,11 @@ const initialRunState = {
   permFace: null,
   permVoice: null,
   intakeLean: null,
+  // The FEELZ check-in (feelz_launch.json): 'water' most days = on edge
+  // (masks show longer, the needle won't settle); 'fine' nearly every day =
+  // one more white lie an encounter (delivery.js budget).
+  onEdge: false,
+  whiteBonus: 0,
   // NPCs whose story (their STORY cutscene) the player has heard.
   storiesHeard: [],
   // Each baptism card's answer, in order ('confess' | 'down'), for the

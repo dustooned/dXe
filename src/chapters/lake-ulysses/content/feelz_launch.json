@@ -12,19 +12,29 @@
         "options": [
           {
             "label": "Not at all",
-            "record": "water"
+            "record": "water",
+            "reply": "Noted. Water level: normal."
           },
           {
             "label": "Several days",
-            "record": "water"
+            "record": "water",
+            "reply": "Noted. Water level: normal."
           },
           {
             "label": "More than half the days",
-            "record": "water"
+            "record": "water",
+            "set": {
+              "onEdge": true
+            },
+            "reply": "Noted. You will notice what people hide. Calm will be harder to read."
           },
           {
             "label": "Nearly every day",
-            "record": "water"
+            "record": "water",
+            "set": {
+              "onEdge": true
+            },
+            "reply": "Noted. You will notice what people hide. Calm will be harder to read."
           }
         ]
       }
@@ -37,19 +47,38 @@
         "options": [
           {
             "label": "Not at all",
-            "record": "fine"
+            "record": "fine",
+            "effects": {
+              "trust": 1,
+              "stability": -1
+            },
+            "reply": "Noted. Open books get better reception. The battery drains faster."
           },
           {
             "label": "Several days",
-            "record": "fine"
+            "record": "fine",
+            "reply": "Noted. Baseline set."
           },
           {
             "label": "More than half the days",
-            "record": "fine"
+            "record": "fine",
+            "effects": {
+              "stability": 1,
+              "trust": -1
+            },
+            "reply": "Noted. Holding it in saves battery. Reception may vary."
           },
           {
             "label": "Nearly every day",
-            "record": "fine"
+            "record": "fine",
+            "effects": {
+              "stability": 1,
+              "trust": -1
+            },
+            "set": {
+              "whiteBonus": 1
+            },
+            "reply": "Noted. 'Fine' saves battery. Reception may vary. You're practiced: small lies come easy."
           }
         ]
       }

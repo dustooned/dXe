@@ -27,7 +27,7 @@ import { characterArt, hatForContext, TUTORIAL_HATS, tutorialHatForBeat } from '
 import { createFeelzDartboard } from '../ui/feelzDartboard.js';
 import { EMOTIONS, emotionColor, emotionsForClass, getDominantEmotion, withClassMoods } from '../engine/loadout.js';
 import { createSwipeCard } from '../ui/swipeCard.js';
-import { hasDelivery, deliveryKind, buildDelivery, previewDelivery, previewText, hasAilment, tooTired, MASK_SLIP_AT } from '../engine/delivery.js';
+import { hasDelivery, deliveryKind, buildDelivery, previewDelivery, previewText, hasAilment, tooTired, MASK_SLIP_AT, WHITE_BUDGET } from '../engine/delivery.js';
 import { createLakeGauge } from '../ui/lakeGauge.js';
 import { lakeMarks } from '../engine/firstMarks.js';
 import { createOscilloscope, wheelSteps } from '../ui/oscilloscope.js';
@@ -184,7 +184,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // The battle beats (ui/oscilloscope.js reads this every frame): wind-up
   // tension as the NPC's line types, their mood color easing between
   // moments, the impact ring when they react, a gold ripple on a bid.
-  const drama = { tension: 0, color: null, shock: null, ripple: null, mismatch: false };
+  const drama = { tension: 0, color: null, shock: null, ripple: null, mismatch: false, onEdge: !!run.get().onEdge };
   // Set at the swipe, spent when the reaction lands.
   let pendingImpact = null;
   // A feeling just given, waiting for the wheel to show it (see giveFeeling).
@@ -196,6 +196,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // The delivery spectrum (engine/delivery.js): white lies told this
   // encounter, and their guard just broke (the truth comes out next).
   let whiteUsed = 0;
+  // White lies an encounter: one more if the check-in said you're practiced
+  // at "fine" (engine/checkIn.js).
+  const whiteBudget = () => WHITE_BUDGET + (run.get().whiteBonus ?? 0);
   let pendingCrack = false;
   // Pace pressure (engine/itPressure.js): the stall clock for the current
   // card, when the card appeared, and the rushing streaks.
@@ -965,7 +968,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // Too tired to push all the way: the full push is the short one.
     const tired = hard && tooTired(state);
     const kind = deliveryKind(side === 'left' ? 'truth' : 'lie', hard && !tired);
-    const p = previewDelivery(state, currentNode(), kind, activeEmotion, { whiteUsed, baitFail: npc.baitFail });
+    const p = previewDelivery(state, currentNode(), kind, activeEmotion, { whiteUsed, budget: whiteBudget(), baitFail: npc.baitFail });
     const shutOut = /(_shut_down|_closed|_hard)$/.test(currentNodeId ?? '');
     const text = previewText(p, { hidden: hasAilment(state, { shutOut }) });
     if (tired) text.parts = ['TOO TIRED TO PUSH', ...text.parts];
@@ -980,7 +983,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     let delivered = null;
     if (hasDelivery(currentNode())) {
       if (tooTired(run.get())) hard = false; // no strength to push all the way
-      delivered = buildDelivery(currentNode(), deliveryKind(sideKey, hard), { whiteUsed, trust: run.get().trust ?? 5, baitFail: npc.baitFail });
+      delivered = buildDelivery(currentNode(), deliveryKind(sideKey, hard), { whiteUsed, budget: whiteBudget(), trust: run.get().trust ?? 5, baitFail: npc.baitFail });
       swipeKey = delivered.swipeKey;
       if (delivered.kind === 'white') whiteUsed += 1;
     }

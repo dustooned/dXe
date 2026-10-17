@@ -385,5 +385,19 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
   check('run code: the link is short enough to scan off a screen', runLink(code, 'https://dreamxtre.me').length < 700);
 }
 
+// The FEELZ check-in answers do something, and the app says what (feelz_launch.json).
+{
+  const launch = JSON.parse(fs.readFileSync('src/chapters/lake-ulysses/content/feelz_launch.json', 'utf8'));
+  const opts = launch.beats.flatMap((b) => b.interactive?.options ?? []).filter((o) => o.record);
+  check('check-in: every answer gets a hint line from the app', opts.length === 8 && opts.every((o) => o.reply));
+  const water = opts.filter((o) => o.record === 'water');
+  const fine = opts.filter((o) => o.record === 'fine');
+  check('check-in: water most days or more = on edge; less = nothing', water.slice(2).every((o) => o.set?.onEdge) && water.slice(0, 2).every((o) => !o.set && !o.effects));
+  check('check-in: fine trades battery and bars, nearly every day adds a white lie', fine[0].effects.trust === 1 && fine[2].effects.stability === 1 && fine[3].set.whiteBonus === 1 && !fine[1].effects);
+  const { buildDelivery, WHITE_BUDGET } = await import('../src/engine/delivery.js');
+  const samN = JSON.parse(fs.readFileSync('src/chapters/lake-ulysses/content/samun.json', 'utf8')).nodes.samun_01;
+  check('check-in: the extra white lie moves the budget', !buildDelivery(samN, 'white', { whiteUsed: WHITE_BUDGET, budget: WHITE_BUDGET + 1 }).over && buildDelivery(samN, 'white', { whiteUsed: WHITE_BUDGET }).over);
+}
+
 console.log(failed ? `\n${failed} failed, ${passed} passed` : `\nall ${passed} passed`);
 process.exit(failed ? 1 : 0);

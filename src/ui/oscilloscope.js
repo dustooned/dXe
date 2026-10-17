@@ -190,7 +190,8 @@ export function createOscilloscope(
     // A mask (dialogScene.js drama.under): every few seconds, for a blink,
     // the trace shows the real feeling's color underneath.
     const under = getDrama?.()?.under;
-    const blink = under && performance.now() % 2200 < 420;
+    // On edge (the FEELZ check-in, engine/checkIn.js): the real color shows longer.
+    const blink = under && performance.now() % 2200 < (getDrama?.()?.onEdge ? 820 : 420);
     ctx2d.strokeStyle = npcFlat < 1 ? 'rgba(255,255,255,0.3)' : blink ? under : npcColorNow;
     traceNpcPath(w, h, 0);
     ctx2d.filter = 'none';
@@ -369,7 +370,9 @@ export function createOscilloscope(
 
     // Correlation meter, left of the portrait.
     const target = steps === null ? 0
-      : Math.cos(steps * Math.PI / 4) * (0.25 + 0.75 * close) + (1 - close) * 0.18 * Math.sin(timeMs * 0.0031);
+      : Math.cos(steps * Math.PI / 4) * (0.25 + 0.75 * close) + (1 - close) * 0.18 * Math.sin(timeMs * 0.0031)
+        // On edge: the needle never quite settles, calm is harder to read.
+        + (getDrama?.()?.onEdge ? 0.14 * Math.sin(timeMs * 0.017) + 0.08 * Math.sin(timeMs * 0.041) : 0);
     needle += (clamp(target, -1, 1) - needle) * 0.08;
     const mw = Math.min(sideW * 0.74, s * 1.5);
     const mh = Math.max(18, s * 0.46);

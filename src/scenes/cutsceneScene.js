@@ -51,7 +51,7 @@ import { createTypewriter } from '../ui/typewriterText.js';
 import { createNpcPortrait } from '../ui/npcPortrait.js';
 import { isFogged } from '../engine/contacts.js';
 import { updateSettings, loadSettings } from '../shell/settings.js';
-import { resolveCard } from '../engine/cardEngine.js';
+import { resolveCard, applyStatDelta } from '../engine/cardEngine.js';
 import { emotionColor, forClass, moodFor } from '../engine/loadout.js';
 import { later, cancelLater } from '../shell/pauseBus.js';
 import { quoteSpeech } from '../ui/speech.js';
@@ -397,12 +397,17 @@ export function mount(stageEl, scene, { run, onComplete }) {
       run.set({ checkIn: { ...run.get().checkIn, [option.record]: inClass(option.label) } });
     }
     if (option.store) run.set({ [option.store]: inClass(option.label) });
+    // What an answer does to the run (the FEELZ check-in): meter changes
+    // (soft-capped like any other) and flags, e.g. { whiteBonus: 1 }.
+    if (option.effects) run.set(applyStatDelta(run.get(), option.effects));
+    if (option.set) run.set(option.set);
     if (option.reply) {
-      // A refused permission: the app answers, then carries on regardless.
+      // The app answers (a refused permission, what a check-in answer noted),
+      // then carries on regardless, after time to read it.
       currentTextBox.querySelector('.dx-cutscene-choices')?.remove();
       const textEl = currentTextBox.querySelector('.dx-cutscene-text');
       if (textEl) { typewriter?.destroy(); typewriter = createTypewriter(textEl, option.reply, { onChar: playTypewriterTick }); }
-      autoAdvanceTimer = later(advance, 1500);
+      autoAdvanceTimer = later(advance, Math.max(1500, option.reply.length * 55));
       return;
     }
     if (option.jumpTo) {

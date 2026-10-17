@@ -66,7 +66,7 @@ export function hasAilment(state, { shutOut = false } = {}) {
 
 // The answer as a card edge. ctx: { whiteUsed, trust, baitFail (lines), pick (0..1) }.
 // Returns { kind, swipeKey, edge, guardDelta, bidKey, over, bounced }.
-export function buildDelivery(node, kind, { whiteUsed = 0, trust = 5, baitFail = [], pick = Math.random() } = {}) {
+export function buildDelivery(node, kind, { whiteUsed = 0, budget = WHITE_BUDGET, trust = 5, baitFail = [], pick = Math.random() } = {}) {
   const truth = node.swipes.truth;
   const lie = node.swipes.lie;
   const d = node.delivery;
@@ -89,7 +89,7 @@ export function buildDelivery(node, kind, { whiteUsed = 0, trust = 5, baitFail =
     return { kind, swipeKey: 'truth', edge, guardDelta: GUARD_DELTA.soft, bidKey: 'truth' };
   }
   if (kind === 'white') {
-    if (whiteUsed >= WHITE_BUDGET) {
+    if (whiteUsed >= budget) {
       return { kind, swipeKey: 'lie', edge: lie, guardDelta: GUARD_DELTA.whiteOver, bidKey: 'lie', over: true };
     }
     const edge = {
