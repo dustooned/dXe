@@ -51,6 +51,30 @@ Busts stand on the bottom edge: they may bleed off the sides, **never off the bo
 
 Draw it flat. The loading bands, scanlines, tape border and fog tint are added in code.
 
+## FEELZ feed channels (the phone feed after the install)
+
+One picture per channel, full screen, looping (like a room background). The
+same picture plays in the morning-after feed. Until a channel has art it shows
+its name on black.
+
+| Channel | What's on it | Draw at | Format | Put it in |
+| :-- | :-- | :-- | :-- | :-- |
+| THE LIVING WATER HOUR (`pastor`) | Pastor Gabriel's public-access show, Brother Bubbles | **780 × 1688**, 4 to 12 frames | WebP | `sprites/spr_feed_pastor/spr_feed_pastor_0000` … |
+| BAR LOT (`barlot`) | A stranger's phone video of Rick's fight in the lot | **780 × 1688**, 4 to 12 frames | WebP | `sprites/spr_feed_barlot/spr_feed_barlot_0000` … |
+| WALL WORK (`wall`) | Rwanda painting her mural | **780 × 1688**, 4 to 12 frames | WebP | `sprites/spr_feed_wall/spr_feed_wall_0000` … |
+| WIDOW'S GRADE (`grade`) | The documentary's road (fictional; nothing from Deborah's story) | **780 × 1688**, 4 to 12 frames | WebP | `sprites/spr_feed_grade/spr_feed_grade_0000` … |
+| SAMUN FIXES ANYTHING (`fixes`) | His repair stream, layers of shirts and pants (now his chapter plate) | **780 × 1688**, 4 to 12 frames | WebP | `sprites/spr_feed_fixes/spr_feed_fixes_0000` … |
+
+Bob Baiter (`bob`) and the FEELZ ad (`ad`) already have their pictures.
+
+Mostly covered (at 2×): the **top 380 px** (the buttons, channel bar,
+scrubber and CLOSE APP), the **bottom 330 px** (the caption box), and the
+**right 90 px** between 40% and 60% down (the flip arrows on a computer).
+Comments scroll over the middle left. **The top 170 px is the preview:** when
+the feed bounces or you pull, the next channel shows only its top edge under
+its name, so let the art's top edge say which channel it is. Tell Claude the frame count and fps when
+the frames are in; each channel is one line in `anims.js` + `feed.json`.
+
 ## Room objects
 
 Draw at the **2×** size. Clean **white-line art on transparent**: the game tints
