@@ -87,7 +87,6 @@ const ROOMS = {
 
 const STEPS = [
   { type: 'walk', rooms: ['barlot-01'], roomsById: ROOMS },
-  { type: 'gimmick', prompt: { text: 'SOMEONE SHOULDERS PAST' }, response: 'swipe-right', sound: 'bump' },
 ];
 
 export function mount(stageEl, scene, context) {

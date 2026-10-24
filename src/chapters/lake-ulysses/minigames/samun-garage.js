@@ -87,7 +87,6 @@ const ROOMS = {
 
 const STEPS = [
   { type: 'walk', rooms: ['garage-01'], roomsById: ROOMS },
-  { type: 'gimmick', prompt: { text: 'DUCK THE HOIST' }, response: 'swipe-left', sound: 'whir' },
 ];
 
 export function mount(stageEl, scene, context) {

@@ -87,7 +87,6 @@ const ROOMS = {
 
 const STEPS = [
   { type: 'walk', rooms: ['alley-01'], roomsById: ROOMS },
-  { type: 'gimmick', prompt: { text: 'THE DOG BEHIND THE FENCE' }, response: 'swipe-right', sound: 'bark' },
 ];
 
 export function mount(stageEl, scene, context) {
