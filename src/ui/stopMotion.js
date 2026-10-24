@@ -223,6 +223,89 @@ const MOTIFS = {
     }
   },
 
+  // ---- the four doors (confrontation walk-ins) ----
+  // Deborah: the door opens before you knock. It opens on threes, a crack at
+  // a time, and she is already a shape in it.
+  door(c, f) {
+    line(c, 0, 10, W, 10); line(c, 0, 158, W, 158);
+    rect(c, 14, 22, 50, 136);
+    c.fillStyle = '#000';
+    rect(c, 17, 25, 44, 133);
+    c.fillStyle = '#fff';
+    const open = 6 + (held(f, 3) / 3) * 4; // 6..15 px of gap
+    dither(c, 17, 25, open, 133, 0);
+    rect(c, 17 + open, 25, 44 - open, 133); // the door slab
+    c.fillStyle = '#000';
+    disc(c, 22 + open, 90, 2); // knob
+    rect(c, 20, 40, 3, 50); // her, in the gap: a dark edge of a person
+    disc(c, 21, 36, 3);
+    c.fillStyle = '#fff';
+    const tilt = held(f, 4) % 8 === 0 ? 1 : 0; // the frame on the wall, never level
+    line(c, 66, 40 + tilt, 76, 44 - tilt); line(c, 66, 52 + tilt, 76, 56 - tilt);
+    line(c, 66, 40 + tilt, 66, 52 + tilt); line(c, 76, 44 - tilt, 76, 56 - tilt);
+  },
+
+  // Rwanda: at the window, her back to the room, the alley below. Rain on
+  // the glass ticks down on twos.
+  window(c, f) {
+    rect(c, 8, 18, 62, 80);
+    c.fillStyle = '#000';
+    rect(c, 11, 21, 56, 74);
+    c.fillStyle = '#fff';
+    line(c, 39, 21, 39, 95); line(c, 11, 58, 67, 58);
+    for (let i = 0; i < 9; i++) { // rain
+      const x = 13 + ((i * 17) % 52);
+      const y = 22 + ((i * 23 + held(f, 2) * 6) % 70);
+      line(c, x, y, x, y + 3);
+    }
+    rect(c, 50, 72, 2, 22); rect(c, 46, 70, 10, 4); // the payphone, down in the alley
+    // Her: shoulders and the back of her head, dark against the window.
+    const sway = Math.round(wave(f, 4) * 1);
+    c.fillStyle = '#000';
+    disc(c, 39 + sway, 92, 11);
+    rect(c, 20 + sway, 104, 38, 64);
+    c.fillStyle = '#fff';
+    ring(c, 39 + sway, 92, 11);
+    line(c, 20 + sway, 104, 20 + sway, H); line(c, 58 + sway, 104, 58 + sway, H);
+    for (let a = 0; a < 8; a++) px(c, 31 + sway + a * 2, 80 - (a % 2) * 2); // her hair, catching the light
+  },
+
+  // Samun: hands working a rag that stopped being clean a long time ago.
+  // Round and round, on twos. He can't put it down.
+  rag(c, f) {
+    const t = (held(f, 2) / FRAMES) * Math.PI * 2;
+    const ox = Math.round(Math.cos(t) * 6);
+    const oy = Math.round(Math.sin(t) * 4);
+    dither(c, 18 + ox, 76 + oy, 42, 24, held(f, 2) % 2); // the rag
+    for (let i = 0; i < 4; i++) line(c, 18 + ox + i * 10, 76 + oy, 22 + ox + i * 10, 100 + oy);
+    // Two hands, one over, one under.
+    rect(c, 10 + ox, 70 + oy, 22, 12); for (let i = 0; i < 4; i++) rect(c, 30 + ox, 70 + oy + i * 3, 6, 2);
+    rect(c, 46 - ox, 94 - oy, 22, 12); for (let i = 0; i < 4; i++) rect(c, 42 - ox, 94 - oy + i * 3, 6, 2);
+    line(c, 0, 76 + oy, 10 + ox, 76 + oy); line(c, W, 100 - oy, 68 - ox, 100 - oy); // forearms
+    for (let i = 0; i < 5; i++) px(c, 20 + ((i * 11 + held(f, 3) * 5) % 40), 120 + ((i * 7) % 20)); // drips
+    line(c, 0, 140, W, 140); dither(c, 0, 141, W, 27, 1); // the bench
+  },
+
+  // Rick: the end of the bar, his back to the wall. The bottles behind him
+  // shuffle on threes; his hand on the glass doesn't move at all.
+  bar(c, f) {
+    for (let i = 0; i < 8; i++) { // bottles on the back shelf
+      const hop = (held(f, 3) / 3 + i) % 4 === 0 ? -2 : 0;
+      const x = 4 + i * 9;
+      rect(c, x, 30 + hop, 5, 16); rect(c, x + 1, 24 + hop, 3, 6);
+    }
+    line(c, 0, 48, W, 48);
+    c.fillStyle = '#000';
+    disc(c, 56, 72, 10); rect(c, 42, 82, 30, 40); // him, dark, at the end
+    c.fillStyle = '#fff';
+    ring(c, 56, 72, 10);
+    line(c, 42, 82, 42, 122); line(c, 72, 82, 72, 122);
+    rect(c, 0, 120, W, 4); // the bar top
+    dither(c, 0, 124, W, 44, held(f, 3) % 2);
+    rect(c, 26, 108, 8, 12); rect(c, 34, 112, 8, 5); // the glass, the hand
+    for (let i = 0; i < 3; i++) px(c, 36 + i * 2, 104 + i * 2); // knuckles, not his blood
+  },
+
   // FEELZ goes dark: a phone-shaped nothing, the lake still moving in it.
   dark(c, f) {
     rect(c, 18, 36, 42, 84);

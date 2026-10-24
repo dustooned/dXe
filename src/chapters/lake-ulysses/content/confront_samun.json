@@ -3,7 +3,8 @@
     {
       "sprite": "/assets/lake-ulysses/sprites/npc_samun.svg",
       "text": "He's wiping his hands on a rag that stopped being clean a long time ago.\n\nHe keeps doing it after they're dry.",
-      "sound": "rag"
+      "sound": "rag",
+      "loop": "rag"
     },
     {
       "it": true,
@@ -11,7 +12,8 @@
         "Guns": "That's not a habit. That's something he can't put down.",
         "Bible": "He's cleaning something that was never on his hands.",
         "Crystals": "His hands have been dry for a while now. He hasn't noticed. Or he has, and it doesn't matter."
-      }
+      },
+      "loop": "rag"
     },
     {
       "secret": true,
@@ -20,7 +22,8 @@
         "Guns": "Out by the curb, the drum you hauled sits where the truck will see it.\n\nHe keeps looking at the empty spot.",
         "Bible": "The calendar's on this month now.\n\nHe's counting something on it with his eyes.",
         "Crystals": "The radio plays an actual song now.\n\nHis rag has stopped moving."
-      }
+      },
+      "loop": "rag"
     },
     {
       "unrestored": true,
@@ -40,7 +43,8 @@
         "Guns": "You walked right past the full drum. He noticed.",
         "Bible": "You walked past the stuck calendar. He noticed you didn't look.",
         "Crystals": "You walked past the static. He's been waiting for someone to tune it."
-      }
+      },
+      "loop": "rag"
     },
     {
       "speaker": "SAMUN",

@@ -10,7 +10,9 @@
 //   loop?,                  ← a full-screen stop-motion loop drawn live behind
 //                              the text (ui/stopMotion.js KEYS: lake, road,
 //                              sprinkler, churchSign, dog, stairs, hallway,
-//                              dark). Placeholder for an artist's frames: name
+//                              door, window, rag, bar, dark). In a
+//                              confrontation, narration beats get a loop and
+//                              the speaking beats keep the oscilloscope. Placeholder for an artist's frames: name
 //                              `bgAnim` instead and that wins.
 //   bgAnim?, spriteAnim?,   ← animated (key into scene.anims)
 //   symbolAnim?,            ← animated sign in the upper right, over the
@@ -200,7 +202,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
       spr.alt = '';
       screen.appendChild(spr);
       attachAnim(spr, beat.spriteAnim);
-    } else if (beat.sprite) {
+    } else if (beat.sprite && !(beat.loop && !beat.bgAnim)) {
+      // (A loop draws the scene, them included: the static placeholder
+      // sprite would sit on top of it.)
       const spr = document.createElement('img');
       spr.className = 'dx-cutscene-sprite';
       spr.src = beat.sprite;

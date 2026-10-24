@@ -3,7 +3,8 @@
     {
       "sprite": "/assets/lake-ulysses/sprites/npc_deborah.svg",
       "text": "The door opens before you knock.\n\nShe has been standing on the other side of it for a while.",
-      "sound": "doorOpen"
+      "sound": "doorOpen",
+      "loop": "door"
     },
     {
       "it": true,
@@ -11,7 +12,8 @@
         "Guns": "She was already at the door. She needed you to be someone.",
         "Bible": "Waiting like that isn't patience. That's a vigil.",
         "Crystals": "She's been standing there so long her feet must ache. Nobody stands like that for nothing."
-      }
+      },
+      "loop": "door"
     },
     {
       "secret": true,
@@ -20,7 +22,8 @@
         "Guns": "Behind you, the diploma hangs level.\n\nShe sees it before she sees you.",
         "Bible": "She looks down. The mat says WELCOME now.\n\nShe reads it twice.",
         "Crystals": "Over your head the hall light holds steady.\n\nShe looks up at it like it said her name."
-      }
+      },
+      "loop": "door"
     },
     {
       "unrestored": true,
@@ -40,7 +43,8 @@
         "Guns": "You walked right past the crooked frame. She noticed.",
         "Bible": "You stepped over the mat. She saw which side was up.",
         "Crystals": "You walked under the dying bulb and left it dying. She noticed."
-      }
+      },
+      "loop": "door"
     },
     {
       "speaker": "DEBORAH",
