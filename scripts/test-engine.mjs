@@ -4,6 +4,7 @@
 // epilogue direction, contacts (moods, fog, voicemail), the lake haze, and a
 // whole-chapter sweep that every path through the content resolves.
 import fs from 'fs';
+import { KEYS as LOOP_KEYS } from '../src/ui/stopMotion.js';
 import { resolveCard, resolveGatedNode, softStep, restAfter, LIE_FOG } from '../src/engine/cardEngine.js';
 import { getEndingKey, getEpilogueLine } from '../src/engine/endingEngine.js';
 import { CONTACTS, callFor, voicemailFor, therapistReachable, FOG_WIFI } from '../src/engine/contacts.js';
@@ -397,6 +398,18 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
   const { buildDelivery, WHITE_BUDGET } = await import('../src/engine/delivery.js');
   const samN = JSON.parse(fs.readFileSync('src/chapters/lake-ulysses/content/samun.json', 'utf8')).nodes.samun_01;
   check('check-in: the extra white lie moves the budget', !buildDelivery(samN, 'white', { whiteUsed: WHITE_BUDGET, budget: WHITE_BUDGET + 1 }).over && buildDelivery(samN, 'white', { whiteUsed: WHITE_BUDGET }).over);
+}
+
+// Stop-motion loops (ui/stopMotion.js): every beat's `loop` names a motif that exists.
+{
+  const dir = 'src/chapters/lake-ulysses/content/';
+  const bad = [];
+  let n = 0;
+  for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.json'))) {
+    let j; try { j = JSON.parse(fs.readFileSync(dir + f, 'utf8')); } catch { continue; }
+    for (const b of j.beats ?? []) if (b.loop) { n++; for (const k of [].concat(b.loop)) if (!LOOP_KEYS.includes(k)) bad.push(`${f}:${k}`); }
+  }
+  check('stop-motion: every beat loop names a real motif (' + n + ' beats use one)' + (bad.length ? ' bad: ' + bad.join(',') : ''), n > 0 && bad.length === 0);
 }
 
 console.log(failed ? `\n${failed} failed, ${passed} passed` : `\nall ${passed} passed`);

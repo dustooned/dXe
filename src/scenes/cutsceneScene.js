@@ -7,6 +7,11 @@
 // }
 // beat shape: {
 //   text?, speaker?, style?,
+//   loop?,                  ← a full-screen stop-motion loop drawn live behind
+//                              the text (ui/stopMotion.js KEYS: lake, road,
+//                              sprinkler, churchSign, dog, stairs, hallway,
+//                              dark). Placeholder for an artist's frames: name
+//                              `bgAnim` instead and that wins.
 //   bgAnim?, spriteAnim?,   ← animated (key into scene.anims)
 //   symbolAnim?,            ← animated sign in the upper right, over the
 //                              speaker (Bob Baiter's biohazard/fish/etc.)
@@ -72,6 +77,7 @@ const SOUNDS = { feelzBoot: playFeelzBoot };
 import { createSpriteAnimator } from '../ui/spriteAnimator.js';
 import { createItPopup } from '../ui/itPopup.js';
 import { createOscilloscope } from '../ui/oscilloscope.js';
+import { createStopMotion } from '../ui/stopMotion.js';
 
 export function mount(stageEl, scene, { run, onComplete }) {
   preloadTypewriterTick();
@@ -81,6 +87,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let currentTextBox = null;
   let itPopup = null;
   let oscilloscope = null;
+  let stopMotion = null;
   // The speaking character's portrait on this beat (talks while the line draws).
   let portraitRef = null;
   let portraitDestroy = null;
@@ -136,6 +143,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     itPopup = null;
     oscilloscope?.destroy();
     oscilloscope = null;
+    stopMotion?.destroy();
+    stopMotion = null;
     portraitDestroy?.();
     portraitRef = portraitDestroy = null;
     stageEl.innerHTML = '';
@@ -152,7 +161,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
 
     const screen = document.createElement('div');
-    screen.className = `dx-screen dx-cutscene-screen${beat.style ? ` dx-cutscene-screen--${beat.style}` : ''}${beat.bgAnim && beat.style === 'narration' ? ' dx-cutscene-screen--over-art' : ''}`;
+    screen.className = `dx-screen dx-cutscene-screen${beat.style ? ` dx-cutscene-screen--${beat.style}` : ''}${(beat.bgAnim && beat.style === 'narration') || (beat.loop && !beat.bgAnim) ? ' dx-cutscene-screen--over-art' : ''}`;
     screen.addEventListener('click', handleTap);
 
     // Background — animated or static
@@ -162,6 +171,10 @@ export function mount(stageEl, scene, { run, onComplete }) {
       img.alt = '';
       screen.appendChild(img);
       attachAnim(img, beat.bgAnim);
+    } else if (beat.loop) {
+      const sm = createStopMotion(beat.loop);
+      stopMotion = sm;
+      screen.appendChild(sm.el);
     } else if (beat.image) {
       const img = document.createElement('img');
       img.className = 'dx-cutscene-bg';
@@ -476,6 +489,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     cancelLater(autoAdvanceTimer);
     typewriter?.destroy();
     itPopup?.destroy();
+    stopMotion?.destroy();
     oscilloscope?.destroy();
     portraitDestroy?.();
     if (scene.ambient) stopAmbient();

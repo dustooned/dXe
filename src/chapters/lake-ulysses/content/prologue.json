@@ -2,19 +2,23 @@
   "beats": [
     {
       "text": "Lake Ulysses. Three thousand acres, they call it. A jewel.",
-      "image": "/assets/lake-ulysses/backgrounds/prologue-lake.svg"
+      "loop": "lake"
     },
     {
-      "text": "{slow}The water looks fine today.{/slow}"
+      "text": "{slow}The water looks fine today.{/slow}",
+      "loop": "lake"
     },
     {
-      "text": "It always does. Right before it isn't."
+      "text": "It always does. Right before it isn't.",
+      "loop": "lake"
     },
     {
-      "text": "{pause:400}You wake up on the shoulder of Lakeshore Drive.{pause:300} Ears ringing.{sfx:gravel} Clothes damp."
+      "text": "{pause:400}You wake up on the shoulder of Lakeshore Drive.{pause:300} Ears ringing.{sfx:gravel} Clothes damp.",
+      "loop": "road"
     },
     {
-      "text": "No pain.{pause:300} Except the ringing."
+      "text": "No pain.{pause:300} Except the ringing.",
+      "loop": "road"
     },
     {
       "text": "Your head throbs.",
@@ -30,7 +34,8 @@
             "nextBeat": 6
           }
         ]
-      }
+      },
+      "loop": "road"
     },
     {
       "text": "Your phone{sfx:vibrate} buzzes against the gravel."

@@ -1,22 +1,32 @@
 {
   "beats": [
     {
-      "text": "FEELZ goes dark. {pause:400}The lake doesn't."
+      "text": "FEELZ goes dark. {pause:400}The lake doesn't.",
+      "loop": "dark"
     },
     {
-      "text": "You get up off the shoulder of Lakeshore Drive and start walking.{sfx:footsteps} Your legs remember the way home before you do."
+      "text": "You get up off the shoulder of Lakeshore Drive and start walking.{sfx:footsteps} Your legs remember the way home before you do.",
+      "loop": "road"
     },
     {
-      "text": "Lake Ulysses at this hour: sprinklers ticking,{sfx:sprinkler} a church sign missing half its letters, a dog{sfx:bark} barking at the water like it owes him money."
+      "text": "Lake Ulysses at this hour: sprinklers ticking,{sfx:sprinkler} a church sign missing half its letters, a dog{sfx:bark} barking at the water like it owes him money.",
+      "loop": [
+        "sprinkler",
+        "churchSign",
+        "dog"
+      ]
     },
     {
-      "text": "Your building. Three flights.{sfx:footsteps} The stairwell smells like lemon cleaner and somebody else's dinner."
+      "text": "Your building. Three flights.{sfx:footsteps} The stairwell smells like lemon cleaner and somebody else's dinner.",
+      "loop": "stairs"
     },
     {
-      "text": "Third floor. {pause:300}One door down the hall is propped open. Someone inside is humming a hymn, a little off-key."
+      "text": "Third floor. {pause:300}One door down the hall is propped open. Someone inside is humming a hymn, a little off-key.",
+      "loop": "hallway"
     },
     {
-      "text": "{slow}Homework,{/slow} you think. {pause:300}Ask one question."
+      "text": "{slow}Homework,{/slow} you think. {pause:300}Ask one question.",
+      "loop": "hallway"
     }
   ]
 }

@@ -947,3 +947,4 @@ knowledge:
 ## Running it
 
 See the root `README.md` for `npm install` / `npm run dev` / deploy.
+- **Stop-motion loops behind the walk expositions (2026-10-23).** A cutscene beat can say `"loop": "lake"` (or a list, hard-cut every ~2.3 s): `src/ui/stopMotion.js` draws a full-screen 1-bit loop live, 12 frames at 6 fps, each element on its own beat (twos/threes), gate weave, grain and one spliced inverted frame, inspired by the pixilation in Tetsuo: The Iron Man. Motifs (placeholders): lake, road, sprinkler, churchSign, dog, stairs, hallway, dark. Used in `prologue.json` (lake, road) and `walk_home.json` (dark, road, sprinkler/churchSign/dog, stairs, hallway). An artist's frames replace one by putting `bgAnim` on the beat (it wins). Pauses with the game. Not yet on the confrontation/story cutscenes or the asset bible.
