@@ -1,3 +1,4 @@
+import './polyfills.js';
 import './style.css';
 import './ui/ui.css';
 import './scenes/scenes.css';
@@ -340,7 +341,13 @@ function beginTransition(destination) {
   stopTitleMusic();
   const FADE_MS = 6100;
 
-  playStartJingle().then((jingle) => {
+  // The jingle is garnish: if it fails or stalls (an old iPad's WebAudio),
+  // the start must still happen, so it never gets to block the fade.
+  const silent = { stop() {} };
+  Promise.race([
+    playStartJingle().catch(() => silent),
+    new Promise((resolve) => setTimeout(() => resolve(silent), 3000)),
+  ]).then((jingle) => {
     const fade = fadeToBlack(FADE_MS, () => {
       jingle.stop();
       navigate(destination);

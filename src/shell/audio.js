@@ -331,7 +331,12 @@ async function loadAudio(url) {
   try {
     const response = await fetch(url);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const audioBuffer = await audioCtx.decodeAudioData(await response.arrayBuffer());
+    // Callback form too: older Safari (iPad) has no promise-returning decodeAudioData.
+    const bytes = await response.arrayBuffer();
+    const audioBuffer = await new Promise((resolve, reject) => {
+      const p = audioCtx.decodeAudioData(bytes, resolve, reject);
+      if (p && typeof p.then === 'function') p.then(resolve, reject);
+    });
     audioCache.set(url, audioBuffer);
     return audioBuffer;
   } catch (e) {

@@ -31,6 +31,9 @@ export default defineConfig({
   base: './',
   build: {
     outDir: 'dist',
+    // Older iPads (Safari 12/13) can't parse ?? ?. ??= : one unparsed token and
+    // nothing draws. esbuild lowers them for this target.
+    target: ['es2019', 'safari12'],
   },
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
