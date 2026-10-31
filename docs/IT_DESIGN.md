@@ -29,7 +29,7 @@ The render is `ui/itPopup.js`'s `createItPopup()`, usable from anywhere
   before "BACK TO TITLE" — the actual last word of the chapter
   (`ENDING_IT_TEXT`, same file).
 
-Every popup also plays `audio.playTyagl()` on mount — the same sting
+Every popup also plays `audio.playItSting()` on mount — the same sting
 `questionnaireScene.js` plays under the Therapist's diagnosis, reused
 deliberately since both are "the game reading you." All of the above is
 **placeholder prose** (~40 lines total across every table), written to
@@ -382,7 +382,7 @@ list.
   `reckoningScene.js` (the gatekeepers), and `endingScene.js`, none of
   which sequence beats at all. Any popup closes on a tap anywhere once its
   line has drawn, as well as on the X.
-- Every popup plays `audio.playTyagl()` on mount (the diagnosis sting,
+- Every popup plays `audio.playItSting()` on mount (the diagnosis sting,
   reused deliberately).
 
 **Content — placeholder prose throughout, ~40 lines total:**

@@ -307,7 +307,7 @@ async function uiArt() {
   for (const [n, f, sc] of [
     ['Lake gauge', 'src/ui/lakeGauge.js', 'Cutscenes and HUD: the lake as a drawn gauge'], ['Oscilloscope', 'src/ui/oscilloscope.js', 'Feeling readout'],
     ['FEELZ silhouette / dartboard / report', 'src/ui/feelzSilhouette.js, feelzDartboard.js, feelzReport.js, feelzRecord.js', 'FEELZ check-in and record'],
-    ['Meters (battery, Bars, Wi-Fi, clock)', 'src/ui/meterBar.js, statusBar.js', 'Status bar / HUD'], ['Swipe card, quick beat, ripple, spotlight', 'src/ui/swipeCard.js, quickBeat.js, ripple.js, spotlight.js', 'Minigames and dialog'],
+    ['Meters (battery, Bars, Wi-Fi, clock)', 'src/ui/statusBar.js', 'Status bar / HUD'], ['Swipe card, quick beat, ripple, spotlight', 'src/ui/swipeCard.js, quickBeat.js, ripple.js, spotlight.js', 'Minigames and dialog'],
     ['QR code', 'src/ui/qrCode.js (qrcode-generator)', 'FEELZ install'],
   ]) hud({ name: n, status: 'code', size: '', path: f, scene: sc, thumb: null, textOnly: true });
 

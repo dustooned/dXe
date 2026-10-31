@@ -920,7 +920,6 @@
 }
 
 /* After the hangup, the call's screen fades back (not resized). */
-.dx-game-screen--hungup .dx-meters,
 .dx-game-screen--hungup .dx-lake,
 .dx-game-screen--hungup .dx-portrait,
 .dx-game-screen--hungup .dx-nameplate,

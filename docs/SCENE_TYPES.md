@@ -398,7 +398,7 @@ inverted colors (white box, black text, vs. the rest of the game's
 black-on-white), and its own display font (`--font-it`, "VT323" — a rough
 CRT-terminal face) instead of the game's pixel font — the point is that it
 should read as wrong, not as another piece of UI chrome. No speaker label
-(IT doesn't announce itself), no choices. It also plays `audio.playTyagl()`
+(IT doesn't announce itself), no choices. It also plays `audio.playItSting()`
 the instant it mounts — the same sting `questionnaireScene.js` plays under
 the Therapist's diagnosis, reused deliberately rather than a distinct IT
 sound, since both are "the game reading you" (see IT_DESIGN.md's "IT is

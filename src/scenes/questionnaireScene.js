@@ -397,14 +397,17 @@ export function mount(stageEl, _scene, { run, onComplete }) {
     const feelings = CLASSES[cls]?.emotions ?? [];
     const chord = emotionsForClass(cls, []);
     let ready = false;
-    feelings.forEach((feeling, i) => {
-      filedTimers.push(later(() => {
-        wheel.light(feeling);
-        strikeEmotionVoice(feeling, chord);
-      }, 700 + i * 650));
-    });
-    const afterLights = 700 + feelings.length * 650 + 300;
-    filedTimers.push(later(() => {
+    let summed = false;
+    const lit = new Set();
+    const light = (feeling) => {
+      if (lit.has(feeling)) return;
+      lit.add(feeling);
+      wheel.light(feeling);
+      strikeEmotionVoice(feeling, chord);
+    };
+    const sum = () => {
+      if (summed) return;
+      summed = true;
       // Your class, heard and never named: a far-off shot, a singing bowl,
       // or a choir (audio.js playClassSigil).
       playClassSigil(cls);
@@ -414,16 +417,28 @@ export function mount(stageEl, _scene, { run, onComplete }) {
         line.textContent = text;
         body.appendChild(line);
       }
-    }, afterLights));
-    filedTimers.push(later(() => {
+    };
+    const open = () => {
+      if (ready) return;
       ready = true;
       const hint = document.createElement('p');
       hint.className = 'dx-text dx-tap-hint';
       hint.textContent = '(tap to continue)';
       body.appendChild(hint);
-    }, afterLights + 900));
+    };
+    feelings.forEach((feeling, i) => filedTimers.push(later(() => light(feeling), 700 + i * 650)));
+    const afterLights = 700 + feelings.length * 650 + 300;
+    filedTimers.push(later(sum, afterLights));
+    filedTimers.push(later(open, afterLights + 900));
 
-    screen.addEventListener('click', () => { if (ready) onComplete(); });
+    // A tap during the reveal shows it all at once; the next one moves on.
+    screen.addEventListener('click', () => {
+      if (ready) { onComplete(); return; }
+      filedTimers.forEach(cancelLater);
+      feelings.forEach(light);
+      sum();
+      open();
+    });
   }
 
   startAmbient(THERAPIST_AMBIENT);

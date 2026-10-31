@@ -2522,7 +2522,6 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // audio bleeds into the next scene.
     audio.stopLeitmotif();
     audio.stopPulse();
-    audio.unhush(0.05); // never leave the game silent if a story was cut short
     audio.duckMusic(false, 0.05);
     audio.setHaze(0, 1.5);
     encounterMusic.end();

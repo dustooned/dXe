@@ -385,7 +385,7 @@ Two consequences for asset work:
 - **Looping room tone for a scene:** `startAmbient(url)` on mount,
   `stopAmbient()` on unmount. A cutscene can declare `ambient` on the
   scene object and the handler does this for you.
-- **One-shot SFX:** add a function to `audio.js` following `playTyagl()`.
+- **One-shot SFX:** add a function to `audio.js` following `playItSting()`.
   Anything fired rapidly (per keystroke) should be preloaded into a buffer
   once — see `preloadTypewriterTick()` / `playTypewriterTick()`.
 - **NPC leitmotif:** add an entry to `LEITMOTIFS` in `audio.js`. A `url`

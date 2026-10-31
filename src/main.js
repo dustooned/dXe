@@ -232,7 +232,7 @@ function renderPreloader() {
       stingCancelled = true;
       timers.forEach(clearTimeout);
       vid.removeEventListener('ended', finish);
-      logoPhase.removeEventListener('click', finish);
+      screen.removeEventListener('click', finish);
       stingStop();
       screen.classList.add('dx-preloader-out');
       const fallback = setTimeout(() => { teardown(); afterLogo(); }, 700);
@@ -244,15 +244,19 @@ function renderPreloader() {
     }
 
     vid.addEventListener('ended', finish, { once: true });
-    logoPhase.addEventListener('click', finish, { once: true });
+    // Anywhere on the screen skips, not just the video's box.
+    screen.addEventListener('click', finish, { once: true });
 
     // A logo that can't play (iOS Low Power Mode, autoplay policy, an in-app
-    // browser) parks on frame 0, so 'ended' never fires and the only way out of
-    // the boot is a tap the player has no reason to know is required. Three
-    // ways out, because browsers fail this differently: an explicit rejection,
-    // a silent refusal that leaves it paused, and a start that never ends.
+    // browser, a file that won't load) parks on frame 0, so 'ended' never
+    // fires and the only way out of the boot is a tap the player has no reason
+    // to know is required. Ways out, because browsers fail this differently:
+    // an explicit rejection, the last source failing, and a probe for a clock
+    // that hasn't moved (`paused` alone isn't enough: play() clears it even
+    // when nothing loads), and a start that never ends.
     vid.play().catch(() => finish());
-    timers.push(setTimeout(() => { if (vid.paused) finish(); }, PLAY_PROBE_MS));
+    vid.lastElementChild.addEventListener('error', finish, { once: true });
+    timers.push(setTimeout(() => { if (vid.paused || vid.currentTime === 0) finish(); }, PLAY_PROBE_MS));
     timers.push(setTimeout(finish, LOGO_MAX_MS));
   }
 

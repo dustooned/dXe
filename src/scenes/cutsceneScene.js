@@ -86,6 +86,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   let beatIndex = 0;
   let typewriter = null;
   let autoAdvanceTimer = null;
+  let replying = false; // an option's reply is on screen (resolveChoice)
   let currentTextBox = null;
   let itPopup = null;
   let oscilloscope = null;
@@ -137,6 +138,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   }
 
   function render() {
+    replying = false;
     holdCleanup?.();
     holdCleanup = null;
     destroyAnimators();
@@ -424,6 +426,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
       currentTextBox.querySelector('.dx-cutscene-choices')?.remove();
       const textEl = currentTextBox.querySelector('.dx-cutscene-text');
       if (textEl) { typewriter?.destroy(); typewriter = createTypewriter(textEl, option.reply, { onChar: playTypewriterTick }); }
+      // A tap moves on sooner (handleTap): finish the line, then advance.
+      replying = true;
       autoAdvanceTimer = later(advance, Math.max(1500, option.reply.length * 55));
       return;
     }
@@ -445,7 +449,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       typewriter.finish();
       return;
     }
-    if (!currentBeat().interactive) {
+    if (!currentBeat().interactive || replying) {
       advance();
     }
   }

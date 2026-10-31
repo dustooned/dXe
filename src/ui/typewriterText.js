@@ -78,12 +78,6 @@ function markNarration(segments, mode) {
   return segments;
 }
 
-// Which characters of this text are quoted speech (a mouth moves for these)
-// and which are narration. Used by tests; the typewriter does the same live.
-export function speechFlags(text, narration = 'auto') {
-  return markNarration(parseSegments(text), narration).filter((s) => s.type === 'char' && !s.cbMark).map((s) => ({ char: s.char, speech: !s.narr }));
-}
-
 export function parseSegments(raw) {
   const segments = [];
   const speedStack = ['normal'];

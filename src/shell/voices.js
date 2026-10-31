@@ -54,10 +54,6 @@ function render(who, text) {
   return cache.get(key);
 }
 
-export function hasVoice(who) {
-  return !!VOICES[who];
-}
-
 // Says one of `who`'s lines. `phone` runs it through a telephone band;
 // `delayMs` waits first; `cut` (0..1) stops it partway, for a call that
 // drops mid-word; `gain` scales it. Returns the line's length in ms (0 if

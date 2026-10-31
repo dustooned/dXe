@@ -95,7 +95,6 @@ const LEITMOTIF_GAIN     = 0.14;
 // silence keeps that from popping in over a scene that was already quiet.
 const LEITMOTIF_FADE_IN_SEC = 1.4;
 const AMBIENT_MUSIC_GAIN = 0.07;
-const TYAGL_GAIN         = 0.45;
 const IT_STING_GAIN      = 0.45;
 const TYPEWRITER_GAIN    = 0.28;
 const TITLE_MUSIC_GAIN   = 0.13;
@@ -171,7 +170,7 @@ function ensureContext() {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     ctx = new AudioCtx();
     masterGain = ctx.createGain();
-    masterGain.gain.value = turnPaused || hushed ? 0 : masterVolume;
+    masterGain.gain.value = turnPaused ? 0 : masterVolume;
     hazeFilter = ctx.createBiquadFilter();
     hazeFilter.type = 'lowpass';
     hazeFilter.frequency.value = 20000;
@@ -270,7 +269,7 @@ export function getAnalyser() {
 // something actually creates one.
 export function setMasterVolume(volume) {
   masterVolume = Math.min(1, Math.max(0, volume));
-  if (masterGain && !turnPaused && !hushed) masterGain.gain.setTargetAtTime(masterVolume, ctx.currentTime, 0.01);
+  if (masterGain && !turnPaused) masterGain.gain.setTargetAtTime(masterVolume, ctx.currentTime, 0.01);
 }
 
 // The game pauses into silence when a phone is held sideways (shell/
@@ -281,26 +280,6 @@ export function setMasterVolume(volume) {
 let turnPaused = false;
 let turnTimer = null;
 
-// A trauma story is told in silence (dialogScene.js showConnection): the whole
-// mix — music, chord, ticks — falls away, and fades back when it is over.
-let hushed = false;
-export function hush(fadeSec = 0.6) {
-  hushed = true;
-  if (!ctx || turnPaused) return;
-  const t = ctx.currentTime;
-  masterGain.gain.cancelScheduledValues(t);
-  masterGain.gain.setValueAtTime(masterGain.gain.value, t);
-  masterGain.gain.linearRampToValueAtTime(0.0001, t + fadeSec);
-}
-export function unhush(fadeSec = 2.5) {
-  if (!hushed) return;
-  hushed = false;
-  if (!ctx || turnPaused) return;
-  const t = ctx.currentTime;
-  masterGain.gain.cancelScheduledValues(t);
-  masterGain.gain.setValueAtTime(Math.max(0.0001, masterGain.gain.value), t);
-  masterGain.gain.linearRampToValueAtTime(masterVolume, t + Math.max(0.01, fadeSec));
-}
 export function pauseAudio() {
   turnPaused = true;
   clearTimeout(turnTimer);
@@ -313,7 +292,7 @@ export function resumeAudio() {
   clearTimeout(turnTimer);
   if (!ctx) return;
   const restore = () => setTimeout(() => {
-    if (!turnPaused && !hushed) masterGain.gain.setTargetAtTime(masterVolume, ctx.currentTime, 0.08);
+    if (!turnPaused) masterGain.gain.setTargetAtTime(masterVolume, ctx.currentTime, 0.08);
   }, 250);
   ctx.resume().then(restore, restore);
 }
@@ -393,17 +372,6 @@ export function playTypewriterTick() {
   source.playbackRate.value = 0.88 + Math.random() * 0.24;
   const gain = ctx.createGain();
   gain.gain.value = TYPEWRITER_GAIN;
-  source.connect(gain).connect(masterGain);
-  source.start();
-}
-
-export async function playTyagl() {
-  const audioCtx = ensureContext();
-  const buffer = await loadAudio('/assets/shared/audio/tyagl.mp3');
-  const source = audioCtx.createBufferSource();
-  source.buffer = buffer;
-  const gain = audioCtx.createGain();
-  gain.gain.value = TYAGL_GAIN;
   source.connect(gain).connect(masterGain);
   source.start();
 }

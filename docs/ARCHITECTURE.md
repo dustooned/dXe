@@ -144,7 +144,7 @@ opens each NPC), `reckoningScene.js` (Pastor Gabriel's baptism),
 ## UI components (`src/ui/`)
 
 Small DOM-factory functions (`createSwipeCard`, `createFeelzDartboard`,
-`createMeterGroup`, `createNpcPortrait`, `createLakeGauge`,
+`createStatusBar`, `createNpcPortrait`, `createLakeGauge`,
 `createSpotlight`, `createFeelzSilhouette`, `createItPopup`, and more).
 Each one returns `{ el, ...helpers }`. Reusable across chapters and scene
 types; not required.
