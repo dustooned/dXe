@@ -2747,3 +2747,32 @@
 }
 .dx-feed__peek-label .dx-feed__more,
 .dx-feed__peek-label .dx-feed__ch { white-space: nowrap; }
+
+/* Health and safety + fiction notice before the chapter (noticeScene.js). */
+.dx-notice {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: calc(14 * var(--px));
+}
+.dx-notice__title {
+  font-size: calc(11 * var(--fs));
+  letter-spacing: calc(1 * var(--px));
+  border-bottom: calc(2 * var(--px)) solid var(--color-white);
+  padding-bottom: calc(6 * var(--px));
+}
+.dx-notice__body {
+  max-width: calc(260 * var(--px));
+}
+.dx-notice__foot {
+  opacity: 0.6;
+  font-size: calc(7 * var(--fs));
+  line-height: 1.6;
+}
+.dx-notice__hint {
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.dx-notice__hint.is-ready {
+  opacity: 0.5;
+}

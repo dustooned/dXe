@@ -17,6 +17,7 @@ import * as endingScene from '../../scenes/endingScene.js';
 import * as minigameScene from '../../scenes/minigameScene.js';
 import * as markerScene from '../../scenes/markerScene.js';
 import * as feedScene from '../../scenes/feedScene.js';
+import * as noticeScene from '../../scenes/noticeScene.js';
 import { ANIMS } from './anims.js';
 import { playStaticTransition } from '../../ui/staticTransition.js';
 
@@ -79,6 +80,8 @@ export const title = 'Truth Debt: Lake Ulysses';
 //   dialog     the encounter itself
 // Therapist is exempt from all of it — he belongs to the opening call.
 const SCENES = [
+  // Health and safety, then the fiction disclaimer (scenes/noticeScene.js).
+  { type: 'notice', id: 'notice' },
   { type: 'cutscene', id: 'it-intro', beats: itIntro.beats },
   { type: 'cutscene', id: 'opening-quote', beats: openingQuote.beats, anims: ANIMS },
   { type: 'cutscene', id: 'prologue', beats: prologue.beats, anims: ANIMS },
@@ -178,6 +181,7 @@ const HANDLERS = {
   minigame: minigameScene,
   marker: markerScene,
   feed: feedScene,
+  notice: noticeScene,
 };
 
 const initialRunState = {
