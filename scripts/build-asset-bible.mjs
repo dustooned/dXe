@@ -325,7 +325,7 @@ async function uiArt() {
   for (const [room, npc, scene, objs, adv] of rooms) {
     const bg0 = path.join(LU, 'sprites', `spr_${room}_bg`, `spr_${room}_bg_0000.svg`);
     mg({ name: `${room} background (6 frames)`, status: exists(bg0) ? 'placeholder' : 'missing', size: exists(bg0) ? dims(await sizeOf(bg0)) + ' (draw 780 × 1688)' : '780 × 1688', frames: 6, path: `sprites/spr_${room}_bg/spr_${room}_bg_0000…0005`, scene, thumb: exists(bg0) ? await thumb(bg0) : null });
-    for (const o of [...objs, adv]) for (const cl of ['', '_closeup']) {
+    for (const o of [...objs, adv]) for (const cl of o === adv ? [''] : ['', '_closeup']) {
       const f = path.join(LU, 'sprites', `${room}_${o}${cl}.svg`);
       mg({ name: `${room}_${o}${cl}${o === adv && !cl ? ' (the way on)' : ''}`, status: exists(f) ? 'placeholder' : 'missing', size: exists(f) ? dims(await sizeOf(f)) : '', path: `sprites/${room}_${o}${cl}.svg`, scene: `${scene} (${npc})`, thumb: exists(f) ? await thumb(f) : null });
     }

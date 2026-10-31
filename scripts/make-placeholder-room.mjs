@@ -101,7 +101,7 @@ const ROOMS = [
       { key: 'diploma',   label: 'DIPLOMA',  x: 78,  y: 250, w: 74,  h: 96  },
       { key: 'doormat',   label: 'DOORMAT',  x: 150, y: 596, w: 108, h: 44  },
       { key: 'lightbulb', label: 'BULB',     x: 262, y: 214, w: 52,  h: 62  },
-      { key: 'door',      label: 'DOOR',     x: 148, y: 300, w: 100, h: 280 },
+      { key: 'door',      label: 'DOOR',     x: 148, y: 300, w: 100, h: 280, way: true },
     ],
   },
   {
@@ -110,7 +110,7 @@ const ROOMS = [
       { key: 'neon',     label: 'NEON',     x: 66,  y: 208, w: 96, h: 58  },
       { key: 'payphone', label: 'PAYPHONE', x: 268, y: 356, w: 54, h: 118 },
       { key: 'mural',    label: 'MURAL',    x: 74,  y: 430, w: 88, h: 132 },
-      { key: 'gate',     label: 'GATE',     x: 152, y: 292, w: 96, h: 300 },
+      { key: 'gate',     label: 'GATE',     x: 152, y: 292, w: 96, h: 300, way: true },
     ],
   },
   {
@@ -119,7 +119,7 @@ const ROOMS = [
       { key: 'drum',     label: 'OIL DRUM', x: 72,  y: 468, w: 78, h: 112 },
       { key: 'calendar', label: 'CALENDAR', x: 258, y: 222, w: 66, h: 88  },
       { key: 'radio',    label: 'RADIO',    x: 256, y: 470, w: 68, h: 46  },
-      { key: 'bay',      label: 'BAY DOOR', x: 150, y: 286, w: 100, h: 300 },
+      { key: 'bay',      label: 'BAY DOOR', x: 150, y: 286, w: 100, h: 300, way: true },
     ],
   },
   {
@@ -128,7 +128,7 @@ const ROOMS = [
       { key: 'bike',    label: 'BIKE',    x: 60,  y: 470, w: 116, h: 96 },
       { key: 'ashtray', label: 'ASHTRAY', x: 268, y: 520, w: 56,  h: 40 },
       { key: 'flyer',   label: 'FLYER',   x: 264, y: 232, w: 58,  h: 78 },
-      { key: 'door',    label: 'DOOR',    x: 152, y: 288, w: 96,  h: 296 },
+      { key: 'door',    label: 'DOOR',    x: 152, y: 288, w: 96,  h: 296, way: true },
     ],
   },
 ];
@@ -149,7 +149,8 @@ function build() {
 
     for (const o of room.objects) {
       writeFileSync(join(OUT, `${room.id}_${o.key}.svg`), objectSprite(o.label, o.w, o.h), 'utf8');
-      writeFileSync(join(OUT, `${room.id}_${o.key}_closeup.svg`), closeup(o.label), 'utf8');
+      // The way on (door, gate, bay) is walked through, never looked at: no close-up.
+      if (!o.way) writeFileSync(join(OUT, `${room.id}_${o.key}_closeup.svg`), closeup(o.label), 'utf8');
     }
 
     console.log(`room "${room.id}": ${room.bgFrames} bg frames + ${room.objects.length} objects (sprite + closeup each)`);
