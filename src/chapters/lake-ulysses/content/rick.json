@@ -63,16 +63,16 @@
       ],
       "delivery": {
         "white": {
-          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+          "npcReaction": "\"Yeah.\" He rolls his shoulders, a little looser. \"Yeah, I did.\""
         },
         "soft": {
-          "playerText": "TK: the soft truth (rick_01): the true thing, said kindly.",
-          "npcReaction": "TK: how Rick takes the soft truth."
+          "playerText": "You got your patch back. I'm still wondering what he saw when he looked at you.",
+          "npcReaction": "\"He didn't see nothing.\" Too fast. He finishes his drink to have something to do with his hands."
         },
         "bait": {
-          "playerText": "TK: the bait (rick_01): a lie thrown to make Rick blurt the truth.",
-          "npcReaction": "TK: the bait lands; something true slips out of him.",
-          "ledgerEntry": "TK: what you baited Rick with (rick_01)."
+          "playerText": "Funny. His buddies are telling everybody he dropped you first.",
+          "npcReaction": "\"He never touched me.\" His voice goes up and cracks. \"...He looked. That's all he did. He looked at me like he knew something.\"",
+          "ledgerEntry": "You told Rick the man he beat was bragging that he'd won."
         }
       }
     },
@@ -119,16 +119,16 @@
       ],
       "delivery": {
         "white": {
-          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+          "npcReaction": "He snorts, pleased, and taps his glass against yours."
         },
         "soft": {
-          "playerText": "TK: the soft truth (rick_02_enabled): the true thing, said kindly.",
-          "npcReaction": "TK: how Rick takes the soft truth."
+          "playerText": "I'm not asking to make you soft. I'm asking because I don't think anybody ever has.",
+          "npcReaction": "He looks at you like you said it in another language. \"...Nobody's supposed to.\" He doesn't tell you to shut up."
         },
         "bait": {
-          "playerText": "TK: the bait (rick_02_enabled): a lie thrown to make Rick blurt the truth.",
-          "npcReaction": "TK: the bait lands; something true slips out of him.",
-          "ledgerEntry": "TK: what you baited Rick with (rick_02_enabled)."
+          "playerText": "The guys told me you've got the softest heart in the club.",
+          "npcReaction": "\"Who said that?\" He's half off the stool. Then, lower: \"...They don't know nothing about me. Nobody in there knows nothing about me.\"",
+          "ledgerEntry": "You told Rick his own club called him soft."
         }
       }
     },
@@ -172,16 +172,16 @@
       "mask": "Anger",
       "delivery": {
         "white": {
-          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+          "npcReaction": "\"Yeah.\" He lets out a breath he's been holding since you sat down."
         },
         "soft": {
-          "playerText": "TK: the soft truth (rick_02_confronted): the true thing, said kindly.",
-          "npcReaction": "TK: how Rick takes the soft truth."
+          "playerText": "I'm not judging you. I just think it costs you more than it should.",
+          "npcReaction": "His jaw works. \"More than you know.\" He says it to the glass, not to you."
         },
         "bait": {
-          "playerText": "TK: the bait (rick_02_confronted): a lie thrown to make Rick blurt the truth.",
-          "npcReaction": "TK: the bait lands; something true slips out of him.",
-          "ledgerEntry": "TK: what you baited Rick with (rick_02_confronted)."
+          "playerText": "I heard the patch is the only reason they keep you around.",
+          "npcReaction": "\"That's—\" He stops. \"...Yeah. Maybe. It's the only thing I got they want.\" He looks like he'd take it back if he could.",
+          "ledgerEntry": "You told Rick his club only kept him for the patch."
         }
       }
     },
@@ -266,16 +266,16 @@
       },
       "delivery": {
         "white": {
-          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+          "npcReaction": "He almost smiles. \"Friendly. Okay.\" He lets you keep the stool."
         },
         "soft": {
-          "playerText": "TK: the soft truth (rick_01_soft): the true thing, said kindly.",
-          "npcReaction": "TK: how Rick takes the soft truth."
+          "playerText": "A little of both. Mostly you looked like you could use the company.",
+          "npcReaction": "\"Company.\" He turns the word over like a coin. He doesn't send you away."
         },
         "bait": {
-          "playerText": "TK: the bait (rick_01_soft): a lie thrown to make Rick blurt the truth.",
-          "npcReaction": "TK: the bait lands; something true slips out of him.",
-          "ledgerEntry": "TK: what you baited Rick with (rick_01_soft)."
+          "playerText": "Your president said you'd talk if somebody bought.",
+          "npcReaction": "\"He said that?\" The glass stops. \"...He thinks I'm gonna talk. About what? There's nothing to—\" He drinks instead of finishing.",
+          "ledgerEntry": "You told Rick his president expected him to talk."
         }
       }
     },
@@ -328,16 +328,16 @@
       ],
       "delivery": {
         "white": {
-          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+          "npcReaction": "He nods, slower than he'd like. \"Yeah. Something like that.\""
         },
         "soft": {
-          "playerText": "TK: the soft truth (rick_01_hard): the true thing, said kindly.",
-          "npcReaction": "TK: how Rick takes the soft truth."
+          "playerText": "Looked like it was over fast. Looked like you didn't want it to be.",
+          "npcReaction": "The wiping slows. \"You watch real close, huh.\" It isn't a threat. It's almost a question."
         },
         "bait": {
-          "playerText": "TK: the bait (rick_01_hard): a lie thrown to make Rick blurt the truth.",
-          "npcReaction": "TK: the bait lands; something true slips out of him.",
-          "ledgerEntry": "TK: what you baited Rick with (rick_01_hard)."
+          "playerText": "Heard he's pressing charges. Says you went at him first.",
+          "npcReaction": "\"He grabbed my arm.\" It's out before he can stop it. \"Nobody grabs me. Nobody puts a hand on me. Not since—\" He wipes his knuckles again, harder.",
+          "ledgerEntry": "You told Rick the man he beat was pressing charges."
         }
       }
     },
@@ -391,16 +391,16 @@
       "glow": true,
       "delivery": {
         "white": {
-          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+          "npcReaction": "\"Huh.\" He looks out the window, then back at you. He lets it go."
         },
         "soft": {
-          "playerText": "TK: the soft truth (rick_01_secret): the true thing, said kindly.",
-          "npcReaction": "TK: how Rick takes the soft truth."
+          "playerText": "Nothing you'd have to pay back. Just looked like nobody'd done it for you in a while.",
+          "npcReaction": "He stares at the lot a long time. \"...Nobody does nothing for me without a price.\" But he lets you sit."
         },
         "bait": {
-          "playerText": "TK: the bait (rick_01_secret): a lie thrown to make Rick blurt the truth.",
-          "npcReaction": "TK: the bait lands; something true slips out of him.",
-          "ledgerEntry": "TK: what you baited Rick with (rick_01_secret)."
+          "playerText": "The guys said you'd want it done. Said you can't fix your own stuff.",
+          "npcReaction": "\"I can fix my own—\" He stops. \"...My old man did all that. Never let me touch nothing of his.\" He doesn't know why he told you that.",
+          "ledgerEntry": "You told Rick his own club said he couldn't fix his own things."
         }
       }
     },
@@ -449,16 +449,16 @@
       "glow": true,
       "delivery": {
         "white": {
-          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+          "npcReaction": "He decides to let it slide. He nods at the stool."
         },
         "soft": {
-          "playerText": "TK: the soft truth (rick_01_lie): the true thing, said kindly.",
-          "npcReaction": "TK: how Rick takes the soft truth."
+          "playerText": "I didn't know Dutch. I'm sorry. You still miss him.",
+          "npcReaction": "His glass comes down slow. \"...Every day.\" He looks surprised he said it out loud."
         },
         "bait": {
-          "playerText": "TK: the bait (rick_01_lie): a lie thrown to make Rick blurt the truth.",
-          "npcReaction": "TK: the bait lands; something true slips out of him.",
-          "ledgerEntry": "TK: what you baited Rick with (rick_01_lie)."
+          "playerText": "Dutch told me about you. Said you two were closer than anybody knew.",
+          "npcReaction": "Something drains out of his face. \"Dutch never talked about me. Dutch never talked about nobody. That was the deal.\" Then: \"Who are you.\"",
+          "ledgerEntry": "You told Rick a dead man had talked about him."
         }
       }
     },
@@ -507,16 +507,16 @@
       "glow": true,
       "delivery": {
         "white": {
-          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+          "npcReaction": "\"Uh huh.\" He doesn't check. He doesn't need to."
         },
         "soft": {
-          "playerText": "TK: the soft truth (rick_01_fake): the true thing, said kindly.",
-          "npcReaction": "TK: how Rick takes the soft truth."
+          "playerText": "Nothing yet. I'd like to, if you'll let me.",
+          "npcReaction": "\"Let you.\" He laughs, short. \"Nobody asks.\" He moves the jacket anyway."
         },
         "bait": {
-          "playerText": "TK: the bait (rick_01_fake): a lie thrown to make Rick blurt the truth.",
-          "npcReaction": "TK: the bait lands; something true slips out of him.",
-          "ledgerEntry": "TK: what you baited Rick with (rick_01_fake)."
+          "playerText": "Your chain was off. Figured somebody did it to you on purpose.",
+          "npcReaction": "\"Who.\" He's up, looking out at the lot. \"...They'd do that. To send a message. Guys like me don't get told twice.\" He sits back down, slower.",
+          "ledgerEntry": "You told Rick someone had messed with his bike on purpose."
         }
       }
     },
@@ -572,16 +572,16 @@
       ],
       "delivery": {
         "white": {
-          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+          "npcReaction": "\"Yeah.\" He looks at the patch a second too long."
         },
         "soft": {
-          "playerText": "TK: the soft truth (rick_03): the true thing, said kindly.",
-          "npcReaction": "TK: how Rick takes the soft truth."
+          "playerText": "Skin's a hard thing to give somebody. I hope they deserve it.",
+          "npcReaction": "He rubs his thumb over the ink. \"...Wasn't for them.\" He doesn't say who it was for."
         },
         "bait": {
-          "playerText": "TK: the bait (rick_03): a lie thrown to make Rick blurt the truth.",
-          "npcReaction": "TK: the bait lands; something true slips out of him.",
-          "ledgerEntry": "TK: what you baited Rick with (rick_03)."
+          "playerText": "Guys at the bar said the club made you get it. As a test.",
+          "npcReaction": "\"Nobody made me.\" Sharp. Then quieter: \"I got it over something else.\" His hand covers it. \"Drop it.\"",
+          "ledgerEntry": "You told Rick his club forced the tattoo on him."
         }
       }
     },
@@ -644,16 +644,16 @@
       ],
       "delivery": {
         "white": {
-          "npcReaction": "TK: how Rick takes this as a white lie (gentler than the full lie)."
+          "npcReaction": "He nods, slow. \"Yeah. Something like that.\""
         },
         "soft": {
-          "playerText": "TK: the soft truth (rick_04): the true thing, said kindly.",
-          "npcReaction": "TK: how Rick takes the soft truth."
+          "playerText": "Maybe nobody walks away clean. You could still walk.",
+          "npcReaction": "He looks at the door like it's farther than it is. \"...Where would I even go.\" It's a real question."
         },
         "bait": {
-          "playerText": "TK: the bait (rick_04): a lie thrown to make Rick blurt the truth.",
-          "npcReaction": "TK: the bait lands; something true slips out of him.",
-          "ledgerEntry": "TK: what you baited Rick with (rick_04)."
+          "playerText": "Heard the club used to baptize new guys in the lake.",
+          "npcReaction": "\"Don't.\" He's gone pale. \"Don't joke about that lake.\" A long beat. \"...It wasn't the club that put me under.\" He won't say another word about it.",
+          "ledgerEntry": "You told Rick his club baptized its men in the lake."
         }
       }
     }
@@ -690,12 +690,12 @@
   },
   "guard": 6,
   "crack": {
-    "Guns": "TK: what Rick says as his guard breaks (Guns), before his STORY.",
-    "Bible": "TK: what Rick says as his guard breaks (Bible), before his STORY.",
-    "Crystals": "TK: what Rick says as his guard breaks (Crystals), before his STORY."
+    "Guns": "He works his rings off one at a time and sets them on the bar. \"Alright. No more squaring up.\"",
+    "Bible": "\"You want a confession, church?\" He laughs, and it breaks halfway. \"Fine. Here's one your preacher never heard.\"",
+    "Crystals": "He opens his mouth for the next insult. Nothing comes. \"...Shut up a second. I'm trying to tell you something.\""
   },
   "baitFail": [
-    "TK: Rick shrugs off a bait (your bars were too low).",
-    "TK: Rick sees the bait coming and doesn't bite."
+    "\"Nice try.\" He doesn't even turn his head.",
+    "He smiles like a man who's been lied to by better. \"Go on. Finish the bit.\""
   ]
 }
