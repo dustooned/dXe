@@ -38,7 +38,7 @@ import { loadSettings, updateSettings } from '../shell/settings.js';
 import { later, cancelLater } from '../shell/pauseBus.js';
 import { timeline, beatAt } from '../engine/feedClock.js';
 import { playSfx, playTypewriterTick, preloadTypewriterTick, startAmbient, stopAmbient } from '../shell/audio.js';
-import { playChannelMusic, stopChannelMusic } from '../shell/feedMusic.js';
+import { CHANNEL_SONGS, playChannelMusic, stopChannelMusic } from '../shell/feedMusic.js';
 
 const TICK_MS = 100;
 const COMMENT_GAP_MS = 900;
@@ -90,6 +90,7 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
   let wheelAt = 0;
   let dom = null;
   let unmounted = false;
+  let ambientOn = false;
   const reduced = () => document.documentElement.classList.contains('is-reduced-effects');
 
   const posOf = (i) => Math.max(0, Math.min(channels[i].length, clock + offsets[i]));
@@ -320,8 +321,17 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
     stageEl.appendChild(view);
     // The channel's music (shell/feedMusic.js, PLACEHOLDER synth until real
     // tracks): `music` names another channel's loop, false for none.
-    if (ch.music !== false) playChannelMusic(ch.music ?? ch.id);
+    const songId = ch.music === false ? null : ch.music ?? ch.id;
+    const hasSong = songId && CHANNEL_SONGS.includes(songId);
+    if (hasSong) playChannelMusic(songId);
     else stopChannelMusic();
+    // The room sound (Bob's lake) is only for channels with no music of their
+    // own; under a channel's song it played over it.
+    if (scene.ambient) {
+      if (!hasSong && !ambientOn) startAmbient(scene.ambient);
+      else if (hasSong && ambientOn) stopAmbient();
+      ambientOn = !hasSong;
+    }
     dom = { view, mover, screen, scrub, comments, close, left, speaker, text, textBox, toast, beatEls: [] };
     attachSwipe(screen);
     update({ jump: true });
@@ -535,7 +545,6 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
   };
   stageEl.addEventListener('wheel', onWheel, { passive: true });
 
-  if (scene.ambient) startAmbient(scene.ambient);
   // An intro card (the morning feed's notification) waits for a tap; the
   // channels' clock starts when it's dismissed.
   if (scene.intro) {

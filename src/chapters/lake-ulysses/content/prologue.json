@@ -2,15 +2,18 @@
   "beats": [
     {
       "text": "Lake Ulysses. Three thousand acres, they call it. A jewel.",
-      "loop": "lake"
+      "loop": "lake",
+      "bgAnim": "loop_lake"
     },
     {
       "text": "{slow}The water looks fine today.{/slow}",
-      "loop": "lake"
+      "loop": "lake",
+      "bgAnim": "loop_lake"
     },
     {
       "text": "It always does. Right before it isn't.",
-      "loop": "lake"
+      "loop": "lake",
+      "bgAnim": "loop_lake"
     },
     {
       "text": "{pause:400}You wake up on the shoulder of Lakeshore Drive.{pause:300} Ears ringing.{sfx:gravel} Clothes damp.",

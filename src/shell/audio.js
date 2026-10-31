@@ -325,7 +325,7 @@ export function resumeAudio() {
 // spin the audio thread), and says so once in the console.
 const audioFailed = new Set();
 let silentBuffer = null;
-async function loadAudio(url) {
+export async function loadAudio(url) {
   if (audioCache.has(url)) return audioCache.get(url);
   const audioCtx = ensureContext();
   try {

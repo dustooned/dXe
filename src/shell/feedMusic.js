@@ -10,7 +10,7 @@
 //           struck bells that ring out, an echo)
 //   wall    Rwanda: cheap MIDI pop on a little Bluetooth speaker from her
 //           earphones (square waves, clipping, the odd dropout)
-//   pastor  the Living Water Hour: a cheap keyboard organ hymn, TV speaker
+//   pastor  the Living Water Hour: Funky Lantern (recording), TV speaker
 //   barlot  a phone video outside the bar: bass through the wall, the crowd
 //   ad      the FEELZ ad: a bright corporate marimba jingle
 //
@@ -20,7 +20,7 @@
 // Everything goes into the game's master output (shell/audio.js
 // getAudioGraph), so volume, mute and the sideways pause apply. Notes are
 // scheduled on the audio clock a little ahead, never by timers alone.
-import { getAudioGraph } from './audio.js';
+import { getAudioGraph, loadAudio } from './audio.js';
 
 const LOOKAHEAD = 0.25;
 const TICK_MS = 60;
@@ -224,9 +224,12 @@ const SONGS = {
       }
     },
   },
-  // The Living Water Hour: a hymn on a cheap organ, 76 bpm, with tremolo.
+  // The Living Water Hour, the Reverend's channel: the artist's "Funky Lantern"
+  // through the TV speaker. A `file` song plays the recording and ignores
+  // `play`; the hymn below is kept as the old placeholder (silence if the file
+  // can't load).
   pastor: {
-    device: 'tv', bpm: 76, bars: 4,
+    device: 'tv', file: '/assets/lake-ulysses/audio/funky_lantern.mp3', bpm: 76, bars: 4,
     play(ctx, d, t, i, step) {
       const chords = [[60, 64, 67], [65, 69, 72], [60, 64, 67], [55, 59, 62, 67]];
       const s = i % 8;
@@ -269,6 +272,15 @@ export function playChannelMusic(id) {
   if (!song) return;
   const { ctx, out } = getAudioGraph();
   const dev = device(ctx, out, song.device);
+  if (song.file) {
+    const mine = { id, dev, timer: null, src: null };
+    current = mine;
+    loadAudio(song.file).then((buffer) => {
+      if (current !== mine) return; // left the channel while it loaded
+      mine.src = fileLoop(ctx, dev, buffer);
+    });
+    return;
+  }
   const buf = noiseBuffer(ctx, 1);
   const step = 60 / song.bpm / 2; // an 8th note
   const total = song.bars * 8;
@@ -286,9 +298,29 @@ export function playChannelMusic(id) {
   current = { id, dev, timer };
 }
 
+// A recorded track, looped, scaled to the level the synth channels sit at
+// (rms ~0.01 into the device) so a hot master doesn't shout over the dialogue.
+const TARGET_RMS = 0.01;
+function fileLoop(ctx, dev, buffer) {
+  const d = buffer.getChannelData(0);
+  let sum = 0;
+  const stride = 8;
+  for (let i = 0; i < d.length; i += stride) sum += d[i] * d[i];
+  const rms = Math.sqrt(sum / Math.ceil(d.length / stride)) || TARGET_RMS;
+  const g = ctx.createGain();
+  g.gain.value = Math.min(TARGET_RMS / rms, 4);
+  const src = ctx.createBufferSource();
+  src.buffer = buffer;
+  src.loop = true;
+  src.connect(g).connect(dev.input);
+  src.start();
+  return src;
+}
+
 export function stopChannelMusic() {
   if (!current) return;
   clearInterval(current.timer);
+  try { current.src?.stop(); } catch { /* not started */ }
   current.dev.stop();
   current = null;
 }

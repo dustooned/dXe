@@ -163,7 +163,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     }
 
     const screen = document.createElement('div');
-    screen.className = `dx-screen dx-cutscene-screen${beat.style ? ` dx-cutscene-screen--${beat.style}` : ''}${(beat.bgAnim && beat.style === 'narration') || (beat.loop && !beat.bgAnim) ? ' dx-cutscene-screen--over-art' : ''}`;
+    screen.className = `dx-screen dx-cutscene-screen${beat.style ? ` dx-cutscene-screen--${beat.style}` : ''}${(beat.bgAnim && beat.style === 'narration') || beat.loop ? ' dx-cutscene-screen--over-art' : ''}`;
     screen.addEventListener('click', handleTap);
 
     // Background — animated or static

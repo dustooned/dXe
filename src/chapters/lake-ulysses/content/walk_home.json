@@ -18,7 +18,8 @@
     },
     {
       "text": "Your building. Three flights.{sfx:footsteps} The stairwell smells like lemon cleaner and somebody else's dinner.",
-      "loop": "stairs"
+      "loop": "stairs",
+      "bgAnim": "loop_stairs"
     },
     {
       "text": "Third floor. {pause:300}One door down the hall is propped open. Someone inside is humming a hymn, a little off-key.",

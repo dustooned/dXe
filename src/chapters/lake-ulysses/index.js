@@ -81,7 +81,7 @@ export const title = 'Truth Debt: Lake Ulysses';
 const SCENES = [
   { type: 'cutscene', id: 'it-intro', beats: itIntro.beats },
   { type: 'cutscene', id: 'opening-quote', beats: openingQuote.beats, anims: ANIMS },
-  { type: 'cutscene', id: 'prologue', beats: prologue.beats },
+  { type: 'cutscene', id: 'prologue', beats: prologue.beats, anims: ANIMS },
   // The buzz from the prologue's last beat, answered: FEELZ installs itself
   // (hold to install, permissions, a username), boots, and goes straight to
   // its feed: live channels all running at once, Bob Baiter's broadcast
@@ -95,7 +95,7 @@ const SCENES = [
   { type: 'dialog', id: 'therapist', npc: therapist },
   // The call ends and the player steps out into Lake Ulysses, walking home
   // to the building where the homework's neighbor lives.
-  { type: 'cutscene', id: 'walk-home', beats: walkHome.beats },
+  { type: 'cutscene', id: 'walk-home', beats: walkHome.beats, anims: ANIMS },
 
   { type: 'marker', id: 'deborah-marker', numeral: 'I', npc: deborah, plateArt: plates.deborah, folio: 23,
     plate: "PLATE I. THE THIRD FLOOR.",
