@@ -1,7 +1,6 @@
-// Mini-game: the service bay on the way to Samun. PLACEHOLDER CONTENT — the
-// art is generated vectors (scripts/make-placeholder-room.mjs) and the captions
-// exercise the class-variation path rather than being final prose. See
-// docs/SCENE_TYPES.md for the step contract.
+// Mini-game: the service bay on the way to Samun. The art is still PLACEHOLDER
+// (generated vectors, scripts/make-placeholder-room.mjs); the captions are
+// final. See docs/SCENE_TYPES.md for the step contract.
 import { mountNpcWalk } from '../../../engine/walkSequencer.js';
 
 const SPR = '/assets/lake-ulysses/sprites/';
@@ -51,7 +50,7 @@ const ROOMS = {
         text: {
           Guns:     'Stopped on a month two years back. Nobody flips it because nobody can stand the {color:Disgust}sight{/color} of the count.',
           Bible:    'Two years behind. Somebody stopped keeping track of the days on purpose, {color:Disgust}sick{/color} of what they added up to.',
-          Crystals: 'The same month, over and over, for two years. It almost sounds restful, if you ignore the {color:Anxiety}buzz{/color} under it.',
+          Crystals: 'The same month, over and over, for two years. It almost looks restful, if you ignore the {color:Anxiety}buzz{/color} coming off it.',
         },
         restore: {
           by: 'Bible',
@@ -66,7 +65,7 @@ const ROOMS = {
         sound: 'slosh',
         opener: 'samun_01_hard',
         text: {
-          Guns:     'Full to the lip. Nobody has hauled this off in a long while. Somebody\'s {color:Anger}sick of it{/color} and won\'t say so.',
+          Guns:     'Full to the lip. Nobody has hauled this off in a long while. Somebody\'s {color:Anger}seething{/color} about it and won\'t say so.',
           Bible:    'An oil drum used as a trash can, used as a table. It has been three things, and he\'s {color:Fear}afraid{/color} of what it\'s full of.',
           Crystals: 'Something in there is still moving very slowly. You decide not to look closer, and something in your chest goes {color:Fear}cold{/color}.',
         },

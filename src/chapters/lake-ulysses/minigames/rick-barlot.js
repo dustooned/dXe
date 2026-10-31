@@ -1,7 +1,6 @@
-// Mini-game: the lot outside the bar, on the way to Rick. PLACEHOLDER CONTENT
-// — the art is generated vectors (scripts/make-placeholder-room.mjs) and the
-// captions exercise the class-variation path rather than being final prose.
-// See docs/SCENE_TYPES.md for the step contract.
+// Mini-game: the lot outside the bar, on the way to Rick. The art is still
+// PLACEHOLDER (generated vectors, scripts/make-placeholder-room.mjs); the
+// captions are final. See docs/SCENE_TYPES.md for the step contract.
 import { mountNpcWalk } from '../../../engine/walkSequencer.js';
 
 const SPR = '/assets/lake-ulysses/sprites/';
@@ -33,7 +32,7 @@ const ROOMS = {
         opener: 'rick_01',
         text: {
           Guns:     'One brand, all of them. Same man, same spot, every night, waiting on something he\'s {color:Fear}scared{/color} will come.',
-          Bible:    'Somebody stands out here alone a lot. Long enough to fill this twice, {color:Fear}afraid{/color} to go home.',
+          Bible:    'Somebody stands out here alone a lot. Long enough to fill this twice. {color:Fear}Afraid{/color} to go home, or afraid to go in.',
           Crystals: 'Every one of them stubbed out the same careful way. Like a count of something {color:Anxiety}restless{/color}.',
         },
         restore: {
@@ -68,7 +67,7 @@ const ROOMS = {
         text: {
           Guns:     'Parked across two spaces. That is the whole message, and it\'s {color:Anger}spoiling{/color} for you to answer it.',
           Bible:    'Kept better than the man keeps himself. Everything on it has been touched lately, by hands that were {color:Anger}angry{/color}.',
-          Crystals: 'The chrome holds the door light and bends it into something almost soft, over something {color:Anger}hot{/color}.',
+          Crystals: 'The chrome catches the door light and bends it almost soft. Underneath, the engine is still {color:Anger}hot{/color}.',
         },
         restore: {
           by: 'Guns',

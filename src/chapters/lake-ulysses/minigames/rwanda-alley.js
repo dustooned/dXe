@@ -1,7 +1,6 @@
-// Mini-game: the alley behind the neon, on the way to Rwanda. PLACEHOLDER
-// CONTENT — the art is generated vectors (scripts/make-placeholder-room.mjs)
-// and the captions exercise the class-variation path rather than being final
-// prose. See docs/SCENE_TYPES.md for the step contract.
+// Mini-game: the alley behind the neon, on the way to Rwanda. The art is still
+// PLACEHOLDER (generated vectors, scripts/make-placeholder-room.mjs); the
+// captions are final. See docs/SCENE_TYPES.md for the step contract.
 import { mountNpcWalk } from '../../../engine/walkSequencer.js';
 
 const SPR = '/assets/lake-ulysses/sprites/';
@@ -20,7 +19,7 @@ const ROOMS = {
   'alley-01': {
     bg: BG,
     intro: {
-      Guns:     'Behind the strip. One way in, one way out, and you came in the one way in.',
+      Guns:     'Behind the strip. One way in, one way out, and you just used the way in.',
       Bible:    'Behind the strip. Somebody put a mural on a wall nobody was ever going to look at.',
       Crystals: 'Behind the strip. The neon hums a note that sits just under your teeth.',
     },

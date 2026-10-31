@@ -10,7 +10,7 @@
 // Dark, a little funny, in his voice (docs/HANDOFF.md "Therapist voice").
 //
 // Returns a cutscene for the 'therapist' slot; the original tutorial follows
-// it (chapters/lake-ulysses/index.js). PLACEHOLDER lines for the writer pass.
+// it (chapters/lake-ulysses/index.js).
 import therapist from './content/therapist.json';
 import { ppmFor } from '../../engine/lake.js';
 import { hatFor, hatForContext } from '../../engine/characters.js';
@@ -56,6 +56,7 @@ export function therapistReturnScene(lastRun) {
     say(changedClass),
     // Restored nothing last run: the nudge for this one.
     lastRun.restored === 0 && say("Also, you didn't fix a single thing last time. Not one. People notice when you fix things. I'm just reading the file."),
+    lastRun.restored > 0 && say(`You fixed ${lastRun.restored === 1 ? 'one thing' : `${lastRun.restored} things`} last time. It's in the file. I underlined it. I don't underline much. My pen is very dry.`),
     say('So you\'re doing the whole lake again. On purpose. I\'m not judging. I\'m writing it down, which is different, legally.'),
     {
       ...say('Do you want me to check in on you this time? Tips, reminders, me calling at bad moments. For accountability.'),

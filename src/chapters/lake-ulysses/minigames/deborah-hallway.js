@@ -1,6 +1,6 @@
-// Mini-game: the walk to Deborah's door. PLACEHOLDER CONTENT — the art is
-// generated vectors (scripts/make-placeholder-room.mjs) and the captions are
-// written to exercise the class-variation path, not to be final prose.
+// Mini-game: the walk to Deborah's door. The art is still PLACEHOLDER
+// (generated vectors, scripts/make-placeholder-room.mjs); the captions are
+// final.
 //
 // This is a normal scene handler, lazy-loaded by scenes/minigameScene.js. It
 // owns nothing except its STEPS list and hands the chapter's own onComplete
@@ -43,7 +43,7 @@ const ROOMS = {
         opener: 'deborah_01',
         text: {
           Guns:     "A diploma. Crooked. Nobody straightened it, including her. That isn't lazy. That's {color:Sadness}weight{/color}.",
-          Bible:    "A diploma. Class of '09. Hung where she has to pass it every day, and too {color:Fear}afraid{/color} to take it down.",
+          Bible:    "A diploma. Class of '09. Hung where she has to pass it every day. She's too {color:Fear}afraid{/color} to take it down.",
           Crystals: 'A diploma, tilted. The frame has gone {color:Sadness}heavy{/color}, like it is sinking into the wall.',
         },
         restore: {

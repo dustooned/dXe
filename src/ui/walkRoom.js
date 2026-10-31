@@ -191,7 +191,8 @@ export function createWalkRoom(room, { loadout, onAdvance, restored = false, onR
     el.appendChild(closeupEl);
     const caption = textOf(spot.text);
     const hint = restorable && !fogged ? forClass(spot.restore.hint, loadout) : '';
-    typewriter = createTypewriter(p, hint ? `${caption} {pause:300}${hint}` : caption, {
+    // The hint always gets its own page, so a long caption never splits it.
+    typewriter = createTypewriter(p, hint ? `${caption}{mark:hint}${hint}` : caption, {
       onChar: playTypewriterTick,
     });
 
