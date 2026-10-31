@@ -24,6 +24,9 @@ const defaultSettings = {
   colorVision: 'normal',
   // The FEELZ feed's comment chat (feedScene.js CHAT button): off hides it.
   feedChat: true,
+  // The health and safety / fiction cards (noticeScene.js) have been read:
+  // they never show again.
+  seenNotice: false,
 };
 
 export const COLOR_VISION_MODES = ['normal', 'redgreen', 'blueyellow'];

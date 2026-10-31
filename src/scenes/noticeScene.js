@@ -3,6 +3,8 @@
 // with the Reduce effects switch right there (the same setting as Settings >
 // Reduce effects), then a short fiction disclaimer. Each page locks for a
 // moment so a reflex tap can't skip it unread, then any tap moves on.
+// Shown once ever: finishing it sets `seenNotice` (settings, so a NEW GAME
+// doesn't bring it back) and the chapter leaves it out after that.
 //
 // scene shape: { type: 'notice', id }
 import { later, cancelLater } from '../shell/pauseBus.js';
@@ -77,7 +79,10 @@ export function mount(stageEl, scene, { onComplete }) {
     screen.addEventListener('click', () => {
       if (!open) return;
       page += 1;
-      if (page >= PAGES.length) onComplete();
+      if (page >= PAGES.length) {
+        updateSettings({ seenNotice: true });
+        onComplete();
+      }
       else render();
     });
     stageEl.innerHTML = '';

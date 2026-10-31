@@ -5,6 +5,7 @@ import { recordEnding, saveCheckpoint, clearCheckpoint, loadSave } from '../../s
 import { therapistReturnScene } from './therapistReturn.js';
 import plates from './plates.json';
 import { registerCharacterArt } from '../../engine/characters.js';
+import { loadSettings } from '../../shell/settings.js';
 import * as hud from '../../shell/hud.js';
 import * as audio from '../../shell/audio.js';
 import * as encounterMusic from '../../shell/encounterMusic.js';
@@ -280,9 +281,12 @@ export function mount(stageEl, { exit, restart, startSceneId }) {
   const run = createStore({ ...initialRunState, ...repeatState, ...takeDebugOverrides() });
   // Repeat client: his "you again" call takes the 'therapist' slot, with the
   // full tutorial right after it for a player who asks to run it again.
-  const scenes = run.get().repeat && lastRun
+  // The health and safety / fiction cards show once ever (noticeScene.js
+  // sets the flag); a debug jump straight to them still shows them.
+  const showNotice = !loadSettings().seenNotice || startSceneId === 'notice';
+  const scenes = (run.get().repeat && lastRun
     ? SCENES.flatMap((s) => (s.id === 'therapist' ? [therapistReturnScene(lastRun), { ...s, id: 'therapist-tutorial' }] : [s]))
-    : SCENES;
+    : SCENES).filter((s) => showNotice || s.type !== 'notice');
   const sequencer = createSceneSequencer({
     scenes,
     handlers: HANDLERS,
