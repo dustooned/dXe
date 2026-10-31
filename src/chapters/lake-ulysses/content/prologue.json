@@ -16,6 +16,11 @@
       "bgAnim": "loop_lake"
     },
     {
+      "bgAnim": "title_lake_remembers",
+      "style": "narration",
+      "autoAdvanceMs": 4500
+    },
+    {
       "text": "{pause:400}You wake up on the shoulder of Lakeshore Drive.{pause:300} Ears ringing.{sfx:gravel} Clothes damp.",
       "loop": "road"
     },
@@ -30,11 +35,11 @@
         "options": [
           {
             "label": "Get up.",
-            "nextBeat": 6
+            "nextBeat": 7
           },
           {
             "label": "Stay down a little longer.",
-            "nextBeat": 6
+            "nextBeat": 7
           }
         ]
       },

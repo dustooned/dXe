@@ -8,6 +8,10 @@ export const ANIMS = {
   // 12 fps), full-screen behind walk narration; they win over the code-drawn loops.
   loop_lake:   { base: `${BASE}loop_lake/loop_lake_`,     frames: 9,  fps: 12 },
   loop_stairs: { base: `${BASE}loop_stairs/loop_stairs_`, frames: 12, fps: 12 },
+  // The show's title card after the prologue's lake beats (Drive:
+  // TheLakeRemembers.zip, a 2Dope export, 720x1280; stored 540 wide, gray,
+  // flattened on white as the artist saw it).
+  title_lake_remembers: { base: `${BASE}title_lake_remembers/title_lake_remembers_`, frames: 45, fps: 12 },
   // Bob Baiter's announcement symbols, from the GameMaker beta
   // (obj_intro_dialog_symbols) — imported by scripts/import-gm-symbols.mjs.
   sym_biohazard: { base: `${BASE}spr_biohazard/spr_biohazard_`,   frames: 31, fps: 12 },

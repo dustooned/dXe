@@ -1,0 +1,38 @@
+{
+ "format": "2dope-export",
+ "version": 1,
+ "savedBy": "2Dope 0.0.2",
+ "name": "Untitled",
+ "fps": 12,
+ "canvas": {
+  "width": 720,
+  "height": 1280
+ },
+ "size": {
+  "width": 720,
+  "height": 1280
+ },
+ "scale": 1,
+ "background": "transparent",
+ "frames": 45,
+ "firstNumber": 1,
+ "numberPadding": 4,
+ "passes": {
+  "combined": {
+   "folder": "combined",
+   "pattern": "Untitled_####.png"
+  }
+ },
+ "exposures": [
+  {
+   "drawing": 1,
+   "fromFrame": 0,
+   "length": 2
+  },
+  {
+   "drawing": 2,
+   "fromFrame": 2,
+   "length": 3
+  }
+ ]
+}
