@@ -298,13 +298,13 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
   check('characters: every piece in every manifest exists on disk' + (missingFiles.length ? ` (${missingFiles.join(', ')})` : ''), !missingFiles.length);
 }
 
-// ── The delivery spectrum (Phase 11): Samun's four ways to say it ──
+// ── The delivery spectrum (Phase 11): four ways to say it, every round ──
 {
   const sam = JSON.parse(fs.readFileSync('src/chapters/lake-ulysses/content/samun.json', 'utf8'));
   const n1 = sam.nodes.samun_01;
   const st = { integrity: 5, stability: 5, lucidity: 5, trust: 5, truthDebt: 2, ledger: [], loadout: 'Guns', emotionCounts: {} };
   check('delivery: every Samun node has soft, white and bait, and he has a guard, cracks and bounce lines', Object.values(sam.nodes).every(hasDelivery) && Object.values(sam.nodes).every((n) => n.delivery.white) && sam.guard === 6 && Object.keys(sam.crack).length === 3 && sam.baitFail.length >= 2);
-  check('delivery: Deborah and Rwanda stay two-way', ['deborah', 'rwanda'].every((f) => !Object.values(JSON.parse(fs.readFileSync(`src/chapters/lake-ulysses/content/${f}.json`, 'utf8')).nodes).some(hasDelivery)));
+  check('delivery: Deborah and Rwanda have it on every node, with a guard, cracks and bounce lines', ['deborah', 'rwanda'].every((f) => { const c = JSON.parse(fs.readFileSync(`src/chapters/lake-ulysses/content/${f}.json`, 'utf8')); return Object.values(c.nodes).every(hasDelivery) && c.guard === 6 && Object.keys(c.crack).length === 3 && c.baitFail.length >= 2; }));
   const rickC = JSON.parse(fs.readFileSync('src/chapters/lake-ulysses/content/rick.json', 'utf8'));
   check('delivery: Rick has it on every node but the shut door, with a guard, cracks and bounce lines', Object.entries(rickC.nodes).every(([id, n]) => (id === 'rick_shut_down') !== hasDelivery(n)) && rickC.guard === 6 && Object.keys(rickC.crack).length === 3 && rickC.baitFail.length >= 2);
   const harsh = previewDelivery(st, n1, 'harsh', null);

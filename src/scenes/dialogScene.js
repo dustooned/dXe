@@ -1491,8 +1491,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const seenKeys = run.get().coachSeen ?? [];
     // The demo is the tutorial (docs/PHASE_11.md): each round teaches one
     // thing, on its first node, in the same shape (a short call, then one
-    // "try this"). Deborah: the battle itself. Rwanda: the little screen.
-    // Samun: how you say it (delivery), then masks. Rick: nothing.
+    // "try this"). Deborah: the battle itself, then how you say it (delivery,
+    // on her next card). Rwanda: the little screen. Samun: masks. Rick: nothing.
     if (npc.npc === 'RICK') return;
     if (npc.npc === 'DEBORAH' && !seenKeys.includes('battle')) {
       startCoach('battle', {
@@ -1511,20 +1511,20 @@ export function mount(stageEl, scene, { run, onComplete }) {
       });
       return;
     }
-    // Samun's round: the delivery spectrum (engine/delivery.js), on the first
-    // card that has it. It carries the old lie-trade lesson (a white lie
-    // relaxes them). His mask call follows on the next masked node.
+    // The delivery spectrum (engine/delivery.js), on the first card that has
+    // it (every round has it now, so this lands in Deborah's). It carries the
+    // old lie-trade lesson (a white lie relaxes them).
     if (hasDelivery(node) && !seenKeys.includes('delivery')) {
       startCoach('delivery', {
         steps: [
-          { say: inClass("It's me. Samun's a talker. One new trick, then I'm gone.", { Guns: "It's me. Samun's a talker. One new move, then I'm gone." }) },
+          { say: inClass(`It's me again. ${facing} won't open up for just anyone. One new trick, then I'm gone.`, { Guns: `It's me again. ${facing} won't open up for just anyone. One new move, then I'm gone.` }) },
           { say: 'How far you push the card is how you say it. A little: gentle. All the way: hard.', target: 'card', label: 'A LITTLE · ALL THE WAY' },
           { say: inClass('A soft truth is cheap on you. A harsh one costs more and gets further.', {
             Guns: 'A soft truth is a warning shot. A harsh one costs more rounds and gets further.',
             Bible: "A soft truth is cheap on you. A harsh one costs more and gets further. Tough love, I think it's called.",
           }), target: 'card', label: 'SOFT · HARSH' },
-          { say: "Lie side: a white lie relaxes him. Two's fine. A third lands heavy.", target: 'card', label: 'WHITE LIE' },
-          { say: "All the way is bait. A lie to make him blurt the truth. You need bars for it, or it bounces.", target: 'bars', label: 'YOUR BARS' },
+          { say: "Lie side: a white lie relaxes them. Two's fine. A third lands heavy.", target: 'card', label: 'WHITE LIE' },
+          { say: "All the way is bait. A lie to make them blurt the truth. You need bars for it, or it bounces.", target: 'bars', label: 'YOUR BARS' },
           { say: "Drag slow and FEELZ shows you the numbers. Unless you're not well. Then it can't. And when your battery's nearly gone, you can't push all the way. Okay. Bye.", target: 'card', label: 'DRAG SLOW' },
         ],
         task: { text: 'Drag slow. Read the numbers.', target: 'card', until: ['swipe'] },

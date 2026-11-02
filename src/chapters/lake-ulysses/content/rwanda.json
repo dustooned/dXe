@@ -50,6 +50,20 @@
       "mood": "Anger",
       "moodByClass": {
         "Crystals": "Surprise"
+      },
+      "delivery": {
+        "white": {
+          "npcReaction": "She shrugs it off, but she lets it sit. \"Fine. Maybe.\""
+        },
+        "soft": {
+          "playerText": "You shouldn't have to. I'm sorry the world keeps asking you to.",
+          "npcReaction": "She looks at you sideways, checking for the catch. There isn't one. \"...Yeah. Me too.\""
+        },
+        "bait": {
+          "playerText": "I heard the gallery wants your stuff, but softened up a little.",
+          "npcReaction": "\"Softened.\" Her jaw sets. \"Somebody asked me that once. I did it, too. Won a ribbon for it.\" She bites the rest off. \"Never again.\"",
+          "ledgerEntry": "You told Rwanda the gallery wanted her work softened."
+        }
       }
     },
     "rwanda_02_closed": {
@@ -90,6 +104,20 @@
       "mood": "Disgust",
       "moodByClass": {
         "Guns": "Anger"
+      },
+      "delivery": {
+        "white": {
+          "npcReaction": "She doesn't argue. She doesn't turn around either."
+        },
+        "soft": {
+          "playerText": "You don't sound fine. You don't have to be, with me.",
+          "npcReaction": "The glass fogs where she breathes on it. \"...Fine's just the word that makes people leave.\" She doesn't tell you to."
+        },
+        "bait": {
+          "playerText": "Your mom told me you've always been fine. Never complained once.",
+          "npcReaction": "She spins around. \"You don't know my mother.\" Then, quieter: \"...She'd say that, though. She said a lot of things about my pictures.\"",
+          "ledgerEntry": "You told Rwanda her mother said she had always been fine."
+        }
       }
     },
     "rwanda_02_open": {
@@ -131,6 +159,20 @@
       "mood": "Surprise",
       "moodByClass": {
         "Guns": "Fear"
+      },
+      "delivery": {
+        "white": {
+          "npcReaction": "She tilts her head. Lets it go. \"Mm. Maybe.\""
+        },
+        "soft": {
+          "playerText": "I mean it. You don't have to do anything for me. Not even talk.",
+          "npcReaction": "\"Not even talk.\" She tries the idea on and finds it fits. She stays quiet with you a while."
+        },
+        "bait": {
+          "playerText": "The guys at the shop say you're nicer when you're not painting.",
+          "npcReaction": "\"Nicer.\" She laughs, short and ugly. \"That's what they all wanted. The principal, the parents. A nicer face.\" She stops. \"Forget it.\"",
+          "ledgerEntry": "You told Rwanda people said she was nicer when she wasn't painting."
+        }
       }
     },
     "rwanda_01_soft": {
@@ -174,7 +216,21 @@
           "nextNodeId": "rwanda_02_closed"
         }
       },
-      "mood": "Fear"
+      "mood": "Fear",
+      "delivery": {
+        "white": {
+          "npcReaction": "\"Okay.\" She doesn't believe you, but she lets you stay."
+        },
+        "soft": {
+          "playerText": "Something's off out there. You're not the only one who feels it.",
+          "npcReaction": "She lets out a breath she'd been saving. \"Thank God. I thought it was just me again.\" She makes room."
+        },
+        "bait": {
+          "playerText": "Someone downstairs said you're always seeing things that aren't there.",
+          "npcReaction": "\"I see what's there.\" Hot. \"That's the problem. I painted what was there once and everybody said it was too much.\" She turns away. \"So.\"",
+          "ledgerEntry": "You told Rwanda the neighbors said she imagined things."
+        }
+      }
     },
     "rwanda_01_hard": {
       "id": "rwanda_01_hard",
@@ -215,6 +271,20 @@
       "mood": "Fear",
       "moodByClass": {
         "Crystals": "Anxiety"
+      },
+      "delivery": {
+        "white": {
+          "npcReaction": "\"Mm.\" She doesn't buy it, but she doesn't shut the door either."
+        },
+        "soft": {
+          "playerText": "Stories people don't get to tell. I'd like to hear yours, if you want.",
+          "npcReaction": "\"Stories.\" She considers it. \"Most people want the pretty version.\" She steps aside."
+        },
+        "bait": {
+          "playerText": "Deborah said you'd talk. Said you love an audience.",
+          "npcReaction": "\"An audience.\" She goes very still. \"I had one once. My mother. She looked at the best thing I ever made and walked out.\" She shuts her mouth hard.",
+          "ledgerEntry": "You told Rwanda that Deborah said she loved an audience."
+        }
       }
     },
     "rwanda_01_secret": {
@@ -264,7 +334,21 @@
       "bid": [
         "truth"
       ],
-      "glow": true
+      "glow": true,
+      "delivery": {
+        "white": {
+          "npcReaction": "\"Kids.\" She almost smiles at the window. She lets you keep it."
+        },
+        "soft": {
+          "playerText": "I did. I hope that's alright. It looked like it mattered.",
+          "npcReaction": "She looks down at the alley a long time. \"...It mattered. Nobody was supposed to know that.\" She doesn't send you away."
+        },
+        "bait": {
+          "playerText": "The landlord asked me to clean it up. Said it was an eyesore.",
+          "npcReaction": "\"It's not an eyesore, it's my—\" She stops. \"It's a woman at a bus stop. Five in the morning. She doesn't get covered up twice.\" Her hands are shaking.",
+          "ledgerEntry": "You told Rwanda her landlord called the alley an eyesore."
+        }
+      }
     },
     "rwanda_01_lie": {
       "id": "rwanda_01_lie",
@@ -307,7 +391,21 @@
       "bid": [
         "truth"
       ],
-      "glow": true
+      "glow": true,
+      "delivery": {
+        "white": {
+          "npcReaction": "\"Night shift.\" She almost laughs. She lets the lie stand and doesn't knock it over."
+        },
+        "soft": {
+          "playerText": "Neither, really. I made it up because I wanted to meet you.",
+          "npcReaction": "She looks you over, slowly. \"Flattery's a lie too.\" But she has turned around."
+        },
+        "bait": {
+          "playerText": "The gallery said they'd take you if you made it less angry.",
+          "npcReaction": "\"Less angry.\" She's laughing, but it isn't funny. \"Last time I made it less angry, they gave me first place.\" She looks at her hands. \"Never felt worse.\"",
+          "ledgerEntry": "You told Rwanda the gallery wanted her work less angry."
+        }
+      }
     },
     "rwanda_01_fake": {
       "id": "rwanda_01_fake",
@@ -350,7 +448,21 @@
       "bid": [
         "truth"
       ],
-      "glow": true
+      "glow": true,
+      "delivery": {
+        "white": {
+          "npcReaction": "She looks again, longer than she wants to. \"...If you say so.\""
+        },
+        "soft": {
+          "playerText": "Nothing's different. I just wanted to give you a reason to look down there.",
+          "npcReaction": "She does look. \"I don't look at it much anymore.\" Her voice is smaller than her face. \"Thanks, I guess.\""
+        },
+        "bait": {
+          "playerText": "Somebody painted over part of it again last night.",
+          "npcReaction": "She's at the glass before you finish. \"Which part. Which—\" It's fine. Her hand stays on the window. \"...They did that to the first one. Her face.\"",
+          "ledgerEntry": "You told Rwanda someone had painted over her alley again."
+        }
+      }
     },
     "rwanda_03": {
       "id": "rwanda_03",
@@ -404,7 +516,21 @@
       "mood": "Anxiety",
       "bid": [
         "truth"
-      ]
+      ],
+      "delivery": {
+        "white": {
+          "npcReaction": "She snorts. \"Sure. Less flinching. I'll get right on it.\" She doesn't put the cigarette down."
+        },
+        "soft": {
+          "playerText": "I'd flinch too. You've had good reasons for a long time.",
+          "npcReaction": "She looks at the cigarette. \"Reasons.\" She puts it down, unlit. \"Yeah. I've got a few.\""
+        },
+        "bait": {
+          "playerText": "Your mom told me you were always too sensitive as a kid.",
+          "npcReaction": "\"She never said that.\" Too quick. \"She never said anything. She stood in front of it and said 'That's not me' and left.\" She covers her mouth like she can take it back.",
+          "ledgerEntry": "You told Rwanda her mother called her too sensitive."
+        }
+      }
     },
     "rwanda_04": {
       "id": "rwanda_04",
@@ -444,7 +570,21 @@
       "mood": "Anxiety",
       "bid": [
         "truth"
-      ]
+      ],
+      "delivery": {
+        "white": {
+          "npcReaction": "She nods, slow, and the window wins her back a little."
+        },
+        "soft": {
+          "playerText": "You don't have to brace with me. I'm not going anywhere tonight.",
+          "npcReaction": "She sits on the sill, finally. \"Don't promise stuff.\" But she stays sitting."
+        },
+        "bait": {
+          "playerText": "Funny. The others said you'd be the hard one.",
+          "npcReaction": "\"The hard one.\" She laughs, tired. \"I used to be soft. Seventeen. Then I learned what soft costs.\" She looks right at you. \"Don't make me pay it again.\"",
+          "ledgerEntry": "You told Rwanda the others called her the hard one."
+        }
+      }
     }
   },
   "npcClass": "Crystals",
@@ -476,5 +616,16 @@
     "Guns": "\"Great. Another guy who looks like he wants to start something.\"",
     "Bible": "\"If you're here to save me, I'm booked.\"",
     "Crystals": "(She almost relaxes.) \"You don't look like you're here to tell me to smile.\""
-  }
+  },
+  "guard": 6,
+  "crack": {
+    "Guns": "She sets the brush down, handle toward you, like a weapon given up. \"Fine. You want the real version? Here's the real version.\"",
+    "Bible": "\"You keep waiting like it's a sermon.\" She turns from the window. \"Okay. Here's the one I never told.\"",
+    "Crystals": "The smart remark doesn't come. She looks at you, and for once doesn't decide in advance what she'll see. \"...Okay.\""
+  },
+  "baitFail": [
+    "\"Cute.\" She doesn't turn from the window.",
+    "She gives you the look she gives gallery people. \"Try that on somebody who hasn't heard it.\"",
+    "\"Mm-hm.\" The neon buzzes louder than she does."
+  ]
 }

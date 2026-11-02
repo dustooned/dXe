@@ -47,7 +47,21 @@
       },
       "bid": [
         "lie"
-      ]
+      ],
+      "delivery": {
+        "white": {
+          "npcReaction": "Her smile holds. Something behind it leans on the words, just a little."
+        },
+        "soft": {
+          "playerText": "You can trust God and still be angry He did it.",
+          "npcReaction": "\"Angry.\" She tests the word like a step that might not hold. \"I'm not allowed to be.\" She doesn't take it back."
+        },
+        "bait": {
+          "playerText": "Pastor said Caleb was at peace with the church, right before the end.",
+          "npcReaction": "\"He wasn't.\" It comes out too fast. \"We fought that week. About him leaving. He—\" Her hand goes to her phone. \"He wasn't at peace with anything.\"",
+          "ledgerEntry": "You told Deborah the pastor said her son died at peace with the church."
+        }
+      }
     },
     "deborah_02_denial": {
       "id": "deborah_02_denial",
@@ -88,7 +102,21 @@
       "mood": "Happy",
       "bid": [
         "lie"
-      ]
+      ],
+      "delivery": {
+        "white": {
+          "npcReaction": "She pats your hand. Relieved. The kind of relief that needs topping up."
+        },
+        "soft": {
+          "playerText": "I understand you need it to be true. I'm not sure it is.",
+          "npcReaction": "Her hand stops halfway to yours. \"...Nobody's said that to me.\" She doesn't pull it back."
+        },
+        "bait": {
+          "playerText": "Caleb's friends say he never stopped believing. Right to the end.",
+          "npcReaction": "\"His friends.\" She laughs, small and wrong. \"His friends are why he left. He told me so. On the phone, he—\" She stops. \"He told me a lot of things.\"",
+          "ledgerEntry": "You told Deborah her son's friends said he never stopped believing."
+        }
+      }
     },
     "deborah_02_confronted": {
       "id": "deborah_02_confronted",
@@ -126,7 +154,21 @@
           "nextNodeId": "deborah_03"
         }
       },
-      "mood": "Anxiety"
+      "mood": "Anxiety",
+      "delivery": {
+        "white": {
+          "npcReaction": "She nods, the apology accepted before you finish it."
+        },
+        "soft": {
+          "playerText": "I don't. I'd still like to know what it's been like for you.",
+          "npcReaction": "She opens her mouth to say fine. \"...Quiet. It's been so quiet.\" She looks at the phone on the counter."
+        },
+        "bait": {
+          "playerText": "Everyone at church says you've handled it beautifully.",
+          "npcReaction": "\"Handled it.\" Her voice goes thin. \"I handle the coffee. I handle the flowers. I didn't handle the—\" She closes her eyes. \"Don't.\"",
+          "ledgerEntry": "You told Deborah the whole church admired how well she was coping."
+        }
+      }
     },
     "deborah_01_soft": {
       "id": "deborah_01_soft",
@@ -163,7 +205,21 @@
           "nextNodeId": "deborah_02_denial"
         }
       },
-      "mood": "Anxiety"
+      "mood": "Anxiety",
+      "delivery": {
+        "white": {
+          "npcReaction": "She smiles, grateful for the cover, and gets down the good cups."
+        },
+        "soft": {
+          "playerText": "Coffee's fine. But I'd rather hear about him while it brews.",
+          "npcReaction": "The kettle ticks. She doesn't answer right away. \"...He took it black. Like his father. I never understood it.\""
+        },
+        "bait": {
+          "playerText": "Somebody said Caleb called home a lot, near the end.",
+          "npcReaction": "The pot rattles against the counter. \"Twice,\" she says, to nobody. Then, sharp: \"Who told you that.\"",
+          "ledgerEntry": "You told Deborah someone said her son called home often near the end."
+        }
+      }
     },
     "deborah_01_hard": {
       "id": "deborah_01_hard",
@@ -201,7 +257,21 @@
           "nextNodeId": "deborah_02_denial"
         }
       },
-      "mood": "Anger"
+      "mood": "Anger",
+      "delivery": {
+        "white": {
+          "npcReaction": "She lets out a breath. \"Thank you.\" She steps aside, just slightly."
+        },
+        "soft": {
+          "playerText": "I'm not going to say that. I don't think anybody should have.",
+          "npcReaction": "Her grip on the door frame eases. \"Everybody said it. Everybody.\" She steps back enough to let you in."
+        },
+        "bait": {
+          "playerText": "Pastor told me you agreed it was God's will. Right away.",
+          "npcReaction": "\"I said amen.\" Her chin comes up. \"I said amen because if it was God's will, then it wasn't—\" She stops in the doorway. \"Then it wasn't anybody's fault.\"",
+          "ledgerEntry": "You told Deborah the pastor said she agreed it was God's will right away."
+        }
+      }
     },
     "deborah_01_secret": {
       "id": "deborah_01_secret",
@@ -250,7 +320,21 @@
       "bid": [
         "truth"
       ],
-      "glow": true
+      "glow": true,
+      "delivery": {
+        "white": {
+          "npcReaction": "\"The super.\" She almost laughs. She lets you have it."
+        },
+        "soft": {
+          "playerText": "It was me. I'm sorry if that's hard to see.",
+          "npcReaction": "\"Hard.\" She touches the frame. \"It's the nicest thing anyone's done in this hallway in a year.\" Her voice catches on year."
+        },
+        "bait": {
+          "playerText": "Caleb asked me to. Before. He said you'd notice.",
+          "npcReaction": "\"Don't.\" Very quiet. \"Don't you use him to get in my door.\" Then, quieter still: \"...He always said I never noticed anything.\"",
+          "ledgerEntry": "You told Deborah her dead son had asked you to fix things for her."
+        }
+      }
     },
     "deborah_01_lie": {
       "id": "deborah_01_lie",
@@ -293,7 +377,21 @@
       "bid": [
         "lie"
       ],
-      "glow": true
+      "glow": true,
+      "delivery": {
+        "white": {
+          "npcReaction": "Her shoulders come down. \"Oh. Oh, good.\" She doesn't ask who."
+        },
+        "soft": {
+          "playerText": "Not the church. Just me. I'm sorry nobody from there came sooner.",
+          "npcReaction": "\"A year.\" She says it like a sum she has checked. \"Nobody came for a year.\" She holds the door anyway."
+        },
+        "bait": {
+          "playerText": "Pastor sent me to ask you to stop asking about the lake road.",
+          "npcReaction": "Her hand tightens on the frame. \"I asked once. Why the guardrail never got fixed. Once.\" Her eyes go wet and hard. \"And he sent you about that?\"",
+          "ledgerEntry": "You told Deborah the pastor sent you to make her stop asking about the lake road."
+        }
+      }
     },
     "deborah_01_fake": {
       "id": "deborah_01_fake",
@@ -336,7 +434,21 @@
       "bid": [
         "lie"
       ],
-      "glow": true
+      "glow": true,
+      "delivery": {
+        "white": {
+          "npcReaction": "She nods. \"I'm sure you did.\" She's kind enough to mean it."
+        },
+        "soft": {
+          "playerText": "Nothing yet. I didn't want to show up empty-handed, so I lied. I'm sorry.",
+          "npcReaction": "\"Empty-handed.\" She looks at your hands. \"Most people bring a casserole. That's worse.\" She lets you in."
+        },
+        "bait": {
+          "playerText": "Caleb's things. I moved the box by the door for you.",
+          "npcReaction": "\"You touched his—\" She's at the door in two steps. Nothing has moved. Her hand stays on her chest. \"...I haven't opened that box. Not once.\"",
+          "ledgerEntry": "You told Deborah you had moved her dead son's things."
+        }
+      }
     },
     "deborah_03": {
       "id": "deborah_03",
@@ -391,7 +503,21 @@
       "mood": "Sadness",
       "bid": [
         "truth"
-      ]
+      ],
+      "delivery": {
+        "white": {
+          "npcReaction": "She nods, slow. She folds the name back up and puts it away, for now."
+        },
+        "soft": {
+          "playerText": "Caleb. You can say it here. I'd like to hear about him.",
+          "npcReaction": "\"Caleb.\" Louder this time. \"He hated the hymn I liked. He sang it anyway, badly, on purpose.\" She smiles before she can stop it."
+        },
+        "bait": {
+          "playerText": "Funny. The deacons still talk about Caleb all the time.",
+          "npcReaction": "\"They do not.\" Fierce. \"They changed the subject at his own service. They—\" She grips the table edge. \"They prayed for me. Not him. Me.\"",
+          "ledgerEntry": "You told Deborah the deacons still talked about her son."
+        }
+      }
     },
     "deborah_04": {
       "id": "deborah_04",
@@ -432,7 +558,21 @@
       "bid": [
         "truth",
         "lie"
-      ]
+      ],
+      "delivery": {
+        "white": {
+          "npcReaction": "She nods, and doesn't open the bible. It's enough, for now."
+        },
+        "soft": {
+          "playerText": "I wasn't there. But I'm here now, and I'm not pretending.",
+          "npcReaction": "Her hand flattens on the cover. \"...Then stay a minute. Just a minute.\" She doesn't say anything else, and doesn't need to."
+        },
+        "bait": {
+          "playerText": "Somebody told me you saw his calls that night.",
+          "npcReaction": "The bible slides off the table. She doesn't pick it up. \"I saw his name.\" It is barely a sound. \"That's all. I saw his name.\"",
+          "ledgerEntry": "You told Deborah someone saw her ignore her son's calls."
+        }
+      }
     }
   },
   "npcClass": "Bible",
@@ -464,5 +604,16 @@
     "Guns": "(She steps back half a pace.) \"Oh. You're one of the tough ones.\"",
     "Bible": "(She brightens.) \"You've got a church face. I can always tell.\"",
     "Crystals": "(Her smile tightens.) \"You're not from our congregation, are you.\""
-  }
+  },
+  "guard": 6,
+  "crack": {
+    "Guns": "She sets the bible down on the table, both hands off it. \"Alright. You stood there long enough. Here.\"",
+    "Bible": "\"You keep praying at my door.\" She almost smiles. \"Fine. Come in and hear the one I can't say in church.\"",
+    "Crystals": "She starts to say she's fine. It doesn't come out. \"...Sit. Please. I need to say it to someone.\""
+  },
+  "baitFail": [
+    "\"That's kind of you to say.\" She says it the way she says it at the door every Sunday.",
+    "She smiles the committee smile and refills a cup nobody is drinking.",
+    "\"Mm.\" She straightens a doily that was already straight."
+  ]
 }

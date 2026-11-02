@@ -34,6 +34,17 @@ OPENER [Guns]: "Great. Another guy who looks like he wants to start something."
 OPENER [Bible]: "If you're here to save me, I'm booked."
 OPENER [Crystals]: (She almost relaxes.) "You don't look like you're here to tell me to smile."
 
+# The delivery spectrum (engine/delivery.js, Phase 11), same as Samun's: how far
+# you push the card is how you say it (soft truth, white-lie reaction, bait,
+# crack, bounced bait). GUARD: how closed her starts; at 0 the truth comes out.
+GUARD: 6
+CRACK [Guns]: She sets the brush down, handle toward you, like a weapon given up. "Fine. You want the real version? Here's the real version."
+CRACK [Bible]: "You keep waiting like it's a sermon." She turns from the window. "Okay. Here's the one I never told."
+CRACK [Crystals]: The smart remark doesn't come. She looks at you, and for once doesn't decide in advance what she'll see. "...Okay."
+BAITFAIL: "Cute." She doesn't turn from the window.
+BAITFAIL: She gives you the look she gives gallery people. "Try that on somebody who hasn't heard it."
+BAITFAIL: "Mm-hm." The neon buzzes louder than she does.
+
 === rwanda_01
 PROMPT: "Why do I gotta sand myself down just to be {color:Disgust}digestible{/color}?"
 MOOD: Anger
@@ -51,11 +62,22 @@ NEXT: rwanda_02_open
 -- LIE
 SAY: It's not that bad here. You're doing fine.
 REACT: She goes quiet. She's heard this before. She expected it from you too.
+WHITE REACT: She shrugs it off, but she lets it sit. "Fine. Maybe."
 EFFECTS: integrity-2 stability+1 trust-1
 DEBT: +3
 TAGS: Identity, Community
 LEDGER: You told Rwanda her experience wasn't that bad.
 NEXT: rwanda_02_closed
+
+-- SOFT
+SAY: You shouldn't have to. I'm sorry the world keeps asking you to.
+REACT: She looks at you sideways, checking for the catch. There isn't one. "...Yeah. Me too."
+
+-- BAIT
+SAY: I heard the gallery wants your stuff, but softened up a little.
+REACT: "Softened." Her jaw sets. "Somebody asked me that once. I did it, too. Won a ribbon for it." She bites the rest off. "Never again."
+LEDGER: You told Rwanda the gallery wanted her work softened.
+
 
 === rwanda_02_closed
 PROMPT: "Right. Sure. I'm doing {color:Sadness}fine{/color}." (She turns back to the window.)
@@ -73,11 +95,22 @@ NEXT: rwanda_03
 -- LIE
 SAY: Everyone goes through it. It gets easier.
 REACT: She doesn't answer. The neon buzzes. You've lost her.
+WHITE REACT: She doesn't argue. She doesn't turn around either.
 EFFECTS: integrity-2 stability+1 trust-2
 DEBT: +3
 TAGS: Identity
 LEDGER: You told Rwanda her erasure was a universal experience.
 NEXT: rwanda_03
+
+-- SOFT
+SAY: You don't sound fine. You don't have to be, with me.
+REACT: The glass fogs where she breathes on it. "...Fine's just the word that makes people leave." She doesn't tell you to.
+
+-- BAIT
+SAY: Your mom told me you've always been fine. Never complained once.
+REACT: She spins around. "You don't know my mother." Then, quieter: "...She'd say that, though. She said a lot of things about my pictures."
+LEDGER: You told Rwanda her mother said she had always been fine.
+
 
 === rwanda_02_open
 PROMPT: "You actually mean that? Most people just want me to {color:Disgust}perform{/color}."
@@ -95,11 +128,22 @@ NEXT: rwanda_03
 -- LIE
 SAY: People just need time to get used to you.
 REACT: Her expression flattens. "And there it is." She looks away.
+WHITE REACT: She tilts her head. Lets it go. "Mm. Maybe."
 EFFECTS: integrity-2 stability+1 trust-2
 DEBT: +3
 TAGS: Identity, Community
 LEDGER: You told Rwanda to wait for the world to catch up to her.
 NEXT: rwanda_03
+
+-- SOFT
+SAY: I mean it. You don't have to do anything for me. Not even talk.
+REACT: "Not even talk." She tries the idea on and finds it fits. She stays quiet with you a while.
+
+-- BAIT
+SAY: The guys at the shop say you're nicer when you're not painting.
+REACT: "Nicer." She laughs, short and ugly. "That's what they all wanted. The principal, the parents. A nicer face." She stops. "Forget it."
+LEDGER: You told Rwanda people said she was nicer when she wasn't painting.
+
 
 === rwanda_01_soft
 PROMPT: (She doesn't turn around.) "You {color:Anxiety}see{/color} it too, right. Whatever's out there tonight."
@@ -116,11 +160,22 @@ NEXT: rwanda_02_open
 -- LIE
 SAY: There's nothing out there. It's a quiet night.
 REACT: She turns around slowly. "Okay." She stops looking at the window at all.
+WHITE REACT: "Okay." She doesn't believe you, but she lets you stay.
 EFFECTS: integrity-2 stability+1 trust-1
 DEBT: +3
 TAGS: Identity
 LEDGER: You told Rwanda that what she was seeing wasn't there.
 NEXT: rwanda_02_closed
+
+-- SOFT
+SAY: Something's off out there. You're not the only one who feels it.
+REACT: She lets out a breath she'd been saving. "Thank God. I thought it was just me again." She makes room.
+
+-- BAIT
+SAY: Someone downstairs said you're always seeing things that aren't there.
+REACT: "I see what's there." Hot. "That's the problem. I painted what was there once and everybody said it was too much." She turns away. "So."
+LEDGER: You told Rwanda the neighbors said she imagined things.
+
 
 === rwanda_01_hard
 PROMPT: "Word travels. You've been at three doors tonight already. What is it you're {color:Anxiety}collecting{/color}?"
@@ -138,11 +193,22 @@ NEXT: rwanda_02_open
 -- LIE
 SAY: Nothing. I'm just passing through.
 REACT: She smiles without any of it reaching anywhere. "Sure you are."
+WHITE REACT: "Mm." She doesn't buy it, but she doesn't shut the door either.
 EFFECTS: integrity-2 stability+1 trust-2
 DEBT: +3
 TAGS: Identity, Community
 LEDGER: You lied to Rwanda about why you were at her door at all.
 NEXT: rwanda_02_closed
+
+-- SOFT
+SAY: Stories people don't get to tell. I'd like to hear yours, if you want.
+REACT: "Stories." She considers it. "Most people want the pretty version." She steps aside.
+
+-- BAIT
+SAY: Deborah said you'd talk. Said you love an audience.
+REACT: "An audience." She goes very still. "I had one once. My mother. She looked at the best thing I ever made and walked out." She shuts her mouth hard.
+LEDGER: You told Rwanda that Deborah said she loved an audience.
+
 
 === rwanda_01_secret
 # The secret opener: you opened everything in her alley and restored what
@@ -167,11 +233,22 @@ NEXT: rwanda_02_open
 -- LIE
 SAY: Wasn't me. Kids, probably.
 REACT: "Kids." She turns back to the window. "Sure."
+WHITE REACT: "Kids." She almost smiles at the window. She lets you keep it.
 EFFECTS: integrity-1 stability+1
 DEBT: +2
 TAGS: Identity
 LEDGER: You told Rwanda somebody else fixed her alley.
 NEXT: rwanda_02_closed
+
+-- SOFT
+SAY: I did. I hope that's alright. It looked like it mattered.
+REACT: She looks down at the alley a long time. "...It mattered. Nobody was supposed to know that." She doesn't send you away.
+
+-- BAIT
+SAY: The landlord asked me to clean it up. Said it was an eyesore.
+REACT: "It's not an eyesore, it's my—" She stops. "It's a woman at a bus stop. Five in the morning. She doesn't get covered up twice." Her hands are shaking.
+LEDGER: You told Rwanda her landlord called the alley an eyesore.
+
 
 === rwanda_01_lie
 # The white-lie opener: only offered while your Wi-Fi is fogged (under 4).
@@ -192,11 +269,22 @@ NEXT: rwanda_02_open
 -- LIE
 SAY: Night shift. We scout late.
 REACT: "Sure you do." Her back comes up like a wall.
+WHITE REACT: "Night shift." She almost laughs. She lets the lie stand and doesn't knock it over.
 EFFECTS: stability+1 trust-1
 DEBT: +3
 TAGS: Identity
 LEDGER: You told Rwanda you were from a gallery.
 NEXT: rwanda_02_closed
+
+-- SOFT
+SAY: Neither, really. I made it up because I wanted to meet you.
+REACT: She looks you over, slowly. "Flattery's a lie too." But she has turned around.
+
+-- BAIT
+SAY: The gallery said they'd take you if you made it less angry.
+REACT: "Less angry." She's laughing, but it isn't funny. "Last time I made it less angry, they gave me first place." She looks at her hands. "Never felt worse."
+LEDGER: You told Rwanda the gallery wanted her work less angry.
+
 
 === rwanda_01_fake
 # The faked restore: offered while fogged to a player who restored nothing,
@@ -217,11 +305,22 @@ NEXT: rwanda_02_open
 -- LIE
 SAY: Look closer.
 REACT: "I have been looking at it for nine years." She turns back to the window.
+WHITE REACT: She looks again, longer than she wants to. "...If you say so."
 EFFECTS: stability+1 trust-1
 DEBT: +2
 TAGS: Identity
 LEDGER: You told Rwanda you'd fixed something in her alley that you hadn't.
 NEXT: rwanda_02_closed
+
+-- SOFT
+SAY: Nothing's different. I just wanted to give you a reason to look down there.
+REACT: She does look. "I don't look at it much anymore." Her voice is smaller than her face. "Thanks, I guess."
+
+-- BAIT
+SAY: Somebody painted over part of it again last night.
+REACT: She's at the glass before you finish. "Which part. Which—" It's fine. Her hand stays on the window. "...They did that to the first one. Her face."
+LEDGER: You told Rwanda someone had painted over her alley again.
+
 
 === rwanda_03
 PROMPT: (She lights{sfx:click} a cigarette she doesn't smoke, just holds.) "You want to know the actual tiring part? It's not them. It's {color:Fear}flinching{/color} before they even say anything."
@@ -238,6 +337,7 @@ NEXT: rwanda_04
 -- LIE
 SAY: Maybe if you flinched less, people would push less.
 REACT: She laughs once, no humor in it. "There it is. Right on schedule."
+WHITE REACT: She snorts. "Sure. Less flinching. I'll get right on it." She doesn't put the cigarette down.
 EFFECTS: integrity-2 stability+1 trust-2
 DEBT: +3
 TAGS: Identity
@@ -247,6 +347,16 @@ CAUGHT [rwanda_01]: "Ten minutes ago they were scared of me. Now it's my flinchi
 CONTRADICTS: rwanda_02_closed=truth
 CAUGHT [rwanda_02_closed]: "You told me not to minimize it. Then you minimized me."
 NEXT: rwanda_04
+
+-- SOFT
+SAY: I'd flinch too. You've had good reasons for a long time.
+REACT: She looks at the cigarette. "Reasons." She puts it down, unlit. "Yeah. I've got a few."
+
+-- BAIT
+SAY: Your mom told me you were always too sensitive as a kid.
+REACT: "She never said that." Too quick. "She never said anything. She stood in front of it and said 'That's not me' and left." She covers her mouth like she can take it back.
+LEDGER: You told Rwanda her mother called her too sensitive.
+
 
 === rwanda_04
 PROMPT: (She sets the cigarette down for good this time.) "You're the first person tonight I haven't had to {color:Fear}brace{/color} for. That's either good, or it means I'm not paying attention."
@@ -263,8 +373,19 @@ NEXT: (end)
 -- LIE
 SAY: You should probably stay on guard. Better safe.
 REACT: The window gets her attention again. Whatever just opened closes back up, careful and quiet.
+WHITE REACT: She nods, slow, and the window wins her back a little.
 EFFECTS: integrity-2 stability+1 trust-2
 DEBT: +3
 TAGS: Identity
 LEDGER: You told Rwanda to stay braced even with you.
 NEXT: (end)
+
+-- SOFT
+SAY: You don't have to brace with me. I'm not going anywhere tonight.
+REACT: She sits on the sill, finally. "Don't promise stuff." But she stays sitting.
+
+-- BAIT
+SAY: Funny. The others said you'd be the hard one.
+REACT: "The hard one." She laughs, tired. "I used to be soft. Seventeen. Then I learned what soft costs." She looks right at you. "Don't make me pay it again."
+LEDGER: You told Rwanda the others called her the hard one.
+

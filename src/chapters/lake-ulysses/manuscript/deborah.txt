@@ -34,6 +34,17 @@ OPENER [Guns]: (She steps back half a pace.) "Oh. You're one of the tough ones."
 OPENER [Bible]: (She brightens.) "You've got a church face. I can always tell."
 OPENER [Crystals]: (Her smile tightens.) "You're not from our congregation, are you."
 
+# The delivery spectrum (engine/delivery.js, Phase 11), same as Samun's: how far
+# you push the card is how you say it (soft truth, white-lie reaction, bait,
+# crack, bounced bait). GUARD: how closed her starts; at 0 the truth comes out.
+GUARD: 6
+CRACK [Guns]: She sets the bible down on the table, both hands off it. "Alright. You stood there long enough. Here."
+CRACK [Bible]: "You keep praying at my door." She almost smiles. "Fine. Come in and hear the one I can't say in church."
+CRACK [Crystals]: She starts to say she's fine. It doesn't come out. "...Sit. Please. I need to say it to someone."
+BAITFAIL: "That's kind of you to say." She says it the way she says it at the door every Sunday.
+BAITFAIL: She smiles the committee smile and refills a cup nobody is drinking.
+BAITFAIL: "Mm." She straightens a doily that was already straight.
+
 === deborah_01
 PROMPT: "God took my boy when He needed him. I just have to {color:Trust}trust{/color} that."
 MOOD: Sadness
@@ -52,11 +63,22 @@ NEXT: deborah_02_confronted
 -- LIE
 SAY: God has a plan. He's at peace.
 REACT: Her smile widens. Too wide. The wallpaper flickers green.
+WHITE REACT: Her smile holds. Something behind it leans on the words, just a little.
 EFFECTS: integrity-2 stability+2 trust+1
 DEBT: +4
 TAGS: Faith, Health
 LEDGER: You told Deborah God took her son on purpose.
 NEXT: deborah_02_denial
+
+-- SOFT
+SAY: You can trust God and still be angry He did it.
+REACT: "Angry." She tests the word like a step that might not hold. "I'm not allowed to be." She doesn't take it back.
+
+-- BAIT
+SAY: Pastor said Caleb was at peace with the church, right before the end.
+REACT: "He wasn't." It comes out too fast. "We fought that week. About him leaving. He—" Her hand goes to her phone. "He wasn't at peace with anything."
+LEDGER: You told Deborah the pastor said her son died at peace with the church.
+
 
 === deborah_02_denial
 PROMPT: "I knew you'd {color:Trust}understand{/color}. Most people don't want to hear it."
@@ -74,11 +96,22 @@ NEXT: deborah_03
 -- LIE
 SAY: You're one of the few who still has real faith.
 REACT: She straightens. She will never question this again.
+WHITE REACT: She pats your hand. Relieved. The kind of relief that needs topping up.
 EFFECTS: integrity-1 stability+2 trust+2
 DEBT: +3
 TAGS: Faith
 LEDGER: You told Deborah she was spiritually superior for blaming God.
 NEXT: deborah_03
+
+-- SOFT
+SAY: I understand you need it to be true. I'm not sure it is.
+REACT: Her hand stops halfway to yours. "...Nobody's said that to me." She doesn't pull it back.
+
+-- BAIT
+SAY: Caleb's friends say he never stopped believing. Right to the end.
+REACT: "His friends." She laughs, small and wrong. "His friends are why he left. He told me so. On the phone, he—" She stops. "He told me a lot of things."
+LEDGER: You told Deborah her son's friends said he never stopped believing.
+
 
 === deborah_02_confronted
 PROMPT: "You don't know what it's like to {color:Sadness}lose{/color} a child."
@@ -94,11 +127,22 @@ NEXT: deborah_03
 -- LIE
 SAY: You're right. I shouldn't have said that.
 REACT: Relief washes over her face. The crack seals back up.
+WHITE REACT: She nods, the apology accepted before you finish it.
 EFFECTS: integrity-2 stability+1 trust+1
 DEBT: +2
 TAGS: Faith
 LEDGER: You apologized for telling Deborah the truth.
 NEXT: deborah_03
+
+-- SOFT
+SAY: I don't. I'd still like to know what it's been like for you.
+REACT: She opens her mouth to say fine. "...Quiet. It's been so quiet." She looks at the phone on the counter.
+
+-- BAIT
+SAY: Everyone at church says you've handled it beautifully.
+REACT: "Handled it." Her voice goes thin. "I handle the coffee. I handle the flowers. I didn't handle the—" She closes her eyes. "Don't."
+LEDGER: You told Deborah the whole church admired how well she was coping.
+
 
 === deborah_01_soft
 PROMPT: "You {color:Surprise}noticed{/color}. Nobody notices. Sit down — I'll make coffee neither of us is going to drink."
@@ -114,11 +158,22 @@ NEXT: deborah_02_confronted
 -- LIE
 SAY: Coffee sounds good, actually.
 REACT: She busies both hands. The kitchen fills up with the sound of not saying it.
+WHITE REACT: She smiles, grateful for the cover, and gets down the good cups.
 EFFECTS: integrity-1 stability+2 trust+1
 DEBT: +2
 TAGS: Faith
 LEDGER: You let Deborah change the subject away from her son.
 NEXT: deborah_02_denial
+
+-- SOFT
+SAY: Coffee's fine. But I'd rather hear about him while it brews.
+REACT: The kettle ticks. She doesn't answer right away. "...He took it black. Like his father. I never understood it."
+
+-- BAIT
+SAY: Somebody said Caleb called home a lot, near the end.
+REACT: The pot rattles against the counter. "Twice," she says, to nobody. Then, sharp: "Who told you that."
+LEDGER: You told Deborah someone said her son called home often near the end.
+
 
 === deborah_01_hard
 PROMPT: [She stops in the doorway and does not move out of it.] "You {color:Anxiety}heard{/color}. Everybody heard. Go on — say the part where it was God's will."
@@ -134,11 +189,22 @@ NEXT: deborah_02_confronted
 -- LIE
 SAY: It was God's will.
 REACT: Her shoulders drop an inch. She needed somebody to say it out loud where she could hear it.
+WHITE REACT: She lets out a breath. "Thank you." She steps aside, just slightly.
 EFFECTS: integrity-2 stability+2 trust+1
 DEBT: +4
 TAGS: Faith, Health
 LEDGER: You told Deborah her son's death was God's will, standing on her doorstep.
 NEXT: deborah_02_denial
+
+-- SOFT
+SAY: I'm not going to say that. I don't think anybody should have.
+REACT: Her grip on the door frame eases. "Everybody said it. Everybody." She steps back enough to let you in.
+
+-- BAIT
+SAY: Pastor told me you agreed it was God's will. Right away.
+REACT: "I said amen." Her chin comes up. "I said amen because if it was God's will, then it wasn't—" She stops in the doorway. "Then it wasn't anybody's fault."
+LEDGER: You told Deborah the pastor said she agreed it was God's will right away.
+
 
 === deborah_01_secret
 # The secret opener: you opened everything in her hallway and restored what
@@ -163,11 +229,22 @@ NEXT: deborah_03
 -- LIE
 SAY: Wasn't me. Must've been the super.
 REACT: "Of course." She smiles like she believes it. She doesn't.
+WHITE REACT: "The super." She almost laughs. She lets you have it.
 EFFECTS: integrity-1 stability+1
 DEBT: +2
 TAGS: Faith
 LEDGER: You told Deborah someone else fixed what her son used to fix.
 NEXT: deborah_02_denial
+
+-- SOFT
+SAY: It was me. I'm sorry if that's hard to see.
+REACT: "Hard." She touches the frame. "It's the nicest thing anyone's done in this hallway in a year." Her voice catches on year.
+
+-- BAIT
+SAY: Caleb asked me to. Before. He said you'd notice.
+REACT: "Don't." Very quiet. "Don't you use him to get in my door." Then, quieter still: "...He always said I never noticed anything."
+LEDGER: You told Deborah her dead son had asked you to fix things for her.
+
 
 === deborah_01_lie
 # The white-lie opener: only offered while your Wi-Fi is fogged (under 4).
@@ -188,11 +265,22 @@ NEXT: deborah_02_confronted
 -- LIE
 SAY: Pastor sent me. We've all been worried.
 REACT: Her whole face softens. She wants it to be true so badly she doesn't check.
+WHITE REACT: Her shoulders come down. "Oh. Oh, good." She doesn't ask who.
 EFFECTS: stability+2 trust+1
 DEBT: +3
 TAGS: Faith
 LEDGER: You told Deborah the church sent you.
 NEXT: deborah_02_denial
+
+-- SOFT
+SAY: Not the church. Just me. I'm sorry nobody from there came sooner.
+REACT: "A year." She says it like a sum she has checked. "Nobody came for a year." She holds the door anyway.
+
+-- BAIT
+SAY: Pastor sent me to ask you to stop asking about the lake road.
+REACT: Her hand tightens on the frame. "I asked once. Why the guardrail never got fixed. Once." Her eyes go wet and hard. "And he sent you about that?"
+LEDGER: You told Deborah the pastor sent you to make her stop asking about the lake road.
+
 
 === deborah_01_fake
 # The faked restore: offered while fogged to a player who restored nothing,
@@ -213,11 +301,22 @@ NEXT: deborah_02_confronted
 -- LIE
 SAY: You must not have looked.
 REACT: She looks again, and lets herself see it. It costs her something to.
+WHITE REACT: She nods. "I'm sure you did." She's kind enough to mean it.
 EFFECTS: stability+1 trust+1
 DEBT: +2
 TAGS: Faith
 LEDGER: You told Deborah you'd fixed something you hadn't.
 NEXT: deborah_02_denial
+
+-- SOFT
+SAY: Nothing yet. I didn't want to show up empty-handed, so I lied. I'm sorry.
+REACT: "Empty-handed." She looks at your hands. "Most people bring a casserole. That's worse." She lets you in.
+
+-- BAIT
+SAY: Caleb's things. I moved the box by the door for you.
+REACT: "You touched his—" She's at the door in two steps. Nothing has moved. Her hand stays on her chest. "...I haven't opened that box. Not once."
+LEDGER: You told Deborah you had moved her dead son's things.
+
 
 === deborah_03
 PROMPT: (She sits down at the kitchen table, like her legs finally admit it.) "His name was {color:Sadness}Caleb{/color}. Nobody at this church says his name anymore."
@@ -234,6 +333,7 @@ NEXT: deborah_04
 -- LIE
 SAY: He's at peace now. You don't need to keep saying it.
 REACT: She stops. Folds her hands. Goes back to being the woman who greets people at the door.
+WHITE REACT: She nods, slow. She folds the name back up and puts it away, for now.
 EFFECTS: integrity-2 stability+1 trust+1
 DEBT: +3
 TAGS: Faith, Health
@@ -243,6 +343,16 @@ CAUGHT [deborah_01]: "On my porch you said faith didn't save him. Now he's at pe
 CONTRADICTS: deborah_01_hard=truth
 CAUGHT [deborah_01_hard]: "You said you weren't going to say it. Then you said it anyway."
 NEXT: deborah_04
+
+-- SOFT
+SAY: Caleb. You can say it here. I'd like to hear about him.
+REACT: "Caleb." Louder this time. "He hated the hymn I liked. He sang it anyway, badly, on purpose." She smiles before she can stop it.
+
+-- BAIT
+SAY: Funny. The deacons still talk about Caleb all the time.
+REACT: "They do not." Fierce. "They changed the subject at his own service. They—" She grips the table edge. "They prayed for me. Not him. Me."
+LEDGER: You told Deborah the deacons still talked about her son.
+
 
 === deborah_04
 PROMPT: (She reaches for her bible out of habit, then stops, hand resting on the cover instead.) "Everyone who knew him is either gone or {color:Disgust}pretending{/color} they weren't there."
@@ -259,8 +369,19 @@ NEXT: (end)
 -- LIE
 SAY: He's still with all of you, every Sunday.
 REACT: She opens the bible after all. Reads nothing. Just holds it open like proof.
+WHITE REACT: She nods, and doesn't open the bible. It's enough, for now.
 EFFECTS: integrity-2 stability+1 trust+1
 DEBT: +3
 TAGS: Faith
 LEDGER: You told Deborah her son was still present at a church that had stopped saying his name.
 NEXT: (end)
+
+-- SOFT
+SAY: I wasn't there. But I'm here now, and I'm not pretending.
+REACT: Her hand flattens on the cover. "...Then stay a minute. Just a minute." She doesn't say anything else, and doesn't need to.
+
+-- BAIT
+SAY: Somebody told me you saw his calls that night.
+REACT: The bible slides off the table. She doesn't pick it up. "I saw his name." It is barely a sound. "That's all. I saw his name."
+LEDGER: You told Deborah someone saw her ignore her son's calls.
+
