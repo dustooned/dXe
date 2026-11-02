@@ -380,6 +380,14 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // {cue:tone_fifth} etc.: the interval he's describing, played (the science lesson).
     if (name.startsWith('tone_')) audio.playIntervalDemo(name.slice(5));
   }
+  // The little screen (the two lines across the picture, the needle and the
+  // shape) belongs to Rwanda's round, where the Therapist teaches it. On a
+  // first playthrough it stays dark before then (Deborah's round), so nobody
+  // meets a readout nothing has pointed at. A repeat player sees it everywhere.
+  function scopeNotYet() {
+    const r = run.get();
+    return npc.npc === 'DEBORAH' && !r.repeat && !(r.coachSeen ?? []).includes('scope');
+  }
   function isRevealed(kind) {
     const gateNode = npc.reveal?.[kind];
     if (gateNode === 'cue') return cuesFired.has(kind);
@@ -472,7 +480,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
       // can't (the same feeling that syncs, so the tutorial's lesson holds).
       getFeelings: () => ({ mine: activeEmotion ?? encounterPicks.at(-1) ?? null, theirs: (stage === 'outro' && trial ? trial.target : currentNode()?.mood ?? shownMood(currentNode())) ?? null, dimmed: lowBattery() }),
       getHighlight: () => (guideOn() ? coach?.highlight ?? trialHighlight() : null),
-      getVisibility: npc.reveal ? () => ({ traces: isRevealed('scope'), instruments: isRevealed('instruments') }) : undefined,
+      getVisibility: npc.reveal
+        ? () => ({ traces: isRevealed('scope'), instruments: isRevealed('instruments') })
+        : scopeNotYet() ? () => ({ traces: false, instruments: false }) : undefined,
     });
 
     const content = document.createElement('div');
