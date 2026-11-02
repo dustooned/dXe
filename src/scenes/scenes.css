@@ -2457,7 +2457,7 @@
 }
 
 /* ── The FEELZ feed (feedScene.js): channels over the cutscene frame ── */
-.dx-feed { touch-action: none; }
+.dx-feed { touch-action: pinch-zoom; } /* swipes are ours (pointer events); pinch stays the player's */
 .dx-feed__head {
   position: absolute;
   z-index: 4;
