@@ -320,7 +320,7 @@ export function mount(stageEl, { exit, restart, startSceneId }) {
     },
   });
 
-  hud.setChapterActive({ onRestart: restart });
+  hud.setChapterActive({ onRestart: restart, getLedger: () => run.get().ledger });
   sequencer.mount(stageEl);
 
   return function unmount() {

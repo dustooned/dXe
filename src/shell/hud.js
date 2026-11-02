@@ -19,6 +19,8 @@ let panelEl = null;
 let skipFn = null;
 let restartFn = null;
 let chapterActive = false;
+// The running chapter's ledger, for the guide's LOG entry (null outside one).
+let ledgerFn = null;
 
 // Retro pixel icons: hard-edged SVG cells ('#' = lit), same treatment as
 // the status bar's sprites (ui/statusBar.js).
@@ -136,6 +138,7 @@ export function setSkip(fn) {
 export function setChapterActive(active) {
   chapterActive = !!active;
   restartFn = active?.onRestart ?? null;
+  ledgerFn = active?.getLedger ?? null;
 }
 
 function openPanel() {
@@ -166,6 +169,9 @@ const GUIDE = [
   ['CLOCK', () => '<span class="dx-guide__clock">12:00</span>', 'Keeps honest time while you do. Lie enough and the minutes start to skip.'],
   ['+1 / -1', () => '<span class="dx-guide__delta"><b>+1</b> <i>-1</i></span>', 'After an answer, how much it moved each meter.'],
   ['THE LAKE', () => '<span class="dx-guide__lake"></span>', 'Everything you told people, as water. Lies fill it, truths clear it a little. It decides how the chapter ends.'],
+  // Every lie on the record so far, newest first: what you said, to whom, and
+  // what it put on the lake. Free to open, read flat: no score, no comment.
+  ['LOG', () => '<svg viewBox="0 0 24 16" class="dx-guide__svg"><path d="M5 3 H19 M5 7 H19 M5 11 H15" stroke="#fff" fill="none"/></svg>', '', renderLog],
   ['THE LINES', () => '<svg viewBox="0 0 24 16" class="dx-guide__svg"><path d="M0 5 Q4 1 8 5 T16 5 T24 5" stroke="#9b6bff" fill="none"/><path d="M0 11 Q4 7 8 11 T16 11 T24 11" stroke="#4fd6ff" fill="none"/></svg>', 'Across their picture: their line on top, yours under it. The closer they run, the closer you are.'],
   ['LITTLE SCREEN', () => lissajousSvg(4, 5, Math.PI / 4), 'Your feeling against theirs. A busier shape means further apart; a circle that holds still means you found what they feel.'],
   ['NEEDLE', () => '<svg viewBox="0 0 24 16" class="dx-guide__svg"><path d="M3 13 H21 M3 13 V10 M12 13 V10 M21 13 V10" stroke="#fff" stroke-opacity="0.5" fill="none"/><path d="M12 13 L19 4" stroke="#ffe27a" stroke-width="1.6"/></svg>', 'Right: you\'re moving together. Left: pulling apart.'],
@@ -174,6 +180,27 @@ const GUIDE = [
   ['CALLS', () => '<span class="dx-guide__call">T</span>', 'Tap a contact for their read on who you\'re facing, in their own words. One call each per conversation.'],
   ['THE WHEEL', () => lissajousSvg(1, 1, Math.PI / 2), 'Pick how you feel before you answer. Hold a slice to hear it. New feelings arrive when people share theirs.'],
 ];
+
+// The LOG entry's page: the run's ledger, flat.
+function renderLog(el) {
+  el.textContent = '';
+  const entries = [...(ledgerFn?.() ?? [])].reverse();
+  if (!entries.length) {
+    el.textContent = 'Nothing recorded yet.';
+    return;
+  }
+  for (const entry of entries) {
+    const line = document.createElement('span');
+    line.className = 'dx-guide__log';
+    line.textContent = entry.ledgerText;
+    const meta = document.createElement('span');
+    meta.className = 'dx-guide__log-meta';
+    const delta = entry.debtDelta ?? 0;
+    meta.textContent = `${entry.npc ?? ''} · LAKE ${delta > 0 ? '+' : ''}${delta}`;
+    line.appendChild(meta);
+    el.appendChild(line);
+  }
+}
 
 // The guide as a drum, like the game's own wheel: entries sit on a cylinder,
 // the lit one in the gold frame, its words below. Drag or flick, scroll,
@@ -218,7 +245,8 @@ function renderGuidePage() {
     if (idx !== shown) {
       if (shown !== -1) playTypewriterTick();
       shown = idx;
-      text.textContent = GUIDE[idx][2];
+      if (GUIDE[idx][3]) GUIDE[idx][3](text);
+      else text.textContent = GUIDE[idx][2];
       text.classList.remove('is-new');
       void text.offsetWidth;
       text.classList.add('is-new');

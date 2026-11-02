@@ -1604,6 +1604,15 @@ svg .is-hinted path {
   text-align: left;
 }
 .dx-drum__text.is-new { animation: dx-drum-in 0.25s ease-out both; }
+/* The LOG entry: one block per ledger line, its who and lake number under it. */
+.dx-guide__log {
+  display: block;
+  margin-bottom: calc(8 * var(--px));
+}
+.dx-guide__log-meta {
+  display: block;
+  opacity: 0.6;
+}
 @keyframes dx-drum-in { from { opacity: 0; transform: translateY(calc(3 * var(--px))); } }
 .dx-drum__count { margin: 0; font-size: calc(7 * var(--fs)); text-align: center; opacity: 0.6; letter-spacing: 0.12em; }
 @media (prefers-reduced-motion: reduce) {
