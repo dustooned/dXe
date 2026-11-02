@@ -158,6 +158,15 @@ check("Rick's shut-down still reachable", shut > 0, `${shut}/5000`);
   check('double-down adds 1 or 2', buildReckoningDeck(ledger, 3, 10).every((c) => c.adds === 1 || c.adds === 2));
   check('mixed choices land between the extremes', run(6, ['confess', 'doubleDown', 'confess']) > run(6, C) && run(6, ['confess', 'doubleDown', 'confess']) < run(6, D));
   check('lake stays in range', run(10, D) === 10 && run(0, C) === 0);
+  // A long ledger: the newest four stand alone, every older lie shares a fifth card that names them.
+  const long = Array.from({ length: 9 }, (_, i) => ({ npc: 'X', ledgerText: 'lie' + i, tags: [], debtDelta: 2 }));
+  const deep = buildReckoningDeck(long, undefined, 10);
+  check('a long ledger makes 5 cards, newest first', deep.length === 5 && deep[0].ledgerText === 'lie8' && deep[3].ledgerText === 'lie5');
+  check('the fifth card names every older lie', ['lie0', 'lie1', 'lie2', 'lie3', 'lie4'].every((t) => deep[4].ledgerText.includes(t)));
+  check('a short ledger keeps a card per lie', buildReckoningDeck(long.slice(0, 5), undefined, 10).length === 5 && buildReckoningDeck(long.slice(0, 2), undefined, 4).length === 2);
+  let deepSt = { truthDebt: 10 };
+  deep.forEach((c) => { deepSt = { ...deepSt, ...resolveReckoningCard(deepSt, c, 'confess').patch }; });
+  check('a deep-lie run still cannot be confessed clean', deepSt.truthDebt >= 4, 'got ' + deepSt.truthDebt);
 }
 
 // ── The Therapist's tutorial: every mechanic step exists for each class and for no class ──

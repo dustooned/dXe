@@ -303,19 +303,20 @@ in the lake. **His entrance:** in the dark, the death clock ticks
 Storm Lord's opening; SID-style ring modulation and a 4-bit noise hammer),
 tuned to you: the first two strike your two most-picked feelings at the
 pitch each holds in your FEELZ chord, the third strikes your top three
-together, and each flashes its feeling's color. His bust (placeholder pixel sprite: halo, clerical
-collar, dark wings) fades in slow and stepped, and he greets you in his
+together, and each flashes its feeling's color. His portrait (the artist's 1-bit
+bust, the lake behind him) fades in slow and stepped, and he greets you in his
 SAM voice ("Welcome, child."). His nameplate reads "???" until he says
 his name. A tap skips the entrance. The lake gauge doesn't appear until he
 asks for your first confession. During the confessions he answers in his
 voice: "Amen." on a confession, "Shame." on a double-down, and "Samael."
-when his real name comes out. He puts up to three of their most recent logged lies to
-them. Each one: **Confess** (clears about half of what that lie added, 1 to 3,
+when his real name comes out. He puts their logged lies to them, newest first:
+up to four as their own cards, and every older one together on a fifth card
+that names them all. Each one: **Confess** (clears about half of what that lie added, 1 to 3,
 live on screen) or **Double Down** (adds 1, or 2 for the bigger lies).
 Confession is never quite enough for him: it can't take the lake below a
 third of where it stood when the altar call began, so a full lake tops out
-at a functional mask, while a shallow one can still go clean. Three taps shift
-the ending a tier or so; they don't decide it (`engine/reckoning.js`).
+at a functional mask, while a shallow one can still go clean. A handful of
+taps shift the ending a tier or so; they don't decide it (`engine/reckoning.js`).
 Then IT and SO, as his hellhound gatekeepers, walk the player into the
 water, and he holds them under at the lake's final level: the screen
 sinks into clear blue or swamp green. Even a player with nothing to

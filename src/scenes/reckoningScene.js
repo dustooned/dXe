@@ -47,7 +47,7 @@ const ALTAR_AT = GREET_AT + 1500;
 
 export function mount(stageEl, scene, { run, onComplete }) {
   const script = scene.pastor;
-  const deck = buildReckoningDeck(run.get().ledger, 3, run.get().truthDebt);
+  const deck = buildReckoningDeck(run.get().ledger, undefined, run.get().truthDebt);
   let typewriter = null;
   let itPopup = null;
   let queue = [];

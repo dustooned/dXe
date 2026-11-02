@@ -7,22 +7,34 @@ import { clamp } from './util.js';
 //  - DOUBLE DOWN adds 1 or 2 (2 for the bigger lies).
 //  - Confessing can't take the lake below a third of where it stood when
 //    the altar call began (rounded up). A shallow lake can still go clean;
-//    a full one tops out at a functional mask.
-// The ending reads the run first and the Reckoning second: three taps shift
-// it by a tier or so, they don't decide it.
+//    a full one tops out at a functional mask, however many cards there are.
+// The ending reads the run first and the Reckoning second: a handful of taps
+// shift it by a tier or so, they don't decide it.
 export const CONFESS_MAX = 3;
 export const DOUBLE_DOWN_SMALL = 1;
 export const DOUBLE_DOWN_BIG = 2;
 const BIG_LIE = 5; // a lie that added this much debt or more
 
-// Builds the Reckoning deck from the run's ledger — most recent lies first,
-// capped at 3 cards for the demo (DX_DEMO_BUILD_SPEC.md section 1.1).
+// Builds the Reckoning deck from the run's ledger, most recent lies first:
+// up to maxCards cards. A ledger longer than that keeps its newest
+// (maxCards - 1) lies as their own cards and puts every older one on a last
+// card that names them all, priced on their combined weight with the same
+// rules (so a long run of lies faces more of them, not the same few).
 // startDebt is the lake as the altar call begins (sets the confession floor).
-export function buildReckoningDeck(ledger, maxCards = 3, startDebt = 0) {
+export function buildReckoningDeck(ledger, maxCards = 5, startDebt = 0) {
   const floor = Math.ceil(startDebt / 3);
-  return [...ledger]
-    .slice(-maxCards)
-    .reverse()
+  let cards = [...ledger].reverse();
+  if (cards.length > maxCards) {
+    const older = cards.slice(maxCards - 1);
+    cards = [...cards.slice(0, maxCards - 1), {
+      npc: older[0].npc,
+      ledgerText: [...older].reverse().map((e) => e.ledgerText).join(' '),
+      tags: [...new Set(older.flatMap((e) => e.tags ?? []))],
+      debtDelta: older.reduce((sum, e) => sum + Math.abs(e.debtDelta || 0), 0),
+      grouped: older.length,
+    }];
+  }
+  return cards
     .map((entry, i) => {
       const payoff = Math.abs(entry.debtDelta) || 1;
       return {
