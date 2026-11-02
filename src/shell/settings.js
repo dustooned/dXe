@@ -40,12 +40,21 @@ export function applyEffectsSetting(s = loadSettings()) {
   document.documentElement.classList.toggle('is-cvd-blueyellow', cv === 'blueyellow');
 }
 
+// Reduce effects starts from the OS's reduced-motion preference until the
+// player has a stored value; once one is saved (their choice in Settings, or
+// any save after this first read), it is theirs and the OS no longer counts.
+function osReducesMotion() {
+  try { return !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches; } catch { return false; }
+}
+
 export function loadSettings() {
   try {
     const raw = localStorage.getItem(KEY);
-    return raw ? { ...defaultSettings, ...JSON.parse(raw) } : { ...defaultSettings };
+    const stored = raw ? JSON.parse(raw) : {};
+    const seeded = 'reduceEffects' in stored ? {} : { reduceEffects: osReducesMotion() };
+    return { ...defaultSettings, ...seeded, ...stored };
   } catch {
-    return { ...defaultSettings };
+    return { ...defaultSettings, reduceEffects: osReducesMotion() };
   }
 }
 
