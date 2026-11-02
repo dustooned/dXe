@@ -3,7 +3,7 @@ import './style.css';
 import './ui/ui.css';
 import './scenes/scenes.css';
 import { onRouteChange, navigate, getCurrentRoute } from './shell/router.js';
-import { loadSave, loadCheckpoint, importSave } from './shell/save.js';
+import { loadSave, loadCheckpoint, clearCheckpoint, importSave } from './shell/save.js';
 import { decodeRunCode } from './engine/runCode.js';
 import { historyLine } from './ui/runCodePanel.js';
 import { createLakeGauge } from './ui/lakeGauge.js';
@@ -321,6 +321,14 @@ function renderTitleMenu() {
       beginTransition(`chapter/${checkpoint.chapterId}/${checkpoint.sceneId}`);
     });
     menu.appendChild(continueBtn);
+    // From another build (the chapter's CHECKPOINT_VERSION moved on): no
+    // CONTINUE; the chapter would drop it anyway.
+    CHAPTERS[checkpoint.chapterId]?.load().then((m) => {
+      if (m.CHECKPOINT_VERSION === undefined || checkpoint.version === m.CHECKPOINT_VERSION) return;
+      clearCheckpoint();
+      continueBtn.remove();
+      enterBtn.textContent = 'ENTER';
+    }).catch(() => {});
   }
 
   const enterBtn = document.createElement('button');

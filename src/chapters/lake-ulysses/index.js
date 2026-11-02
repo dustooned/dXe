@@ -1,7 +1,7 @@
 import { createStore } from '../../shell/state.js';
 import { takeDebugOverrides } from '../../shell/debug.js';
 import { createSceneSequencer } from '../../engine/sceneSequencer.js';
-import { recordEnding, saveCheckpoint, clearCheckpoint, loadSave } from '../../shell/save.js';
+import { recordEnding, saveCheckpoint, clearCheckpoint, loadSave, loadCheckpoint } from '../../shell/save.js';
 import { therapistReturnScene } from './therapistReturn.js';
 import plates from './plates.json';
 import { registerCharacterArt } from '../../engine/characters.js';
@@ -185,6 +185,11 @@ const HANDLERS = {
   notice: noticeScene,
 };
 
+// Bump when a checkpoint saved by an older build can't be trusted to resume
+// (a scene renamed or removed, run state reshaped). The chapter drops a
+// checkpoint whose version doesn't match, with its state (see mount).
+export const CHECKPOINT_VERSION = 1;
+
 const initialRunState = {
   integrity: 5,
   trust: 5,
@@ -278,7 +283,17 @@ export function mount(stageEl, { exit, restart, startSceneId }) {
   // (therapistReturn.js), and stays quiet for the rest of the run.
   const lastRun = loadSave().lastRun;
   const repeatState = lastRun ? { repeat: true, scopeExplained: true } : {};
-  const run = createStore({ ...initialRunState, ...repeatState, ...takeDebugOverrides() });
+  // A checkpoint from another build, or one whose scene no longer exists, is
+  // dropped with its state: never resume a stale run into the wrong scene.
+  let overrides = takeDebugOverrides();
+  const cp = loadCheckpoint();
+  const sceneExists = (sid) => SCENES.some((s) => s.id === sid) || sid === 'therapist-tutorial';
+  if (cp && cp.chapterId === id && startSceneId && startSceneId === cp.sceneId && (cp.version !== CHECKPOINT_VERSION || !sceneExists(startSceneId))) {
+    clearCheckpoint();
+    overrides = {};
+    startSceneId = null;
+  }
+  const run = createStore({ ...initialRunState, ...repeatState, ...overrides });
   // Repeat client: his "you again" call takes the 'therapist' slot, with the
   // full tutorial right after it for a player who asks to run it again.
   // The health and safety / fiction cards show once ever (noticeScene.js
@@ -301,7 +316,7 @@ export function mount(stageEl, { exit, restart, startSceneId }) {
       // Checkpoint at the start of every scene (shell/save.js): a crash loses
       // at most the scene in progress. An ending means the run is done.
       if (scene.type === 'ending' || scene.epilogue) clearCheckpoint();
-      else if (saveCheckpoint({ chapterId: id, sceneId: scene.id, state: run.get() })) hud.showSaving();
+      else if (saveCheckpoint({ chapterId: id, sceneId: scene.id, state: run.get(), version: CHECKPOINT_VERSION })) hud.showSaving();
     },
   });
 

@@ -57,9 +57,11 @@ export function importSave(data) {
 // reaching an ending clears it.
 const CHECKPOINT_KEY = 'dreamxtreme:checkpoint';
 
-export function saveCheckpoint({ chapterId, sceneId, state }) {
+// version: the chapter's CHECKPOINT_VERSION (chapters/<id>/index.js); a
+// checkpoint whose version no longer matches is dropped, never resumed.
+export function saveCheckpoint({ chapterId, sceneId, state, version }) {
   try {
-    localStorage.setItem(CHECKPOINT_KEY, JSON.stringify({ chapterId, sceneId, state, at: Date.now() }));
+    localStorage.setItem(CHECKPOINT_KEY, JSON.stringify({ chapterId, sceneId, state, version, at: Date.now() }));
     return true;
   } catch {
     return false; // storage off or full: the game keeps going, just unsaved
