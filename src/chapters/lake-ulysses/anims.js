@@ -4,10 +4,11 @@ export const ANIMS = {
   lake_bg:   { base: `${BASE}spr_lake_bg_001/spr_lake_bg_001_`, frames: 46, fps: 12 },
   quote_bg:  { base: `${BASE}spr_QuoteBG/spr_QuoteBG_`,        frames: 5,  fps: 6  },
   bob_baiter:{ base: `${BASE}spr_bb/spr_bb_`,                  frames: 10, fps: 8  },
-  // The artist's stop-motion loops (Drive: TheLake.gif, stairsmove.gif, 270x480,
+  // The artist's stop-motion loops (Drive: TheLake.gif, stairsmove.gif, Roadsign.gif, 270x480,
   // 12 fps), full-screen behind walk narration; they win over the code-drawn loops.
   loop_lake:   { base: `${BASE}loop_lake/loop_lake_`,     frames: 9,  fps: 12 },
   loop_stairs: { base: `${BASE}loop_stairs/loop_stairs_`, frames: 12, fps: 12 },
+  loop_road:   { base: `${BASE}loop_road/loop_road_`,     frames: 20, fps: 12 },
   // The show's title card after the prologue's lake beats (Drive:
   // TheLakeRemembers.zip, a 2Dope export, 720x1280; stored 540 wide, gray,
   // flattened on white as the artist saw it).

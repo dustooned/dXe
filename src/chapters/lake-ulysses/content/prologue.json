@@ -22,11 +22,13 @@
     },
     {
       "text": "{pause:400}You wake up on the shoulder of Lakeshore Drive.{pause:300} Ears ringing.{sfx:gravel} Clothes damp.",
-      "loop": "road"
+      "loop": "road",
+      "bgAnim": "loop_road"
     },
     {
       "text": "No pain.{pause:300} Except the ringing.",
-      "loop": "road"
+      "loop": "road",
+      "bgAnim": "loop_road"
     },
     {
       "text": "Your head throbs.",
@@ -43,7 +45,8 @@
           }
         ]
       },
-      "loop": "road"
+      "loop": "road",
+      "bgAnim": "loop_road"
     },
     {
       "text": "Your phone{sfx:vibrate} buzzes against the gravel."

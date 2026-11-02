@@ -1019,11 +1019,18 @@
   cursor: pointer;
 }
 
-/* His bust (ui/pastorBust.js, placeholder pixel art) above the nameplate.
-   On arrival it fades in slow and stepped, like a C64 palette fade. */
+/* His bust (ui/pastorBust.js, the artist's 192x192 portrait) above the
+   nameplate. On arrival it fades in slow and stepped, like a C64 palette fade. */
 .dx-pastor-bust {
-  width: calc(120 * var(--px));
+  width: calc(192 * var(--px));
   margin: 0 auto;
+}
+
+.dx-pastor-bust img {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
 }
 
 .dx-pastor-bust svg {

@@ -6,7 +6,8 @@
     },
     {
       "text": "You get up off the shoulder of Lakeshore Drive and start walking.{sfx:footsteps} Your legs remember the way home before you do.",
-      "loop": "road"
+      "loop": "road",
+      "bgAnim": "loop_road"
     },
     {
       "text": "Lake Ulysses at this hour: sprinklers ticking,{sfx:sprinkler} a church sign missing half its letters, a dog{sfx:bark} barking at the water like it owes him money.",
