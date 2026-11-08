@@ -247,9 +247,19 @@ export function showBody(emotion, { onPick = false, loadout, held = false } = {}
     captionTimer = setTimeout(leave, ms);
   };
   if (!held) linger(Math.max(LINGER_MIN_MS, line.length * LINGER_PER_CHAR_MS + 1500));
+  // Tap the line to keep it up as long as you like; tap it again to put it away.
+  let pinned = false;
+  el.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (el.classList.contains('is-leaving')) return;
+    pinned = !pinned;
+    el.classList.toggle('is-pinned', pinned);
+    clearTimeout(captionTimer);
+    if (!pinned) leave();
+  });
   return {
     // Finger (or pointer) lifted: it stays a beat longer, then fades.
-    release() { if (el.isConnected && !el.classList.contains('is-leaving')) linger(LINGER_AFTER_HOLD_MS); },
+    release() { if (!pinned && el.isConnected && !el.classList.contains('is-leaving')) linger(LINGER_AFTER_HOLD_MS); },
   };
 }
 

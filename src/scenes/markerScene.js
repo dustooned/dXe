@@ -18,7 +18,8 @@
 // gives nothing else away (no glyph, no feelings): the room is where you
 // learn them.
 //
-// Later (JOBS.md): an interactive way in before the page, per NPC.
+// Before the page: a short, skippable way in per NPC (ui/wayIn.js, scene.wayIn:
+// 'bulb' | 'spray' | 'crosswalk' | 'rev'). The page loads once it's done.
 //
 // scene shape: { type: 'marker', id, numeral: 'I', npc, plate, plateArt?, prose, folio }
 import { later, cancelLater } from '../shell/pauseBus.js';
@@ -28,6 +29,7 @@ import { createTypewriter } from '../ui/typewriterText.js';
 import { isFogged } from '../engine/contacts.js';
 import { plateSvg } from '../ui/plates.js';
 import { createPlateCanvas, PASSES } from '../ui/plateCanvas.js';
+import { createWayIn } from '../ui/wayIn.js';
 
 const LINE_MS = 140;
 const BANDS = 12;
@@ -100,7 +102,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // Fogged: the page comes up warm, the room muffled and cozy.
   const fogged = isFogged(run.get());
   if (fogged) screen.classList.add('is-fogged');
-  const stopAmbience = startOpenerAmbience(npc.npc, { fogged });
+  let stopAmbience = () => {};
+  let begun = false;
+  let wayIn = null;
 
   // The load: one step at a time, each with its bleep.
   let step = 0;
@@ -148,7 +152,18 @@ export function mount(stageEl, scene, { run, onComplete }) {
     fn();
     if (sequence.length) timer = later(next, ms);
   };
-  timer = later(next, 450);
+  // The page starts loading (and their room becomes audible) after the way in.
+  const begin = () => {
+    if (begun || leaving) return;
+    begun = true;
+    stopAmbience = startOpenerAmbience(npc.npc, { fogged });
+    timer = later(next, 450);
+  };
+  if (scene.wayIn) {
+    screen.style.visibility = 'hidden'; // the page stays dark until the way in is done
+    wayIn = createWayIn(stageEl, scene.wayIn, { onDone: () => { screen.style.visibility = ''; begin(); } });
+  }
+  else begin();
 
   const finishLoading = () => {
     cancelLater(timer);
@@ -162,7 +177,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   };
 
   screen.addEventListener('click', () => {
-    if (leaving) return;
+    if (leaving || !begun) return;
     if (!loaded || !typewriter?.isDone()) { finishLoading(); return; }
     leaving = true;
     screen.classList.add('is-fading');
@@ -173,6 +188,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
   return function unmount() {
     leaving = true;
+    wayIn?.destroy();
     [timer, fadeTimer].forEach(cancelLater);
     typewriter?.destroy();
     plateCanvas?.destroy();

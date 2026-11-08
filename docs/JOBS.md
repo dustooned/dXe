@@ -17,7 +17,7 @@ Newest first; details in HANDOFF.md.
 4. **Character art (2026-10-10):** the Therapist's set is in, and placeholders for Deborah (idle, talk loop) and Samun (idle loop). Next: the full Deborah, Rwanda, Samun, Rick sets per `docs/CHARACTER_ART.md` (idle, talk loop, 8 feeling faces, 5 reactions, connect, pushaway, 5 trauma images each), then wire `portrait.setState()` to MOOD, reactions and the story beats. Run `node scripts/import-character-gifs.mjs <folder> <npc>` for each batch.
 5. **Art drop-ins:** chapter plates (`plates/plate_<npc>.png`, 240x150 1-bit) and everything in `docs/ASSET_SIZES.md`.
 6. **Opening confrontations: built for all four (2026-10-09).** Look at them on screen as each class (art is still placeholder); the restore hints and secret lines are first drafts for the writer pass.
-7. **Later: interactive way in before each marker page** (skippable; the moment is highlighted and says exactly what to do; the page turns in only after it). Arcade "READY? START!" energy, but literary.
+7. **Built 2026-11-08: interactive way in before each marker page** (`src/ui/wayIn.js`; bulb, spray wall, crosswalk, rev; all skippable; untested by ear) (skippable; the moment is highlighted and says exactly what to do; the page turns in only after it). Arcade "READY? START!" energy, but literary.
    - **Deborah:** turn a bible page (or twist the hall lightbulb in).
    - **Rwanda:** brush a spray-paint mask across a wall to reveal it, spray SFX.
    - **Samun:** a crosswalk button. Hit it 3 times, impatient: "wait", "wait", "WAIT". The 4th: the chirp, WALK lights ON.

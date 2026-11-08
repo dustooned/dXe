@@ -1433,13 +1433,15 @@
   letter-spacing: 0.06em;
   color: var(--feel);
   text-shadow: 0 0 6px rgba(0, 0, 0, 0.95), 0 0 2px #000;
-  pointer-events: none;
+  pointer-events: auto; /* tap to pin */
+  cursor: pointer;
   /* Fades in and then just stays: ui/feelingIcons.js times the fade-out (is-leaving)
      by the line's length, and holds it while a finger is on the wedge. */
   animation: dx-feel-body 0.3s ease-out both;
   transition: opacity 0.6s ease-in;
 }
-.dx-feel-body.is-leaving { opacity: 0; }
+.dx-feel-body.is-leaving { opacity: 0; pointer-events: none; }
+.dx-feel-body.is-pinned { text-decoration: underline dotted; text-underline-offset: 0.3em; }
 
 @keyframes dx-feel-body {
   from { opacity: 0; transform: translateY(6px); }
@@ -2560,8 +2562,8 @@
   gap: calc(8 * var(--px));
 }
 .dx-feed__flip-btn {
-  width: calc(36 * var(--px));
-  height: calc(36 * var(--px));
+  width: calc(44 * var(--px));
+  height: calc(44 * var(--px));
   border: 2px solid var(--color-white);
   background: var(--color-black);
   color: var(--color-white);
@@ -2729,7 +2731,7 @@
 /* The caption: who's posting and what they say, bottom left, leaving room
    for the rail on the right and the timeline under it. */
 .dx-feed .dx-feed__textbox {
-  margin: 0 calc(64 * var(--px)) calc(52 * var(--px)) calc(10 * var(--px));
+  margin: 0 calc(72 * var(--px)) calc(52 * var(--px)) calc(10 * var(--px));
   min-height: 0;
   padding: calc(9 * var(--px)) calc(11 * var(--px));
   border: calc(2 * var(--px)) solid rgb(255 255 255 / 0.35);
@@ -2753,6 +2755,7 @@
   align-items: center;
   gap: calc(3 * var(--px));
   width: calc(50 * var(--px));
+  min-height: calc(44 * var(--px));
   padding: calc(6 * var(--px)) 0;
   background: rgb(0 0 0 / 0.92);
   border: calc(2 * var(--px)) solid rgb(255 255 255 / 0.35);
@@ -2806,3 +2809,40 @@
 .dx-notice__hint.is-ready {
   opacity: 0.5;
 }
+
+/* ── The way in, before each chapter page (ui/wayIn.js) ── */
+.dx-wayin {
+  z-index: 20;
+  background: var(--color-black);
+  justify-content: center;
+  align-items: center;
+  gap: calc(24 * var(--px));
+  text-align: center;
+  transition: opacity 0.35s;
+}
+.dx-wayin.is-leaving { opacity: 0; }
+.dx-wayin__prompt { margin: 0; white-space: pre-line; line-height: 2; font-size: calc(9 * var(--fs)); letter-spacing: 0.08em; }
+.dx-wayin__body { display: flex; flex-direction: column; align-items: center; gap: calc(16 * var(--px)); min-height: calc(200 * var(--px)); justify-content: center; touch-action: none; }
+.dx-wayin__skip { position: absolute; right: calc(16 * var(--px)); bottom: calc(16 * var(--px)); min-height: calc(44 * var(--px)); }
+.dx-wayin__bulb {
+  --lit: 0;
+  width: calc(90 * var(--px)); height: calc(120 * var(--px));
+  border: calc(3 * var(--px)) solid var(--color-white);
+  border-radius: 50% 50% 40% 40%;
+  background: rgb(255 255 255 / calc(var(--lit) * 0.9));
+  box-shadow: 0 0 calc(var(--lit) * 40px) rgb(255 255 255 / calc(var(--lit) * 0.6));
+  cursor: grab; touch-action: none;
+}
+.dx-wayin__wall { position: relative; width: calc(300 * var(--px)); aspect-ratio: 240 / 150; border: calc(2 * var(--px)) solid var(--color-white); }
+.dx-wayin__wall canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; image-rendering: pixelated; transition: opacity 0.5s; }
+.dx-wayin__under { position: absolute; inset: 0; margin: 0; display: grid; place-items: center; white-space: pre-line; font-size: calc(14 * var(--fs)); line-height: 1.5; letter-spacing: 0.12em; }
+.dx-wayin__sign { margin: 0; padding: calc(10 * var(--px)) calc(16 * var(--px)); border: calc(3 * var(--px)) solid var(--color-white); font-size: calc(14 * var(--fs)); letter-spacing: 0.1em; min-width: calc(180 * var(--px)); }
+.dx-wayin__sign.is-walk { background: var(--color-white); color: var(--color-black); }
+.dx-wayin__button { width: calc(96 * var(--px)); height: calc(96 * var(--px)); border-radius: 50%; border: calc(4 * var(--px)) solid var(--color-white); background: var(--color-black); color: var(--color-white); font-family: var(--font-pixel); cursor: pointer; }
+.dx-wayin__button.is-pressed { animation: dx-wayin-press 0.2s ease-out; }
+.dx-wayin__button.is-done { background: var(--color-white); }
+.dx-wayin__button--throttle { border-radius: 0; width: calc(200 * var(--px)); height: calc(64 * var(--px)); font-size: calc(10 * var(--fs)); letter-spacing: 0.1em; }
+.dx-wayin__gauge { margin: 0; font-size: calc(14 * var(--fs)); letter-spacing: 0.1em; min-height: 2em; }
+.dx-wayin__gauge.is-caught { animation: dx-wayin-press 0.12s linear 4; }
+@keyframes dx-wayin-press { 50% { transform: scale(0.9); } }
+@media (prefers-reduced-motion: reduce) { .dx-wayin__button.is-pressed, .dx-wayin__gauge.is-caught { animation: none; } }

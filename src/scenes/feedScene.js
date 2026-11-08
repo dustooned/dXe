@@ -232,8 +232,10 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
     scrub.max = String(ch.length);
     scrub.step = '100';
     scrub.setAttribute('aria-label', `${ch.name} timeline`);
-    const grab = () => { scrubbing = true; dom?.screen.classList.add('is-scrubbing'); };
-    const letGo = () => { scrubbing = false; dom?.screen.classList.remove('is-scrubbing'); };
+    const LOOP_LABEL = '↻ LOOP · DRAG TO SEEK';
+    const setLabel = (t) => { const l = scrub.parentElement?.querySelector('.dx-feed__loop'); if (l) l.textContent = t; };
+    const grab = () => { scrubbing = true; dom?.screen.classList.add('is-scrubbing'); setLabel('❚❚ HOLDING · LET GO TO PLAY'); };
+    const letGo = () => { scrubbing = false; dom?.screen.classList.remove('is-scrubbing'); setLabel(LOOP_LABEL); };
     scrub.addEventListener('pointerdown', (e) => { e.stopPropagation(); grab(); });
     scrub.addEventListener('pointerup', letGo);
     scrub.addEventListener('pointercancel', letGo);

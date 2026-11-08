@@ -843,7 +843,10 @@
   font-family: inherit;
   font-size: calc(9 * var(--fs));
   cursor: pointer;
+  position: relative;
 }
+/* 34px art, 46px touch target. */
+.dx-dock__contact::after { content: ""; position: absolute; inset: calc(-6 * var(--px)); }
 
 .dx-dock__contact.is-offline {
   border-color: rgba(255, 255, 255, 0.25);

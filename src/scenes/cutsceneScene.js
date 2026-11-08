@@ -428,7 +428,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       if (textEl) { typewriter?.destroy(); typewriter = createTypewriter(textEl, option.reply, { onChar: playTypewriterTick }); }
       // A tap moves on sooner (handleTap): finish the line, then advance.
       replying = true;
-      autoAdvanceTimer = later(advance, Math.max(1500, option.reply.length * 55));
+      autoAdvanceTimer = later(advance, Math.max(2800, option.reply.length * 90 + 1500));
       return;
     }
     if (option.jumpTo) {
