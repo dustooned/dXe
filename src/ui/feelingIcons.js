@@ -190,20 +190,31 @@ function seenCounts() {
 }
 
 let captionTimer = null;
+let leaveTimer = null;
 // Shows the body line over the screen (in the canvas, so a re-render of the
 // scene underneath doesn't wipe it). `onPick`: count it, and skip it once
 // this feeling has been seen enough.
-export function showBody(emotion, { onPick = false, loadout } = {}) {
+//
+// The line stays long enough to read (phone players couldn't: it used to
+// fade after 2.2s whatever its length). It lingers by its own length; with
+// `held: true` it stays up for as long as a finger is held on the wedge, and
+// the returned handle's release() starts the linger (from touch-up). Returns
+// null when nothing was shown.
+const LINGER_MIN_MS = 3500;
+const LINGER_PER_CHAR_MS = 80;
+const LINGER_AFTER_HOLD_MS = 3000;
+const LEAVE_MS = 600;
+export function showBody(emotion, { onPick = false, loadout, held = false } = {}) {
   const line = bodyLine(emotion, loadout);
-  if (!line) return;
+  if (!line) return null;
   if (onPick) {
     const counts = seenCounts();
-    if ((counts[emotion] ?? 0) >= PICKS_SHOWN) return;
+    if ((counts[emotion] ?? 0) >= PICKS_SHOWN) return null;
     counts[emotion] = (counts[emotion] ?? 0) + 1;
     try { localStorage.setItem(SEEN_KEY, JSON.stringify(counts)); } catch { /* private mode */ }
   }
   const host = document.querySelector('.dx-canvas');
-  if (!host) return;
+  if (!host) return null;
   host.querySelector('.dx-feel-body')?.remove();
   const el = document.createElement('p');
   el.className = 'dx-feel-body';
@@ -226,7 +237,20 @@ export function showBody(emotion, { onPick = false, loadout } = {}) {
     el.style.bottom = 'auto';
   }
   clearTimeout(captionTimer);
-  captionTimer = setTimeout(() => el.remove(), 2200);
+  clearTimeout(leaveTimer);
+  const leave = () => {
+    el.classList.add('is-leaving');
+    leaveTimer = setTimeout(() => el.remove(), LEAVE_MS);
+  };
+  const linger = (ms) => {
+    clearTimeout(captionTimer);
+    captionTimer = setTimeout(leave, ms);
+  };
+  if (!held) linger(Math.max(LINGER_MIN_MS, line.length * LINGER_PER_CHAR_MS + 1500));
+  return {
+    // Finger (or pointer) lifted: it stays a beat longer, then fades.
+    release() { if (el.isConnected && !el.classList.contains('is-leaving')) linger(LINGER_AFTER_HOLD_MS); },
+  };
 }
 
 // A one-shot burst of pixels at the spot you tapped, in the feeling's color

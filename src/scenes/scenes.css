@@ -1434,13 +1434,16 @@
   color: var(--feel);
   text-shadow: 0 0 6px rgba(0, 0, 0, 0.95), 0 0 2px #000;
   pointer-events: none;
-  animation: dx-feel-body 2.2s ease-out both;
+  /* Fades in and then just stays: ui/feelingIcons.js times the fade-out (is-leaving)
+     by the line's length, and holds it while a finger is on the wedge. */
+  animation: dx-feel-body 0.3s ease-out both;
+  transition: opacity 0.6s ease-in;
 }
+.dx-feel-body.is-leaving { opacity: 0; }
 
 @keyframes dx-feel-body {
-  0% { opacity: 0; transform: translateY(6px); }
-  12%, 75% { opacity: 1; transform: none; }
-  100% { opacity: 0; }
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
 }
 
 /* The screen feels it for a moment. Light touches, all under two seconds. */
@@ -1507,7 +1510,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .dx-stage[class*="dx-feel--"], .dx-stage[class*="dx-feel--"]::after { animation: none; }
-  .dx-feel-body { animation: none; }
+  .dx-feel-body { animation: none; transition: none; }
 }
 
 /* One-shot tap burst (ui/feelingIcons.js burst): chunky pixels. */

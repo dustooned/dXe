@@ -170,7 +170,7 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
     if (!isActive) return;
 
     let dragging = false, startX, startY, ghost;
-    let holdTimer = null, previewing = false;
+    let holdTimer = null, previewing = false, bodyHandle = null;
 
     function clearHold() {
       clearTimeout(holdTimer);
@@ -184,11 +184,12 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
     g.addEventListener('pointerenter', (e) => {
       g.classList.add('is-hovering');
       audio.startFeelzHover(emotion, activeEmotionsOrder, harmonicFunction);
-      if (e.pointerType === 'mouse') hoverTimer = setTimeout(() => showBody(emotion, { loadout }), HOLD_MS);
+      if (e.pointerType === 'mouse') hoverTimer = setTimeout(() => { bodyHandle = showBody(emotion, { loadout, held: true }); }, HOLD_MS);
     });
 
     g.addEventListener('pointerleave', () => {
       clearTimeout(hoverTimer);
+      if (!dragging) { bodyHandle?.release(); bodyHandle = null; }
       g.classList.remove('is-hovering');
       audio.stopFeelzHover();
     });
@@ -208,7 +209,8 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
           // it here too in case that event didn't come through.
           audio.startFeelzHover(emotion, activeEmotionsOrder, harmonicFunction);
           audio.swellFeelzHover();
-          showBody(emotion, { loadout });
+          // Stays up while the finger stays down (released in endDrag).
+          bodyHandle = showBody(emotion, { loadout, held: true });
           feel(emotion);
         }, HOLD_MS);
       }
@@ -251,6 +253,9 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
       const wasTap = Math.hypot(e.clientX - startX, e.clientY - startY) < DRAG_THRESHOLD;
       const wasListen = previewing;
       clearHold();
+      clearTimeout(hoverTimer);
+      bodyHandle?.release();
+      bodyHandle = null;
 
       if (wasListen) {
         // Held to listen — the tone stopped with the finger, nothing picked.
