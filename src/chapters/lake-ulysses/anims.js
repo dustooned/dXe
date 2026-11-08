@@ -8,7 +8,9 @@ export const ANIMS = {
   // 12 fps), full-screen behind walk narration; they win over the code-drawn loops.
   loop_lake:   { base: `${BASE}loop_lake/loop_lake_`,     frames: 9,  fps: 12 },
   loop_stairs: { base: `${BASE}loop_stairs/loop_stairs_`, frames: 12, fps: 12 },
-  loop_road:   { base: `${BASE}loop_road/loop_road_`,     frames: 24, fps: 12 },
+  loop_road:   { base: `${BASE}loop_road/loop_road_`,     frames: 20, fps: 12 },
+  // The artist's road.gif (24 frames): the picture on the feed's WIDOW'S GRADE documentary channel.
+  doc_road:    { base: `${BASE}doc_road/doc_road_`,     frames: 24, fps: 12 },
   // The show's title card after the prologue's lake beats (Drive:
   // TheLakeRemembers.zip, a 2Dope export, 720x1280; stored 540 wide, gray,
   // flattened on white as the artist saw it).

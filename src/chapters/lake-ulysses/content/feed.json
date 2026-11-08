@@ -343,7 +343,7 @@
       "id": "grade",
       "name": "WIDOW'S GRADE",
       "tag": "DOC",
-      "image": "/assets/lake-ulysses/backgrounds/prologue-lake.svg",
+      "bgAnim": "doc_road",
       "beats": [
         {
           "text": "WIDOW'S GRADE.\nEleven miles of two-lane between the high desert and the lake. Locals just call it the lake road.",
