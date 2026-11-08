@@ -5,7 +5,7 @@
 // next one, a hint to pull (on the first run until every channel is found,
 // after that until you've flipped once). The arrows (mouse only), the
 // keyboard and the mouse wheel flip too. A channel you left kept going, so you
-// come back to wherever it is now. Each channel has its own scrubber to drag
+// come back to wherever it is now. Each channel loops, and has its own scrubber to drag
 // back to what you missed, or ahead. Comments scroll up the lower left; tap
 // one to heart it.
 //
@@ -93,7 +93,15 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
   let ambientOn = false;
   const reduced = () => document.documentElement.classList.contains('is-reduced-effects');
 
-  const posOf = (i) => Math.max(0, Math.min(channels[i].length, clock + offsets[i]));
+  // Channels loop: a channel that reaches its end starts over by itself (no
+  // dragging the bar back to rewatch). A channel you left keeps looping too.
+  const posOf = (i) => {
+    const len = channels[i].length || 1;
+    return (((clock + offsets[i]) % len) + len) % len;
+  };
+  // While a finger (or the mouse) holds the bar, its channel stands still so
+  // the handle stays under it instead of sliding away.
+  let scrubbing = false;
   const allVisited = () => visited.size === channels.length;
   const canClose = () => !firstRound || allVisited();
   const fill = (text) => String(text ?? '').replaceAll('{handle}', handle);
@@ -162,6 +170,7 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
     shownBeat = -1;
     shownComments = '';
     sliding = false;
+    scrubbing = false;
     const ch = channels[cur];
 
     const view = document.createElement('div');
@@ -223,13 +232,25 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
     scrub.max = String(ch.length);
     scrub.step = '100';
     scrub.setAttribute('aria-label', `${ch.name} timeline`);
-    scrub.addEventListener('pointerdown', (e) => e.stopPropagation());
+    const grab = () => { scrubbing = true; dom?.screen.classList.add('is-scrubbing'); };
+    const letGo = () => { scrubbing = false; dom?.screen.classList.remove('is-scrubbing'); };
+    scrub.addEventListener('pointerdown', (e) => { e.stopPropagation(); grab(); });
+    scrub.addEventListener('pointerup', letGo);
+    scrub.addEventListener('pointercancel', letGo);
+    scrub.addEventListener('blur', letGo);
+    scrub.addEventListener('keydown', grab);
+    scrub.addEventListener('keyup', letGo);
     scrub.addEventListener('input', () => {
       offsets[cur] = Number(scrub.value) - clock;
       shownBeat = -1;
       update({ jump: true });
     });
-    screen.appendChild(scrub);
+    // The bar sits on a solid strip with a label, so it reads as a control.
+    const bar = document.createElement('div');
+    bar.className = 'dx-feed__bar';
+    bar.innerHTML = '<span class="dx-feed__loop" aria-hidden="true">↻ LOOP · DRAG TO SEEK</span>';
+    bar.appendChild(scrub);
+    screen.appendChild(bar);
 
     const comments = document.createElement('div');
     comments.className = 'dx-feed__comments';
@@ -439,8 +460,6 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
     const pos = posOf(cur);
     const i = beatAt(ch.starts, pos);
     const beat = ch.beats[i];
-    const ended = pos >= ch.length;
-    dom.screen.classList.toggle('is-ended', ended);
     if (i !== shownBeat) {
       shownBeat = i;
       typewriter?.destroy();
@@ -508,6 +527,7 @@ export function mount(stageEl, scene, { run, onComplete, exit, setSkipHandler })
 
   function tick() {
     clock += TICK_MS;
+    if (scrubbing) offsets[cur] -= TICK_MS; // held: this channel's time stands still
     update();
     tickTimer = later(tick, TICK_MS);
   }

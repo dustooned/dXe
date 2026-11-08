@@ -2469,11 +2469,11 @@
   right: 0;
   /* Slim, like a feed's top line: the picture shows right under it. */
   padding: calc(6 * var(--px)) calc(16 * var(--px));
-  background: rgb(0 0 0 / 0.82);
+  background: rgb(0 0 0 / 0.92);
   display: flex;
   align-items: center;
   gap: calc(8 * var(--px));
-  font-size: calc(7 * var(--fs));
+  font-size: calc(8 * var(--fs));
   letter-spacing: 0.08em;
 }
 .dx-feed__tag {
@@ -2483,34 +2483,65 @@
 }
 .dx-feed__name { flex: 1; }
 .dx-feed__ch { opacity: 0.6; }
-.dx-feed__scrub {
-  /* The timeline, along the bottom edge like a feed's progress bar, with a
-     tall touch strip so it's easy to grab and drag. */
+.dx-feed__bar {
+  /* The timeline: a solid strip along the bottom with a label, a thick track
+     and a big handle, so it is easy to see and to grab on a phone. */
   position: absolute;
   z-index: 4;
   bottom: 0;
   left: 0;
   right: 0;
+  height: calc(44 * var(--px));
+  background: rgb(0 0 0 / 0.9);
+  border-top: calc(2 * var(--px)) solid rgb(255 255 255 / 0.5);
+}
+.dx-feed__loop {
+  position: absolute;
+  top: calc(5 * var(--px));
+  left: calc(14 * var(--px));
+  font-size: calc(6 * var(--fs));
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+  pointer-events: none;
+}
+.dx-feed__scrub {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(6 * var(--px));
   width: 100%;
-  height: calc(22 * var(--px));
+  height: calc(30 * var(--px));
   margin: 0;
   appearance: none;
   -webkit-appearance: none;
   background: transparent;
   cursor: pointer;
+  touch-action: none; /* dragging the bar never flips the channel or scrolls */
 }
-.dx-feed__scrub::-webkit-slider-runnable-track { height: calc(3 * var(--px)); background: rgb(255 255 255 / 0.35); }
-.dx-feed__scrub::-moz-range-track { height: calc(3 * var(--px)); background: rgb(255 255 255 / 0.35); }
-.dx-feed__scrub::-moz-range-progress { height: calc(3 * var(--px)); background: var(--color-white); }
+.dx-feed__scrub:focus-visible { outline: calc(2 * var(--px)) solid var(--color-white); outline-offset: calc(-2 * var(--px)); }
+.dx-feed__scrub::-webkit-slider-runnable-track { height: calc(8 * var(--px)); background: rgb(255 255 255 / 0.3); }
+.dx-feed__scrub::-moz-range-track { height: calc(8 * var(--px)); background: rgb(255 255 255 / 0.3); }
+.dx-feed__scrub::-moz-range-progress { height: calc(8 * var(--px)); background: var(--color-white); }
 .dx-feed__scrub::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: calc(10 * var(--px));
-  height: calc(10 * var(--px));
-  margin-top: calc(-3.5 * var(--px));
+  width: calc(22 * var(--px));
+  height: calc(22 * var(--px));
+  margin-top: calc(-7 * var(--px));
   background: var(--color-white);
-  border: none;
+  border: calc(3 * var(--px)) solid var(--color-black);
+  box-shadow: 0 0 0 calc(2 * var(--px)) var(--color-white);
 }
-.dx-feed__scrub::-moz-range-thumb { width: calc(10 * var(--px)); height: calc(10 * var(--px)); background: var(--color-white); border: none; border-radius: 0; }
+.dx-feed__scrub::-moz-range-thumb {
+  box-sizing: border-box;
+  width: calc(22 * var(--px));
+  height: calc(22 * var(--px));
+  background: var(--color-white);
+  border: calc(3 * var(--px)) solid var(--color-black);
+  border-radius: 0;
+  box-shadow: 0 0 0 calc(2 * var(--px)) var(--color-white);
+}
+.dx-feed.is-scrubbing .dx-feed__scrub::-webkit-slider-thumb { transform: scale(1.25); }
+.dx-feed.is-scrubbing .dx-feed__scrub::-moz-range-thumb { transform: scale(1.25); }
 /* Under the top line: CLOSE APP right, HIDE CHAT left. */
 .dx-feed__close {
   position: absolute;
@@ -2612,15 +2643,15 @@
   display: block;
   text-align: left;
   border: none;
-  background: rgb(0 0 0 / 0.88);
+  background: rgb(0 0 0 / 0.92);
   color: var(--color-white);
   font-family: var(--font-pixel);
-  font-size: calc(6 * var(--fs));
-  line-height: 1.6;
-  padding: calc(3 * var(--px)) calc(6 * var(--px));
+  font-size: calc(7 * var(--fs));
+  line-height: 1.7;
+  padding: calc(4 * var(--px)) calc(7 * var(--px));
   cursor: pointer;
 }
-.dx-feed__who { color: #a9a9b3; }
+.dx-feed__who { color: #cfcfd8; }
 .dx-feed__heart {
   margin-left: calc(6 * var(--px));
   opacity: 0.25;
@@ -2651,14 +2682,6 @@
   font-size: calc(8 * var(--fs));
   letter-spacing: 0.08em;
   white-space: nowrap;
-}
-.dx-feed.is-ended .dx-feed__textbox::after {
-  content: 'ENDED · DRAG THE BAR BACK TO REWATCH';
-  display: block;
-  margin-top: calc(8 * var(--px));
-  font-size: calc(6 * var(--fs));
-  opacity: 0.6;
-  text-align: center;
 }
 /* A channel with no art yet: its name, dim, where the picture would be. */
 .dx-feed__card {
@@ -2706,41 +2729,39 @@
 /* The caption: who's posting and what they say, bottom left, leaving room
    for the rail on the right and the timeline under it. */
 .dx-feed .dx-feed__textbox {
-  margin: 0 calc(64 * var(--px)) calc(24 * var(--px)) calc(10 * var(--px));
+  margin: 0 calc(64 * var(--px)) calc(52 * var(--px)) calc(10 * var(--px));
   min-height: 0;
   padding: calc(9 * var(--px)) calc(11 * var(--px));
-  border: none;
-  background: rgb(0 0 0 / 0.82);
+  border: calc(2 * var(--px)) solid rgb(255 255 255 / 0.35);
+  background: rgb(0 0 0 / 0.92);
   text-align: left;
 }
-.dx-feed.is-ended .dx-feed__textbox::after { text-align: left; }
-
 /* The rail: likes and the chat count, right side above the caption. */
 .dx-feed__rail {
   position: absolute;
   z-index: 4;
   right: calc(8 * var(--px));
-  bottom: calc(40 * var(--px));
+  bottom: calc(56 * var(--px));
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: calc(12 * var(--px));
+  gap: calc(10 * var(--px));
 }
 .dx-feed__rail-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: calc(3 * var(--px));
-  width: calc(48 * var(--px));
+  width: calc(50 * var(--px));
   padding: calc(6 * var(--px)) 0;
-  border: none;
-  background: rgb(0 0 0 / 0.82);
+  background: rgb(0 0 0 / 0.92);
+  border: calc(2 * var(--px)) solid rgb(255 255 255 / 0.35);
   color: var(--color-white);
   font-family: var(--font-pixel);
-  font-size: calc(6 * var(--fs));
+  font-size: calc(7 * var(--fs));
   cursor: pointer;
 }
-.dx-feed__rail-icon { font-size: calc(14 * var(--px)); line-height: 1; }
+.dx-feed__rail-icon { font-size: calc(16 * var(--px)); line-height: 1; }
 .dx-feed__rail-btn.is-on .dx-feed__rail-icon { color: var(--color-feelz-surprise); }
 .dx-feed__rail-icon svg { width: calc(16 * var(--px)); height: calc(14 * var(--px)); display: block; fill: currentColor; }
 .dx-feed .dx-feed__textbox .dx-cutscene-text { text-align: left; }
