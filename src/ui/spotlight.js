@@ -12,8 +12,8 @@
 // its content coordinates, so it scrolls with the content rather than
 // drifting off it. Returns { destroy }.
 const NS = 'http://www.w3.org/2000/svg';
-const PAD = 10;
-const MASK_OPACITY = 0.82;
+const PAD = 16;
+const MASK_OPACITY = 0.7;
 let idCounter = 0;
 
 function svgEl(tag, attrs = {}) {
@@ -31,7 +31,7 @@ export function createSpotlight(container, targets) {
   const defs = svgEl('defs');
   // The blur is what makes each hole a vignette instead of a hard cutout.
   const filter = svgEl('filter', { id: `dx-spot-blur-${id}`, x: '-50%', y: '-50%', width: '200%', height: '200%' });
-  filter.appendChild(svgEl('feGaussianBlur', { stdDeviation: '9' }));
+  filter.appendChild(svgEl('feGaussianBlur', { stdDeviation: '7' }));
   const mask = svgEl('mask', { id: `dx-spot-mask-${id}`, maskUnits: 'userSpaceOnUse' });
   const maskBg = svgEl('rect', { x: 0, y: 0, fill: 'white' });
   const holes = svgEl('g', { filter: `url(#dx-spot-blur-${id})` });
@@ -55,7 +55,10 @@ export function createSpotlight(container, targets) {
       r.setAttribute('height', h);
     }
     holes.replaceChildren();
-    for (const el of els) {
+    // Anything the scene says about the lit thing (the tap hint, a pinned
+    // task line) is lit with it; they sat in the dark before.
+    const extras = [...container.querySelectorAll('.dx-tap-hint:not([hidden]), .dx-guide-task, .dx-feel-body')];
+    for (const el of [...els, ...extras]) {
       if (!el.isConnected || el.hidden) continue;
       const r = el.getBoundingClientRect();
       if (!r.width || !r.height) continue;
@@ -70,15 +73,18 @@ export function createSpotlight(container, targets) {
     }
   }
 
-  // Measure after layout settles; typewriters and fade-ins can still be
-  // growing the targets, so re-measure a few times over the first second.
-  const timers = [0, 120, 400, 900].map((ms) => setTimeout(() => requestAnimationFrame(layout), ms));
+  // Typewriters, page turns, hints and fade-ins keep changing the targets'
+  // size after mount, so keep re-fitting the holes (a one-second burst left
+  // later text in the dark).
+  const timers = [setTimeout(() => requestAnimationFrame(layout), 0)];
+  const keepFit = setInterval(layout, 250);
   window.addEventListener('resize', layout);
 
   return {
     layout,
     destroy() {
       timers.forEach(clearTimeout);
+      clearInterval(keepFit);
       window.removeEventListener('resize', layout);
       svg.remove();
     },

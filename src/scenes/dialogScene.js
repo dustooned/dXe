@@ -388,6 +388,11 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const r = run.get();
     return npc.npc === 'DEBORAH' && !r.repeat && !(r.coachSeen ?? []).includes('scope');
   }
+  // First playthrough, features arrive one round at a time and stack: Deborah
+  // the waves, Rwanda the little screen, Samun the mask and the delivery
+  // spectrum (soft / harsh / white / bait), Rick the hard version of all of it.
+  // A returning player (run.repeat) has everything from the start.
+  const deliveryOn = (node) => hasDelivery(node) && (!!run.get().repeat || npc.npc === 'SAMUN' || npc.npc === 'RICK');
   function isRevealed(kind) {
     const gateNode = npc.reveal?.[kind];
     if (gateNode === 'cue') return cuesFired.has(kind);
@@ -482,7 +487,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
       getHighlight: () => (guideOn() ? coach?.highlight ?? trialHighlight() : null),
       getVisibility: npc.reveal
         ? () => ({ traces: isRevealed('scope'), instruments: isRevealed('instruments') })
-        : scopeNotYet() ? () => ({ traces: false, instruments: false }) : undefined,
+        : scopeNotYet() ? () => ({ traces: true, instruments: false }) : undefined,
     });
 
     const content = document.createElement('div');
@@ -743,7 +748,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
 
       const card = createSwipeCard({
         promptText: activeEmotion ? 'Swipe to respond.' : 'Pick a feeling first.',
-        delivery: activeEmotion && hasDelivery(currentNode()) ? deliveryPreview : null,
+        delivery: activeEmotion && deliveryOn(currentNode()) ? deliveryPreview : null,
         onSwipe: (key, how) => {
           if (!activeEmotion) {
             // A completed swipe with no feeling picked yet doesn't count as
@@ -991,7 +996,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // ordinary edge (engine/delivery.js) so everything below reads it as one.
     let swipeKey = sideKey;
     let delivered = null;
-    if (hasDelivery(currentNode())) {
+    if (deliveryOn(currentNode())) {
       if (tooTired(run.get())) hard = false; // no strength to push all the way
       delivered = buildDelivery(currentNode(), deliveryKind(sideKey, hard), { whiteUsed, budget: whiteBudget(), trust: run.get().trust ?? 5, baitFail: npc.baitFail });
       swipeKey = delivered.swipeKey;
@@ -1502,13 +1507,36 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // The demo is the tutorial (docs/PHASE_11.md): each round teaches one
     // thing, on its first node, in the same shape (a short call, then one
     // "try this"). Deborah: the battle itself, then how you say it (delivery,
-    // on her next card). Rwanda: the little screen. Samun: masks. Rick: nothing.
-    if (npc.npc === 'RICK') return;
+    // on her next card). Rwanda: the little screen. Samun: masks, then delivery.
+    // Rick: a warning about bait.
+    // Rick: no new mechanic, a warning. Bait is the tool that works on him and
+    // the costliest, so the Therapist asks for care (a deliberate exception to
+    // "tip calls are early-game only").
+    if (npc.npc === 'RICK') {
+      if (seenKeys.includes('rick')) return;
+      startCoach('rick', {
+        steps: [
+          { say: inClass("It's me. Last one, and I'll be honest, this is the hard one.", { Guns: "It's me. Last one, and I'll be honest, this is the hard one. Armored." }) },
+          { say: "He's been told the truth a lot. It doesn't land anymore. Soft, harsh, none of it gets in the way it did with the others.", target: 'card', label: 'TRUTH BOUNCES OFF' },
+          { say: "Bait is the lie that gets a person to blurt the truth. All the way on the lie side. It's the one that can work on him.", target: 'card', label: 'ALL THE WAY: BAIT' },
+          { say: "But it costs you bars and it goes on the lake, and if your bars are low it bounces. Spend them on purpose.", target: 'bars', label: 'YOUR BARS' },
+          { say: "So go slow. Read him before you answer. Watch both colors. It's not about winning. Okay. Bye.", target: 'trace', label: 'READ HIM FIRST' },
+        ],
+        task: null,
+      });
+      return;
+    }
     if (npc.npc === 'DEBORAH' && !seenKeys.includes('battle')) {
       startCoach('battle', {
         steps: [
           { say: inClass("It's me. This one's for real. I'll be quick, I'm double-booked.", { Guns: "It's me. Live fire now. I'll be quick, I'm double-booked." }) },
           { say: `Same as with me. Pick how you feel about what ${facing} just said.`, target: 'wheel', label: 'YOUR WHEEL' },
+          { say: inClass(`See the wave across the picture? That's ${facing}'s feeling, as a signal. The one under it is yours. They start apart. Pick a feeling and yours moves.`, {
+            Guns: `See the wave across the picture? That's ${facing}, your target, as a signal. The one under it is you. They start apart. Pick a feeling and yours moves.`,
+            Bible: `See the wave across the picture? That's ${facing}'s feeling, as a signal. The one under it is yours. Two voices, one frame. Pick a feeling and yours moves.`,
+            Crystals: `See the wave across the picture? That's ${facing}'s feeling, ringing. The one under it is yours. Pick a feeling and watch yours answer.`,
+          }), target: 'trace', label: `${facing.toUpperCase()} · YOU` },
+          { say: 'When the two waves line up, you are connected. That is the whole game. Everything else is just how you get there.', target: 'trace', label: 'LINED UP = CONNECTED' },
           { say: 'Then push the card. Truth left, lie right. Both are allowed. I checked the policy.', target: 'card', label: 'TRUTH · LIE' },
           { say: 'Whatever you say, your batteries pay for it, up here.', target: 'meters', label: 'YOUR BATTERIES' },
           { say: inClass("And the lake keeps count of the lies. It's not grading you. It's just counting. Okay. Bye.", {
@@ -1522,9 +1550,9 @@ export function mount(stageEl, scene, { run, onComplete }) {
       return;
     }
     // The delivery spectrum (engine/delivery.js), on the first card that has
-    // it (every round has it now, so this lands in Deborah's). It carries the
+    // it for this player (Samun's round on a first run). It carries the
     // old lie-trade lesson (a white lie relaxes them).
-    if (hasDelivery(node) && !seenKeys.includes('delivery')) {
+    if (deliveryOn(node) && !seenKeys.includes('delivery')) {
       startCoach('delivery', {
         steps: [
           { say: inClass(`It's me again. ${facing} won't open up for just anyone. One new trick, then I'm gone.`, { Guns: `It's me again. ${facing} won't open up for just anyone. One new move, then I'm gone.` }) },
@@ -1534,8 +1562,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
             Bible: "A soft truth is cheap on you. A harsh one costs more and gets further. Tough love, I think it's called.",
           }), target: 'card', label: 'SOFT · HARSH' },
           { say: "Lie side: a white lie relaxes them. Two's fine. A third lands heavy.", target: 'card', label: 'WHITE LIE' },
-          { say: "All the way is bait. A lie to make them blurt the truth. You need bars for it, or it bounces.", target: 'bars', label: 'YOUR BARS' },
-          { say: "Drag slow and FEELZ shows you the numbers. Unless you're not well. Then it can't. And when your battery's nearly gone, you can't push all the way. Okay. Bye.", target: 'card', label: 'DRAG SLOW' },
+          { say: "All the way on the lie side is bait. A lie to make them blurt the truth. It costs bars and it goes on the lake, so use it rarely.", target: 'bars', label: 'YOUR BARS' },
+          { say: "Drag slow and FEELZ shows you the numbers. Unless you're not well. Then it can't. Okay. Bye.", target: 'card', label: 'DRAG SLOW' },
         ],
         task: { text: 'Drag slow. Read the numbers.', target: 'card', until: ['swipe'] },
       });
@@ -1592,7 +1620,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
     const seen = run.get().coachSeen ?? [];
     if (!who || !isRevealed('dock') || seen.some((k) => k === 'friend' || k.startsWith('friend:'))) return;
     const metBefore = new Set(Object.keys(run.get().choices ?? {}).map((id) => id.split('_')[0]).filter((n) => n !== 'therapist' && n !== npc.npc.toLowerCase()));
-    if (metBefore.size >= 3) {
+    if (metBefore.size >= 3 || run.get().didCall) {
       run.set({ coachSeen: [...seen, 'friend'] });
       quietPulse = who;
       render();
@@ -1841,6 +1869,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
   function placeCall(who) {
     clearStall();
     coachDid('call');
+    if (!run.get().didCall) run.set({ didCall: true }); // the Therapist won't teach the dock to someone who's used it
     const node = currentNode();
     const name = npc.npc.charAt(0) + npc.npc.slice(1).toLowerCase();
     const call = callFor(who, { state: run.get(), currentName: name, currentKey: npc.npc, mood: node.mood });
