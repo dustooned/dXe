@@ -1439,6 +1439,15 @@ export function mount(stageEl, scene, { run, onComplete }) {
         // the middle of the bar (where it sat on their portrait).
         const anchor = step.target === 'meters' ? screen.querySelector('.dx-status__right') ?? target : target;
         if (step.label) label = guideLabel(overlay, anchor, step.label);
+        // The wave band runs behind the portrait and the speech bubble, so a
+        // label hung below it prints over their words: sit it on the band's top.
+        if (label && step.target === 'trace') {
+          const h = overlay.getBoundingClientRect();
+          label.classList.remove('is-above', 'is-below');
+          label.classList.add('is-inside');
+          label.style.bottom = 'auto';
+          label.style.top = `${target.getBoundingClientRect().top - h.top + 14}px`;
+        }
         const ov = overlay.getBoundingClientRect();
         const r = target.getBoundingClientRect();
         overlay.classList.toggle('is-top', r.top + r.height / 2 > ov.top + ov.height * 0.5);
@@ -1509,6 +1518,29 @@ export function mount(stageEl, scene, { run, onComplete }) {
     // "try this"). Deborah: the battle itself, then how you say it (delivery,
     // on her next card). Rwanda: the little screen. Samun: masks, then delivery.
     // Rick: a warning about bait.
+    // The first connection of the run: he saw it. What it is, what it gave you,
+    // and what more of it does. Fires on the next card after their story (so
+    // possibly in the next person's round), once a run.
+    const connectedWith = run.get().pendingConnected;
+    if (connectedWith && !seenKeys.includes('connected')) {
+      const who = CONTACTS[connectedWith]?.name ?? connectedWith;
+      const gift = run.get().giftedBy?.[connectedWith];
+      startCoach('connected', {
+        steps: [
+          { say: inClass(`It's me. I saw that. ${who} just let you in. Whatever you do next, that part was real.`, { Guns: `It's me. I saw that. ${who} lowered their guard. Whatever you do next, that part was real.` }) },
+          ...(gift ? [{ say: `And ${who} left you something: you can feel ${gift} now. That's what a shared moment gives. It's on your wheel.`, target: 'wheel', label: `NEW: ${gift.toUpperCase()}` }] : []),
+          { say: `They're in your phone now. Tap them for their read on whoever's next. People who trust you will tell you things.`, target: `who:${connectedWith}`, label: who.toUpperCase() },
+          { say: "Get enough people to trust you and you unlock a feeling you can't get any other way. It's not a win. It's one person. Okay. Bye." },
+        ],
+        task: null,
+      });
+      if ((run.get().coachSeen ?? []).includes('connected')) {
+        // He has now told you about the phone: his friend call has nothing left to say.
+        const seen = run.get().coachSeen ?? [];
+        run.set({ pendingConnected: null, coachSeen: seen.includes('friend') ? seen : [...seen, 'friend'] });
+      }
+      return;
+    }
     // Rick: no new mechanic, a warning. Bait is the tool that works on him and
     // the costliest, so the Therapist asks for care (a deliberate exception to
     // "tip calls are early-game only").
@@ -1927,6 +1959,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // directions stand alone first and turn themselves.
   function showConnection(onDone, { crack = false } = {}) {
     connectionShown = true;
+    // The first time anyone lets you in, the Therapist rings after (nodeCoach).
+    if (!npc.reveal && !(run.get().coachSeen ?? []).includes('connected')) run.set({ pendingConnected: npc.npc });
     const loadout = run.get().loadout;
     const lines = crack && npc.crack ? npc.crack : npc.connect;
     const text = lines[loadout] ?? Object.values(lines)[0];

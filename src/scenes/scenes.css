@@ -2878,3 +2878,5 @@
   100% { opacity: 1; transform: scale(1.1) rotate(0); }
 }
 @media (prefers-reduced-motion: reduce) { .dx-howler { animation: none; } }
+
+.dx-guide-label.is-inside::after { display: none; }
