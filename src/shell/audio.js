@@ -297,6 +297,21 @@ export function resumeAudio() {
   ctx.resume().then(restore, restore);
 }
 
+// Leaving the page for a moment (tab switch, lock screen, a call) leaves the
+// context suspended or 'interrupted' (iOS) and nothing woke it again. Wake it
+// when the page returns, and on the next touch if the browser still refuses.
+function wakeAudio() {
+  if (!ctx || turnPaused || ctx.state === 'running') return;
+  const restore = () => { if (!turnPaused) masterGain.gain.setTargetAtTime(masterVolume, ctx.currentTime, 0.05); };
+  try { ctx.resume().then(restore, () => {}); } catch { /* ignore */ }
+}
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) wakeAudio(); });
+  window.addEventListener('pageshow', wakeAudio);
+  window.addEventListener('focus', wakeAudio);
+  ['pointerdown', 'touchend', 'keydown'].forEach((t) => document.addEventListener(t, wakeAudio, { passive: true, capture: true }));
+}
+
 // A sound that won't load (offline, a missing file, a codec this browser lacks)
 // must never stop the game: the START jingle's promise gates the fade into the
 // story, so a rejection there left the title screen dead. A failed load hands

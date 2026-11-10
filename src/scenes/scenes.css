@@ -2846,3 +2846,35 @@
 .dx-wayin__gauge.is-caught { animation: dx-wayin-press 0.12s linear 4; }
 @keyframes dx-wayin-press { 50% { transform: scale(0.9); } }
 @media (prefers-reduced-motion: reduce) { .dx-wayin__button.is-pressed, .dx-wayin__gauge.is-caught { animation: none; } }
+
+/* IT (left) and SO (right) of Pastor Gabriel while the howl sounds
+   (reckoningScene.js flankWithVoices). Same icons as the popups; SO's has the
+   white-on-black frame. They swell and bob with the howl. */
+.dx-howler {
+  position: absolute;
+  width: calc(56 * var(--px));
+  height: calc(56 * var(--px));
+  margin-top: calc(-28 * var(--px));
+  border: 2px solid var(--color-black);
+  background: var(--color-white);
+  object-fit: contain;
+  image-rendering: pixelated;
+  pointer-events: none;
+  animation: dx-howl 2.4s ease-in-out both;
+}
+.dx-howler--it { left: calc(8 * var(--px)); }
+.dx-howler--so { right: calc(8 * var(--px)); background: var(--color-black); border-color: var(--color-white); }
+@keyframes dx-howl {
+  0% { opacity: 0; transform: scale(0.6) rotate(0); }
+  25% { opacity: 1; transform: scale(1.25) rotate(-8deg); }
+  55% { transform: scale(1.35) rotate(6deg); }
+  100% { opacity: 1; transform: scale(1.1) rotate(0); }
+}
+.dx-howler--so { animation-name: dx-howl-so; }
+@keyframes dx-howl-so {
+  0% { opacity: 0; transform: scale(0.6) rotate(0); }
+  25% { opacity: 1; transform: scale(1.25) rotate(8deg); }
+  55% { transform: scale(1.35) rotate(-6deg); }
+  100% { opacity: 1; transform: scale(1.1) rotate(0); }
+}
+@media (prefers-reduced-motion: reduce) { .dx-howler { animation: none; } }

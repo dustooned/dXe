@@ -214,8 +214,27 @@ export function mount(stageEl, scene, { run, onComplete }) {
   // clear water, something wrong over a fouled one.
   function walkDown() {
     const ms = audio.playHowl(run.get().truthDebt / LAKE_MAX_DEBT);
+    flankWithVoices();
     fx.shake('weak');
     later(baptism, Math.min(ms, 2600));
+  }
+
+  // IT on his left, SO on his right, heads back, howling with the sound.
+  // They go when the baptism's first line redraws the screen.
+  function flankWithVoices() {
+    const screen = stageEl.querySelector('.dx-reckoning-screen');
+    const bust = screen?.querySelector('.dx-pastor-bust, .dx-npc-portrait');
+    if (!screen || !bust) return;
+    const sb = screen.getBoundingClientRect();
+    const bb = bust.getBoundingClientRect();
+    for (const voice of ['it', 'so']) {
+      const img = document.createElement('img');
+      img.className = `dx-howler dx-howler--${voice}`;
+      img.src = `/assets/shared/sprites/spr_${voice}_icon.png`;
+      img.alt = '';
+      img.style.top = `${bb.top - sb.top + bb.height / 2}px`;
+      screen.appendChild(img);
+    }
   }
 
   function baptism() {

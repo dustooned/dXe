@@ -291,7 +291,7 @@ export function createFeelzDartboard({ loadout, unlocked = [], fresh = null, dro
     // The screen reacts, and the first few picks of each feeling say how it
     // sits in the body (ui/feelingIcons.js).
     feel(emotion);
-    showBody(emotion, { onPick: true, loadout });
+    showBody(emotion, { loadout });
     onSelect?.(emotion, source);
   }
 

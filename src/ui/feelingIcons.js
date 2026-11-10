@@ -179,21 +179,12 @@ export function iconHtml(emotion) {
   return `<svg class="dx-feel-icon" viewBox="0 0 9 9" shape-rendering="crispEdges" fill="currentColor" aria-hidden="true">${cells(emotion, 0, 0, 1)}</svg>`;
 }
 
-// Body lines show on every hold, and on a feeling's first few picks; after
-// that a pick only gets the icon and the screen's reaction. Counted per
-// player, in this browser.
-const SEEN_KEY = 'dreamxtreme:bodyHints';
-const PICKS_SHOWN = 3;
-
-function seenCounts() {
-  try { return JSON.parse(localStorage.getItem(SEEN_KEY) || '{}'); } catch { return {}; }
-}
+// Body lines show on every hold and every pick.
 
 let captionTimer = null;
 let leaveTimer = null;
 // Shows the body line over the screen (in the canvas, so a re-render of the
-// scene underneath doesn't wipe it). `onPick`: count it, and skip it once
-// this feeling has been seen enough.
+// scene underneath doesn't wipe it). Every pick and hold shows its line.
 //
 // The line stays long enough to read (phone players couldn't: it used to
 // fade after 2.2s whatever its length). It lingers by its own length; with
@@ -204,18 +195,16 @@ const LINGER_MIN_MS = 3500;
 const LINGER_PER_CHAR_MS = 80;
 const LINGER_AFTER_HOLD_MS = 3000;
 const LEAVE_MS = 600;
-export function showBody(emotion, { onPick = false, loadout, held = false } = {}) {
+export function showBody(emotion, { loadout, held = false } = {}) {
+  // Clear the previous line first, whatever happens next: a stale one must
+  // never stay up under a different feeling.
+  document.querySelectorAll('.dx-feel-body').forEach((n) => n.remove());
+  clearTimeout(captionTimer);
+  clearTimeout(leaveTimer);
   const line = bodyLine(emotion, loadout);
   if (!line) return null;
-  if (onPick) {
-    const counts = seenCounts();
-    if ((counts[emotion] ?? 0) >= PICKS_SHOWN) return null;
-    counts[emotion] = (counts[emotion] ?? 0) + 1;
-    try { localStorage.setItem(SEEN_KEY, JSON.stringify(counts)); } catch { /* private mode */ }
-  }
   const host = document.querySelector('.dx-canvas');
   if (!host) return null;
-  host.querySelector('.dx-feel-body')?.remove();
   const el = document.createElement('p');
   el.className = 'dx-feel-body';
   el.style.setProperty('--feel', `var(--color-feelz-${emotion.toLowerCase()})`);

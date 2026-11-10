@@ -678,7 +678,7 @@ export function mount(stageEl, scene, { run, onComplete }) {
         const tw = typewriter;
         later(() => {
           if (!unmounted && typewriter === tw && tw.pageIndex() === index) tw.finish();
-        }, loadSettings().textSize === 'large' ? 3600 : 2500);
+        }, loadSettings().textSize === 'large' ? 8000 : 6000);
       };
       typewriter = createTypewriter(
         reaction,
