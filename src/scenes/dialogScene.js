@@ -1904,7 +1904,8 @@ export function mount(stageEl, scene, { run, onComplete }) {
     if (!run.get().didCall) run.set({ didCall: true }); // the Therapist won't teach the dock to someone who's used it
     const node = currentNode();
     const name = npc.npc.charAt(0) + npc.npc.slice(1).toLowerCase();
-    const call = callFor(who, { state: run.get(), currentName: name, currentKey: npc.npc, mood: node.mood });
+    // The little screen isn't on yet in Deborah's round: he saves that science for Rwanda's.
+    const call = callFor(who, { state: scopeNotYet() ? { ...run.get(), scopeExplained: true } : run.get(), currentName: name, currentKey: npc.npc, mood: node.mood });
     if (call.explained) run.set({ scopeExplained: true }); // the science is said once a run
     const overlay = document.createElement('div');
     overlay.className = 'dx-call';
