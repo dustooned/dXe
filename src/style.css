@@ -400,3 +400,7 @@ body {
 .dx-about__blurb {
   opacity: 0.4;
 }
+
+.dx-credits__head--bright {
+  opacity: 1;
+}

@@ -565,41 +565,22 @@ function renderAbout() {
     <h1 class="dx-about__logo" role="img" aria-label="Dream Xtreme"></h1>
     <p class="dx-text">Dream Xtreme is an interactive zine. Each chapter is a
     self-contained short story you play with a swipe, a tap, or a click.</p>
-    <p class="dx-text dx-credits__sub">It began as a shared bible, and it keeps growing through
-    the people who play it, test it and build on it.</p>
 
-    <h3 class="dx-credits__head">THE CREATORS</h3>
-    <!-- Side by side, equal weight. Avatars are the characters each creator
-         inspired. Blurbs are placeholders. -->
+    <h3 class="dx-credits__head dx-credits__head--bright">THE CREATORS</h3>
     <div class="dx-about__creators">
       <div class="dx-about__creator">
         <img class="dx-about__avatar" src="/assets/lake-ulysses/characters/therapist/neutral_1.png" alt="The Therapist" width="96" height="96">
         <p class="dx-text dx-credits__name">JT Vernon</p>
-        <p class="dx-text dx-credits__sub">Inspired the Therapist</p>
-        <p class="dx-text dx-credits__sub">Foundational design &amp; the bible · story &amp; writing · testing &amp; refinement</p>
-        <p class="dx-text dx-about__blurb">[Placeholder: a short blurb about JT goes here.]</p>
       </div>
       <div class="dx-about__creator">
         <img class="dx-about__avatar" src="/assets/lake-ulysses/characters/gabriel/pastor_gabriel.gif" alt="Pastor Gabriel" width="96" height="96">
         <p class="dx-text dx-credits__name"><a href="${CREDIT_SITE_T}" target="_blank" rel="noopener">T'</a></p>
-        <p class="dx-text dx-credits__sub">Pastor Gabriel</p>
-        <p class="dx-text dx-credits__sub">Foundational design &amp; the bible · story &amp; writing · development, built from the bible</p>
-        <p class="dx-text dx-about__blurb">[Placeholder: a short blurb about T' goes here.]</p>
       </div>
-    </div>
-
-    <h3 class="dx-credits__head">ALSO BEHIND IT</h3>
-    <div class="dx-credits__person">
-      <p class="dx-text dx-credits__name">Jules Rivera</p>
-      <p class="dx-text dx-credits__sub">Game design in production · asset creation</p>
     </div>
 
     <h3 class="dx-credits__head">SPECIAL THANKS</h3>
     <p class="dx-text">To everyone who contributed and tested. This game is a
     communal effort.</p>
-
-    <h3 class="dx-credits__head">CONTACT</h3>
-    <p class="dx-text dx-credits__sub">Coming soon.</p>
   `;
 
   // PLACEHOLDER: will open the overview & history page (with the pitch
