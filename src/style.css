@@ -244,6 +244,29 @@ body {
   line-height: 1.8;
 }
 
+.dx-credits__head {
+  margin-top: calc(10 * var(--px));
+  font-size: calc(8 * var(--fs));
+  letter-spacing: 0.15em;
+  opacity: 0.6;
+}
+
+.dx-credits__sub {
+  opacity: 0.6;
+}
+
+.dx-credits__person {
+  display: flex;
+  flex-direction: column;
+  gap: calc(2 * var(--px));
+}
+
+.dx-credits__name a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: calc(3 * var(--px));
+}
+
 .dx-menu {
   display: flex;
   flex-direction: column;
