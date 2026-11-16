@@ -359,3 +359,44 @@ body {
   pointer-events: none;
   z-index: 50;
 }
+
+/* About / credits */
+.dx-about__logo {
+  width: 100%;
+  aspect-ratio: 640 / 280;
+  margin: 0;
+  background-image: url('/assets/shared/title/spr_game_title.png');
+  background-repeat: no-repeat;
+  background-size: 1300% 100%;
+  image-rendering: pixelated;
+  animation: dx-title-logo-boil 1.6s steps(12) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-about__logo { animation: none; }
+}
+
+.dx-about__creators {
+  display: flex;
+  gap: calc(12 * var(--px));
+}
+
+.dx-about__creator {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: calc(4 * var(--px));
+}
+
+.dx-about__avatar {
+  width: calc(96 * var(--px));
+  height: calc(96 * var(--px));
+  image-rendering: pixelated;
+}
+
+.dx-about__blurb {
+  opacity: 0.4;
+}

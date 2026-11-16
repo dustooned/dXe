@@ -555,35 +555,43 @@ function renderRunCard(code) {
   stage.appendChild(screen);
 }
 
-// TODO: confirm T's site URL (stand-in until then).
-const CREDIT_SITE_T = 'https://dustooned.github.io';
+const CREDIT_SITE_T = 'https://dustooned.com';
 
 function renderAbout() {
   teardown();
   const screen = document.createElement('div');
-  screen.className = 'dx-screen';
+  screen.className = 'dx-screen dx-about';
   screen.innerHTML = `
-    <h2 class="dx-title">ABOUT</h2>
-    <p class="dx-text">Dream Xtreme is an episodic interactive zine. Each chapter is a
+    <h1 class="dx-about__logo" role="img" aria-label="Dream Xtreme"></h1>
+    <p class="dx-text">Dream Xtreme is an interactive zine. Each chapter is a
     self-contained short story you play with a swipe, a tap, or a click.</p>
-    <p class="dx-text">It began as a shared bible, and it keeps growing through the
-    people who play it, test it and build on it.</p>
-    <p class="dx-text dx-credits__sub">An interactive zine, one short story at a time.</p>
+    <p class="dx-text dx-credits__sub">It began as a shared bible, and it keeps growing through
+    the people who play it, test it and build on it.</p>
 
-    <h3 class="dx-credits__head">THE TEAM</h3>
-    <!-- Listed alphabetically on purpose: no order implies rank. Roles will
-         change over time; edit them here. -->
-    <div class="dx-credits__person">
-      <p class="dx-text dx-credits__name">JT Vernon</p>
-      <p class="dx-text dx-credits__sub">Foundational design &amp; the bible · story &amp; writing · testing &amp; refinement</p>
+    <h3 class="dx-credits__head">THE CREATORS</h3>
+    <!-- Side by side, equal weight. Avatars are the characters each creator
+         inspired. Blurbs are placeholders. -->
+    <div class="dx-about__creators">
+      <div class="dx-about__creator">
+        <img class="dx-about__avatar" src="/assets/lake-ulysses/characters/therapist/neutral_1.png" alt="The Therapist" width="96" height="96">
+        <p class="dx-text dx-credits__name">JT Vernon</p>
+        <p class="dx-text dx-credits__sub">Inspired the Therapist</p>
+        <p class="dx-text dx-credits__sub">Foundational design &amp; the bible · story &amp; writing · testing &amp; refinement</p>
+        <p class="dx-text dx-about__blurb">[Placeholder: a short blurb about JT goes here.]</p>
+      </div>
+      <div class="dx-about__creator">
+        <img class="dx-about__avatar" src="/assets/lake-ulysses/characters/gabriel/pastor_gabriel.gif" alt="Pastor Gabriel" width="96" height="96">
+        <p class="dx-text dx-credits__name"><a href="${CREDIT_SITE_T}" target="_blank" rel="noopener">T'</a></p>
+        <p class="dx-text dx-credits__sub">Pastor Gabriel</p>
+        <p class="dx-text dx-credits__sub">Foundational design &amp; the bible · story &amp; writing · development, built from the bible</p>
+        <p class="dx-text dx-about__blurb">[Placeholder: a short blurb about T' goes here.]</p>
+      </div>
     </div>
+
+    <h3 class="dx-credits__head">ALSO BEHIND IT</h3>
     <div class="dx-credits__person">
       <p class="dx-text dx-credits__name">Jules Rivera</p>
       <p class="dx-text dx-credits__sub">Game design in production · asset creation</p>
-    </div>
-    <div class="dx-credits__person">
-      <p class="dx-text dx-credits__name"><a href="${CREDIT_SITE_T}" target="_blank" rel="noopener">T'</a></p>
-      <p class="dx-text dx-credits__sub">Foundational design &amp; the bible · story &amp; writing · development, built from the bible</p>
     </div>
 
     <h3 class="dx-credits__head">SPECIAL THANKS</h3>
