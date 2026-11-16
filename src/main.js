@@ -1,3 +1,4 @@
+import { renderHistory } from './shell/history.js';
 import './polyfills.js';
 import './style.css';
 import './ui/ui.css';
@@ -583,12 +584,10 @@ function renderAbout() {
     communal effort.</p>
   `;
 
-  // PLACEHOLDER: will open the overview & history page (with the pitch
-  // documents). Until it exists, it just returns to the main menu.
   const historyBtn = document.createElement('button');
   historyBtn.className = 'dx-btn';
   historyBtn.textContent = 'OVERVIEW & HISTORY';
-  historyBtn.addEventListener('click', () => navigate('menu'));
+  historyBtn.addEventListener('click', () => navigate('history'));
   screen.appendChild(historyBtn);
 
   const backBtn = document.createElement('button');
@@ -636,6 +635,7 @@ function dispatch({ screen, param, startAt }) {
   if (screen?.startsWith('r='))  renderRunCard(screen.slice(2));
   else if (screen === 'menu')    renderMenu();
   else if (screen === 'about')   renderAbout();
+  else if (screen === 'history') { teardown(); renderHistory(stage, { back: () => navigate('about') }); }
   else if (screen === 'chapter') renderChapter(param, startAt);
   else                           renderTitle();
 }

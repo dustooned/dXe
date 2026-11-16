@@ -404,3 +404,10 @@ body {
 .dx-credits__head--bright {
   opacity: 1;
 }
+
+/* History page */
+.dx-history__timeline { list-style: none; margin: 0; padding: 0 0 0 calc(12 * var(--px)); border-left: calc(2 * var(--px)) solid currentColor; display: flex; flex-direction: column; gap: calc(14 * var(--px)); }
+.dx-history__event { display: flex; flex-direction: column; gap: calc(2 * var(--px)); }
+.dx-history__quote { margin: 0; padding-left: calc(8 * var(--px)); border-left: calc(1 * var(--px)) dashed currentColor; }
+.dx-history__thennow { display: flex; flex-direction: column; opacity: 0.8; }
+.dx-history__img { width: 100%; image-rendering: pixelated; }
